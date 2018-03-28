@@ -25,7 +25,7 @@ import org.sagebionetworks.research.sdk.Duration;
 import org.sagebionetworks.research.sdk.Schema;
 
 
-interface Task {
+public interface Task {
     class Progress {
         private final int progress;
         private final int total;
