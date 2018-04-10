@@ -33,9 +33,12 @@
 package org.sagebionetworks.research.app;
 
 import dagger.Component;
-import org.sagebionetworks.research.app.task.TaskModule;
-import org.sagebionetworks.research.sdk.ui.di.TaskActivityFragmentModule;
+import org.sagebionetworks.research.sdk.inject.GsonModule;
+import org.sagebionetworks.research.sdk.inject.PerformTaskModule;
+import org.sagebionetworks.research.sdk.ui.inject.TaskActivityFragmentModule;
+import org.sagebionetworks.research.sdk.ui.show_step.ShowStepModule;
 
-@Component(modules = {TaskModule.class, TaskActivityFragmentModule.class})
+@Component(modules = {GsonModule.class, PerformTaskModule.class, ShowStepModule.class,
+        TaskActivityFragmentModule.class})
 public interface ResearchStackApplicationComponent {
 }

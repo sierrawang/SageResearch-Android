@@ -35,29 +35,61 @@ package org.sagebionetworks.research.sdk.ui.perform_task;
 import android.arch.lifecycle.ViewModelProviders;
 import android.content.Context;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
+import android.support.annotation.VisibleForTesting;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import butterknife.BindView;
+import butterknife.ButterKnife;
+import butterknife.Unbinder;
 import dagger.android.support.AndroidSupportInjection;
-import org.sagebionetworks.research.app.R;
+import javax.inject.Inject;
+import org.sagebionetworks.research.sdk.mobile.ui.R;
+import org.sagebionetworks.research.sdk.mobile.ui.R2;
+import org.sagebionetworks.research.sdk.presentation.model.StepView;
 import org.sagebionetworks.research.sdk.presentation.model.TaskView;
 import org.sagebionetworks.research.sdk.presentation.perform_task.AbstractPerformTaskViewModelFactory;
-import org.sagebionetworks.research.sdk.presentation.perform_task.PerformTaskContract;
 import org.sagebionetworks.research.sdk.presentation.perform_task.PerformTaskViewModel;
-
-import javax.inject.Inject;
+import org.sagebionetworks.research.sdk.ui.model.TaskViewModel;
+import org.sagebionetworks.research.sdk.ui.show_step.Step;
+import org.sagebionetworks.research.sdk.ui.show_step.StepFactory;
+import org.sagebionetworks.research.sdk.ui.show_step.StepPresenter;
+import org.sagebionetworks.research.sdk.ui.show_step.StepPresenterFactory;
+import org.sagebionetworks.research.sdk.ui.widget.StepSwitcher;
 
 /**
  * A placeholder fragment containing a simple view.
  */
 public class TaskActivityFragment extends Fragment {
+    private static final String ARGUMENT_TASK_VIEW_MODEL = "TASK_VIEW";
+
+    @BindView(R2.id.rs2_step_container)
+    StepSwitcher stepSwitcher;
+
+    private PerformTaskViewModel performTaskViewModel;
+
+    @Inject
+    private StepFactory stepFactory;
+
+    @Inject
+    private StepPresenterFactory stepPresenterFactory;
+
+    private TaskView taskView = new TaskView();
+
     @Inject
     private AbstractPerformTaskViewModelFactory taskViewModelFactory;
-    private PerformTaskContract taskViewModel;
-    private TaskView taskView;
 
-    public TaskActivityFragment() {
+    private Unbinder unbinder;
+
+    public static TaskActivityFragment newInstance(@NonNull TaskViewModel taskViewModel) {
+        Bundle arguments = new Bundle();
+        arguments.putParcelable(ARGUMENT_TASK_VIEW_MODEL, taskViewModel);
+
+        TaskActivityFragment fragment = new TaskActivityFragment();
+        fragment.setArguments(arguments);
+        return fragment;
     }
 
     @Override
@@ -71,17 +103,31 @@ public class TaskActivityFragment extends Fragment {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        taskViewModel = ViewModelProviders.of(this, taskViewModelFactory.create(taskView))
-                .get(PerformTaskViewModel.class);
+        performTaskViewModel = ViewModelProviders.of(this, taskViewModelFactory.create(taskView))
+            .get(PerformTaskViewModel.class);
 
-        taskViewModel.getStep().observeForever(sv -> {
-
-        });
+        performTaskViewModel.getStep().observe(this, this::showStep);
     }
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
-                             Bundle savedInstanceState) {
-        return inflater.inflate(R.layout.fragment_task, container, false);
+    public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+        View view = inflater.inflate(R.layout.fragment_task, container, false);
+        unbinder = ButterKnife.bind(this, view);
+        return view;
+    }
+
+    @Override
+    public void onDestroyView() {
+        super.onDestroyView();
+        unbinder.unbind();
+    }
+
+    @VisibleForTesting
+    void showStep(StepView stepView) {
+        Step step = stepFactory.create(stepView);
+        StepPresenter presenter = stepPresenterFactory.create(step, performTaskViewModel);
+        step.setPresenter(presenter);
+
+        stepSwitcher.show(step, stepView.navDirection);
     }
 }

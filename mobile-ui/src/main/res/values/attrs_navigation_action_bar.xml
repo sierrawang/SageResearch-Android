@@ -32,9 +32,9 @@
 
 <resources>
     <declare-styleable name="NavigationActionBar">
-        <attr name="exampleString" format="string"/>
-        <attr name="exampleDimension" format="dimension"/>
-        <attr name="exampleColor" format="color"/>
-        <attr name="exampleDrawable" format="color|reference"/>
+        <attr name="positiveActionTitle" format="string" />
+        <attr name="negativeActionTitle" format="string"/>
+        <attr name="positiveActionColor" format="color"/>
+        <attr name="negativeActionColor" format="color"/>
     </declare-styleable>
 </resources>

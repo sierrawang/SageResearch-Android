@@ -1,5 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
-<!--
+<?xml version="1.0" encoding="utf-8"?><!--
   ~ BSD 3-Clause License
   ~
   ~ Copyright 2018  Sage Bionetworks. All rights reserved.
@@ -32,12 +31,19 @@
   -->
 
 <resources>
-    <id name="title"/>
-    <id name="description"/>
-    <id name="navigation_action_forward"/>
-    <id name="navigation_action_backward"/>
-    <id name="navigation_action_skip"/>
-    <id name="navigation_action_cancel"/>
-    <id name="navigation_action_lean_more"/>
-    <id name="navigation_action_add_more"/>
+    <id name="title" />
+    <id name="description" />
+
+    <id name="rs2_step_navigation_action_forward" />
+    <id name="rs2_step_navigation_action_backward" />
+    <id name="rs2_step_navigation_action_skip" />
+    <id name="rs2_step_navigation_action_cancel" />
+    <id name="rs2_step_navigation_action_learn_more" />
+    <id name="rs2_step_navigation_action_add_more" />
+
+    <id name="rs2_step_navigation_action_bar"/>
+
+    <id name="rs2_step_container"/>
+    <id name="rs2_current_step" />
+    <id name="rs2_step_id" />
 </resources>

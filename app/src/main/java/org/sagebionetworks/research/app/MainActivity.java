@@ -32,14 +32,31 @@
 
 package org.sagebionetworks.research.app;
 
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.app.AppCompatActivity;
+import org.sagebionetworks.research.sdk.ui.model.TaskViewModel;
+import org.sagebionetworks.research.sdk.ui.perform_task.TaskActivityFragment;
 
 public class MainActivity extends AppCompatActivity {
+    public static final String EXTRA_TASK_VIEW_MODEL = "TASK_VIEW_MODEL";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+        TaskViewModel taskViewModel = getIntent().getParcelableExtra(EXTRA_TASK_VIEW_MODEL);
+
+        TaskActivityFragment taskActivityFragment = (TaskActivityFragment) getSupportFragmentManager()
+                .findFragmentById(R.id.contentFrame);
+
+        if (taskActivityFragment == null) {
+            taskActivityFragment = TaskActivityFragment.newInstance(taskViewModel);
+
+            getSupportFragmentManager()
+                    .beginTransaction()
+                    .add(R.id.contentFrame, taskActivityFragment)
+                    .commit();
+        }
     }
 }

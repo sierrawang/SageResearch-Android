@@ -36,6 +36,7 @@ import android.content.Context;
 import android.support.v7.widget.AppCompatTextView;
 
 public class ActionButton extends AppCompatTextView {
+
   public ActionButton(Context context) {
     super(context);
   }

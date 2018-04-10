@@ -35,10 +35,13 @@ package org.sagebionetworks.research.sdk.presentation.model;
 import android.graphics.drawable.Drawable;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import org.sagebionetworks.research.sdk.presentation.DisplayString;
+import org.sagebionetworks.research.sdk.presentation.R;
 import org.sagebionetworks.research.sdk.step.ui.action.ActionType;
+import org.sagebionetworks.research.sdk.step.ui.action.ActionType.Navigation;
 
 public class StepActionView {
-    public StepActionView(@NonNull ActionType actionType, @Nullable String title, @Nullable Drawable icon,
+    private StepActionView(@NonNull ActionType actionType, @NonNull DisplayString title, @Nullable Drawable icon,
                           boolean isHidden, boolean isEnabled) {
         this.actionType = actionType;
         this.title = title;
@@ -50,9 +53,11 @@ public class StepActionView {
     @NonNull
     public final ActionType actionType;
     @Nullable
-    public final String title;
+    public final DisplayString title;
     @Nullable
     public final Drawable icon;
     public final boolean isHidden;
     public final boolean isEnabled;
+
+
 }

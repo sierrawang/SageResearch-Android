@@ -32,5 +32,16 @@
 
 package org.sagebionetworks.research.sdk.presentation.mapper;
 
-public class StepMapper {
+import android.support.annotation.NonNull;
+import com.google.common.base.Function;
+import org.sagebionetworks.research.sdk.presentation.model.StepView;
+import org.sagebionetworks.research.sdk.presentation.model.StepView.NavDirection;
+import org.sagebionetworks.research.sdk.step.Step;
+
+public class StepMapper implements Function<Step, StepView> {
+    @Override
+    @NonNull
+    public StepView apply(@NonNull Step input) {
+        return new StepView(NavDirection.SHIFT_LEFT);
+    }
 }

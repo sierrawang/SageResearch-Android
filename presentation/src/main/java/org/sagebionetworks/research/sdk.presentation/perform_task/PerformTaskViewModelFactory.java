@@ -35,14 +35,17 @@ package org.sagebionetworks.research.sdk.presentation.perform_task;
 import android.arch.lifecycle.ViewModel;
 import android.arch.lifecycle.ViewModelProvider;
 import android.support.annotation.NonNull;
-import org.sagebionetworks.research.sdk.domain.repository.TaskRepository;
+import javax.inject.Inject;
 import org.sagebionetworks.research.sdk.presentation.model.TaskView;
+import org.sagebionetworks.research.sdk.task.navigation.StepNavigatorFactory;
 
 public class PerformTaskViewModelFactory implements AbstractPerformTaskViewModelFactory {
-    private final TaskRepository taskRepository;
 
-    public PerformTaskViewModelFactory(@NonNull TaskRepository taskRepository) {
-        this.taskRepository = taskRepository;
+    private final StepNavigatorFactory stepNavigatorFactory;
+
+    @Inject
+    public PerformTaskViewModelFactory(StepNavigatorFactory stepNavigatorFactory) {
+        this.stepNavigatorFactory = stepNavigatorFactory;
     }
 
     @Override
@@ -51,11 +54,11 @@ public class PerformTaskViewModelFactory implements AbstractPerformTaskViewModel
 
             @NonNull
             @Override
-            @SuppressWarnings(value="unchecked")
+            @SuppressWarnings(value = "unchecked")
             public <T extends ViewModel> T create(@NonNull Class<T> modelClass) {
                 if (modelClass.isAssignableFrom(PerformTaskViewModel.class)) {
                     // noinspection unchecked
-                    return (T) new PerformTaskViewModel(taskView, taskRepository);
+                    return (T) new PerformTaskViewModel(taskView, stepNavigatorFactory);
                 }
                 throw new IllegalArgumentException("Unknown ViewModel class");
             }

@@ -41,10 +41,10 @@
     </style>
 
     <style name="Widget.ResearchStack.NavigationActionBar" parent="">
-        <item name="positiveActionTitle">@string/rsb_next</item>
-        <item name="negativeActionTitle">@string/rsb_step_skip</item>
-        <item name="positiveActionColor">?attr/colorAccent</item>
-        <item name="negativeActionColor">@color/rsb_submit_bar_negative</item>
+        <item name="positiveActionTitle">@string/navigation_action_forward</item>
+        <item name="negativeActionTitle">@string/navigation_action_backward</item>
+        <item name="positiveActionColor">@color/colorAccent</item>
+        <item name="negativeActionColor">@color/colorAccent</item>
     </style>
 
 </resources>

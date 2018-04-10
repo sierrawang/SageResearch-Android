@@ -32,51 +32,120 @@
 
 package org.sagebionetworks.research.sdk.presentation.perform_task;
 
+import static com.google.common.base.Preconditions.checkNotNull;
+
 import android.arch.lifecycle.LiveData;
 import android.arch.lifecycle.MutableLiveData;
+import android.arch.lifecycle.Transformations;
 import android.arch.lifecycle.ViewModel;
+import android.support.annotation.MainThread;
 import android.support.annotation.NonNull;
-import org.sagebionetworks.research.sdk.domain.repository.TaskRepository;
+import java.util.UUID;
 import org.sagebionetworks.research.sdk.presentation.model.LoadableResource;
 import org.sagebionetworks.research.sdk.presentation.model.StepView;
+import org.sagebionetworks.research.sdk.presentation.model.StepView.NavDirection;
 import org.sagebionetworks.research.sdk.presentation.model.TaskView;
+import org.sagebionetworks.research.sdk.result.Result;
+import org.sagebionetworks.research.sdk.result.TaskResult;
+import org.sagebionetworks.research.sdk.step.Step;
 import org.sagebionetworks.research.sdk.task.Task;
+import org.sagebionetworks.research.sdk.task.Task.Progress;
+import org.sagebionetworks.research.sdk.task.navigation.StepNavigator;
+import org.sagebionetworks.research.sdk.task.navigation.StepNavigatorFactory;
+import org.threeten.bp.Instant;
 
-public class PerformTaskViewModel extends ViewModel implements PerformTaskContract {
+@MainThread
+public class PerformTaskViewModel extends ViewModel {
 
     private final TaskView taskView;
+
+    private final StepNavigatorFactory stepNavigatorFactory;
+
+    private final MutableLiveData<TaskResult> taskResultLiveData;
+
     private final MutableLiveData<LoadableResource<Task>> taskLiveData;
 
-    public PerformTaskViewModel(@NonNull TaskView taskView, @NonNull TaskRepository taskRepository) {
-        this.taskView = taskView;
+    private final MutableLiveData<StepView> stepViewMutableLiveData;
+
+    private final TaskResult.Builder taskResultBuilder;
+
+    private StepNavigator stepNavigator;
+
+    private final MutableLiveData<Step> currentStepLiveData;
+
+    private final LiveData<Step> nextStepLiveData;
+
+    private final LiveData<Step> previousStepLiveData;
+
+    private final LiveData<Progress> progressLiveData;
+
+
+    public PerformTaskViewModel(@NonNull TaskView taskView, @NonNull StepNavigatorFactory stepNavigatorFactory) {
+        this.taskView = checkNotNull(taskView);
+        this.stepNavigatorFactory = checkNotNull(stepNavigatorFactory);
+
         taskLiveData = new MutableLiveData<>();
+        taskResultLiveData = new MutableLiveData<>();
+        stepViewMutableLiveData = new MutableLiveData<>();
+        currentStepLiveData = new MutableLiveData<>();
+        taskResultBuilder = new TaskResult.Builder("id", UUID.randomUUID());
+        taskResultBuilder.setStartTime(Instant.now());
+
+        nextStepLiveData = Transformations.switchMap(currentStepLiveData, (Step s) ->
+            Transformations.map(taskResultLiveData, (TaskResult tr) -> stepNavigator.getNextStep(s, tr))
+        );
+        previousStepLiveData = Transformations.switchMap(currentStepLiveData, (Step s) ->
+            Transformations.map(taskResultLiveData, (TaskResult tr) -> stepNavigator.getPreviousStep(s, tr))
+        );
+        progressLiveData = Transformations.switchMap(currentStepLiveData, (Step s) ->
+            Transformations.map(taskResultLiveData, (TaskResult tr) -> stepNavigator.getProgress(s, tr))
+        );
     }
 
     @NonNull
-    @Override
     public TaskView getTaskView() {
         return taskView;
     }
 
     @NonNull
-    @Override
     public LiveData<LoadableResource<Task>> getTask() {
         return taskLiveData;
     }
 
     @NonNull
-    @Override
     public LiveData<StepView> getStep() {
-        return null;
+        return stepViewMutableLiveData;
     }
 
-    @Override
+    @NonNull
+    public LiveData<TaskResult> getTaskResult() {
+        return taskResultLiveData;
+    }
+
+
+    public void addStepResult(Result result) {
+        taskResultBuilder.addStepResult(result);
+        taskResultLiveData.setValue(taskResultBuilder.build());
+    }
+
+    public void addAsyncResult(Result result) {
+        taskResultBuilder.addAsyncResult(result);
+        taskResultLiveData.setValue(taskResultBuilder.build());
+    }
+
     public void goForward() {
-
+        Step forwardStep = nextStepLiveData.getValue();
+        if (forwardStep != null) {
+            stepViewMutableLiveData.setValue(new StepView(NavDirection.SHIFT_LEFT));
+            currentStepLiveData.setValue(forwardStep);
+        }
     }
 
-    @Override
     public void goBack() {
-
+        Step backwardStep = previousStepLiveData.getValue();
+        if (backwardStep != null) {
+            stepViewMutableLiveData.setValue(new StepView(NavDirection.SHIFT_RIGHT));
+            currentStepLiveData.setValue(backwardStep);
+        }
     }
 }

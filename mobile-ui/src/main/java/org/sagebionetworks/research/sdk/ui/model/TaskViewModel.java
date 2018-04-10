@@ -32,5 +32,10 @@
 
 package org.sagebionetworks.research.sdk.ui.model;
 
-public class TaskViewModel {
+import android.os.Parcelable;
+import com.google.auto.value.AutoValue;
+
+@AutoValue
+public abstract class TaskViewModel implements Parcelable {
+
 }

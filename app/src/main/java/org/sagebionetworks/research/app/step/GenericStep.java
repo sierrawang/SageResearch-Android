@@ -49,16 +49,16 @@ public class GenericStep extends FrameLayout {
 
     public static class Binding {
 
-        @BindView(R.id.title)
-        public TextView title;
-
         @BindView(R.id.description)
         public TextView description;
+
+        @BindView(R.id.title)
+        public TextView title;
     }
 
-    private LayoutInflater layoutInflater;
-
     private Binding binding;
+
+    private LayoutInflater layoutInflater;
 
     public GenericStep(Context context) {
         super(context);
@@ -71,7 +71,7 @@ public class GenericStep extends FrameLayout {
         init();
 
         TypedArray typedArray = context.getTheme()
-            .obtainStyledAttributes(attrs, R.styleable.GenericStep, 0, 0);
+                .obtainStyledAttributes(attrs, R.styleable.GenericStep, 0, 0);
         initAttrs(typedArray);
     }
 
@@ -81,7 +81,7 @@ public class GenericStep extends FrameLayout {
         init();
 
         TypedArray typedArray = context.getTheme()
-            .obtainStyledAttributes(attrs, R.styleable.GenericStep, defStyleAttr, defStyleRes);
+                .obtainStyledAttributes(attrs, R.styleable.GenericStep, defStyleAttr, defStyleRes);
         initAttrs(typedArray);
 
     }

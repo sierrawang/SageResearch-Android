@@ -31,12 +31,5 @@
   -->
 
 <resources>
-    <string name="navigation_action_forward">Next</string>
-    <string name="navigation_action_backward">Back</string>
-    <string name="navigation_action_skip">Skip</string>
-    <string name="navigation_action_cancel">Cancel</string>
-    <string name="navigation_action_lean_more">Learn More</string>
-    <string name="navigation_action_add_more">Add More</string>
-    <string name="title_activity_task">TaskActivity</string>
-    <string name="action_settings">Settings</string>
+
 </resources>

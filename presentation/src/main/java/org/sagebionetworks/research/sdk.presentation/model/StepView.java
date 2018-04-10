@@ -32,17 +32,26 @@
 
 package org.sagebionetworks.research.sdk.presentation.model;
 
-import android.support.annotation.NonNull;
-import com.google.common.base.Function;
+import static java.lang.annotation.RetentionPolicy.SOURCE;
+
+import android.support.annotation.IntDef;
+import java.lang.annotation.Retention;
 import org.sagebionetworks.research.sdk.step.Step;
 
 /**
  * Map a {@link Step} to a {@link StepView} when data is moving from the Domain layer to this layer.
  */
-public class StepView implements Function<Step, StepView> {
-    @Override
-    @NonNull
-    public StepView apply(@NonNull Step input) {
-        return new StepView();
+public class StepView {
+    @Retention(SOURCE)
+    @IntDef({NavDirection.SHIFT_LEFT, NavDirection.SHIFT_RIGHT})
+    public @interface NavDirection {
+        int SHIFT_LEFT = 1;
+        int SHIFT_RIGHT = -1;
+    }
+
+    public final int navDirection;
+
+    public StepView(final int navDirection) {
+        this.navDirection = navDirection;
     }
 }

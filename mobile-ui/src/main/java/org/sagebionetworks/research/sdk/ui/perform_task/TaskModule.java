@@ -35,38 +35,33 @@ package org.sagebionetworks.research.sdk.ui.perform_task;
 import dagger.Module;
 import dagger.Provides;
 import dagger.Reusable;
-import io.reactivex.Completable;
-import io.reactivex.Flowable;
-import org.sagebionetworks.research.sdk.domain.repository.TaskRepository;
 import org.sagebionetworks.research.sdk.presentation.perform_task.AbstractPerformTaskViewModelFactory;
 import org.sagebionetworks.research.sdk.presentation.perform_task.PerformTaskViewModelFactory;
-import org.sagebionetworks.research.sdk.result.TaskResult;
-import org.sagebionetworks.research.sdk.task.Task;
-
-import javax.inject.Singleton;
+import org.sagebionetworks.research.sdk.task.navigation.StepNavigatorFactory;
 
 @Module
 public class TaskModule {
     @Provides
     @Reusable
-    AbstractPerformTaskViewModelFactory providePerformTaskViewModelFactory(TaskRepository taskRepository) {
-        return new PerformTaskViewModelFactory(taskRepository);
+    AbstractPerformTaskViewModelFactory providePerformTaskViewModelFactory(
+        StepNavigatorFactory stepNavigatorFactory) {
+        return new PerformTaskViewModelFactory(stepNavigatorFactory);
     }
 
-    @Provides
-    @Singleton
-    TaskRepository provideTaskRepository() {
-        return new TaskRepository() {
-
-            @Override
-            public Completable saveTaskResult(TaskResult taskResult) {
-                return null;
-            }
-
-            @Override
-            public Flowable<Task> getTask(String identifier) {
-                return null;
-            }
-        };
-    }
+//    @Provides
+//    @Singleton
+//    TaskRepository provideTaskRepository() {
+//        return new TaskRepository() {
+//
+//            @Override
+//            public Completable saveTaskResult(TaskResult taskResult) {
+//                return null;
+//            }
+//
+//            @Override
+//            public Flowable<Task> getTask(String identifier) {
+//                return null;
+//            }
+//        };
+//    }
 }

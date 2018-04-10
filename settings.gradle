@@ -30,4 +30,5 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-include ':app', ':sdk', ':presentation', ':mobile-ui'
+include ':app', ':domain', ':presentation', ':mobile-ui'
+
