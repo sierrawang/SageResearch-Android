@@ -1,0 +1,7 @@
+<component name="CopyrightManager">
+<<<<<<< HEAD
+  <settings default="Sage BSD 3 Clause" />
+=======
+  <settings default="Sage Apache 2.0" />
+>>>>>>> feature/navigation
+</component>
