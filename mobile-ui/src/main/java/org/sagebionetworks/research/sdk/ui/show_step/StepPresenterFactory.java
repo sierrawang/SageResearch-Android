@@ -33,7 +33,18 @@
 package org.sagebionetworks.research.sdk.ui.show_step;
 
 import org.sagebionetworks.research.sdk.presentation.perform_task.PerformTaskViewModel;
+import org.sagebionetworks.research.sdk.step.Step;
+import org.sagebionetworks.research.sdk.ui.show_step.ShowStepContract.View;
 
-public interface StepPresenterFactory {
-    StepPresenter create(Step step, PerformTaskViewModel performTaskViewModel);
+import javax.inject.Inject;
+
+public class StepPresenterFactory {
+    @Inject
+    public StepPresenterFactory() {
+
+    }
+
+    public <T extends Step> StepPresenter create(T step, PerformTaskViewModel performTaskViewModel) {
+        return new StepPresenter(performTaskViewModel);
+    }
 }

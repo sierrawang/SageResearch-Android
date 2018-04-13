@@ -40,9 +40,29 @@ import org.sagebionetworks.research.sdk.task.navigation.rule.NavigationRule;
 import org.sagebionetworks.research.sdk.ui.show_step.ShowStepContract.View;
 
 public class NavigationRuleStepPresenter extends StepPresenter
-    implements NavigationRule.Skip, NavigationRule.Next, NavigationRule.Back {
-    public NavigationRuleStepPresenter(Step step, final PerformTaskViewModel performTaskViewModel) {
-        super(step, performTaskViewModel);
+        implements NavigationRule.Skip, NavigationRule.Next, NavigationRule.Back {
+    public NavigationRuleStepPresenter(final PerformTaskViewModel performTaskViewModel) {
+        super(performTaskViewModel);
+    }
+
+    @Override
+    public void finish() {
+
+    }
+
+    @Override
+    public void handleAction(final String actionType) {
+
+    }
+
+    @Override
+    public void saveStepResult(final Result result) {
+
+    }
+
+    @Override
+    public void attachView(View view) {
+
     }
 
     @Nullable
@@ -57,27 +77,7 @@ public class NavigationRuleStepPresenter extends StepPresenter
     }
 
     @Override
-    public void saveStepResult(final Result result) {
-
-    }
-
-    @Override
-    public void handleAction(final String actionType) {
-
-    }
-
-    @Override
-    public void finish() {
-
-    }
-
-    @Override
     public boolean shouldSkip(@Nullable final TaskResult taskResult) {
         return false;
-    }
-
-    @Override
-    public void start(final View view) {
-
     }
 }

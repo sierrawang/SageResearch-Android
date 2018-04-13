@@ -38,11 +38,11 @@ import javax.inject.Singleton;
 
 @Module
 public abstract class ShowStepModule {
-    @Provides
-    @Singleton
-    public abstract StepFactory provideStepFactory();
-
-    @Provides
-    @Singleton
-    public abstract StepPresenter provideStepPresenterFactory();
+//    @Provides
+//    @Singleton
+//    public abstract StepFactory provideStepFactory();
+//
+//    @Provides
+//    @Singleton
+//    public abstract StepPresenterFactory provideStepPresenterFactory();
 }

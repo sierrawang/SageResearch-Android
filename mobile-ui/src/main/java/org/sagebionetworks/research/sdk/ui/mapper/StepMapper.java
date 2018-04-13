@@ -33,18 +33,28 @@
 package org.sagebionetworks.research.sdk.ui.mapper;
 
 import android.support.annotation.NonNull;
-import com.google.common.base.Function;
+
 import org.sagebionetworks.research.sdk.presentation.model.StepView;
 import org.sagebionetworks.research.sdk.ui.model.StepViewModel;
+import org.sagebionetworks.research.sdk.ui.perform_task.TaskActivityFragment;
+import org.sagebionetworks.research.sdk.ui.show_step.view.GenericStep;
+
+import javax.inject.Inject;
 
 /**
  * Map a {@link StepViewModel} from a {@link StepView} instance when data is moving between the Presentation layer and
  * this layer.
  */
-public class StepMapper implements Function<StepView, StepViewModel> {
-    @Override
+public class StepMapper {
+    private final TaskActivityFragment taskActivityFragment;
+
+    @Inject
+    public StepMapper(TaskActivityFragment fragment) {
+        taskActivityFragment = fragment;
+    }
+
     @NonNull
-    public StepViewModel apply(@NonNull StepView input) {
-        return new StepViewModel();
+    public GenericStep create(@NonNull StepView input) {
+        return new GenericStep(taskActivityFragment.getContext());
     }
 }

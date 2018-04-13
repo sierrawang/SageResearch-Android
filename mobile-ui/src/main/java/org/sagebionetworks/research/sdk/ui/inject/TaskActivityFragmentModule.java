@@ -32,18 +32,32 @@
 
 package org.sagebionetworks.research.sdk.ui.inject;
 
+import org.sagebionetworks.research.sdk.inject.GsonModule;
+import org.sagebionetworks.research.sdk.inject.PerformTaskModule;
+import org.sagebionetworks.research.sdk.ui.perform_task.TaskActivityFragment;
+import org.sagebionetworks.research.sdk.ui.show_step.ShowStepModule;
+
 import dagger.Binds;
 import dagger.Module;
 import dagger.android.AndroidInjector;
 import dagger.android.support.FragmentKey;
 import dagger.multibindings.IntoMap;
-import org.sagebionetworks.research.sdk.ui.perform_task.TaskActivityFragment;
+import javax.inject.Singleton;
 
-@Module(subcomponents = TaskActivityFragmentSubcomponent.class)
+@Module(includes = {GsonModule.class, PerformTaskModule.class, ShowStepModule.class},
+        subcomponents = TaskActivityFragmentSubcomponent.class)
+@Singleton
 public abstract class TaskActivityFragmentModule {
     @Binds
     @IntoMap
     @FragmentKey(TaskActivityFragment.class)
     abstract AndroidInjector.Factory<? extends android.support.v4.app.Fragment>
     bindTaskActivityFragmentInjectoryFactory(TaskActivityFragmentSubcomponent.Builder builder);
+
+//    @Provides
+//    @Reusable
+//    static PerformTaskViewModelFactory providePerformTaskViewModelFactory(
+//            StepNavigatorFactory stepNavigatorFactory) {
+//        return new PerformTaskViewModelFactory(stepNavigatorFactory);
+//    }
 }

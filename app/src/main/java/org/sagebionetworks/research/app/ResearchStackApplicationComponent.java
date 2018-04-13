@@ -32,13 +32,14 @@
 
 package org.sagebionetworks.research.app;
 
-import dagger.Component;
-import org.sagebionetworks.research.sdk.inject.GsonModule;
-import org.sagebionetworks.research.sdk.inject.PerformTaskModule;
 import org.sagebionetworks.research.sdk.ui.inject.TaskActivityFragmentModule;
-import org.sagebionetworks.research.sdk.ui.show_step.ShowStepModule;
 
-@Component(modules = {GsonModule.class, PerformTaskModule.class, ShowStepModule.class,
-        TaskActivityFragmentModule.class})
+import dagger.Component;
+import dagger.android.AndroidInjectionModule;
+import javax.inject.Singleton;
+
+@Component(modules = {AndroidInjectionModule.class, TaskActivityFragmentModule.class})
+@Singleton
 public interface ResearchStackApplicationComponent {
+    void inject(ResearchStackApplication app);
 }

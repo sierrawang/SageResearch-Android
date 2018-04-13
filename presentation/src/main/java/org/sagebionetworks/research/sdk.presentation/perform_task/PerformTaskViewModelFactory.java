@@ -35,11 +35,13 @@ package org.sagebionetworks.research.sdk.presentation.perform_task;
 import android.arch.lifecycle.ViewModel;
 import android.arch.lifecycle.ViewModelProvider;
 import android.support.annotation.NonNull;
-import javax.inject.Inject;
+
 import org.sagebionetworks.research.sdk.presentation.model.TaskView;
 import org.sagebionetworks.research.sdk.task.navigation.StepNavigatorFactory;
 
-public class PerformTaskViewModelFactory implements AbstractPerformTaskViewModelFactory {
+import javax.inject.Inject;
+
+public class PerformTaskViewModelFactory {
 
     private final StepNavigatorFactory stepNavigatorFactory;
 
@@ -48,7 +50,6 @@ public class PerformTaskViewModelFactory implements AbstractPerformTaskViewModel
         this.stepNavigatorFactory = stepNavigatorFactory;
     }
 
-    @Override
     public ViewModelProvider.Factory create(final TaskView taskView) {
         return new ViewModelProvider.Factory() {
 

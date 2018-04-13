@@ -33,5 +33,9 @@
 package org.sagebionetworks.research.sdk.ui;
 
 public interface BasePresenter<T extends BaseView> {
-    void start(T view);
+    void attachView(T view);
+
+    void detachView();
+
+    void finish();
 }

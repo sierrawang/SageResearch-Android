@@ -30,13 +30,14 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.sagebionetworks.research.sdk.ui.show_step;
+package org.sagebionetworks.research.sdk.inject;
 
-import org.sagebionetworks.research.sdk.presentation.perform_task.PerformTaskViewModel;
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
 
-public class DefaultStepPresenterFactory implements StepPresenterFactory {
-    @Override
-    public StepPresenter create(final Step step, PerformTaskViewModel performTaskViewModel) {
-        return new StepPresenter(step, performTaskViewModel);
-    }
+import javax.inject.Scope;
+
+@Scope
+@Retention(RetentionPolicy.RUNTIME)
+public @interface FragmentScope {
 }

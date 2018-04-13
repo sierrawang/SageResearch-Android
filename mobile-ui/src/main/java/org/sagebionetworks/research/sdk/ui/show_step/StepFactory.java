@@ -32,8 +32,21 @@
 
 package org.sagebionetworks.research.sdk.ui.show_step;
 
+import org.sagebionetworks.research.sdk.presentation.mapper.StepMapper;
 import org.sagebionetworks.research.sdk.presentation.model.StepView;
+import org.sagebionetworks.research.sdk.step.Step;
 
-public interface StepFactory {
-    Step create(StepView stepView);
+import javax.inject.Inject;
+
+public class StepFactory {
+    private final StepMapper mapper;
+
+    @Inject
+    public StepFactory(final StepMapper mapper) {
+        this.mapper = mapper;
+    }
+
+    public StepView create(Step stepView) {
+        return mapper.apply(stepView);
+    }
 }

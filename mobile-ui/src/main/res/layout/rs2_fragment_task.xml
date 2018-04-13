@@ -37,7 +37,7 @@
     tools:context="org.sagebionetworks.research.sdk.ui.perform_task.TaskActivityFragment">
 
     <org.sagebionetworks.research.sdk.ui.widget.StepSwitcher
-        android:id="@+id/container"
+        android:id="@id/rs2_step_container"
         android:layout_width="match_parent"
         android:layout_height="match_parent" />
 </android.support.constraint.ConstraintLayout>

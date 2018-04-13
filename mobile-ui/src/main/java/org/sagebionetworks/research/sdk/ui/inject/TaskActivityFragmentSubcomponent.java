@@ -32,14 +32,16 @@
 
 package org.sagebionetworks.research.sdk.ui.inject;
 
-import dagger.Subcomponent;
-import dagger.android.AndroidInjector;
+import org.sagebionetworks.research.sdk.inject.FragmentScope;
 import org.sagebionetworks.research.sdk.ui.perform_task.TaskActivityFragment;
 
+import dagger.Subcomponent;
+import dagger.android.AndroidInjector;
+
+@FragmentScope
 @Subcomponent
 public abstract class TaskActivityFragmentSubcomponent implements AndroidInjector<TaskActivityFragment> {
     @Subcomponent.Builder
-    @SuppressWarnings("ClassCanBeStatic")
-    abstract class Builder extends AndroidInjector.Builder<TaskActivityFragment> {
+    public static abstract class Builder extends AndroidInjector.Builder<TaskActivityFragment> {
     }
 }

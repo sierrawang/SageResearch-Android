@@ -33,22 +33,25 @@
 package org.sagebionetworks.research.sdk.ui.show_step;
 
 import android.support.annotation.Nullable;
-import java.util.Set;
+
 import org.sagebionetworks.research.sdk.result.Result;
 import org.sagebionetworks.research.sdk.step.ui.UIActionType;
 import org.sagebionetworks.research.sdk.ui.BasePresenter;
 import org.sagebionetworks.research.sdk.ui.BaseView;
+import org.sagebionetworks.research.sdk.ui.show_step.ShowStepContract.Presenter;
 
-public class ShowStepContract {
-    interface Presenter extends BasePresenter<View> {
-        void saveStepResult(Result result);
+import java.util.Set;
+
+public interface ShowStepContract {
+    interface Presenter<T extends View> extends BasePresenter<T> {
+        void finish();
 
         void handleAction(@UIActionType String actionType);
 
-        void finish();
+        void saveStepResult(Result result);
     }
 
-    interface View extends BaseView<Presenter> {
+    interface View<T extends Presenter> extends BaseView<T> {
         void showActionButtons(@Nullable Set actions);
     }
 }

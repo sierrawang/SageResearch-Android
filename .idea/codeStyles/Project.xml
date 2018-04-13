@@ -44,15 +44,26 @@
           <package name="org.mockito" withSubpackages="true" static="true" />
           <package name="org.junit" withSubpackages="true" static="false" />
           <package name="org.hamcrest" withSubpackages="true" static="true" />
-          <package name="org.assertj.core.api.Java6Assertions" withSubpackages="false" static="true" />
           <package name="org.assertj.core.api.Assertions" withSubpackages="false" static="true" />
         </value>
       </option>
       <option name="IMPORT_LAYOUT_TABLE">
         <value>
-          <package name="" withSubpackages="true" static="true" />
+          <package name="android" withSubpackages="true" static="false" />
+          <emptyLine />
+          <package name="com" withSubpackages="true" static="false" />
+          <emptyLine />
+          <package name="junit" withSubpackages="true" static="false" />
+          <emptyLine />
+          <package name="net" withSubpackages="true" static="false" />
+          <emptyLine />
+          <package name="org" withSubpackages="true" static="false" />
+          <emptyLine />
+          <package name="java" withSubpackages="true" static="false" />
           <emptyLine />
           <package name="" withSubpackages="true" static="false" />
+          <emptyLine />
+          <package name="" withSubpackages="true" static="true" />
         </value>
       </option>
       <option name="JD_KEEP_EMPTY_PARAMETER" value="false" />

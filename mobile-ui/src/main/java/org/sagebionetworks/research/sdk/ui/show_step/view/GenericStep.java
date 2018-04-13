@@ -30,40 +30,55 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.sagebionetworks.research.app.step;
+package org.sagebionetworks.research.sdk.ui.show_step.view;
 
 import android.content.Context;
 import android.content.res.TypedArray;
 import android.os.Build;
 import android.support.annotation.LayoutRes;
+import android.support.annotation.Nullable;
 import android.support.annotation.RequiresApi;
 import android.util.AttributeSet;
 import android.view.LayoutInflater;
 import android.widget.FrameLayout;
 import android.widget.TextView;
+
+import org.sagebionetworks.research.sdk.mobile.ui.R;
+import org.sagebionetworks.research.sdk.mobile.ui.R2;
+import org.sagebionetworks.research.sdk.ui.show_step.ShowStepContract.View;
+import org.sagebionetworks.research.sdk.ui.show_step.StepPresenter;
+import org.sagebionetworks.research.sdk.ui.widget.NavigationActionBar;
+
+import java.util.Set;
+
 import butterknife.BindView;
 import butterknife.ButterKnife;
-import org.sagebionetworks.research.app.R;
+import butterknife.Unbinder;
 
-public class GenericStep extends FrameLayout {
+public class GenericStep extends FrameLayout implements View<StepPresenter> {
 
     public static class Binding {
-
-        @BindView(R.id.description)
+        @BindView(R2.id.description)
         public TextView description;
 
-        @BindView(R.id.title)
+        @BindView(R2.id.rs2_step_navigation_action_bar)
+        public NavigationActionBar navigationActionBar;
+
+        @BindView(R2.id.title)
         public TextView title;
     }
 
-    private Binding binding;
+    protected Binding binding;
 
     private LayoutInflater layoutInflater;
+
+    private StepPresenter presenter;
+
+    private Unbinder unbinder;
 
     public GenericStep(Context context) {
         super(context);
         init();
-        TextView.inflate(context, 0, null);
     }
 
     public GenericStep(Context context, AttributeSet attrs) {
@@ -83,12 +98,28 @@ public class GenericStep extends FrameLayout {
         TypedArray typedArray = context.getTheme()
                 .obtainStyledAttributes(attrs, R.styleable.GenericStep, defStyleAttr, defStyleRes);
         initAttrs(typedArray);
+    }
+
+    @Override
+    public void setPresenter(final StepPresenter presenter) {
+        this.presenter = presenter;
+    }
+
+    @Override
+    public void showActionButtons(@Nullable final Set actions) {
 
     }
 
     @LayoutRes
     protected int getLayoutId() {
-        return 0;
+        return R.layout.rs2_generic_step;
+    }
+
+    @Override
+    protected void onDetachedFromWindow() {
+        super.onDetachedFromWindow();
+        unbinder.unbind();
+        presenter.detachView();
     }
 
     private void init() {
@@ -96,7 +127,10 @@ public class GenericStep extends FrameLayout {
         layoutInflater.inflate(getLayoutId(), this, true);
 
         binding = new Binding();
-        ButterKnife.bind(binding, this);
+        unbinder = ButterKnife.bind(binding, this);
+
+        binding.navigationActionBar
+                .setActionButtonClickListener(ab -> presenter.handleAction(ab.getText().toString()));
     }
 
     private void initAttrs(TypedArray typedArray) {

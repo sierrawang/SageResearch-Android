@@ -36,31 +36,40 @@ import org.sagebionetworks.research.sdk.presentation.perform_task.PerformTaskVie
 import org.sagebionetworks.research.sdk.result.Result;
 import org.sagebionetworks.research.sdk.ui.show_step.ShowStepContract.Presenter;
 import org.sagebionetworks.research.sdk.ui.show_step.ShowStepContract.View;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
-public class StepPresenter implements Presenter {
+public class StepPresenter implements Presenter<View> {
+    private static final Logger LOGGER = LoggerFactory.getLogger(StepPresenter.class);
 
     private final PerformTaskViewModel performTaskViewModel;
 
-    public StepPresenter(Step step, PerformTaskViewModel performTaskViewModel) {
+    public StepPresenter(PerformTaskViewModel performTaskViewModel) {
         this.performTaskViewModel = performTaskViewModel;
     }
 
     @Override
-    public void start(View view) {
-    }
-
-    @Override
-    public void saveStepResult(final Result result) {
-
+    public void finish() {
+        LOGGER.debug("finish called");
     }
 
     @Override
     public void handleAction(final String actionType) {
-
+        LOGGER.debug("handleAction called with actionType: {}", actionType);
     }
 
     @Override
-    public void finish() {
+    public void saveStepResult(final Result result) {
+        LOGGER.debug("saveStepResult called with result: {}", result);
+    }
 
+    @Override
+    public void attachView(View view) {
+        LOGGER.debug("attachView called");
+    }
+
+    @Override
+    public void detachView() {
+        LOGGER.debug("detachView called");
     }
 }

@@ -30,11 +30,15 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.sagebionetworks.research.sdk.presentation.perform_task;
+package org.sagebionetworks.research.sdk.ui.model;
 
-import android.arch.lifecycle.ViewModelProvider;
-import org.sagebionetworks.research.sdk.presentation.model.TaskView;
+public class ActionButtonModel {
+    public final boolean isEnabled;
 
-public interface AbstractPerformTaskViewModelFactory {
-    ViewModelProvider.Factory create(TaskView taskView);
+    public final String text;
+
+    public ActionButtonModel(final String text, final boolean isEnabled) {
+        this.text = text;
+        this.isEnabled = isEnabled;
+    }
 }

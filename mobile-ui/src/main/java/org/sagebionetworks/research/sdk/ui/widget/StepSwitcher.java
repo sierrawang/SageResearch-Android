@@ -147,7 +147,7 @@ public class StepSwitcher extends FrameLayout {
             newStep.setId(R.id.rs2_current_step);
 
             // If the old step is gone, we can go ahead and ignore the following animation code.
-            // This will usually happen on start-up of the host (e.g. activity)
+            // This will usually happen on attachView-up of the host (e.g. activity)
             if (currentStep != null) {
                 int newTranslationX = direction * getWidth();
 

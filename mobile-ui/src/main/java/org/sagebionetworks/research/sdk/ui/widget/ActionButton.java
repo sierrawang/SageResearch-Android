@@ -34,10 +34,18 @@ package org.sagebionetworks.research.sdk.ui.widget;
 
 import android.content.Context;
 import android.support.v7.widget.AppCompatTextView;
+import android.util.AttributeSet;
 
 public class ActionButton extends AppCompatTextView {
+    public ActionButton(final Context context) {
+        super(context);
+    }
 
-  public ActionButton(Context context) {
-    super(context);
-  }
+    public ActionButton(final Context context, final AttributeSet attrs) {
+        super(context, attrs);
+    }
+
+    public ActionButton(final Context context, final AttributeSet attrs, final int defStyleAttr) {
+        super(context, attrs, defStyleAttr);
+    }
 }

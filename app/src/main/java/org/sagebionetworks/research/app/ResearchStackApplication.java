@@ -33,23 +33,25 @@
 package org.sagebionetworks.research.app;
 
 import android.app.Application;
-import android.app.Fragment;
+import android.support.v4.app.Fragment;
+
 import dagger.android.AndroidInjector;
 import dagger.android.DispatchingAndroidInjector;
-import dagger.android.HasFragmentInjector;
+import dagger.android.support.HasSupportFragmentInjector;
 import javax.inject.Inject;
 
-public class ResearchStackApplication extends Application implements HasFragmentInjector {
+public class ResearchStackApplication extends Application implements HasSupportFragmentInjector {
     @Inject
-    DispatchingAndroidInjector<Fragment> dispatchingFragmentInjector;
+    DispatchingAndroidInjector<Fragment> dispatchingSupportFragmentInjector;
 
     @Override
     public void onCreate() {
         super.onCreate();
+        DaggerResearchStackApplicationComponent.create().inject(this);
     }
 
     @Override
-    public AndroidInjector<Fragment> fragmentInjector() {
-        return dispatchingFragmentInjector;
+    public AndroidInjector<Fragment> supportFragmentInjector() {
+        return dispatchingSupportFragmentInjector;
     }
 }

@@ -65,7 +65,7 @@ dependencies {
     implementation project(':presentation')
     api 'com.google.guava:guava:24.1-android'
     api project(':presentation')
-
+    implementation 'org.slf4j:slf4j-api:1.7.21'
 
     implementation 'com.google.auto.value:auto-value-annotations:1.6'
     implementation 'com.ryanharter.auto.value:auto-value-gson-annotations:0.7.0'

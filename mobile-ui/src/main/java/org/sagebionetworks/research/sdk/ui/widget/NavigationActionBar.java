@@ -35,45 +35,31 @@ package org.sagebionetworks.research.sdk.ui.widget;
 import android.content.Context;
 import android.content.res.TypedArray;
 import android.graphics.Canvas;
-import android.graphics.Color;
-import android.graphics.Paint;
-import android.graphics.drawable.Drawable;
-import android.os.Build.VERSION_CODES;
 import android.support.annotation.Nullable;
-import android.support.annotation.RequiresApi;
-import android.text.TextPaint;
+import android.support.constraint.ConstraintLayout;
 import android.util.AttributeSet;
-import android.view.View;
-import butterknife.ButterKnife;
-import butterknife.OnClick;
-import butterknife.Unbinder;
+
 import org.sagebionetworks.research.sdk.mobile.ui.R;
 import org.sagebionetworks.research.sdk.mobile.ui.R2;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import butterknife.ButterKnife;
+import butterknife.OnClick;
+import butterknife.Optional;
+import butterknife.Unbinder;
 
 /**
  * TODO: document your custom view class.
  */
-public class NavigationActionBar extends View {
-
+public class NavigationActionBar extends ConstraintLayout {
     public interface ActionButtonClickListener {
         void onClick(ActionButton actionButton);
     }
 
+    private static final Logger LOGGER = LoggerFactory.getLogger(NavigationActionBar.class);
+
     private ActionButtonClickListener actionButtonClickListener;
-
-    private int mExampleColor = Color.RED; // TODO: use a default from R.color...
-
-    private float mExampleDimension = 0; // TODO: use a default from R.dimen...
-
-    private Drawable mExampleDrawable;
-
-    private String mExampleString; // TODO: use a default from R.string...
-
-    private float mTextHeight;
-
-    private TextPaint mTextPaint;
-
-    private float mTextWidth;
 
     private Unbinder unbinder;
 
@@ -91,122 +77,9 @@ public class NavigationActionBar extends View {
         init(attrs, defStyleAttr, R.style.Widget_ResearchStack_NavigationActionBar);
     }
 
-    @RequiresApi(api = VERSION_CODES.LOLLIPOP)
-    public NavigationActionBar(Context context, @Nullable AttributeSet attrs, int defStyleAttr, int defStyleRes) {
-        super(context, attrs, defStyleAttr, defStyleRes);
-        init(attrs, defStyleRes, defStyleRes);
-    }
-
-    /**
-     * Gets the example color attribute value.
-     *
-     * @return The example color attribute value.
-     */
-    public int getExampleColor() {
-        return mExampleColor;
-    }
-
-    /**
-     * Sets the view's example color attribute value. In the example view, this color is the font color.
-     *
-     * @param exampleColor
-     *         The example color attribute value to use.
-     */
-    public void setExampleColor(int exampleColor) {
-        mExampleColor = exampleColor;
-        invalidateTextPaintAndMeasurements();
-    }
-
-    /**
-     * Gets the example dimension attribute value.
-     *
-     * @return The example dimension attribute value.
-     */
-    public float getExampleDimension() {
-        return mExampleDimension;
-    }
-
-    /**
-     * Sets the view's example dimension attribute value. In the example view, this dimension is the font size.
-     *
-     * @param exampleDimension
-     *         The example dimension attribute value to use.
-     */
-    public void setExampleDimension(float exampleDimension) {
-        mExampleDimension = exampleDimension;
-        invalidateTextPaintAndMeasurements();
-    }
-
-    /**
-     * Gets the example drawable attribute value.
-     *
-     * @return The example drawable attribute value.
-     */
-    public Drawable getExampleDrawable() {
-        return mExampleDrawable;
-    }
-
-    /**
-     * Sets the view's example drawable attribute value. In the example view, this drawable is drawn above the text.
-     *
-     * @param exampleDrawable
-     *         The example drawable attribute value to use.
-     */
-    public void setExampleDrawable(Drawable exampleDrawable) {
-        mExampleDrawable = exampleDrawable;
-    }
-
-    /**
-     * Gets the example string attribute value.
-     *
-     * @return The example string attribute value.
-     */
-    public String getExampleString() {
-        return mExampleString;
-    }
-
-    /**
-     * Sets the view's example string attribute value. In the example view, this string is the text to draw.
-     *
-     * @param exampleString
-     *         The example string attribute value to use.
-     */
-    public void setExampleString(String exampleString) {
-        mExampleString = exampleString;
-        invalidateTextPaintAndMeasurements();
-    }
-
     public void setActionButtonClickListener(
             final ActionButtonClickListener actionButtonClickListener) {
         this.actionButtonClickListener = actionButtonClickListener;
-    }
-
-    @Override
-    protected void onDraw(Canvas canvas) {
-        super.onDraw(canvas);
-
-        // TODO: consider storing these as member variables to reduce
-        // allocations per draw cycle.
-        int paddingLeft = getPaddingLeft();
-        int paddingTop = getPaddingTop();
-        int paddingRight = getPaddingRight();
-        int paddingBottom = getPaddingBottom();
-
-        int contentWidth = getWidth() - paddingLeft - paddingRight;
-        int contentHeight = getHeight() - paddingTop - paddingBottom;
-
-        // Draw the text.
-        canvas.drawText(mExampleString,
-                paddingLeft + (contentWidth - mTextWidth) / 2,
-                paddingTop + (contentHeight + mTextHeight) / 2,
-                mTextPaint);
-
-        // Draw the example drawable on top of the text.
-        if (mExampleDrawable != null) {
-            mExampleDrawable.setBounds(paddingLeft, paddingTop,
-                    paddingLeft + contentWidth, paddingTop + contentHeight);
-            mExampleDrawable.draw(canvas);
-        }
     }
 
     @Override
@@ -216,11 +89,18 @@ public class NavigationActionBar extends View {
     }
 
     @Override
+    protected void onDraw(Canvas canvas) {
+        super.onDraw(canvas);
+
+    }
+
+    @Override
     protected void onFinishInflate() {
         super.onFinishInflate();
         unbinder = ButterKnife.bind(this);
     }
 
+    @Optional
     @OnClick({
             R2.id.rs2_step_navigation_action_add_more,
             R2.id.rs2_step_navigation_action_backward,
@@ -230,6 +110,8 @@ public class NavigationActionBar extends View {
             R2.id.rs2_step_navigation_action_skip
     })
     void onActionButtonClick(ActionButton actionButton) {
+        LOGGER.debug("Action button clicked, text: {}", actionButton.getText());
+
         if (actionButtonClickListener != null) {
             actionButtonClickListener.onClick(actionButton);
         }
@@ -239,24 +121,7 @@ public class NavigationActionBar extends View {
         // Load attributes
         final TypedArray a = getContext().obtainStyledAttributes(
                 attrs, R.styleable.NavigationActionBar, defStyleAttr, 0);
-
+        inflate(getContext(), R.layout.rs2_navigation_action_bar, this);
         a.recycle();
-
-        // Set up a default TextPaint object
-        mTextPaint = new TextPaint();
-        mTextPaint.setFlags(Paint.ANTI_ALIAS_FLAG);
-        mTextPaint.setTextAlign(Paint.Align.LEFT);
-
-        // Update TextPaint and text measurements from attributes
-        invalidateTextPaintAndMeasurements();
-    }
-
-    private void invalidateTextPaintAndMeasurements() {
-        mTextPaint.setTextSize(mExampleDimension);
-        mTextPaint.setColor(mExampleColor);
-        mTextWidth = mTextPaint.measureText(mExampleString);
-
-        Paint.FontMetrics fontMetrics = mTextPaint.getFontMetrics();
-        mTextHeight = fontMetrics.bottom;
     }
 }
