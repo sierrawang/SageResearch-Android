@@ -35,7 +35,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-    <org.sagebionetworks.research.sdk.ui.show_step.Step
+    <org.sagebionetworks.research.domain.ui.show_step.Step
         android:layout_width="300dp"
         android:layout_height="300dp"
         android:background="#ccc"

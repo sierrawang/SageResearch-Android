@@ -36,13 +36,13 @@ import android.arch.lifecycle.ViewModel;
 import android.arch.lifecycle.ViewModelProvider;
 import android.support.annotation.NonNull;
 
-import org.sagebionetworks.research.sdk.presentation.model.TaskView;
-import org.sagebionetworks.research.sdk.task.navigation.StepNavigatorFactory;
+import org.sagebionetworks.research.domain.presentation.model.TaskView;
+import org.sagebionetworks.research.domain.presentation.perform_task.PerformTaskViewModel;
+import org.sagebionetworks.research.domain.task.navigation.StepNavigatorFactory;
 
 import javax.inject.Inject;
 
 public class PerformTaskViewModelFactory {
-
     private final StepNavigatorFactory stepNavigatorFactory;
 
     @Inject

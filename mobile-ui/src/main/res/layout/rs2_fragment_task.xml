@@ -34,9 +34,9 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="org.sagebionetworks.research.sdk.ui.perform_task.TaskActivityFragment">
+    tools:context="org.sagebionetworks.research.domain.ui.perform_task.TaskActivityFragment">
 
-    <org.sagebionetworks.research.sdk.ui.widget.StepSwitcher
+    <org.sagebionetworks.research.domain.ui.widget.StepSwitcher
         android:id="@id/rs2_step_container"
         android:layout_width="match_parent"
         android:layout_height="match_parent" />

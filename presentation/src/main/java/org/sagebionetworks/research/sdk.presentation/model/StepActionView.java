@@ -30,15 +30,15 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.sagebionetworks.research.sdk.presentation.model;
+package org.sagebionetworks.research.domain.presentation.model;
 
 import android.graphics.drawable.Drawable;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
-import org.sagebionetworks.research.sdk.presentation.DisplayString;
-import org.sagebionetworks.research.sdk.presentation.R;
-import org.sagebionetworks.research.sdk.step.ui.action.ActionType;
-import org.sagebionetworks.research.sdk.step.ui.action.ActionType.Navigation;
+import org.sagebionetworks.research.domain.presentation.DisplayString;
+import org.sagebionetworks.research.domain.presentation.R;
+import org.sagebionetworks.research.domain.step.ui.action.ActionType;
+import org.sagebionetworks.research.domain.step.ui.action.ActionType.Navigation;
 
 public class StepActionView {
     private StepActionView(@NonNull ActionType actionType, @NonNull DisplayString title, @Nullable Drawable icon,

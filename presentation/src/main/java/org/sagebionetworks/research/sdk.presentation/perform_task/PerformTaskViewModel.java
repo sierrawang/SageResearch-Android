@@ -30,7 +30,7 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.sagebionetworks.research.sdk.presentation.perform_task;
+package org.sagebionetworks.research.domain.presentation.perform_task;
 
 import android.arch.lifecycle.LiveData;
 import android.arch.lifecycle.MutableLiveData;
@@ -39,17 +39,17 @@ import android.arch.lifecycle.ViewModel;
 import android.support.annotation.MainThread;
 import android.support.annotation.NonNull;
 
-import org.sagebionetworks.research.sdk.presentation.model.LoadableResource;
-import org.sagebionetworks.research.sdk.presentation.model.StepView;
-import org.sagebionetworks.research.sdk.presentation.model.StepView.NavDirection;
-import org.sagebionetworks.research.sdk.presentation.model.TaskView;
-import org.sagebionetworks.research.sdk.result.Result;
-import org.sagebionetworks.research.sdk.result.TaskResult;
-import org.sagebionetworks.research.sdk.step.Step;
-import org.sagebionetworks.research.sdk.task.Task;
-import org.sagebionetworks.research.sdk.task.Task.Progress;
-import org.sagebionetworks.research.sdk.task.navigation.StepNavigator;
-import org.sagebionetworks.research.sdk.task.navigation.StepNavigatorFactory;
+import org.sagebionetworks.research.domain.presentation.model.LoadableResource;
+import org.sagebionetworks.research.domain.presentation.model.StepView;
+import org.sagebionetworks.research.domain.presentation.model.StepView.NavDirection;
+import org.sagebionetworks.research.domain.presentation.model.TaskView;
+import org.sagebionetworks.research.domain.result.Result;
+import org.sagebionetworks.research.domain.result.TaskResult;
+import org.sagebionetworks.research.domain.step.Step;
+import org.sagebionetworks.research.domain.task.Task;
+import org.sagebionetworks.research.domain.task.Task.Progress;
+import org.sagebionetworks.research.domain.task.navigation.StepNavigator;
+import org.sagebionetworks.research.domain.task.navigation.StepNavigatorFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.threeten.bp.Instant;
@@ -60,7 +60,8 @@ import static com.google.common.base.Preconditions.checkNotNull;
 
 @MainThread
 public class PerformTaskViewModel extends ViewModel {
-private static final Logger LOGGER = LoggerFactory.getLogger(PerformTaskViewModel.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(PerformTaskViewModel.class);
+
     private final MutableLiveData<Step> currentStepLiveData;
 
     private final LiveData<Step> nextStepLiveData;

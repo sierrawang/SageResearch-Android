@@ -30,13 +30,13 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.sagebionetworks.research.sdk.presentation.mapper;
+package org.sagebionetworks.research.domain.presentation.mapper;
 
 import android.support.annotation.NonNull;
 import com.google.common.base.Function;
-import org.sagebionetworks.research.sdk.presentation.model.StepView;
-import org.sagebionetworks.research.sdk.presentation.model.StepView.NavDirection;
-import org.sagebionetworks.research.sdk.step.Step;
+import org.sagebionetworks.research.domain.presentation.model.StepView;
+import org.sagebionetworks.research.domain.presentation.model.StepView.NavDirection;
+import org.sagebionetworks.research.domain.step.Step;
 
 public class StepMapper implements Function<Step, StepView> {
     @Override

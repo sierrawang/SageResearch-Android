@@ -32,7 +32,7 @@
 
 package org.sagebionetworks.research.app;
 
-import org.sagebionetworks.research.sdk.ui.inject.TaskActivityFragmentModule;
+import org.sagebionetworks.research.domain.ui.inject.TaskActivityFragmentModule;
 
 import dagger.Component;
 import dagger.android.AndroidInjectionModule;

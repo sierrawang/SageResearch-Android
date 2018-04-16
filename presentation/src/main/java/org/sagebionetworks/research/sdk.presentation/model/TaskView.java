@@ -30,7 +30,7 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.sagebionetworks.research.sdk.presentation.model;
+package org.sagebionetworks.research.domain.presentation.model;
 
 public class TaskView {
 }

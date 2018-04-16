@@ -31,4 +31,4 @@
   -->
 
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="org.sagebionetworks.research.sdk.presentation" />
+    package="org.sagebionetworks.research.domain.presentation" />

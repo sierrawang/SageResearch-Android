@@ -31,6 +31,6 @@
   -->
 
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="org.sagebionetworks.research.sdk.mobile.ui">
+    package="org.sagebionetworks.research.domain.mobile.ui">
 
 </manifest>

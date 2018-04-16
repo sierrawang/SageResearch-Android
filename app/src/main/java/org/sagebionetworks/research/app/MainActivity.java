@@ -34,8 +34,8 @@ package org.sagebionetworks.research.app;
 
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
-import org.sagebionetworks.research.sdk.ui.model.TaskViewModel;
-import org.sagebionetworks.research.sdk.ui.perform_task.TaskActivityFragment;
+import org.sagebionetworks.research.domain.ui.model.TaskViewModel;
+import org.sagebionetworks.research.domain.ui.perform_task.TaskActivityFragment;
 
 public class MainActivity extends AppCompatActivity {
     public static final String EXTRA_TASK_VIEW_MODEL = "TASK_VIEW_MODEL";

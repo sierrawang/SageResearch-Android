@@ -30,7 +30,7 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.sagebionetworks.research.sdk.presentation;
+package org.sagebionetworks.research.domain.presentation;
 
 import android.support.annotation.Nullable;
 import android.support.annotation.StringRes;

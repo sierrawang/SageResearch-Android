@@ -30,13 +30,13 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.sagebionetworks.research.sdk.presentation.model;
+package org.sagebionetworks.research.domain.presentation.model;
 
 import static java.lang.annotation.RetentionPolicy.SOURCE;
 
 import android.support.annotation.IntDef;
 import java.lang.annotation.Retention;
-import org.sagebionetworks.research.sdk.step.Step;
+import org.sagebionetworks.research.domain.step.Step;
 
 /**
  * Map a {@link Step} to a {@link StepView} when data is moving from the Domain layer to this layer.

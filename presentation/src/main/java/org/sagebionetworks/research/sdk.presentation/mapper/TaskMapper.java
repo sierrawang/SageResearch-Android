@@ -30,13 +30,13 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.sagebionetworks.research.sdk.presentation.mapper;
+package org.sagebionetworks.research.domain.presentation.mapper;
 
 
 import android.support.annotation.NonNull;
 import com.google.common.base.Function;
-import org.sagebionetworks.research.sdk.presentation.model.TaskView;
-import org.sagebionetworks.research.sdk.task.Task;
+import org.sagebionetworks.research.domain.presentation.model.TaskView;
+import org.sagebionetworks.research.domain.task.Task;
 
 /**
  * Map a {@link Task} to a {@link TaskView} when data is moving between the Domain layer and this layer.
