@@ -1,3 +1,4 @@
+<?xml version="1.0" encoding="utf-8"?>
 <!--
   ~ BSD 3-Clause License
   ~
@@ -30,12 +31,9 @@
   ~ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
   -->
 
-<fragment xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:id="@+id/fragment"
-    android:name="org.sagebionetworks.research.domain.ui.perform_task.TaskActivityFragment"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    app:layout_behavior="@string/appbar_scrolling_view_behavior"
-    tools:layout="@layout/rs2_fragment_perform_task" />
+<objectAnimator android:valueFrom="0"
+    android:valueTo="1"
+    android:propertyName="xFraction"
+    android:valueType="floatType"
+    android:duration="500"
+    xmlns:android="http://schemas.android.com/apk/res/android" />
