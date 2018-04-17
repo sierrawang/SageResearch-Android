@@ -32,11 +32,15 @@
 
 package org.sagebionetworks.research.domain.repository;
 
-import android.support.annotation.NonNull;
-import io.reactivex.Single;
+import org.sagebionetworks.research.domain.step.Step;
 import org.sagebionetworks.research.domain.task.Task;
 
+import java.util.List;
+
+import io.reactivex.Single;
+
 public interface TaskRepository {
-    @NonNull
-    Single<Task> getTask(@NonNull String taskIdentifier);
+    Single<Task> getTask(String taskIdentifier);
+
+    Single<List<Step>> getTaskSteps(Task task);
 }

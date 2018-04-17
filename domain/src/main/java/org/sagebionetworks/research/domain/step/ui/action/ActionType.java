@@ -42,6 +42,6 @@ public enum ActionType {
         SKIP,
         CANCEL,
         LEARN_MORE,
-        ADD_MORE;
+        ADD_MORE
     }
 }

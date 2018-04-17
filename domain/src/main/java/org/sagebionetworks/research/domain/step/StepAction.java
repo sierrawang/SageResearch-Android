@@ -32,27 +32,52 @@
 
 package org.sagebionetworks.research.domain.step;
 
-import android.graphics.drawable.Drawable;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+
 import org.sagebionetworks.research.domain.step.ui.action.ActionType;
 
 public class StepAction {
-    public StepAction(@NonNull ActionType actionType, @Nullable String title, @Nullable Drawable icon, boolean isHidden,
-                      boolean isEnabled) {
+    private StepAction(@NonNull ActionType actionType, @Nullable String title, boolean isHidden,
+            boolean isEnabled) {
         this.actionType = actionType;
         this.title = title;
-        this.icon = icon;
         this.isHidden = isHidden;
         this.isEnabled = isEnabled;
     }
 
     @NonNull
     public final ActionType actionType;
+
     @Nullable
     public final String title;
-    @Nullable
-    public final Drawable icon;
+
     public final boolean isHidden;
+
     public final boolean isEnabled;
+
+    public static class StepCustomAction extends StepAction {
+        @NonNull
+        public final String customActionType;
+
+        public StepCustomAction(@NonNull final String customActionType, @Nullable final String title,
+                final boolean isHidden,
+                final boolean isEnabled) {
+            super(ActionType.CUSTOM, title, isHidden, isEnabled);
+            this.customActionType = customActionType;
+        }
+    }
+
+    public static class StepNavigationAction extends StepAction {
+        @NonNull
+        public final ActionType.Navigation navigationActionType;
+
+        public StepNavigationAction(@NonNull final ActionType.Navigation navigationActionType,
+                @Nullable final String title,
+                final boolean isHidden,
+                final boolean isEnabled) {
+            super(ActionType.NAVIGATION, title, isHidden, isEnabled);
+            this.navigationActionType = navigationActionType;
+        }
+    }
 }

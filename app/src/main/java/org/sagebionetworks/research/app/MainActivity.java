@@ -34,28 +34,29 @@ package org.sagebionetworks.research.app;
 
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
-import org.sagebionetworks.research.domain.ui.model.TaskViewModel;
-import org.sagebionetworks.research.domain.ui.perform_task.TaskActivityFragment;
+
+import org.sagebionetworks.research.mobile_ui.perform_task.PerformTaskFragment;
+import org.sagebionetworks.research.presentation.model.TaskView;
 
 public class MainActivity extends AppCompatActivity {
-    public static final String EXTRA_TASK_VIEW_MODEL = "TASK_VIEW_MODEL";
+    public static final String EXTRA_TASK_VIEW = "TASK_VIEW";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        TaskViewModel taskViewModel = getIntent().getParcelableExtra(EXTRA_TASK_VIEW_MODEL);
+        TaskView taskViewModel = getIntent().getParcelableExtra(EXTRA_TASK_VIEW);
 
-        TaskActivityFragment taskActivityFragment = (TaskActivityFragment) getSupportFragmentManager()
+        PerformTaskFragment performTaskFragment = (PerformTaskFragment) getSupportFragmentManager()
                 .findFragmentById(R.id.contentFrame);
 
-        if (taskActivityFragment == null) {
-            taskActivityFragment = TaskActivityFragment.newInstance(taskViewModel);
+        if (performTaskFragment == null) {
+            performTaskFragment = PerformTaskFragment.newInstance(taskViewModel);
 
             getSupportFragmentManager()
                     .beginTransaction()
-                    .add(R.id.contentFrame, taskActivityFragment)
+                    .add(R.id.contentFrame, performTaskFragment)
                     .commit();
         }
     }

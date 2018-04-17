@@ -54,7 +54,7 @@ interface StepNavigator {
      * Given the current task result, is there a step before the current step?
      *
      * This method is checked when first displaying a step to determine if the UI should display this as the first
-     * step. By default, the UI defined in ResearchStack2UI will hide the "Back" button if there is no step before
+     * step. By default, the UI defined in ResearchStack2UI will hide the "BackStepStrategy" button if there is no step before
      * the given step.
      *
      * @param step current step, or null if retrieving first step for Task

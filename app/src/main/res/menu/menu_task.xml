@@ -36,7 +36,7 @@
     tools:context="org.sagebionetworks.research.app.TaskActivity">
     <item
         android:id="@+id/action_settings"
-        android:title="@string/action_settings"
         android:orderInCategory="100"
+        android:title="@string/rs2_action_settings"
         app:showAsAction="never" />
 </menu>

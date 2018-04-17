@@ -41,8 +41,8 @@
     </style>
 
     <style name="Widget.ResearchStack.NavigationActionBar" parent="">
-        <item name="positiveActionTitle">@string/navigation_action_forward</item>
-        <item name="negativeActionTitle">@string/navigation_action_backward</item>
+        <item name="positiveActionTitle">@string/rs2_navigation_action_forward</item>
+        <item name="negativeActionTitle">@string/rs2_navigation_action_backward</item>
         <item name="positiveActionColor">@color/colorAccent</item>
         <item name="negativeActionColor">@color/colorAccent</item>
     </style>

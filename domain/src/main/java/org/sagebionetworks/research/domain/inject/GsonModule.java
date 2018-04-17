@@ -35,25 +35,27 @@ package org.sagebionetworks.research.domain.inject;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.JsonDeserializer;
-import dagger.MapKey;
+
+import org.sagebionetworks.research.domain.RuntimeTypeAdapterFactory;
+
+import java.util.Map;
+import java.util.Set;
+
 import dagger.Module;
 import dagger.Provides;
-import dagger.multibindings.IntoMap;
-import dagger.multibindings.IntoSet;
-import java.util.Map;
-import java.util.Map.Entry;
-import java.util.Set;
+import dagger.multibindings.Multibinds;
 import javax.inject.Singleton;
-import org.sagebionetworks.research.domain.RuntimeTypeAdapterFactory;
-import org.sagebionetworks.research.domain.step.InstructionStep;
-import org.sagebionetworks.research.domain.step.Step;
 
 @Module
-public class GsonModule {
+public abstract class GsonModule {
+
+    @Multibinds
+    abstract Map<Class, JsonDeserializer> jsonDeserializerMap();
+
     @Provides
     @Singleton
     static Gson provideGson(Map<Class, JsonDeserializer> jsonDeserializerMap,
-        Set<RuntimeTypeAdapterFactory> runtimeTypeAdapterFactories) {
+        Set<RuntimeTypeAdapterFactory<?>> runtimeTypeAdapterFactories) {
         GsonBuilder builder = new GsonBuilder();
         for (Map.Entry<Class, JsonDeserializer> entry : jsonDeserializerMap.entrySet()) {
             builder.registerTypeAdapter(entry.getKey(), entry.getValue());
@@ -63,28 +65,5 @@ public class GsonModule {
         }
 
         return builder.create();
-    }
-
-    @MapKey
-    public @interface StepClassKey {
-        Class<? extends Step> value();
-    }
-
-    @Provides
-    @IntoMap
-    @StepClassKey(InstructionStep.class)
-    static String provideInstructionStepType() {
-        return InstructionStep.TYPE_KEY;
-    }
-
-    @IntoSet
-    @Provides
-    static RuntimeTypeAdapterFactory<Step> provideType(Map<Class<? extends Step>, String> stepClasses) {
-        RuntimeTypeAdapterFactory<Step> stepAdapterFactory = RuntimeTypeAdapterFactory.of(Step.class, Step.KEY_TYPE);
-
-        for (Entry<Class<? extends Step>, String> stepClassEntry : stepClasses.entrySet()) {
-            stepAdapterFactory.registerSubtype(stepClassEntry.getKey(), stepClassEntry.getValue());
-        }
-        return stepAdapterFactory;
     }
 }
