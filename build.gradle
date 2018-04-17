@@ -41,6 +41,12 @@ buildscript {
     }
     dependencies {
         classpath 'com.android.tools.build:gradle:3.1.1'
+
+        // deploy
+        classpath 'com.jfrog.bintray.gradle:gradle-bintray-plugin:1.7'
+        classpath 'com.github.dcendents:android-maven-gradle-plugin:1.4.1'
+
+        // code quality
         classpath 'net.ltgt.gradle:gradle-errorprone-plugin:0.0.13'
         classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlin_version"
         classpath 'com.jakewharton:butterknife-gradle-plugin:8.4.0'
@@ -58,6 +64,39 @@ allprojects {
         jcenter()
         google()
     }
+}
+
+subprojects {
+    afterEvaluate { project ->
+        task sourcesJar(type: Jar) {
+            from android.sourceSets.main.java.srcDirs
+            classifier = 'sources'
+        }
+
+        task javadoc(type: Javadoc) {
+            source = android.sourceSets.main.java.srcDirs
+            classpath += project.files(android.getBootClasspath().join(File.pathSeparator))
+            classpath += fileTree(dir: "$buildDir/intermediates/exploded-aar/", include: "**/classes.jar")
+            classpath += configurations.compile
+            // Exclude generated files
+            exclude '**/BuildConfig.java'
+            exclude '**/R.java'
+        }
+
+        task javadocJar(type: Jar, dependsOn: javadoc) {
+            classifier = 'javadoc'
+            from javadoc.destinationDir
+        }
+        artifacts {
+            archives javadocJar
+            archives sourcesJar
+        }
+
+        task findConventions << {
+            println project.getConvention()
+        }
+    }
+
 }
 
 task clean(type: Delete) {

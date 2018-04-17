@@ -46,7 +46,7 @@ public final class NextStepStrategyInvocationHandler implements InvocationHandle
 
     NextStepStrategyInvocationHandler(@NonNull NextStepStrategy nextStepStrategy) {
         checkNotNull(nextStepStrategy);
-        
+
         this.nextStepStrategy = nextStepStrategy;
     }
 
