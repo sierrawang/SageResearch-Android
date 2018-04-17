@@ -30,55 +30,53 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-apply plugin: 'com.android.library'
+package org.sagebionetworks.research.presentation.model;
 
-android {
-    compileSdkVersion 27
+import android.os.Parcelable;
+import android.support.annotation.IntDef;
 
-    defaultConfig {
-        minSdkVersion 16
-        targetSdkVersion 27
-        versionCode 1
-        versionName "1.0"
+import com.google.auto.value.AutoValue;
+import com.google.common.collect.ImmutableSet;
 
-        consumerProguardFiles 'proguard-rules.pro'
+import org.sagebionetworks.research.domain.step.Step;
 
-        testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
+import java.lang.annotation.Retention;
+import java.util.Set;
 
+import static java.lang.annotation.RetentionPolicy.SOURCE;
+
+/**
+ * Map a {@link Step} to a {@link StepView} when data is moving from the Domain layer to this layer.
+ */
+@AutoValue
+public abstract class StepView implements Parcelable {
+    @Retention(SOURCE)
+    @IntDef({NavDirection.SHIFT_LEFT, NavDirection.SHIFT_RIGHT})
+    public @interface NavDirection {
+        int SHIFT_LEFT = 1;
+        int SHIFT_RIGHT = -1;
     }
 
-    buildTypes {
-        release {
-            minifyEnabled false
-            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
-        }
+    public abstract String getIdentifier();
+
+    public abstract int getNavDirection();
+
+    public abstract ImmutableSet<StepActionView> getStepActionViews();
+
+    public static Builder builder() {
+        return new AutoValue_StepView.Builder();
     }
 
-    compileOptions {
-        targetCompatibility 1.8
-        sourceCompatibility 1.8
+    public abstract Builder toBuilder();
+
+    @AutoValue.Builder
+    public static abstract class Builder {
+        public abstract Builder setIdentifier(String identifier);
+
+        public abstract Builder setNavDirection(@NavDirection int navDirection);
+
+        public abstract Builder setStepActionViews(Set<StepActionView> stepActionViews);
+
+        public abstract StepView build();
     }
-
-    resourcePrefix 'rs2_'
-}
-
-dependencies {
-    implementation fileTree(dir: 'libs', include: ['*.jar'])
-    api project(':domain')
-    api 'com.android.support:support-annotations:27.1.1'
-
-    implementation 'com.google.guava:guava:24.1-android'
-    implementation "android.arch.lifecycle:extensions:1.1.1"
-    implementation 'org.slf4j:slf4j-api:1.7.21'
-
-    implementation 'com.google.auto.value:auto-value-annotations:1.6'
-    implementation 'com.ryanharter.auto.value:auto-value-parcel-adapter:0.2.6'
-
-    annotationProcessor "com.google.auto.value:auto-value:1.6"
-    annotationProcessor 'com.ryanharter.auto.value:auto-value-parcel:0.2.6'
-
-    implementation 'com.android.support:appcompat-v7:27.1.1'
-    testImplementation 'junit:junit:4.12'
-    androidTestImplementation 'com.android.support.test:runner:1.0.1'
-    androidTestImplementation 'com.android.support.test.espresso:espresso-core:3.0.1'
 }

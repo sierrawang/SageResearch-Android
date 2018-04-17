@@ -30,55 +30,24 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-apply plugin: 'com.android.library'
+package org.sagebionetworks.research.presentation.model;
 
-android {
-    compileSdkVersion 27
+import android.os.Parcelable;
 
-    defaultConfig {
-        minSdkVersion 16
-        targetSdkVersion 27
-        versionCode 1
-        versionName "1.0"
+import com.google.auto.value.AutoValue;
 
-        consumerProguardFiles 'proguard-rules.pro'
+@AutoValue
+public abstract class TaskView implements Parcelable {
+    public abstract String getIdentifier();
 
-        testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
-
+    public static Builder builder() {
+        return new AutoValue_TaskView.Builder();
     }
 
-    buildTypes {
-        release {
-            minifyEnabled false
-            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
-        }
+    @AutoValue.Builder
+    public abstract static class Builder {
+        public abstract Builder setIdentifier(String taskIdentifier);
+
+        public abstract TaskView build();
     }
-
-    compileOptions {
-        targetCompatibility 1.8
-        sourceCompatibility 1.8
-    }
-
-    resourcePrefix 'rs2_'
-}
-
-dependencies {
-    implementation fileTree(dir: 'libs', include: ['*.jar'])
-    api project(':domain')
-    api 'com.android.support:support-annotations:27.1.1'
-
-    implementation 'com.google.guava:guava:24.1-android'
-    implementation "android.arch.lifecycle:extensions:1.1.1"
-    implementation 'org.slf4j:slf4j-api:1.7.21'
-
-    implementation 'com.google.auto.value:auto-value-annotations:1.6'
-    implementation 'com.ryanharter.auto.value:auto-value-parcel-adapter:0.2.6'
-
-    annotationProcessor "com.google.auto.value:auto-value:1.6"
-    annotationProcessor 'com.ryanharter.auto.value:auto-value-parcel:0.2.6'
-
-    implementation 'com.android.support:appcompat-v7:27.1.1'
-    testImplementation 'junit:junit:4.12'
-    androidTestImplementation 'com.android.support.test:runner:1.0.1'
-    androidTestImplementation 'com.android.support.test.espresso:espresso-core:3.0.1'
 }

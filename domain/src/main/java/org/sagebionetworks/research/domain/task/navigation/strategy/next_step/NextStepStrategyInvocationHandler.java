@@ -39,10 +39,14 @@ import org.sagebionetworks.research.domain.task.navigation.strategy.StepNavigati
 import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Method;
 
+import static com.google.common.base.Preconditions.checkNotNull;
+
 public final class NextStepStrategyInvocationHandler implements InvocationHandler {
     private final NextStepStrategy nextStepStrategy;
 
     NextStepStrategyInvocationHandler(@NonNull NextStepStrategy nextStepStrategy) {
+        checkNotNull(nextStepStrategy);
+        
         this.nextStepStrategy = nextStepStrategy;
     }
 

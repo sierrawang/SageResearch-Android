@@ -30,55 +30,34 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-apply plugin: 'com.android.library'
+package org.sagebionetworks.research.presentation.show_step;
 
-android {
-    compileSdkVersion 27
+import android.arch.lifecycle.ViewModel;
+import android.arch.lifecycle.ViewModelProvider;
+import android.support.annotation.NonNull;
 
-    defaultConfig {
-        minSdkVersion 16
-        targetSdkVersion 27
-        versionCode 1
-        versionName "1.0"
+import org.sagebionetworks.research.presentation.model.StepView;
+import org.sagebionetworks.research.presentation.perform_task.PerformTaskViewModel;
 
-        consumerProguardFiles 'proguard-rules.pro'
+import javax.inject.Inject;
+import javax.inject.Singleton;
 
-        testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
+@Singleton
+public class ShowStepViewModelFactory {
+    @Inject
+    public ViewModelProvider.Factory create(PerformTaskViewModel performTaskViewModel, final StepView stepView) {
+        return new ViewModelProvider.Factory() {
 
+            @NonNull
+            @Override
+            @SuppressWarnings(value = "unchecked")
+            public <T extends ViewModel> T create(@NonNull Class<T> modelClass) {
+                if (modelClass.isAssignableFrom(ShowStepViewModel.class)) {
+                    // noinspection unchecked
+                    return (T) new ShowStepViewModel(performTaskViewModel, stepView);
+                }
+                throw new IllegalArgumentException("Unknown ViewModel class");
+            }
+        };
     }
-
-    buildTypes {
-        release {
-            minifyEnabled false
-            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
-        }
-    }
-
-    compileOptions {
-        targetCompatibility 1.8
-        sourceCompatibility 1.8
-    }
-
-    resourcePrefix 'rs2_'
-}
-
-dependencies {
-    implementation fileTree(dir: 'libs', include: ['*.jar'])
-    api project(':domain')
-    api 'com.android.support:support-annotations:27.1.1'
-
-    implementation 'com.google.guava:guava:24.1-android'
-    implementation "android.arch.lifecycle:extensions:1.1.1"
-    implementation 'org.slf4j:slf4j-api:1.7.21'
-
-    implementation 'com.google.auto.value:auto-value-annotations:1.6'
-    implementation 'com.ryanharter.auto.value:auto-value-parcel-adapter:0.2.6'
-
-    annotationProcessor "com.google.auto.value:auto-value:1.6"
-    annotationProcessor 'com.ryanharter.auto.value:auto-value-parcel:0.2.6'
-
-    implementation 'com.android.support:appcompat-v7:27.1.1'
-    testImplementation 'junit:junit:4.12'
-    androidTestImplementation 'com.android.support.test:runner:1.0.1'
-    androidTestImplementation 'com.android.support.test.espresso:espresso-core:3.0.1'
 }
