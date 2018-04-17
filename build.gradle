@@ -42,6 +42,8 @@ buildscript {
     dependencies {
         classpath 'com.android.tools.build:gradle:3.1.1'
 
+        classpath "org.jetbrains.dokka:dokka-android-gradle-plugin:0.9.16"
+
         // deploy
         classpath 'com.jfrog.bintray.gradle:gradle-bintray-plugin:1.7'
         classpath 'com.github.dcendents:android-maven-gradle-plugin:1.4.1'
@@ -81,6 +83,7 @@ subprojects {
             // Exclude generated files
             exclude '**/BuildConfig.java'
             exclude '**/R.java'
+            exclude '**/*.kt'
         }
 
         task javadocJar(type: Jar, dependsOn: javadoc) {
@@ -88,7 +91,8 @@ subprojects {
             from javadoc.destinationDir
         }
         artifacts {
-            archives javadocJar
+            // TODO: package javadoc for maven artifact publishing
+//            archives javadocJar
             archives sourcesJar
         }
 

@@ -40,8 +40,8 @@ import android.support.annotation.Nullable;
 import android.support.constraint.ConstraintLayout;
 import android.util.AttributeSet;
 
-import org.sagebionetworks.research.domain.mobile.ui.R;
-import org.sagebionetworks.research.domain.mobile.ui.R2;
+import org.sagebionetworks.research.domain.mobile_ui.R;
+import org.sagebionetworks.research.domain.mobile_ui.R2;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

@@ -42,7 +42,7 @@ import android.util.AttributeSet;
 import android.view.LayoutInflater;
 import android.widget.FrameLayout;
 
-import org.sagebionetworks.research.domain.mobile.ui.R;
+import org.sagebionetworks.research.domain.mobile_ui.R;
 import org.sagebionetworks.research.domain.ui.show_step.ShowStepContract.View;
 import org.sagebionetworks.research.mobile_ui.show_step.StepPresenter;
 import org.sagebionetworks.research.mobile_ui.show_step.view.StepViewBinding;

@@ -39,7 +39,6 @@ import org.sagebionetworks.research.domain.step.Step;
 import static org.junit.Assert.*;
 
 public class InstructionStepTest {
-
     AppStepTestComponent stepTestComponent;
 
     @Before
@@ -49,7 +48,6 @@ public class InstructionStepTest {
 
     @Test
     public void testInstructionStep() {
-
         String id = "stepId";
         String type = "intruction";
 

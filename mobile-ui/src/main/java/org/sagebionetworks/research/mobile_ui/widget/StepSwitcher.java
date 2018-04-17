@@ -32,6 +32,7 @@
 
 package org.sagebionetworks.research.domain.ui.widget;
 
+import android.app.Fragment;
 import android.content.Context;
 import android.support.annotation.NonNull;
 import android.util.AttributeSet;
@@ -39,7 +40,7 @@ import android.view.View;
 import android.view.animation.DecelerateInterpolator;
 import android.widget.FrameLayout;
 
-import org.sagebionetworks.research.domain.mobile.ui.R;
+import org.sagebionetworks.research.domain.mobile_ui.R;
 import org.sagebionetworks.research.presentation.model.StepView.NavDirection;
 
 /**
@@ -93,6 +94,11 @@ public class StepSwitcher extends FrameLayout {
 
     private void init() {
         animationTime = getResources().getInteger(R.integer.rs2_medium_anim_duration_ms);
+    }
+
+
+    public void show(@NonNull Fragment newStep, @NavDirection int direction) {
+
     }
 
     /**

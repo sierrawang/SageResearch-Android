@@ -34,7 +34,7 @@ package org.sagebionetworks.research.mobile_ui.show_step.view;
 
 import android.widget.TextView;
 
-import org.sagebionetworks.research.domain.mobile.ui.R2;
+import org.sagebionetworks.research.domain.mobile_ui.R2;
 import org.sagebionetworks.research.mobile_ui.widget.NavigationActionBar;
 
 import butterknife.BindView;

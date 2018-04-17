@@ -42,8 +42,8 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-import org.sagebionetworks.research.domain.mobile.ui.R;
-import org.sagebionetworks.research.domain.mobile.ui.R2;
+import org.sagebionetworks.research.domain.mobile_ui.R;
+import org.sagebionetworks.research.domain.mobile_ui.R2;
 import org.sagebionetworks.research.domain.ui.show_step.view.GenericStep;
 import org.sagebionetworks.research.domain.ui.widget.StepSwitcher;
 import org.sagebionetworks.research.mobile_ui.mapper.StepMapper;
