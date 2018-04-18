@@ -30,7 +30,7 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.sagebionetworks.research.domain.ui.show_step;
+package org.sagebionetworks.research.mobile_ui.show_step;
 
 import android.support.annotation.Keep;
 import android.support.annotation.Nullable;

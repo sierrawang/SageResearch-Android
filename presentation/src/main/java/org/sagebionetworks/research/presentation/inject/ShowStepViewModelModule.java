@@ -30,20 +30,38 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.sagebionetworks.research.app;
+package org.sagebionetworks.research.presentation.inject;
 
-import org.junit.Test;
+import org.sagebionetworks.research.presentation.model.StepView;
+import org.sagebionetworks.research.presentation.show_step.AbstractShowStepViewModelFactory;
+import org.sagebionetworks.research.presentation.show_step.ShowGenericStepViewModelFactory;
+import org.sagebionetworks.research.presentation.show_step.ShowStepViewModelFactory;
 
-import static org.junit.Assert.*;
+import java.util.Map;
 
-/**
- * Example local unit test, which will execute on the development machine (host).
- *
- * @see <a href="http://d.android.com/tools/testing">Testing documentation</a>
- */
-public class ExampleUnitTest {
-    @Test
-    public void addition_isCorrect() throws Exception {
-        assertEquals(4, 2 + 2);
+import dagger.MapKey;
+import dagger.Module;
+import dagger.Provides;
+import dagger.multibindings.IntoMap;
+
+@Module
+public abstract class ShowStepViewModelModule {
+
+    @MapKey
+    public @interface StepViewClassKey {
+        Class<? extends StepView> value();
+    }
+
+    @Provides
+    @IntoMap
+    @StepViewClassKey(StepView.class)
+    static AbstractShowStepViewModelFactory<?, ? extends StepView> provideGenericStepVMF() {
+        return new ShowGenericStepViewModelFactory();
+    }
+
+    @Provides
+    static ShowStepViewModelFactory provideShowStepViewModelFactory(
+            Map<Class<? extends StepView>, AbstractShowStepViewModelFactory<?, ? extends StepView>> t) {
+        return new ShowStepViewModelFactory(t);
     }
 }

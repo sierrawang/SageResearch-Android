@@ -92,13 +92,9 @@ public class StepSwitcher extends FrameLayout {
         init();
     }
 
-    private void init() {
-        animationTime = getResources().getInteger(R.integer.rs2_medium_anim_duration_ms);
-    }
-
-
-    public void show(@NonNull Fragment newStep, @NavDirection int direction) {
-
+    @Override
+    public CharSequence getAccessibilityClassName() {
+        return StepSwitcher.class.getName();
     }
 
     /**
@@ -182,6 +178,10 @@ public class StepSwitcher extends FrameLayout {
         });
     }
 
+    public void show(@NonNull Fragment newStep, @NavDirection int direction) {
+
+    }
+
     private LayoutParams getLayoutParams(View stepView) {
         LayoutParams lp = (LayoutParams) stepView.getLayoutParams();
         if (lp == null) {
@@ -190,9 +190,8 @@ public class StepSwitcher extends FrameLayout {
         return lp;
     }
 
-    @Override
-    public CharSequence getAccessibilityClassName() {
-        return StepSwitcher.class.getName();
+    private void init() {
+        animationTime = getResources().getInteger(R.integer.rs2_medium_anim_duration_ms);
     }
 
 }

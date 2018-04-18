@@ -33,19 +33,14 @@
 package org.sagebionetworks.research.mobile_ui.inject;
 
 import org.sagebionetworks.research.mobile_ui.show_step.view.GenericFragmentStep;
-import org.sagebionetworks.research.presentation.show_step.ShowStepViewModelFactory;
+import org.sagebionetworks.research.presentation.inject.ShowStepViewModelModule;
 
 import dagger.Subcomponent;
 import dagger.android.AndroidInjector;
 
 @ShowStepFragmentScope
-@Subcomponent
+@Subcomponent(modules = ShowStepViewModelModule.class)
 public abstract class ShowStepFragmentSubcomponent implements AndroidInjector<GenericFragmentStep> {
-
-    static ShowStepViewModelFactory providePerformTaskViewModelFactory() {
-        return new ShowStepViewModelFactory();
-    }
-
 
     @Subcomponent.Builder
     public static abstract class Builder extends AndroidInjector.Builder<GenericFragmentStep> {

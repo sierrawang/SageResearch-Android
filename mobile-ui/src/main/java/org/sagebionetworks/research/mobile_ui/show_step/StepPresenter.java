@@ -35,8 +35,8 @@ package org.sagebionetworks.research.mobile_ui.show_step;
 import android.support.annotation.Keep;
 
 import org.sagebionetworks.research.domain.result.Result;
-import org.sagebionetworks.research.domain.ui.show_step.ShowStepContract.Presenter;
-import org.sagebionetworks.research.domain.ui.show_step.ShowStepContract.View;
+import org.sagebionetworks.research.mobile_ui.show_step.ShowStepContract.Presenter;
+import org.sagebionetworks.research.mobile_ui.show_step.ShowStepContract.View;
 import org.sagebionetworks.research.presentation.perform_task.PerformTaskViewModel;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -52,6 +52,16 @@ public class StepPresenter implements Presenter<View> {
     }
 
     @Override
+    public void attachView(View view) {
+        LOGGER.debug("attachView called");
+    }
+
+    @Override
+    public void detachView() {
+        LOGGER.debug("detachView called");
+    }
+
+    @Override
     public void finish() {
         LOGGER.debug("finish called");
     }
@@ -64,15 +74,5 @@ public class StepPresenter implements Presenter<View> {
     @Override
     public void saveStepResult(final Result result) {
         LOGGER.debug("saveStepResult called with result: {}", result);
-    }
-
-    @Override
-    public void attachView(View view) {
-        LOGGER.debug("attachView called");
-    }
-
-    @Override
-    public void detachView() {
-        LOGGER.debug("detachView called");
     }
 }

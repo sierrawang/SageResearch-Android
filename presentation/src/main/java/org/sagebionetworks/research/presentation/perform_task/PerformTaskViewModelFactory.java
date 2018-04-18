@@ -37,6 +37,7 @@ import android.arch.lifecycle.ViewModelProvider;
 import android.support.annotation.NonNull;
 
 import org.sagebionetworks.research.domain.task.navigation.StepNavigatorFactory;
+import org.sagebionetworks.research.presentation.mapper.StepMapper;
 import org.sagebionetworks.research.presentation.model.TaskView;
 
 import javax.inject.Inject;
@@ -44,11 +45,14 @@ import javax.inject.Inject;
 import static com.google.common.base.Preconditions.checkNotNull;
 
 public class PerformTaskViewModelFactory {
+    private final StepMapper stepMapper;
+
     private final StepNavigatorFactory stepNavigatorFactory;
 
     @Inject
-    public PerformTaskViewModelFactory(StepNavigatorFactory stepNavigatorFactory) {
+    public PerformTaskViewModelFactory(StepNavigatorFactory stepNavigatorFactory, StepMapper stepMapper) {
         this.stepNavigatorFactory = stepNavigatorFactory;
+        this.stepMapper = stepMapper;
     }
 
     public ViewModelProvider.Factory create(@NonNull TaskView taskView) {
@@ -61,7 +65,7 @@ public class PerformTaskViewModelFactory {
             public <T extends ViewModel> T create(@NonNull Class<T> modelClass) {
                 if (modelClass.isAssignableFrom(PerformTaskViewModel.class)) {
                     // noinspection unchecked
-                    return (T) new PerformTaskViewModel(taskView, stepNavigatorFactory);
+                    return (T) new PerformTaskViewModel(taskView, stepNavigatorFactory, stepMapper);
                 }
                 throw new IllegalArgumentException("Unknown ViewModel class");
             }

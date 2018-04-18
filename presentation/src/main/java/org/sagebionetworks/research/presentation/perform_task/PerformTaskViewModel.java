@@ -47,6 +47,7 @@ import org.sagebionetworks.research.domain.task.Task;
 import org.sagebionetworks.research.domain.task.Task.Progress;
 import org.sagebionetworks.research.domain.task.navigation.StepNavigator;
 import org.sagebionetworks.research.domain.task.navigation.StepNavigatorFactory;
+import org.sagebionetworks.research.presentation.mapper.StepMapper;
 import org.sagebionetworks.research.presentation.model.StepView;
 import org.sagebionetworks.research.presentation.model.StepView.NavDirection;
 import org.sagebionetworks.research.presentation.model.TaskView;
@@ -82,20 +83,32 @@ public class PerformTaskViewModel extends ViewModel {
                 @NonNull
                 @Override
                 public String getIdentifier() {
-                    return null;
+                    return UUID.randomUUID().toString();
                 }
 
                 @NonNull
                 @Override
                 public String getType() {
-                    return null;
+                    return "step";
                 }
             };
         }
 
         @Override
         public Step getPreviousStep(final Step step, final TaskResult taskResult) {
-            return null;
+            return new Step() {
+                @NonNull
+                @Override
+                public String getIdentifier() {
+                    return UUID.randomUUID().toString();
+                }
+
+                @NonNull
+                @Override
+                public String getType() {
+                    return "step";
+                }
+            };
         }
 
         @Override
@@ -106,7 +119,7 @@ public class PerformTaskViewModel extends ViewModel {
 
     private final StepNavigatorFactory stepNavigatorFactory;
 
-    private final MutableLiveData<StepView> stepViewMutableLiveData;
+    private final MutableLiveData<StepView> stepViewLiveData;
 
     private final MutableLiveData<LoadableResource<Task>> taskLiveData;
 
@@ -117,20 +130,24 @@ public class PerformTaskViewModel extends ViewModel {
     private final TaskView taskView;
 
 
-    public PerformTaskViewModel(@NonNull TaskView taskView, @NonNull StepNavigatorFactory stepNavigatorFactory) {
+    public PerformTaskViewModel(@NonNull TaskView taskView, @NonNull StepNavigatorFactory stepNavigatorFactory,
+            @NonNull StepMapper stepMapper) {
         this.taskView = checkNotNull(taskView);
         this.stepNavigatorFactory = checkNotNull(stepNavigatorFactory);
 
         taskLiveData = new MutableLiveData<>();
         taskResultLiveData = new MutableLiveData<>();
-        stepViewMutableLiveData = new MutableLiveData<>();
-        currentStepLiveData = new MutableLiveData<>();
+//        currentStepLiveData = new MutableLiveData<>();
         taskResultBuilder = new TaskResult.Builder("id", UUID.randomUUID());
         taskResultBuilder.setStartTime(Instant.now());
 
-        stepViewMutableLiveData.setValue(StepView.builder()
-                .setNavDirection(NavDirection.SHIFT_LEFT)
-                .build());
+        taskResultLiveData.setValue(taskResultBuilder.build());
+
+        currentStepLiveData = new MutableLiveData<>();
+        currentStepLiveData.setValue(null);
+
+        stepViewLiveData = new MutableLiveData<>();
+
         nextStepLiveData = Transformations.switchMap(currentStepLiveData, (Step s) ->
                 Transformations.map(taskResultLiveData, (TaskResult tr) -> stepNavigator.getNextStep(s, tr))
         );
@@ -154,7 +171,7 @@ public class PerformTaskViewModel extends ViewModel {
 
     @NonNull
     public LiveData<StepView> getStep() {
-        return stepViewMutableLiveData;
+        return stepViewLiveData;
     }
 
     @NonNull
@@ -175,23 +192,24 @@ public class PerformTaskViewModel extends ViewModel {
     public void goBack() {
         LOGGER.debug("goBack called");
 
-        Step backwardStep = previousStepLiveData.getValue();
-        if (backwardStep != null) {
-            stepViewMutableLiveData.setValue(StepView.builder()
-                    .setNavDirection(NavDirection.SHIFT_RIGHT)
-                    .build());
-            currentStepLiveData.setValue(backwardStep);
-        }
+        Step backStep = stepNavigator.getPreviousStep(currentStepLiveData.getValue(), taskResultBuilder.build());
+        stepViewLiveData.setValue(
+                StepView.builder()
+                        .setIdentifier(backStep.getIdentifier())
+                        .setNavDirection(NavDirection.SHIFT_RIGHT)
+                        .build()
+        );
     }
 
     public void goForward() {
         LOGGER.debug("goForward called");
-        Step forwardStep = nextStepLiveData.getValue();
-        if (forwardStep != null) {
-            stepViewMutableLiveData.setValue(StepView.builder()
-                    .setNavDirection(NavDirection.SHIFT_LEFT)
-                    .build());
-            currentStepLiveData.setValue(forwardStep);
-        }
+
+        Step forwardStep = stepNavigator.getNextStep(currentStepLiveData.getValue(), taskResultBuilder.build());
+        stepViewLiveData.setValue(
+                StepView.builder()
+                        .setIdentifier(forwardStep.getIdentifier())
+                        .setNavDirection(NavDirection.SHIFT_LEFT)
+                        .build()
+        );
     }
 }

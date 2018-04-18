@@ -44,31 +44,36 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import org.sagebionetworks.research.domain.mobile_ui.R;
-import org.sagebionetworks.research.domain.mobile_ui.R2;
-import org.sagebionetworks.research.domain.ui.widget.StepSwitcher;
 import org.sagebionetworks.research.mobile_ui.mapper.StepMapper;
 import org.sagebionetworks.research.mobile_ui.show_step.StepPresenter;
 import org.sagebionetworks.research.mobile_ui.show_step.StepPresenterFactory;
 import org.sagebionetworks.research.mobile_ui.show_step.view.GenericFragmentStep;
+import org.sagebionetworks.research.mobile_ui.show_step.view.StepFragmentBase;
 import org.sagebionetworks.research.presentation.model.StepView;
 import org.sagebionetworks.research.presentation.model.StepView.NavDirection;
 import org.sagebionetworks.research.presentation.model.TaskView;
 import org.sagebionetworks.research.presentation.perform_task.PerformTaskViewModel;
 import org.sagebionetworks.research.presentation.perform_task.PerformTaskViewModelFactory;
 
-import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.Unbinder;
+import dagger.android.AndroidInjector;
+import dagger.android.DispatchingAndroidInjector;
 import dagger.android.support.AndroidSupportInjection;
+import dagger.android.support.HasSupportFragmentInjector;
 import javax.inject.Inject;
 
+import static com.google.common.base.Preconditions.checkNotNull;
 import static com.google.common.base.Preconditions.checkState;
 
 /**
  * A placeholder fragment containing a simple view.
  */
-public class PerformTaskFragment2 extends Fragment {
-    private static final String ARGUMENT_TASK_VIEW_MODEL = "TASK_VIEW";
+public class PerformTaskFragment2 extends Fragment implements HasSupportFragmentInjector {
+    private static final String ARGUMENT_TASK_VIEW = "TASK_VIEW";
+
+    @Inject
+    DispatchingAndroidInjector<Fragment> fragmentDispatchingAndroidInjector;
 
     @Inject
     StepMapper stepMapper;
@@ -76,11 +81,10 @@ public class PerformTaskFragment2 extends Fragment {
     @Inject
     StepPresenterFactory stepPresenterFactory;
 
-    @BindView(R2.id.rs2_step_container)
-    StepSwitcher stepSwitcher;
-
     @Inject
     PerformTaskViewModelFactory taskViewModelFactory;
+
+    private StepFragmentBase currentStepFragment;
 
     private PerformTaskViewModel performTaskViewModel;
 
@@ -90,9 +94,11 @@ public class PerformTaskFragment2 extends Fragment {
 
     private Unbinder unbinder;
 
-    public static PerformTaskFragment2 newInstance(@NonNull TaskView taskViewModel) {
+    public static PerformTaskFragment2 newInstance(@NonNull TaskView taskView) {
+        checkNotNull(taskView);
+
         Bundle arguments = new Bundle();
-        arguments.putParcelable(ARGUMENT_TASK_VIEW_MODEL, taskViewModel);
+        arguments.putParcelable(ARGUMENT_TASK_VIEW, taskView);
 
         PerformTaskFragment2 fragment = new PerformTaskFragment2();
         fragment.setArguments(arguments);
@@ -107,23 +113,16 @@ public class PerformTaskFragment2 extends Fragment {
     }
 
     @Override
-    public void onSaveInstanceState(Bundle outState) {
-        if (outState != null) {
-            outState.putParcelable(ARGUMENT_TASK_VIEW_MODEL, taskView);
-        }
-    }
-
-    @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
         if (savedInstanceState == null) {
             Bundle arguments = getArguments();
             if (arguments != null) {
-                taskView = getArguments().getParcelable(ARGUMENT_TASK_VIEW_MODEL);
+                taskView = getArguments().getParcelable(ARGUMENT_TASK_VIEW);
             }
         } else {
-            taskView = savedInstanceState.getParcelable(ARGUMENT_TASK_VIEW_MODEL);
+            taskView = savedInstanceState.getParcelable(ARGUMENT_TASK_VIEW);
         }
         checkState(taskView != null, "no taskView found");
 
@@ -131,6 +130,7 @@ public class PerformTaskFragment2 extends Fragment {
                 .get(PerformTaskViewModel.class);
 
         performTaskViewModel.getStep().observe(this, this::showStep);
+        performTaskViewModel.goForward();
     }
 
     @Override
@@ -141,31 +141,48 @@ public class PerformTaskFragment2 extends Fragment {
     }
 
     @Override
+    public void onSaveInstanceState(Bundle outState) {
+        if (outState != null) {
+            outState.putParcelable(ARGUMENT_TASK_VIEW, taskView);
+        }
+    }
+
+    @Override
     public void onDestroyView() {
         super.onDestroyView();
         unbinder.unbind();
     }
 
+    @Override
+    public AndroidInjector<Fragment> supportFragmentInjector() {
+        return fragmentDispatchingAndroidInjector;
+    }
+
     @VisibleForTesting
     void showStep(StepView stepView) {
-        GenericFragmentStep step = new GenericFragmentStep();
+        if (stepView == null) {
+            if (currentStepFragment != null) {
+                getChildFragmentManager().beginTransaction().remove(currentStepFragment).commit();
+                currentStepFragment = null;
+            } else {
+                // TODO: handle end of perform task
+            }
+            return;
+        }
+        GenericFragmentStep step = GenericFragmentStep.newInstance(stepView);
 
-        FragmentTransaction transaction = getChildFragmentManager().beginTransaction()
-                .replace(R.id.rs2_step_container, step, stepView.getIdentifier());
+        currentStepFragment = step;
+
+        FragmentTransaction transaction = getChildFragmentManager().beginTransaction();
 
         if (NavDirection.SHIFT_LEFT == stepView.getNavDirection()) {
-            transaction.setCustomAnimations(R.animator.rs2_right_slide_in, R.animator.rs2_right_slide_out,
-                    R.animator.rs2_left_slide_in, R.animator.rs2_left_slide_out);
+            transaction.setCustomAnimations(R.anim.rs2_right_slide_in, R.anim.rs2_left_slide_out);
         } else {
-            transaction.setCustomAnimations(R.animator.rs2_left_slide_in, R.animator.rs2_left_slide_out,
-                    R.animator.rs2_right_slide_in, R.animator.rs2_right_slide_out);
+            transaction.setCustomAnimations(R.anim.rs2_left_slide_in, R.anim.rs2_right_slide_out);
         }
 
-        transaction.commit();
-//        StepPresenter previousStepPresenter = stepPresenter;
-//        stepPresenter = stepPresenterFactory.create(null, performTaskViewModel);
-//        step.setPresenter(stepPresenter);
-//        stepSwitcher.show(step, stepView.navDirection);
-//        previousStepPresenter.finish();
+        transaction
+                .replace(R.id.rs2_step_container, step, stepView.getIdentifier())
+                .commit();
     }
 }

@@ -32,7 +32,7 @@
 
 package org.sagebionetworks.research.presentation.mapper;
 
-import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 
 import com.google.common.base.Function;
 
@@ -40,10 +40,19 @@ import org.sagebionetworks.research.domain.step.Step;
 import org.sagebionetworks.research.presentation.model.StepView;
 import org.sagebionetworks.research.presentation.model.StepView.NavDirection;
 
+import javax.inject.Inject;
+
 public class StepMapper implements Function<Step, StepView> {
+    @Inject
+    public StepMapper() {
+    }
+
     @Override
-    @NonNull
-    public StepView apply(@NonNull Step input) {
+    @Nullable
+    public StepView apply(@Nullable Step input) {
+        if (input == null) {
+            return null;
+        }
         return StepView.builder()
                 .setIdentifier(input.getIdentifier())
                 .setNavDirection(NavDirection.SHIFT_LEFT)

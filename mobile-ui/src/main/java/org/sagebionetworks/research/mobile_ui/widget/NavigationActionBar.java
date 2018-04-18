@@ -80,6 +80,23 @@ public class NavigationActionBar extends ConstraintLayout {
         init(attrs, defStyleAttr, R.style.Widget_ResearchStack_NavigationActionBar);
     }
 
+    @Optional
+    @OnClick({
+            R2.id.rs2_step_navigation_action_add_more,
+            R2.id.rs2_step_navigation_action_backward,
+            R2.id.rs2_step_navigation_action_cancel,
+            R2.id.rs2_step_navigation_action_forward,
+            R2.id.rs2_step_navigation_action_learn_more,
+            R2.id.rs2_step_navigation_action_skip
+    })
+    public void onActionButtonClick(ActionButton actionButton) {
+        LOGGER.debug("Action button clicked, text: {}", actionButton.getText());
+
+        if (actionButtonClickListener != null) {
+            actionButtonClickListener.onClick(actionButton);
+        }
+    }
+
     public void setActionButtonClickListener(
             final ActionButtonClickListener actionButtonClickListener) {
         this.actionButtonClickListener = actionButtonClickListener;
@@ -101,23 +118,6 @@ public class NavigationActionBar extends ConstraintLayout {
     protected void onFinishInflate() {
         super.onFinishInflate();
         unbinder = ButterKnife.bind(this);
-    }
-
-    @Optional
-    @OnClick({
-            R2.id.rs2_step_navigation_action_add_more,
-            R2.id.rs2_step_navigation_action_backward,
-            R2.id.rs2_step_navigation_action_cancel,
-            R2.id.rs2_step_navigation_action_forward,
-            R2.id.rs2_step_navigation_action_learn_more,
-            R2.id.rs2_step_navigation_action_skip
-    })
-    public void onActionButtonClick(ActionButton actionButton) {
-        LOGGER.debug("Action button clicked, text: {}", actionButton.getText());
-
-        if (actionButtonClickListener != null) {
-            actionButtonClickListener.onClick(actionButton);
-        }
     }
 
     private void init(AttributeSet attrs, int defStyleAttr, int defStyleRes) {

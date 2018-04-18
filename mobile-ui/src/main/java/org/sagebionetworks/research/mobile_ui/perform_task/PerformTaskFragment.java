@@ -105,13 +105,6 @@ public class PerformTaskFragment extends Fragment {
     }
 
     @Override
-    public void onSaveInstanceState(Bundle outState) {
-        if (outState != null) {
-            outState.putParcelable(ARGUMENT_TASK_VIEW_MODEL, taskView);
-        }
-    }
-
-    @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
@@ -136,6 +129,13 @@ public class PerformTaskFragment extends Fragment {
         View view = inflater.inflate(R.layout.rs2_fragment_perform_task, container, false);
         unbinder = ButterKnife.bind(this, view);
         return view;
+    }
+
+    @Override
+    public void onSaveInstanceState(Bundle outState) {
+        if (outState != null) {
+            outState.putParcelable(ARGUMENT_TASK_VIEW_MODEL, taskView);
+        }
     }
 
     @Override

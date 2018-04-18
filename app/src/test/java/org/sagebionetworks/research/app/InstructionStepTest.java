@@ -47,16 +47,6 @@ public class InstructionStepTest {
     }
 
     @Test
-    public void testInstructionStep() {
-        String id = "stepId";
-        String type = "intruction";
-
-        Step step = stepTestComponent.gson().fromJson("{'identifier':'stepId', 'type': 'instruction'}", Step.class);
-
-        assertTrue(step instanceof InstructionStep);
-    }
-
-    @Test
     public void testActiveUIStep() {
         String id = "stepId";
         String type = "active";
@@ -64,5 +54,15 @@ public class InstructionStepTest {
         Step step = stepTestComponent.gson().fromJson("{'identifier':'stepId', 'type': 'active'}", Step.class);
 
         assertTrue(step instanceof ActiveUIStep);
+    }
+
+    @Test
+    public void testInstructionStep() {
+        String id = "stepId";
+        String type = "intruction";
+
+        Step step = stepTestComponent.gson().fromJson("{'identifier':'stepId', 'type': 'instruction'}", Step.class);
+
+        assertTrue(step instanceof InstructionStep);
     }
 }

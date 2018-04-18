@@ -36,7 +36,7 @@ import android.support.annotation.NonNull;
 
 import org.sagebionetworks.research.domain.ui.show_step.view.GenericStep;
 import org.sagebionetworks.research.mobile_ui.model.StepViewModel;
-import org.sagebionetworks.research.mobile_ui.perform_task.PerformTaskFragment;
+import org.sagebionetworks.research.mobile_ui.perform_task.PerformTaskFragment2;
 import org.sagebionetworks.research.presentation.model.StepView;
 
 import javax.inject.Inject;
@@ -46,10 +46,10 @@ import javax.inject.Inject;
  * this layer.
  */
 public class StepMapper {
-    private final PerformTaskFragment performTaskFragment;
+    private final PerformTaskFragment2 performTaskFragment;
 
     @Inject
-    public StepMapper(PerformTaskFragment fragment) {
+    public StepMapper(PerformTaskFragment2 fragment) {
         performTaskFragment = fragment;
     }
 

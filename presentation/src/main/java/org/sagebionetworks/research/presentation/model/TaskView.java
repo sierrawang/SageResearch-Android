@@ -38,16 +38,16 @@ import com.google.auto.value.AutoValue;
 
 @AutoValue
 public abstract class TaskView implements Parcelable {
-    public abstract String getIdentifier();
+    @AutoValue.Builder
+    public abstract static class Builder {
+        public abstract TaskView build();
+
+        public abstract Builder setIdentifier(String taskIdentifier);
+    }
 
     public static Builder builder() {
         return new AutoValue_TaskView.Builder();
     }
 
-    @AutoValue.Builder
-    public abstract static class Builder {
-        public abstract Builder setIdentifier(String taskIdentifier);
-
-        public abstract TaskView build();
-    }
+    public abstract String getIdentifier();
 }

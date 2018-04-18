@@ -40,5 +40,6 @@ import java.lang.annotation.RetentionPolicy;
 @Retention(RetentionPolicy.SOURCE)
 @StringDef({ActionType.FORWARD})
 public @interface ActionType {
-   String FORWARD = "next";
+    String FORWARD = "next";
+    String BACKWARD = "back";
 }

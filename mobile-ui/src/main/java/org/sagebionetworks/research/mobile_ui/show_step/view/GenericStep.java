@@ -39,11 +39,12 @@ import android.support.annotation.LayoutRes;
 import android.support.annotation.Nullable;
 import android.support.annotation.RequiresApi;
 import android.util.AttributeSet;
+import android.view.InflateException;
 import android.view.LayoutInflater;
 import android.widget.FrameLayout;
 
 import org.sagebionetworks.research.domain.mobile_ui.R;
-import org.sagebionetworks.research.domain.ui.show_step.ShowStepContract.View;
+import org.sagebionetworks.research.mobile_ui.show_step.ShowStepContract.View;
 import org.sagebionetworks.research.mobile_ui.show_step.StepPresenter;
 import org.sagebionetworks.research.mobile_ui.show_step.view.StepViewBinding;
 
@@ -110,8 +111,11 @@ public class GenericStep extends FrameLayout implements View<StepPresenter> {
 
     private void init() {
         layoutInflater = LayoutInflater.from(getContext());
-        layoutInflater.inflate(getLayoutId(), this, true);
-
+        try {
+            layoutInflater.inflate(getLayoutId(), this, true);
+        } catch (InflateException e) {
+            System.out.println(e);
+        }
         binding = new StepViewBinding();
         unbinder = ButterKnife.bind(binding, this);
 

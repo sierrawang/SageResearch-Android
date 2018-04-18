@@ -37,7 +37,7 @@ import android.support.annotation.Nullable;
 import org.sagebionetworks.research.domain.result.Result;
 import org.sagebionetworks.research.domain.result.TaskResult;
 import org.sagebionetworks.research.domain.task.navigation.strategy.StepNavigationStrategy;
-import org.sagebionetworks.research.domain.ui.show_step.ShowStepContract.View;
+import org.sagebionetworks.research.mobile_ui.show_step.ShowStepContract.View;
 import org.sagebionetworks.research.presentation.perform_task.PerformTaskViewModel;
 
 public class NavigationRuleStepPresenter extends StepPresenter
@@ -45,6 +45,11 @@ public class NavigationRuleStepPresenter extends StepPresenter
         StepNavigationStrategy.BackStepStrategy {
     public NavigationRuleStepPresenter(final PerformTaskViewModel performTaskViewModel) {
         super(performTaskViewModel);
+    }
+
+    @Override
+    public void attachView(View view) {
+
     }
 
     @Override
@@ -59,11 +64,6 @@ public class NavigationRuleStepPresenter extends StepPresenter
 
     @Override
     public void saveStepResult(final Result result) {
-
-    }
-
-    @Override
-    public void attachView(View view) {
 
     }
 

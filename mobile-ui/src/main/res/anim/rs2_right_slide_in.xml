@@ -30,10 +30,9 @@
   ~ OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
   ~ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
   -->
-
-<objectAnimator android:valueFrom="1"
-    android:valueTo="0"
-    android:propertyName="xFraction"
-    android:valueType="floatType"
-    android:duration="500"
-    xmlns:android="http://schemas.android.com/apk/res/android" />
+<set xmlns:android="http://schemas.android.com/apk/res/android">
+    <translate android:fromXDelta="100%p" android:toXDelta="0"
+        android:duration="@android:integer/config_mediumAnimTime"/>
+    <alpha android:fromAlpha="0.0" android:toAlpha="1.0"
+        android:duration="@android:integer/config_mediumAnimTime" />
+</set>

@@ -33,7 +33,7 @@
 package org.sagebionetworks.research.mobile_ui.inject;
 
 import org.sagebionetworks.research.domain.task.navigation.StepNavigatorFactory;
-import org.sagebionetworks.research.mobile_ui.perform_task.PerformTaskFragment;
+import org.sagebionetworks.research.mobile_ui.perform_task.PerformTaskFragment2;
 import org.sagebionetworks.research.presentation.perform_task.PerformTaskViewModelFactory;
 
 import dagger.Subcomponent;
@@ -41,15 +41,17 @@ import dagger.android.AndroidInjector;
 
 @PerformTaskFragmentScope
 @Subcomponent(modules = ShowStepModule.class)
-public abstract class TaskActivityFragmentSubcomponent implements AndroidInjector<PerformTaskFragment> {
+public abstract class TaskActivityFragmentSubcomponent implements AndroidInjector<PerformTaskFragment2> {
 
-    static PerformTaskViewModelFactory providePerformTaskViewModelFactory(
-            StepNavigatorFactory stepNavigatorFactory) {
-        return new PerformTaskViewModelFactory(stepNavigatorFactory);
-    }
+//    public abstract PerformTaskFragment2 providePerformTaskFragment2();
 
     @Subcomponent.Builder
-    public static abstract class Builder extends AndroidInjector.Builder<PerformTaskFragment> {
+    public static abstract class Builder extends AndroidInjector.Builder<PerformTaskFragment2> {
         public abstract TaskActivityFragmentSubcomponent build();
     }
+
+//    static PerformTaskViewModelFactory providePerformTaskViewModelFactory(
+//            StepNavigatorFactory stepNavigatorFactory) {
+//        return new PerformTaskViewModelFactory(stepNavigatorFactory);
+//    }
 }

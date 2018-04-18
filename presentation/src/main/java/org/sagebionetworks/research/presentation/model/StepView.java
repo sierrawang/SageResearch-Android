@@ -41,6 +41,7 @@ import com.google.common.collect.ImmutableSet;
 import org.sagebionetworks.research.domain.step.Step;
 
 import java.lang.annotation.Retention;
+import java.util.Collections;
 import java.util.Set;
 
 import static java.lang.annotation.RetentionPolicy.SOURCE;
@@ -50,11 +51,28 @@ import static java.lang.annotation.RetentionPolicy.SOURCE;
  */
 @AutoValue
 public abstract class StepView implements Parcelable {
+    @AutoValue.Builder
+    public static abstract class Builder {
+        public abstract StepView build();
+
+        public abstract Builder setIdentifier(String identifier);
+
+        public abstract Builder setNavDirection(@NavDirection int navDirection);
+
+        public abstract Builder setStepActionViews(Set<StepActionView> stepActionViews);
+    }
+
     @Retention(SOURCE)
     @IntDef({NavDirection.SHIFT_LEFT, NavDirection.SHIFT_RIGHT})
     public @interface NavDirection {
         int SHIFT_LEFT = 1;
         int SHIFT_RIGHT = -1;
+    }
+
+    public static Builder builder() {
+        return new AutoValue_StepView.Builder()
+                .setNavDirection(NavDirection.SHIFT_LEFT)
+                .setStepActionViews(Collections.emptySet());
     }
 
     public abstract String getIdentifier();
@@ -63,20 +81,5 @@ public abstract class StepView implements Parcelable {
 
     public abstract ImmutableSet<StepActionView> getStepActionViews();
 
-    public static Builder builder() {
-        return new AutoValue_StepView.Builder();
-    }
-
     public abstract Builder toBuilder();
-
-    @AutoValue.Builder
-    public static abstract class Builder {
-        public abstract Builder setIdentifier(String identifier);
-
-        public abstract Builder setNavDirection(@NavDirection int navDirection);
-
-        public abstract Builder setStepActionViews(Set<StepActionView> stepActionViews);
-
-        public abstract StepView build();
-    }
 }

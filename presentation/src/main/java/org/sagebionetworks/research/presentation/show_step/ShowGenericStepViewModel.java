@@ -30,52 +30,61 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.sagebionetworks.research.mobile_ui.show_step.view;
+package org.sagebionetworks.research.presentation.show_step;
 
-import android.os.Bundle;
-import android.support.annotation.LayoutRes;
-import android.support.annotation.NonNull;
+import android.arch.lifecycle.LiveData;
+import android.arch.lifecycle.MutableLiveData;
 
-import org.sagebionetworks.research.domain.mobile_ui.R;
-import org.sagebionetworks.research.mobile_ui.widget.ActionButton;
+import org.sagebionetworks.research.domain.result.Result;
 import org.sagebionetworks.research.presentation.ActionType;
 import org.sagebionetworks.research.presentation.model.StepView;
-import org.sagebionetworks.research.presentation.show_step.ShowGenericStepViewModel;
+import org.sagebionetworks.research.presentation.perform_task.PerformTaskViewModel;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
-import static com.google.common.base.Preconditions.checkNotNull;
+public class ShowGenericStepViewModel extends ShowStepViewModel<StepView> {
+    private static final Logger LOGGER = LoggerFactory.getLogger(ShowGenericStepViewModel.class);
 
-public class GenericFragmentStep extends StepFragmentBase<StepView, ShowGenericStepViewModel> {
-    private static final String ARGUMENT_STEP_VIEW = "STEP_VIEW";
+    protected final PerformTaskViewModel performTaskViewModel;
 
-    public static GenericFragmentStep newInstance(@NonNull StepView stepView) {
-        checkNotNull(stepView);
+    protected final MutableLiveData<StepView> showStepViewModelMutableLiveData;
 
-        GenericFragmentStep fragment = new GenericFragmentStep();
-        Bundle args = StepFragmentBase.createArguments(stepView);
-        fragment.setArguments(args);
-        return fragment;
-    }
+    protected final StepView stepView;
 
-    public GenericFragmentStep() {
-        // Required empty public constructor
-    }
+    public ShowGenericStepViewModel(PerformTaskViewModel performTaskViewModel, StepView stepView) {
+        this.performTaskViewModel = performTaskViewModel;
+        this.stepView = stepView;
 
-    @Override
-    @LayoutRes
-    protected int getLayoutId() {
-        return R.layout.rs2_generic_step;
+        showStepViewModelMutableLiveData = new MutableLiveData<>();
+        showStepViewModelMutableLiveData.setValue(stepView);
     }
 
     @Override
-    protected void handleActionButtonClick(@NonNull ActionButton ab) {
-        int actionButtonId = ab.getId();
+    public LiveData<StepView> getStepView() {
+        return showStepViewModelMutableLiveData;
+    }
 
-        String actionType = null;
-        if (R.id.rs2_step_navigation_action_forward == actionButtonId) {
-            actionType = ActionType.FORWARD;
-        } else if (R.id.rs2_step_navigation_action_backward == actionButtonId) {
-            actionType = ActionType.BACKWARD;
+    @Override
+    public void handleAction(final String actionType) {
+        LOGGER.debug("handleAction called with actionType: {}", actionType);
+        switch (actionType) {
+            case ActionType.FORWARD:
+                performTaskViewModel.goForward();
+                break;
+            case ActionType.BACKWARD:
+                performTaskViewModel.goBack();
+                break;
+            default:
+                throw new UnsupportedOperationException("Unsupported actionType: " + actionType);
         }
-        showStepViewModel.handleAction(actionType);
+    }
+
+    protected void addStepResult(Result result) {
+        performTaskViewModel.addStepResult(result);
+    }
+
+    @Override
+    protected void onCleared() {
+        LOGGER.debug("onCleared called");
     }
 }

@@ -30,34 +30,14 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.sagebionetworks.research.presentation.model;
+package org.sagebionetworks.research.presentation.show_step;
 
-import android.support.annotation.DrawableRes;
-import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
+import org.sagebionetworks.research.presentation.model.StepView;
+import org.sagebionetworks.research.presentation.perform_task.PerformTaskViewModel;
 
-import org.sagebionetworks.research.presentation.ActionType;
-import org.sagebionetworks.research.presentation.DisplayString;
+public interface AbstractShowStepViewModelFactory<VM extends ShowStepViewModel<S>, S extends StepView> {
 
-public class StepActionView {
-    @NonNull
-    public final String actionType;
+    VM create(PerformTaskViewModel performTaskViewModel, S stepView);
 
-    public final int iconRes;
-
-    public final boolean isEnabled;
-
-    public final boolean isHidden;
-
-    @Nullable
-    public final DisplayString title;
-
-    public StepActionView(@ActionType String actionType, @NonNull DisplayString title, @DrawableRes int iconRes,
-            boolean isHidden, boolean isEnabled) {
-        this.actionType = actionType;
-        this.title = title;
-        this.iconRes = iconRes;
-        this.isHidden = isHidden;
-        this.isEnabled = isEnabled;
-    }
+    Class<VM> getViewModelClass();
 }

@@ -33,8 +33,6 @@
 package org.sagebionetworks.research.domain.ui.show_step;
 
 import dagger.Module;
-import dagger.Provides;
-import javax.inject.Singleton;
 
 @Module
 public abstract class ShowStepModule {
