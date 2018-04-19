@@ -32,5 +32,5 @@
   -->
 
 <resources>
-    <integer name="rs2_medium_anim_duration_ms">300</integer>
+    <integer name="rs2_step_horizontal_slide_anim_duration_ms">300</integer>
 </resources>

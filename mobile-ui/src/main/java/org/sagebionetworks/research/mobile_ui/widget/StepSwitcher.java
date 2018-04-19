@@ -191,7 +191,7 @@ public class StepSwitcher extends FrameLayout {
     }
 
     private void init() {
-        animationTime = getResources().getInteger(R.integer.rs2_medium_anim_duration_ms);
+        animationTime = getResources().getInteger(R.integer.rs2_step_horizontal_slide_anim_duration_ms);
     }
 
 }
