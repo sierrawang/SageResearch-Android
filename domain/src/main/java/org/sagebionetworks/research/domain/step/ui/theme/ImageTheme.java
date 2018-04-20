@@ -30,60 +30,35 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-apply plugin: 'com.android.library'
+package org.sagebionetworks.research.domain.step.ui.theme;
 
-android {
-    compileSdkVersion 27
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 
-    defaultConfig {
-        minSdkVersion 16
-        targetSdkVersion 27
-        versionCode 1
-        versionName "1.0"
+import com.google.auto.value.AutoValue;
 
-        consumerProguardFiles 'proguard-rules.pro'
+@AutoValue
+public abstract class ImageTheme {
+    @AutoValue.Builder
+    public static abstract class Builder {
+        public abstract ImageTheme builder();
 
-        testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
+        public abstract Builder setColorPlacement(ColorPlacement colorPlacement);
 
+        public abstract Builder setImageIdentifier(@NonNull String imageIdentifier);
     }
 
-    buildTypes {
-        release {
-            minifyEnabled false
-            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
-        }
+    public static Builder builder() {
+        return new AutoValue_ImageTheme.Builder();
     }
 
-    compileOptions {
-        targetCompatibility 1.8
-        sourceCompatibility 1.8
-    }
+    /**
+     * @return preferred placement of the image. Default placement is `iconBefore` if undefined.
+     */
+    @Nullable
+    public abstract ColorPlacement getColorPlacement();
 
-    resourcePrefix 'rs2_'
-}
+    public abstract String getImageIdentifier();
 
-dependencies {
-    implementation fileTree(dir: 'libs', include: ['*.jar'])
-    api project(':domain')
-    api 'com.android.support:support-annotations:27.1.1'
-
-    implementation 'com.google.guava:guava:24.1-android'
-    implementation "android.arch.lifecycle:extensions:1.1.1"
-    implementation 'org.slf4j:slf4j-api:1.7.21'
-
-    api 'com.google.dagger:dagger-android:2.15'
-    api 'com.google.dagger:dagger-android-support:2.15'
-    annotationProcessor 'com.google.dagger:dagger-android-processor:2.15'
-    annotationProcessor "com.google.dagger:dagger-compiler:2.15"
-
-    implementation 'com.google.auto.value:auto-value-annotations:1.6'
-    implementation 'com.ryanharter.auto.value:auto-value-parcel-adapter:0.2.6'
-
-    annotationProcessor "com.google.auto.value:auto-value:1.6"
-    annotationProcessor 'com.ryanharter.auto.value:auto-value-parcel:0.2.6'
-
-    implementation 'com.android.support:appcompat-v7:27.1.1'
-    testImplementation 'junit:junit:4.12'
-    androidTestImplementation 'com.android.support.test:runner:1.0.1'
-    androidTestImplementation 'com.android.support.test.espresso:espresso-core:3.0.1'
+    public abstract Builder toBuilder();
 }

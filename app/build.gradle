@@ -87,13 +87,13 @@ dependencies {
     annotationProcessor "android.arch.lifecycle:compiler:1.1.1"
     implementation 'com.android.support:appcompat-v7:27.1.1'
 
-    api 'com.google.dagger:dagger-android:2.14.1'
-    api 'com.google.dagger:dagger-android-support:2.14.1'
-    annotationProcessor 'com.google.dagger:dagger-android-processor:2.14.1'
-    annotationProcessor "com.google.dagger:dagger-compiler:2.14.1"
+    api 'com.google.dagger:dagger-android:2.15'
+    api 'com.google.dagger:dagger-android-support:2.15'
+    annotationProcessor 'com.google.dagger:dagger-android-processor:2.15'
+    annotationProcessor "com.google.dagger:dagger-compiler:2.15"
 
-    testAnnotationProcessor 'com.google.dagger:dagger-android-processor:2.14.1'
-    testAnnotationProcessor "com.google.dagger:dagger-compiler:2.14.1"
+    testAnnotationProcessor 'com.google.dagger:dagger-android-processor:2.15'
+    testAnnotationProcessor "com.google.dagger:dagger-compiler:2.15"
 
     testImplementation 'junit:junit:4.12'
     testImplementation "android.arch.core:core-testing:1.1.1"

@@ -34,6 +34,8 @@ package org.sagebionetworks.research.app;
 
 import com.google.gson.Gson;
 
+import org.sagebionetworks.research.app.inject.AppStepModule;
+
 import dagger.Component;
 import javax.inject.Singleton;
 

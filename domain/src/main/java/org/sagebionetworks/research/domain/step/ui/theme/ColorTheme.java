@@ -30,52 +30,33 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.sagebionetworks.research.mobile_ui.show_step.view;
+package org.sagebionetworks.research.domain.step.ui.theme;
 
-import android.os.Bundle;
-import android.support.annotation.LayoutRes;
 import android.support.annotation.NonNull;
 
-import org.sagebionetworks.research.domain.mobile_ui.R;
-import org.sagebionetworks.research.mobile_ui.widget.ActionButton;
-import org.sagebionetworks.research.presentation.ActionType;
-import org.sagebionetworks.research.presentation.model.StepView;
-import org.sagebionetworks.research.presentation.show_step.ShowGenericStepViewModel;
+import com.google.auto.value.AutoValue;
+import com.google.common.collect.ImmutableMap;
 
-import static com.google.common.base.Preconditions.checkNotNull;
+import java.util.Map;
 
-public class GenericFragmentStep extends StepFragmentBase<StepView, ShowGenericStepViewModel> {
-    private static final String ARGUMENT_STEP_VIEW = "STEP_VIEW";
+@AutoValue
+public abstract class ColorTheme {
+    @AutoValue.Builder
+    public static abstract class Builder {
+        public abstract ColorTheme build();
 
-    public static GenericFragmentStep newInstance(@NonNull StepView stepView) {
-        checkNotNull(stepView);
+        public abstract Builder setColorStyles(@NonNull Map<ColorPlacement, ColorStyle> colorStyles);
 
-        GenericFragmentStep fragment = new GenericFragmentStep();
-        Bundle args = StepFragmentBase.createArguments(stepView);
-        fragment.setArguments(args);
-        return fragment;
+        public abstract Builder setLightStyle(boolean isLightStyle);
     }
 
-    public GenericFragmentStep() {
-        // Required empty public constructor
+    public static Builder builder() {
+        return new AutoValue_ColorTheme.Builder();
     }
 
-    @Override
-    @LayoutRes
-    protected int getLayoutId() {
-        return R.layout.rs2_generic_step;
-    }
+    public abstract ImmutableMap<ColorPlacement, ColorStyle> getColorStyles();
 
-    @Override
-    protected void handleActionButtonClick(@NonNull ActionButton ab) {
-        int actionButtonId = ab.getId();
+    public abstract boolean isLightStyle();
 
-        String actionType = null;
-        if (R.id.rs2_step_navigation_action_forward == actionButtonId) {
-            actionType = ActionType.FORWARD;
-        } else if (R.id.rs2_step_navigation_action_backward == actionButtonId) {
-            actionType = ActionType.BACKWARD;
-        }
-        showStepViewModel.handleAction(actionType);
-    }
+    public abstract Builder toBuilder();
 }

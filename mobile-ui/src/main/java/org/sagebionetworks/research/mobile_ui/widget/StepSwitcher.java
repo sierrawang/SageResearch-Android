@@ -30,7 +30,7 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.sagebionetworks.research.domain.ui.widget;
+package org.sagebionetworks.research.mobile_ui.widget;
 
 import android.app.Fragment;
 import android.content.Context;

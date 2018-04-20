@@ -30,8 +30,9 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.sagebionetworks.research.app;
+package org.sagebionetworks.research.app.inject;
 
+import org.sagebionetworks.research.app.InstructionStep;
 import org.sagebionetworks.research.domain.inject.StepModule;
 import org.sagebionetworks.research.domain.inject.StepModule.StepClassKey;
 

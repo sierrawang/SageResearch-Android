@@ -32,10 +32,15 @@
 
 package org.sagebionetworks.research.domain.step.ui;
 
-import android.support.annotation.StyleRes;
+import android.support.annotation.Nullable;
+
+import org.sagebionetworks.research.domain.step.ui.theme.ColorTheme;
+import org.sagebionetworks.research.domain.step.ui.theme.ImageTheme;
 
 public interface ThemedUIStep extends UIStep {
-    // TODO: translate to Android
-    @StyleRes
-    int getViewTheme();
+    @Nullable
+    ColorTheme getColorTheme();
+
+    @Nullable
+    ImageTheme getImageTheme();
 }

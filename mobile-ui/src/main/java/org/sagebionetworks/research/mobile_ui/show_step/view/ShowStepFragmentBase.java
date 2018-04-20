@@ -42,7 +42,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-import org.sagebionetworks.research.mobile_ui.perform_task.PerformTaskFragment2;
+import org.sagebionetworks.research.mobile_ui.perform_task.PerformTaskFragment;
 import org.sagebionetworks.research.mobile_ui.widget.ActionButton;
 import org.sagebionetworks.research.presentation.model.StepView;
 import org.sagebionetworks.research.presentation.perform_task.PerformTaskViewModel;
@@ -56,11 +56,11 @@ import javax.inject.Inject;
 
 import static com.google.common.base.Preconditions.checkNotNull;
 
-public abstract class StepFragmentBase<S extends StepView, VM extends ShowStepViewModel<S>> extends Fragment {
+public abstract class ShowStepFragmentBase<S extends StepView, VM extends ShowStepViewModel<S>> extends Fragment {
     private static final String ARGUMENT_STEP_VIEW = "STEP_VIEW";
 
     @Inject
-    protected PerformTaskFragment2 performTaskFragment2;
+    protected PerformTaskFragment performTaskFragment;
 
     protected PerformTaskViewModel performTaskViewModel;
 
@@ -90,8 +90,8 @@ public abstract class StepFragmentBase<S extends StepView, VM extends ShowStepVi
 
         super.onAttach(context);
 
-        // gets the PerformTaskViewModel instance of performTaskFragment2
-        performTaskViewModel = ViewModelProviders.of(performTaskFragment2).get(PerformTaskViewModel.class);
+        // gets the PerformTaskViewModel instance of performTaskFragment
+        performTaskViewModel = ViewModelProviders.of(performTaskFragment).get(PerformTaskViewModel.class);
 
     }
 

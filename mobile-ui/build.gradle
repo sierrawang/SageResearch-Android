@@ -77,10 +77,10 @@ dependencies {
 //    annotationProcessor 'com.ryanharter.auto.value:auto-value-gson:0.7.0'
 //    annotationProcessor 'com.ryanharter.auto.value:auto-value-parcel:0.2.6'
 
-    api 'com.google.dagger:dagger-android:2.14.1'
-    api 'com.google.dagger:dagger-android-support:2.14.1'
-    annotationProcessor 'com.google.dagger:dagger-android-processor:2.14.1'
-    annotationProcessor "com.google.dagger:dagger-compiler:2.14.1"
+    api 'com.google.dagger:dagger-android:2.15'
+    api 'com.google.dagger:dagger-android-support:2.15'
+    annotationProcessor 'com.google.dagger:dagger-android-processor:2.15'
+    annotationProcessor "com.google.dagger:dagger-compiler:2.15"
 
     implementation 'com.jakewharton:butterknife:8.8.1'
     implementation 'com.android.support:support-v4:27.1.1'

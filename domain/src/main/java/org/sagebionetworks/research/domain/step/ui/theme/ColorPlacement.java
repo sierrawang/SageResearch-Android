@@ -30,26 +30,8 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.sagebionetworks.research.mobile_ui.inject;
+package org.sagebionetworks.research.domain.step.ui.theme;
 
-import org.sagebionetworks.research.mobile_ui.perform_task.PerformTaskFragment;
-
-import dagger.Subcomponent;
-import dagger.android.AndroidInjector;
-
-@PerformTaskFragmentScope
-@Subcomponent(modules = ShowStepModule.class)
-public abstract class TaskActivityFragmentSubcomponent implements AndroidInjector<PerformTaskFragment> {
-
-//    public abstract PerformTaskFragment providePerformTaskFragment2();
-
-    @Subcomponent.Builder
-    public static abstract class Builder extends AndroidInjector.Builder<PerformTaskFragment> {
-        public abstract TaskActivityFragmentSubcomponent build();
-    }
-
-//    static PerformTaskViewModelFactory providePerformTaskViewModelFactory(
-//            StepNavigatorFactory stepNavigatorFactory) {
-//        return new PerformTaskViewModelFactory(stepNavigatorFactory);
-//    }
+public enum ColorPlacement {
+    HEADER, BODY, FOOTER;
 }

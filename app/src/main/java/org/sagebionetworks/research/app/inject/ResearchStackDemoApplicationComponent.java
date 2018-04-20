@@ -30,26 +30,18 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.sagebionetworks.research.mobile_ui.inject;
+package org.sagebionetworks.research.app.inject;
 
-import org.sagebionetworks.research.mobile_ui.perform_task.PerformTaskFragment;
+import org.sagebionetworks.research.app.ResearchStackDemoApplication;
+import org.sagebionetworks.research.data.inject.DataModule;
+import org.sagebionetworks.research.mobile_ui.inject.PerformTaskModule;
 
-import dagger.Subcomponent;
-import dagger.android.AndroidInjector;
+import dagger.Component;
+import dagger.android.AndroidInjectionModule;
+import javax.inject.Singleton;
 
-@PerformTaskFragmentScope
-@Subcomponent(modules = ShowStepModule.class)
-public abstract class TaskActivityFragmentSubcomponent implements AndroidInjector<PerformTaskFragment> {
-
-//    public abstract PerformTaskFragment providePerformTaskFragment2();
-
-    @Subcomponent.Builder
-    public static abstract class Builder extends AndroidInjector.Builder<PerformTaskFragment> {
-        public abstract TaskActivityFragmentSubcomponent build();
-    }
-
-//    static PerformTaskViewModelFactory providePerformTaskViewModelFactory(
-//            StepNavigatorFactory stepNavigatorFactory) {
-//        return new PerformTaskViewModelFactory(stepNavigatorFactory);
-//    }
+@Component(modules = {AndroidInjectionModule.class, PerformTaskModule.class, DataModule.class})
+@Singleton
+public abstract class ResearchStackDemoApplicationComponent {
+    public abstract void inject(ResearchStackDemoApplication app);
 }

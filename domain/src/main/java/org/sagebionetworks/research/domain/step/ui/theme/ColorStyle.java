@@ -30,28 +30,10 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.sagebionetworks.research.app;
+package org.sagebionetworks.research.domain.step.ui.theme;
 
-import android.support.multidex.MultiDexApplication;
-import android.support.v4.app.Fragment;
-
-import dagger.android.AndroidInjector;
-import dagger.android.DispatchingAndroidInjector;
-import dagger.android.support.HasSupportFragmentInjector;
-import javax.inject.Inject;
-
-public class ResearchStackApplication extends MultiDexApplication implements HasSupportFragmentInjector {
-    @Inject
-    DispatchingAndroidInjector<Fragment> dispatchingSupportFragmentInjector;
-
-    @Override
-    public void onCreate() {
-        super.onCreate();
-        DaggerResearchStackApplicationComponent.create().inject(this);
-    }
-
-    @Override
-    public AndroidInjector<Fragment> supportFragmentInjector() {
-        return dispatchingSupportFragmentInjector;
-    }
+public enum ColorStyle {
+    DARK_BACKGROUND,
+    LIGHT_BACKGROUND,
+    CUSTOM_BACKGROUND
 }

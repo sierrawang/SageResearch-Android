@@ -40,6 +40,7 @@ import android.support.annotation.MainThread;
 import android.support.annotation.NonNull;
 
 import org.sagebionetworks.research.domain.presentation.model.LoadableResource;
+import org.sagebionetworks.research.domain.repository.TaskRepository;
 import org.sagebionetworks.research.domain.result.Result;
 import org.sagebionetworks.research.domain.result.TaskResult;
 import org.sagebionetworks.research.domain.step.Step;
@@ -131,7 +132,7 @@ public class PerformTaskViewModel extends ViewModel {
 
 
     public PerformTaskViewModel(@NonNull TaskView taskView, @NonNull StepNavigatorFactory stepNavigatorFactory,
-            @NonNull StepMapper stepMapper) {
+            @NonNull TaskRepository taskRepository, @NonNull StepMapper stepMapper) {
         this.taskView = checkNotNull(taskView);
         this.stepNavigatorFactory = checkNotNull(stepNavigatorFactory);
 

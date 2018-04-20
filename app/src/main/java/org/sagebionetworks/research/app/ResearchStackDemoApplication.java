@@ -30,26 +30,30 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.sagebionetworks.research.mobile_ui.inject;
+package org.sagebionetworks.research.app;
 
-import org.sagebionetworks.research.mobile_ui.perform_task.PerformTaskFragment;
+import android.support.multidex.MultiDexApplication;
+import android.support.v4.app.Fragment;
 
-import dagger.Subcomponent;
+import org.sagebionetworks.research.app.inject.DaggerResearchStackDemoApplicationComponent;
+
 import dagger.android.AndroidInjector;
+import dagger.android.DispatchingAndroidInjector;
+import dagger.android.support.HasSupportFragmentInjector;
+import javax.inject.Inject;
 
-@PerformTaskFragmentScope
-@Subcomponent(modules = ShowStepModule.class)
-public abstract class TaskActivityFragmentSubcomponent implements AndroidInjector<PerformTaskFragment> {
+public class ResearchStackDemoApplication extends MultiDexApplication implements HasSupportFragmentInjector {
+    @Inject
+    DispatchingAndroidInjector<Fragment> dispatchingSupportFragmentInjector;
 
-//    public abstract PerformTaskFragment providePerformTaskFragment2();
-
-    @Subcomponent.Builder
-    public static abstract class Builder extends AndroidInjector.Builder<PerformTaskFragment> {
-        public abstract TaskActivityFragmentSubcomponent build();
+    @Override
+    public void onCreate() {
+        super.onCreate();
+        DaggerResearchStackDemoApplicationComponent.create().inject(this);
     }
 
-//    static PerformTaskViewModelFactory providePerformTaskViewModelFactory(
-//            StepNavigatorFactory stepNavigatorFactory) {
-//        return new PerformTaskViewModelFactory(stepNavigatorFactory);
-//    }
+    @Override
+    public AndroidInjector<Fragment> supportFragmentInjector() {
+        return dispatchingSupportFragmentInjector;
+    }
 }

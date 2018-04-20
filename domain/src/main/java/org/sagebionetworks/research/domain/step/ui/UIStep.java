@@ -45,10 +45,9 @@ public interface UIStep extends Step {
     /**
      * The primary text to display for the step in a localized string.
      *
-     * @return resource id for title text
+     * @return itle text
      */
-    @StringRes
-    int getTitle();
+    String getTitle();
 
     /**
      * Additional text to display for the step in a localized string.
@@ -56,20 +55,18 @@ public interface UIStep extends Step {
      * The additional text is often displayed in a smaller font below `title`. If you need to display a long
      * question, it can work well to keep the title short and put the additional content in the `text` property.
      *
-     * @return resource id for additional text
+     * @return additional text
      */
-    @StringRes
-    int getText();
+    String getText();
 
     /**
      * Additional detailed explanation for the step.
      * <p>
      * The font size and display of this property will depend upon the device type.
      *
-     * @return resource id for detail text
+     * @return  detail text
      */
-    @StringRes
-    int getDetail();
+    String getDetail();
 
     /**
      * The font size and display of this property will depend upon the device type.
@@ -78,8 +75,7 @@ public interface UIStep extends Step {
      * used in order to include disclaimer, copyright, etc. that is important to display in the step but should not
      * distract from the main purpose of the step.
      *
-     * @return resource id for footnote text
+     * @return footnote text
      */
-    @StringRes
-    int getFootnote();
+    String getFootnote();
 }

@@ -35,7 +35,7 @@ package org.sagebionetworks.research.app;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 
-import org.sagebionetworks.research.mobile_ui.perform_task.PerformTaskFragment2;
+import org.sagebionetworks.research.mobile_ui.perform_task.PerformTaskFragment;
 import org.sagebionetworks.research.presentation.model.TaskView;
 
 public class MainActivity extends AppCompatActivity {
@@ -48,7 +48,7 @@ public class MainActivity extends AppCompatActivity {
 
         TaskView taskView = getIntent().getParcelableExtra(EXTRA_TASK_VIEW);
 
-        PerformTaskFragment2 performTaskFragment = (PerformTaskFragment2) getSupportFragmentManager()
+        PerformTaskFragment performTaskFragment = (PerformTaskFragment) getSupportFragmentManager()
                 .findFragmentById(R.id.contentFrame);
 
         if (taskView == null) {
@@ -57,7 +57,7 @@ public class MainActivity extends AppCompatActivity {
                     .build();
         }
         if (performTaskFragment == null) {
-            performTaskFragment = PerformTaskFragment2.newInstance(taskView);
+            performTaskFragment = PerformTaskFragment.newInstance(taskView);
 
             getSupportFragmentManager()
                     .beginTransaction()

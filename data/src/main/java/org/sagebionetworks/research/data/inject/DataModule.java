@@ -30,16 +30,18 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.sagebionetworks.research.app;
+package org.sagebionetworks.research.data.inject;
 
-import org.sagebionetworks.research.mobile_ui.inject.PerformTaskModule;
+import org.sagebionetworks.research.data.FakeTaskRepository;
+import org.sagebionetworks.research.domain.repository.TaskRepository;
 
-import dagger.Component;
-import dagger.android.AndroidInjectionModule;
-import javax.inject.Singleton;
+import dagger.Module;
+import dagger.Provides;
 
-@Component(modules = {AndroidInjectionModule.class, PerformTaskModule.class})
-@Singleton
-public interface ResearchStackApplicationComponent {
-    void inject(ResearchStackApplication app);
+@Module
+public class DataModule {
+    @Provides
+    TaskRepository provideTaskRepository() {
+        return new FakeTaskRepository();
+    }
 }

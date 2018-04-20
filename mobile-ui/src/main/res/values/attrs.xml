@@ -32,11 +32,6 @@
   -->
 
 <resources>
-    <declare-styleable name="GenericStep">
-        <attr name="title" format="string"/>
-        <attr name="description" format="string"/>
-    </declare-styleable>
-
     <declare-styleable name="CustomActionButton">
 
     </declare-styleable>

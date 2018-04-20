@@ -34,9 +34,10 @@ package org.sagebionetworks.research.mobile_ui.mapper;
 
 import android.support.annotation.NonNull;
 
-import org.sagebionetworks.research.domain.ui.show_step.view.GenericStep;
 import org.sagebionetworks.research.mobile_ui.model.StepViewModel;
-import org.sagebionetworks.research.mobile_ui.perform_task.PerformTaskFragment2;
+import org.sagebionetworks.research.mobile_ui.perform_task.PerformTaskFragment;
+import org.sagebionetworks.research.mobile_ui.show_step.view.ShowStepFragment;
+import org.sagebionetworks.research.mobile_ui.show_step.view.ShowStepFragmentBase;
 import org.sagebionetworks.research.presentation.model.StepView;
 
 import javax.inject.Inject;
@@ -46,15 +47,16 @@ import javax.inject.Inject;
  * this layer.
  */
 public class StepMapper {
-    private final PerformTaskFragment2 performTaskFragment;
+    private final PerformTaskFragment performTaskFragment;
 
     @Inject
-    public StepMapper(PerformTaskFragment2 fragment) {
+    public StepMapper(PerformTaskFragment fragment) {
         performTaskFragment = fragment;
     }
 
     @NonNull
-    public GenericStep create(@NonNull StepView input) {
-        return new GenericStep(performTaskFragment.getContext());
+    public ShowStepFragmentBase create(@NonNull StepView input) {
+        // TODO: handle other types of Steps
+        return ShowStepFragment.newInstance(input);
     }
 }

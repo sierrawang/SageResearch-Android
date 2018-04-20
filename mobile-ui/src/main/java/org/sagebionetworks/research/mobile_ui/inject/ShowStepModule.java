@@ -33,7 +33,7 @@
 package org.sagebionetworks.research.mobile_ui.inject;
 
 import org.sagebionetworks.research.mobile_ui.inject.ShowStepFragmentSubcomponent.Builder;
-import org.sagebionetworks.research.mobile_ui.show_step.view.GenericFragmentStep;
+import org.sagebionetworks.research.mobile_ui.show_step.view.ShowStepFragment;
 
 import dagger.Binds;
 import dagger.Module;
@@ -42,11 +42,10 @@ import dagger.android.support.FragmentKey;
 import dagger.multibindings.IntoMap;
 
 @Module(subcomponents = {ShowStepFragmentSubcomponent.class})
-@ShowStepFragmentScope
 public abstract class ShowStepModule {
     @Binds
     @IntoMap
-    @FragmentKey(GenericFragmentStep.class)
+    @FragmentKey(ShowStepFragment.class)
     abstract AndroidInjector.Factory<? extends android.support.v4.app.Fragment>
     bindTaskActivityFragmentInjectoryFactory(
             Builder builder);

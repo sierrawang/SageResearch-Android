@@ -30,26 +30,34 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.sagebionetworks.research.mobile_ui.inject;
+package org.sagebionetworks.research.data.model.step;
 
-import org.sagebionetworks.research.mobile_ui.perform_task.PerformTaskFragment;
+import com.google.auto.value.AutoValue;
 
-import dagger.Subcomponent;
-import dagger.android.AndroidInjector;
+import org.sagebionetworks.research.domain.step.ui.UIStep;
 
-@PerformTaskFragmentScope
-@Subcomponent(modules = ShowStepModule.class)
-public abstract class TaskActivityFragmentSubcomponent implements AndroidInjector<PerformTaskFragment> {
+@AutoValue
+public abstract class ConcreteUIStep implements UIStep {
+    @AutoValue.Builder
+    public static abstract class Builder {
+        public abstract ConcreteUIStep build();
 
-//    public abstract PerformTaskFragment providePerformTaskFragment2();
+        public abstract Builder setDetail(String detail);
 
-    @Subcomponent.Builder
-    public static abstract class Builder extends AndroidInjector.Builder<PerformTaskFragment> {
-        public abstract TaskActivityFragmentSubcomponent build();
+        public abstract Builder setFootnote(String footnote);
+
+        public abstract Builder setIdentifier(String identifier);
+
+        public abstract Builder setText(String text);
+
+        public abstract Builder setTitle(String title);
+
+        public abstract Builder setType(String type);
     }
 
-//    static PerformTaskViewModelFactory providePerformTaskViewModelFactory(
-//            StepNavigatorFactory stepNavigatorFactory) {
-//        return new PerformTaskViewModelFactory(stepNavigatorFactory);
-//    }
+    public static Builder builder() {
+        return new AutoValue_ConcreteUIStep.Builder();
+    }
+
+    public abstract Builder toBuilder();
 }
