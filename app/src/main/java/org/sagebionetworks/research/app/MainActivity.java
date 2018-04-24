@@ -57,7 +57,7 @@ public class MainActivity extends AppCompatActivity {
                     .build();
         }
         if (performTaskFragment == null) {
-            performTaskFragment = PerformTaskFragment.newInstance(taskView);
+            performTaskFragment = PerformTaskFragment.newInstance("taskId");
 
             getSupportFragmentManager()
                     .beginTransaction()

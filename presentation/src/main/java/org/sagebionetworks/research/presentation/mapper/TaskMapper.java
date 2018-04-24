@@ -40,10 +40,17 @@ import com.google.common.base.Function;
 import org.sagebionetworks.research.domain.task.Task;
 import org.sagebionetworks.research.presentation.model.TaskView;
 
+import javax.inject.Inject;
+
 /**
  * Map a {@link Task} to a {@link TaskView} when data is moving between the Domain layer and this layer.
  */
 public class TaskMapper implements Function<Task, TaskView> {
+    @Inject
+    public TaskMapper() {
+
+    }
+
     @Override
     @NonNull
     public TaskView apply(@NonNull Task input) {

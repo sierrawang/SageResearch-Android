@@ -32,13 +32,16 @@
 
 package org.sagebionetworks.research.domain.repository;
 
+import android.support.annotation.CheckResult;
 import android.support.annotation.NonNull;
 
+import org.sagebionetworks.research.domain.result.TaskResult;
 import org.sagebionetworks.research.domain.step.Step;
 import org.sagebionetworks.research.domain.task.Task;
 
 import java.util.List;
 
+import io.reactivex.Completable;
 import io.reactivex.Single;
 
 public interface TaskRepository {
@@ -47,4 +50,8 @@ public interface TaskRepository {
 
     @NonNull
     Single<List<Step>> getTaskSteps(Task task);
+
+    @NonNull
+    @CheckResult
+    Completable setTaskResult(TaskResult taskResult);
 }

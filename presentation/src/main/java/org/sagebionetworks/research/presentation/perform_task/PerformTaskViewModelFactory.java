@@ -38,30 +38,29 @@ import android.support.annotation.NonNull;
 
 import org.sagebionetworks.research.domain.repository.TaskRepository;
 import org.sagebionetworks.research.domain.task.navigation.StepNavigatorFactory;
-import org.sagebionetworks.research.presentation.mapper.StepMapper;
-import org.sagebionetworks.research.presentation.model.TaskView;
+import org.sagebionetworks.research.presentation.mapper.TaskMapper;
 
 import javax.inject.Inject;
 
 import static com.google.common.base.Preconditions.checkNotNull;
 
 public class PerformTaskViewModelFactory {
-    private final StepMapper stepMapper;
+    private final TaskMapper taskMapper;
 
     private final StepNavigatorFactory stepNavigatorFactory;
 
     private final TaskRepository taskRepository;
 
     @Inject
-    public PerformTaskViewModelFactory(StepNavigatorFactory stepNavigatorFactory, StepMapper stepMapper,
+    public PerformTaskViewModelFactory(StepNavigatorFactory stepNavigatorFactory, TaskMapper taskMapper,
             final TaskRepository taskRepository) {
         this.stepNavigatorFactory = stepNavigatorFactory;
-        this.stepMapper = stepMapper;
+        this.taskMapper = taskMapper;
         this.taskRepository = taskRepository;
     }
 
-    public ViewModelProvider.Factory create(@NonNull TaskView taskView) {
-        checkNotNull(taskView);
+    public ViewModelProvider.Factory create(@NonNull String taskIdentifier) {
+        checkNotNull(taskIdentifier);
 
         return new ViewModelProvider.Factory() {
             @NonNull
@@ -70,7 +69,8 @@ public class PerformTaskViewModelFactory {
             public <T extends ViewModel> T create(@NonNull Class<T> modelClass) {
                 if (modelClass.isAssignableFrom(PerformTaskViewModel.class)) {
                     // noinspection unchecked
-                    return (T) new PerformTaskViewModel(taskView, stepNavigatorFactory, taskRepository, stepMapper);
+                    return (T) new PerformTaskViewModel(taskIdentifier, stepNavigatorFactory, taskRepository,
+                            taskMapper);
                 }
                 throw new IllegalArgumentException("Unknown ViewModel class");
             }

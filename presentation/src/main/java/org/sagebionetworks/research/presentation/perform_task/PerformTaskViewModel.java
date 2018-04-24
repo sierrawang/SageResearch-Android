@@ -34,10 +34,10 @@ package org.sagebionetworks.research.presentation.perform_task;
 
 import android.arch.lifecycle.LiveData;
 import android.arch.lifecycle.MutableLiveData;
-import android.arch.lifecycle.Transformations;
 import android.arch.lifecycle.ViewModel;
 import android.support.annotation.MainThread;
 import android.support.annotation.NonNull;
+import android.support.annotation.VisibleForTesting;
 
 import org.sagebionetworks.research.domain.presentation.model.LoadableResource;
 import org.sagebionetworks.research.domain.repository.TaskRepository;
@@ -45,10 +45,9 @@ import org.sagebionetworks.research.domain.result.Result;
 import org.sagebionetworks.research.domain.result.TaskResult;
 import org.sagebionetworks.research.domain.step.Step;
 import org.sagebionetworks.research.domain.task.Task;
-import org.sagebionetworks.research.domain.task.Task.Progress;
 import org.sagebionetworks.research.domain.task.navigation.StepNavigator;
 import org.sagebionetworks.research.domain.task.navigation.StepNavigatorFactory;
-import org.sagebionetworks.research.presentation.mapper.StepMapper;
+import org.sagebionetworks.research.presentation.mapper.TaskMapper;
 import org.sagebionetworks.research.presentation.model.StepView;
 import org.sagebionetworks.research.presentation.model.StepView.NavDirection;
 import org.sagebionetworks.research.presentation.model.TaskView;
@@ -56,7 +55,10 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.threeten.bp.Instant;
 
+import java.util.List;
 import java.util.UUID;
+
+import io.reactivex.disposables.CompositeDisposable;
 
 import static com.google.common.base.Preconditions.checkNotNull;
 
@@ -64,83 +66,43 @@ import static com.google.common.base.Preconditions.checkNotNull;
 public class PerformTaskViewModel extends ViewModel {
     private static final Logger LOGGER = LoggerFactory.getLogger(PerformTaskViewModel.class);
 
+    private final CompositeDisposable compositeDisposable;
+
     private final MutableLiveData<Step> currentStepLiveData;
 
-    private final LiveData<Step> nextStepLiveData;
-
-    private final LiveData<Step> previousStepLiveData;
-
-    private final LiveData<Progress> progressLiveData;
-
-    private StepNavigator stepNavigator = new StepNavigator() {
-        @Override
-        public Step getStep(final String identifier) {
-            return null;
-        }
-
-        @Override
-        public Step getNextStep(final Step step, final TaskResult taskResult) {
-            return new Step() {
-                @NonNull
-                @Override
-                public String getIdentifier() {
-                    return UUID.randomUUID().toString();
-                }
-
-                @NonNull
-                @Override
-                public String getType() {
-                    return "step";
-                }
-            };
-        }
-
-        @Override
-        public Step getPreviousStep(final Step step, final TaskResult taskResult) {
-            return new Step() {
-                @NonNull
-                @Override
-                public String getIdentifier() {
-                    return UUID.randomUUID().toString();
-                }
-
-                @NonNull
-                @Override
-                public String getType() {
-                    return "step";
-                }
-            };
-        }
-
-        @Override
-        public Progress getProgress(final Step step, final TaskResult taskResult) {
-            return null;
-        }
-    };
+    private StepNavigator stepNavigator;
 
     private final StepNavigatorFactory stepNavigatorFactory;
 
     private final MutableLiveData<StepView> stepViewLiveData;
 
+    private final String taskIdentifier;
+
     private final MutableLiveData<LoadableResource<Task>> taskLiveData;
+
+    private final TaskMapper taskMapper;
+
+    private final TaskRepository taskRepository;
 
     private final TaskResult.Builder taskResultBuilder;
 
     private final MutableLiveData<TaskResult> taskResultLiveData;
 
-    private final TaskView taskView;
+    private TaskView taskView;
 
-
-    public PerformTaskViewModel(@NonNull TaskView taskView, @NonNull StepNavigatorFactory stepNavigatorFactory,
-            @NonNull TaskRepository taskRepository, @NonNull StepMapper stepMapper) {
-        this.taskView = checkNotNull(taskView);
+    public PerformTaskViewModel(@NonNull String taskIdentifier, @NonNull StepNavigatorFactory stepNavigatorFactory,
+            @NonNull TaskRepository taskRepository, @NonNull TaskMapper taskMapper) {
+        this.taskIdentifier = checkNotNull(taskIdentifier);
         this.stepNavigatorFactory = checkNotNull(stepNavigatorFactory);
+        this.taskRepository = checkNotNull(taskRepository);
+        this.taskMapper = checkNotNull(taskMapper);
 
         taskLiveData = new MutableLiveData<>();
         taskResultLiveData = new MutableLiveData<>();
-//        currentStepLiveData = new MutableLiveData<>();
         taskResultBuilder = new TaskResult.Builder("id", UUID.randomUUID());
         taskResultBuilder.setStartTime(Instant.now());
+
+        initTaskSteps();
 
         taskResultLiveData.setValue(taskResultBuilder.build());
 
@@ -148,24 +110,21 @@ public class PerformTaskViewModel extends ViewModel {
         currentStepLiveData.setValue(null);
 
         stepViewLiveData = new MutableLiveData<>();
-
-        nextStepLiveData = Transformations.switchMap(currentStepLiveData, (Step s) ->
-                Transformations.map(taskResultLiveData, (TaskResult tr) -> stepNavigator.getNextStep(s, tr))
-        );
-        previousStepLiveData = Transformations.switchMap(currentStepLiveData, (Step s) ->
-                Transformations.map(taskResultLiveData, (TaskResult tr) -> stepNavigator.getPreviousStep(s, tr))
-        );
-        progressLiveData = Transformations.switchMap(currentStepLiveData, (Step s) ->
-                Transformations.map(taskResultLiveData, (TaskResult tr) -> stepNavigator.getProgress(s, tr))
-        );
+        compositeDisposable = new CompositeDisposable();
     }
 
     public void addAsyncResult(Result result) {
+        if (LOGGER.isDebugEnabled()){
+            LOGGER.debug("addAsyncResult called with result: {}", result);
+        }
         taskResultBuilder.addAsyncResult(result);
         taskResultLiveData.setValue(taskResultBuilder.build());
     }
 
     public void addStepResult(Result result) {
+        if (LOGGER.isDebugEnabled()){
+            LOGGER.debug("addStepResult called with result: {}", result);
+        }
         taskResultBuilder.addStepResult(result);
         taskResultLiveData.setValue(taskResultBuilder.build());
     }
@@ -194,6 +153,7 @@ public class PerformTaskViewModel extends ViewModel {
         LOGGER.debug("goBack called");
 
         Step backStep = stepNavigator.getPreviousStep(currentStepLiveData.getValue(), taskResultBuilder.build());
+        currentStepLiveData.setValue(backStep);
         stepViewLiveData.setValue(
                 StepView.builder()
                         .setIdentifier(backStep.getIdentifier())
@@ -206,11 +166,28 @@ public class PerformTaskViewModel extends ViewModel {
         LOGGER.debug("goForward called");
 
         Step forwardStep = stepNavigator.getNextStep(currentStepLiveData.getValue(), taskResultBuilder.build());
+        currentStepLiveData.setValue(forwardStep);
         stepViewLiveData.setValue(
                 StepView.builder()
                         .setIdentifier(forwardStep.getIdentifier())
                         .setNavDirection(NavDirection.SHIFT_LEFT)
                         .build()
         );
+    }
+
+
+
+    @VisibleForTesting
+    void handleTaskSteps(List<Step> steps, Throwable t) {
+
+    }
+
+    void initTaskSteps() {
+        compositeDisposable.add(taskRepository.getTask(taskIdentifier)
+                .doOnSuccess(task -> {
+                    taskView = taskMapper.apply(task);
+                })
+                .flatMap(taskRepository::getTaskSteps)
+                .subscribe(this::handleTaskSteps));
     }
 }

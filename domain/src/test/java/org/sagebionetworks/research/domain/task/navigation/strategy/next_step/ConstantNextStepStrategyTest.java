@@ -37,7 +37,7 @@ import org.sagebionetworks.research.domain.result.TaskResult;
 import org.sagebionetworks.research.domain.task.navigation.strategy.StepNavigationStrategy.NextStepStrategy;
 
 import static org.junit.Assert.*;
-import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.*;
 
 public class ConstantNextStepStrategyTest {
 

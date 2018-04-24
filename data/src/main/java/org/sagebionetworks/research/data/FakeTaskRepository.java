@@ -38,6 +38,7 @@ import android.support.annotation.Nullable;
 import org.sagebionetworks.research.data.model.step.ConcreteUIStep;
 import org.sagebionetworks.research.domain.Schema;
 import org.sagebionetworks.research.domain.repository.TaskRepository;
+import org.sagebionetworks.research.domain.result.TaskResult;
 import org.sagebionetworks.research.domain.step.Step;
 import org.sagebionetworks.research.domain.step.ui.UIStep;
 import org.sagebionetworks.research.domain.task.Task;
@@ -47,14 +48,12 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.UUID;
 
+import io.reactivex.Completable;
 import io.reactivex.Single;
 import javax.inject.Inject;
 
 public class FakeTaskRepository implements TaskRepository {
-    @Inject
-    public FakeTaskRepository() {
-    }
-
+    @Inject public FakeTaskRepository() {}
     @Override
     public Single<Task> getTask(final String taskIdentifier) {
         return Single.<Task>just(new Task() {
@@ -104,6 +103,12 @@ public class FakeTaskRepository implements TaskRepository {
                 createUIStep(UUID.randomUUID().toString()),
                 createUIStep(UUID.randomUUID().toString())
         ));
+    }
+
+    @NonNull
+    @Override
+    public Completable setTaskResult(final TaskResult taskResult) {
+        return Completable.error(new UnsupportedOperationException("Not implemented yet"));
     }
 
     private UIStep createUIStep(String id) {

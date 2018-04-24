@@ -32,5 +32,10 @@
 
 package org.sagebionetworks.research.mobile_ui.mapper;
 
+import javax.inject.Inject;
+
 public class TaskMapper {
+    @Inject
+    public TaskMapper() {
+    }
 }
