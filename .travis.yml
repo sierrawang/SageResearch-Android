@@ -12,8 +12,9 @@ before_install:
 script:
   - ./gradlew clean build
 
-deploy:
-  provider: script
-  script: ./gradlew bintrayUpload
-  on:
-    branch: master
+#TODO: deploy artifacts
+#deploy:
+#  provider: script
+#  script: ./gradlew bintrayUpload
+#  on:
+#    branch: master
