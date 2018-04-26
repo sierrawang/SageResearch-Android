@@ -26,6 +26,7 @@ import static org.mockito.Mockito.when;
 public class TreeNavigatorTests {
     private static final String TEST_STEP_TYPE = "TEST_STEP";
 
+    // region Mocking
     private static Step mockStep(String identifier, String type) {
         Step step = mock(Step.class);
         when(step.getIdentifier()).thenReturn(identifier);
@@ -82,6 +83,7 @@ public class TreeNavigatorTests {
         when(taskResult.getIdentifier()).thenReturn(identifier);
         return taskResult;
     }
+    // endregion
 
     private static final List<Step> TEST_STEPS;
     private static final List<String> TEST_PROGRESS_MARKERS;
@@ -102,8 +104,7 @@ public class TreeNavigatorTests {
     // the method being called. However, to ensure the test reflects the state the method will actually be called
     // in a TaskResult is created anyway.
 
-    // MARK: Test getProgress().
-
+    // region Test getProgress()
     @Test
     public void testProgess_NoMarkers_FlatHierarchy() {
         List<Step> steps = createSteps(new String[]{"1", "2", "3", "4"});
@@ -232,9 +233,9 @@ public class TreeNavigatorTests {
         Task.Progress progress = TEST_NAVIGATOR.getProgress(TEST_STEPS.get(8), taskResult);
         assertNull(progress);
     }
+    // endregion
 
-    // MARK: test getPreviousStep()
-
+    // region Test getPreviousStep()
     @Test
     public void testBack_From5X() {
         List<Result> stepHistory = new ArrayList<>();
@@ -276,9 +277,9 @@ public class TreeNavigatorTests {
         assertNotNull(previousStep);
         assertEquals("step2", previousStep.getIdentifier());
     }
+    // endregion
 
-    // MARK: test getNextStep()
-
+    // region Test getNextStep()
     @Test
     public void testForward_From5X() {
         List<Result> stepHistory = new ArrayList<>();
@@ -320,10 +321,9 @@ public class TreeNavigatorTests {
         assertNotNull(nextStep);
         assertEquals("step3", nextStep.getIdentifier());
     }
+    // endregion
 
-
-    // MARK: test getStep()
-
+    // region Test getStep()
     @Test
     public void testGetStep() {
         assertEquals(TEST_STEPS.get(0), TEST_NAVIGATOR.getStep("introduction"));
@@ -331,4 +331,5 @@ public class TreeNavigatorTests {
         assertEquals(TEST_STEPS.get(7), TEST_NAVIGATOR.getStep("step7"));
         assertEquals(TEST_STEPS.get(5), TEST_NAVIGATOR.getStep("step5"));
     }
+    // endregion
 }
