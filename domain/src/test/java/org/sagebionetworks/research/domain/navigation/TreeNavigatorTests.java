@@ -19,8 +19,7 @@ public class TreeNavigatorTests extends IndividualNavigatorTests {
         super(new TreeNavigator(TEST_STEPS, TEST_PROGRESS_MARKERS));
     }
 
-    // MARK: Test getProgress().
-
+    // region Test getProgress()
     @Test
     public void testProgess_NoMarkers_FlatHierarchy() {
         List<Step> steps = createSteps(new String[]{"1", "2", "3", "4"});
@@ -33,5 +32,6 @@ public class TreeNavigatorTests extends IndividualNavigatorTests {
         assertEquals(4, progress.getTotal());
         assertTrue(progress.isEstimated());
     }
+    // endregion
 }
 

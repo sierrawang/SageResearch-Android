@@ -34,22 +34,15 @@ package org.sagebionetworks.research.domain.task.navigation.strategy;
 
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
-import android.support.annotation.VisibleForTesting;
-import com.google.common.collect.ImmutableList;
-import com.google.common.collect.ImmutableMap;
-import com.google.common.collect.ImmutableMap.Builder;
 
 import org.sagebionetworks.research.domain.result.Result;
 import org.sagebionetworks.research.domain.result.TaskResult;
 import org.sagebionetworks.research.domain.step.Step;
-import org.sagebionetworks.research.domain.step.ui.action.ActionType.Navigation;
 import org.sagebionetworks.research.domain.task.Task.Progress;
 import org.sagebionetworks.research.domain.task.navigation.StepNavigator;
 import org.sagebionetworks.research.domain.task.navigation.TreeNavigator;
-import org.sagebionetworks.research.domain.task.navigation.strategy.ConditionalStepNavigationStrategy.ReplacementStepNavigationStrategy;
 import org.sagebionetworks.research.domain.task.navigation.strategy.StepNavigationStrategy.BackStepStrategy;
 import org.sagebionetworks.research.domain.task.navigation.strategy.StepNavigationStrategy.NextStepStrategy;
-import org.sagebionetworks.research.domain.task.navigation.strategy.StepNavigationStrategy.NextStepStrategy.Identifiers;
 import org.sagebionetworks.research.domain.task.navigation.strategy.StepNavigationStrategy.SkipStepStrategy;
 
 import java.util.List;
@@ -111,7 +104,7 @@ public class StrategyBasedNavigator implements StepNavigator {
         // If backward navigation is allowed we check the result.
         Step previousStep = null;
         List<Result> stepHistory = taskResult.getStepHistory();
-        int idx = stepHistory.indexOf(step);
+        int idx = stepHistory.indexOf(taskResult.getResult(step.getIdentifier()));
         if (idx > 0) {
             String previousStepId = stepHistory.get(idx - 1).getIdentifier();
             previousStep = this.getStep(previousStepId);
@@ -126,7 +119,7 @@ public class StrategyBasedNavigator implements StepNavigator {
         return previousStep;
     }
 
-    @NonNull
+    @Nullable
     @Override
     public Progress getProgress(@NonNull final Step step, @NonNull TaskResult taskResult) {
         return this.treeNavigator.getProgress(step, taskResult);

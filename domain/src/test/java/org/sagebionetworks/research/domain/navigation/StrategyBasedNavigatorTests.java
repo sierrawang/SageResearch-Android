@@ -7,6 +7,9 @@ import org.sagebionetworks.research.domain.result.TaskResult;
 import org.sagebionetworks.research.domain.step.SectionStep;
 import org.sagebionetworks.research.domain.step.Step;
 import org.sagebionetworks.research.domain.task.Task;
+import org.sagebionetworks.research.domain.task.navigation.strategy.StepNavigationStrategy.BackStepStrategy;
+import org.sagebionetworks.research.domain.task.navigation.strategy.StepNavigationStrategy.NextStepStrategy;
+import org.sagebionetworks.research.domain.task.navigation.strategy.StepNavigationStrategy.SkipStepStrategy;
 import org.sagebionetworks.research.domain.task.navigation.strategy.StrategyBasedNavigator;
 
 import java.util.ArrayList;
@@ -23,64 +26,6 @@ import static org.mockito.Mockito.*;
 public class StrategyBasedNavigatorTests extends IndividualNavigatorTests {
     private static final String SKIP_RESULT_IDENTIFIER = "skip";
     private static final String TEST_STEP_TYPE = "test step";
-
-    private static Step mockTestStep(String identifier, boolean isBackAllowed, String nextStepId,
-            boolean shouldAddSkipRule) {
-        TestStep step = mock(TestStep.class);
-        when(step.getIdentifier()).thenReturn(identifier);
-        when(step.getType()).thenReturn(TEST_STEP_TYPE);
-        when(step.toString()).thenReturn(identifier + ": " + TEST_STEP_TYPE);
-        when(step.isBackAllowed(any(TaskResult.class))).thenReturn(isBackAllowed);
-        when(step.getNextStepIdentifier(any(TaskResult.class))).thenReturn(nextStepId);
-        if (shouldAddSkipRule) {
-            // If we are adding a skip rule, return true for any argument in which the given TaskResult contains a
-            // result with the SKIP_RESULT_IDENTIFIER, false otherwise.
-            TaskResult match = argThat(new ArgumentMatcher<TaskResult>() {
-                @Override
-                public boolean matches(final TaskResult argument) {
-                    return argument != null && argument.getResult(SKIP_RESULT_IDENTIFIER) != null;
-                }
-            });
-            when(step.shouldSkip(match)).thenReturn(true);
-            TaskResult notMatch = argThat(new ArgumentMatcher<TaskResult>() {
-                @Override
-                public boolean matches(final TaskResult argument) {
-                    return argument != null && argument.getResult(SKIP_RESULT_IDENTIFIER) == null;
-                }
-            });
-            when(step.shouldSkip(notMatch)).thenReturn(false);
-        } else {
-            // If we aren't adding a skip rule we always return false.
-            when(step.shouldSkip(any(TaskResult.class))).thenReturn(false);
-        }
-
-        return step;
-    }
-
-    public StrategyBasedNavigatorTests() {
-        super(new StrategyBasedNavigator(TEST_STEPS, TEST_PROGRESS_MARKERS));
-    }
-
-    // MARK: Test getProgress().
-
-    @Test
-    public void testProgess_NoMarkers_FlatHierarchy() {
-        List<Step> steps = createSteps(new String[]{"1", "2", "3", "4"});
-        StrategyBasedNavigator navigator = new StrategyBasedNavigator(steps,null);
-        TaskResult taskResult = mockTaskResult("task", steps.subList(0, 1));
-
-        Task.Progress progress = navigator.getProgress(steps.get(1), taskResult);
-        assertNotNull(progress);
-        assertEquals(2, progress.getProgress());
-        assertEquals(4, progress.getTotal());
-        assertTrue(progress.isEstimated());
-    }
-
-    private TaskResult mockSectionResult(Step step, int from, int to) {
-        SectionStep sectionStep = (SectionStep) step;
-        return mockTaskResult(sectionStep.getIdentifier(), sectionStep.getSteps().subList(from, to));
-    }
-
     private static final List<Step> STRATEGY_TEST_STEPS;
     private static final StrategyBasedNavigator STRATEGY_TEST_NAVIGATOR;
     static {
@@ -101,8 +46,67 @@ public class StrategyBasedNavigatorTests extends IndividualNavigatorTests {
         STRATEGY_TEST_NAVIGATOR = new StrategyBasedNavigator(STRATEGY_TEST_STEPS, TEST_PROGRESS_MARKERS);
     }
 
-    // MARK: test skip rule
+    public StrategyBasedNavigatorTests() {
+        super(new StrategyBasedNavigator(TEST_STEPS, TEST_PROGRESS_MARKERS));
+    }
 
+    // region Mocking
+    private static Step mockTestStep(String identifier, boolean isBackAllowed, String nextStepId,
+            boolean shouldAddSkipRule) {
+        Step step = mock(Step.class, withSettings().extraInterfaces(NextStepStrategy.class,
+                BackStepStrategy.class, SkipStepStrategy.class));
+        when(step.getIdentifier()).thenReturn(identifier);
+        when(step.getType()).thenReturn(TEST_STEP_TYPE);
+        when(step.toString()).thenReturn(identifier + ": " + TEST_STEP_TYPE);
+        when(((BackStepStrategy)step).isBackAllowed(any(TaskResult.class))).thenReturn(isBackAllowed);
+        when(((NextStepStrategy)step).getNextStepIdentifier(any(TaskResult.class))).thenReturn(nextStepId);
+        if (shouldAddSkipRule) {
+            // If we are adding a skip rule, return true for any argument in which the given TaskResult contains a
+            // result with the SKIP_RESULT_IDENTIFIER, false otherwise.
+            TaskResult match = argThat(new ArgumentMatcher<TaskResult>() {
+                @Override
+                public boolean matches(final TaskResult argument) {
+                    return argument != null && argument.getResult(SKIP_RESULT_IDENTIFIER) != null;
+                }
+            });
+            when(((SkipStepStrategy)step).shouldSkip(match)).thenReturn(true);
+            TaskResult notMatch = argThat(new ArgumentMatcher<TaskResult>() {
+                @Override
+                public boolean matches(final TaskResult argument) {
+                    return argument != null && argument.getResult(SKIP_RESULT_IDENTIFIER) == null;
+                }
+            });
+            when(((SkipStepStrategy)step).shouldSkip(notMatch)).thenReturn(false);
+        } else {
+            // If we aren't adding a skip rule we always return false.
+            when(((SkipStepStrategy)step).shouldSkip(any(TaskResult.class))).thenReturn(false);
+        }
+
+        return step;
+    }
+
+    private TaskResult mockSectionResult(Step step, int from, int to) {
+        SectionStep sectionStep = (SectionStep) step;
+        return mockTaskResult(sectionStep.getIdentifier(), sectionStep.getSteps().subList(from, to));
+    }
+    // endregion
+
+    // region Test getProgress()
+    @Test
+    public void testProgess_NoMarkers_FlatHierarchy() {
+        List<Step> steps = createSteps(new String[]{"1", "2", "3", "4"});
+        StrategyBasedNavigator navigator = new StrategyBasedNavigator(steps,null);
+        TaskResult taskResult = mockTaskResult("task", steps.subList(0, 1));
+
+        Task.Progress progress = navigator.getProgress(steps.get(1), taskResult);
+        assertNotNull(progress);
+        assertEquals(2, progress.getProgress());
+        assertEquals(4, progress.getTotal());
+        assertTrue(progress.isEstimated());
+    }
+    // endregion
+
+    // region Test With SkipStepStrategy
     @Test
     public void testSkip_resultPresent_From2() {
         List<Result> stepHistory = new ArrayList<>();
@@ -162,9 +166,9 @@ public class StrategyBasedNavigatorTests extends IndividualNavigatorTests {
         assertNotNull(nextStep);
         assertEquals("step5.X", nextStep.getIdentifier());
     }
+    // endregion
 
-    // MARK: test back rule
-
+    // region Test With BackStepStrategy
     @Test
     public void testBackAllowed_From2() {
         List<Result> stepHistory = new ArrayList<>();
@@ -207,9 +211,9 @@ public class StrategyBasedNavigatorTests extends IndividualNavigatorTests {
         Step previousStep = STRATEGY_TEST_NAVIGATOR.getPreviousStep(STRATEGY_TEST_STEPS.get(7), taskResult);
         assertNull(previousStep);
     }
+    // endregion
 
-    // MARK: test next step rule
-
+    // region Test With NextStepStrategy
     @Test
     public void testNext_fromStep2() {
         TaskResult taskResult = mockTaskResult("task", STRATEGY_TEST_STEPS.subList(0, 2));
@@ -288,4 +292,5 @@ public class StrategyBasedNavigatorTests extends IndividualNavigatorTests {
         assertNotNull(nextStep);
         assertEquals("step6.A", nextStep.getIdentifier());
     }
+    // endregion
 }

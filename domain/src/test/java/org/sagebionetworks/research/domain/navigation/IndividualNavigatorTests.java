@@ -23,10 +23,9 @@ import static junit.framework.Assert.assertNull;
 import static org.mockito.Mockito.*;
 
 public abstract class IndividualNavigatorTests {
-
     private static final String STEP_TYPE = "step";
-    public static final List<Step> TEST_STEPS;
-    public static final List<String> TEST_PROGRESS_MARKERS;
+    protected static final List<Step> TEST_STEPS;
+    protected static final List<String> TEST_PROGRESS_MARKERS;
     static {
         List<Step> steps = new ArrayList<>(createSteps(new String[]{"introduction", "step1", "step2", "step3"}));
         steps.add(mockSectionStep("step4", createSteps(new String[]{"step4.A", "step4.B", "step4.C"})));
@@ -46,6 +45,7 @@ public abstract class IndividualNavigatorTests {
         this.steps = TEST_STEPS;
     }
 
+    // region Mocking
     public static Step mockStep(String identifier) {
         Step step = mock(Step.class);
         when(step.getIdentifier()).thenReturn(identifier);
@@ -104,13 +104,13 @@ public abstract class IndividualNavigatorTests {
         when(taskResult.getIdentifier()).thenReturn(identifier);
         return taskResult;
     }
+    // endregion
 
     // NOTE: For all tests except for the progress ones, creating a TaskResult shouldn't change the behavior of
     // the method being called. However, to ensure the test reflects the state the method will actually be called
     // in a TaskResult is created anyway.
 
-    // MARK: Test getProgress().
-
+    // region Test getProgress()
     @Test
     public void testProgress_MarkersAndSections_Introduction() {
         TaskResult taskResult = mockTaskResult("task", new ArrayList<Step>());
@@ -226,9 +226,9 @@ public abstract class IndividualNavigatorTests {
         Task.Progress progress = navigator.getProgress(steps.get(8), taskResult);
         assertNull(progress);
     }
+    // endregion
 
-    // MARK: test getPreviousStep()
-
+    // region Test getPreviousStep()
     @Test
     public void testBack_From5X() {
         List<Result> stepHistory = new ArrayList<>();
@@ -270,9 +270,9 @@ public abstract class IndividualNavigatorTests {
         assertNotNull(previousStep);
         assertEquals("step2", previousStep.getIdentifier());
     }
+    // endregion
 
-    // MARK: test getNextStep()
-
+    // region Test getNextStep()
     @Test
     public void testForward_From5X() {
         List<Result> stepHistory = new ArrayList<>();
@@ -314,10 +314,9 @@ public abstract class IndividualNavigatorTests {
         assertNotNull(nextStep);
         assertEquals("step3", nextStep.getIdentifier());
     }
+    // endregion
 
-
-    // MARK: test getStep()
-
+    // region Test getStep()
     @Test
     public void testGetStep() {
         assertEquals(steps.get(0), navigator.getStep("introduction"));
@@ -325,4 +324,5 @@ public abstract class IndividualNavigatorTests {
         assertEquals(steps.get(7), navigator.getStep("step7"));
         assertEquals(steps.get(5), navigator.getStep("step5"));
     }
+    // endregion
 }
