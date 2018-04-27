@@ -79,5 +79,5 @@ interface StepNavigator {
      * @param taskResult current step result
      * @return progress within the task
      */
-    fun getProgress(step: Step, taskResult: TaskResult): Progress?
+    fun getProgress(step: Step, taskResult: TaskResult): Progress
 }
