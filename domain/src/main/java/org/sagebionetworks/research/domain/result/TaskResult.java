@@ -33,6 +33,8 @@
 package org.sagebionetworks.research.domain.result;
 
 import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
+
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableSet;
 import java.util.ArrayList;
@@ -61,6 +63,23 @@ public class TaskResult extends ResultBase {
         this.taskRunUUID = taskRunUUID;
         this.stepHistory = ImmutableList.copyOf(stepHistory);
         this.asyncResults = ImmutableSet.copyOf(asyncResults);
+    }
+
+    /**
+     * Returns the first result in the step history with the given identifier.
+     * @param identifier The identifier to search for in the step history.
+     * @return the first result in the step history with the given identifier, or null if the
+     * identifier isn't found in the step history.
+     */
+    @Nullable
+    public Result getResult(String identifier) {
+        for (Result result : this.stepHistory) {
+            if (result.getIdentifier().equals(identifier)) {
+                return result;
+            }
+        }
+
+        return null;
     }
 
     @NonNull
