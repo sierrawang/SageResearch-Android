@@ -32,9 +32,9 @@
 
 package org.sagebionetworks.research.domain.step;
 
-import org.sagebionetworks.research.domain.task.Task;
+import org.sagebionetworks.research.domain.task.TaskInfo;
 
 
 public class TaskStep {
-    private Task task;
+    private TaskInfo taskInfo;
 }

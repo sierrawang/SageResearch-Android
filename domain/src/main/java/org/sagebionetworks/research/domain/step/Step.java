@@ -36,7 +36,6 @@ import android.support.annotation.NonNull;
 
 
 public interface Step {
-    String KEY_IDENTIFIER = "identifier";
     String KEY_TYPE = "type";
 
     @NonNull

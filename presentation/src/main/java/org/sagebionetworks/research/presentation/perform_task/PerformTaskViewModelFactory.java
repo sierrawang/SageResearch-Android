@@ -39,15 +39,18 @@ import android.support.annotation.NonNull;
 import org.sagebionetworks.research.domain.repository.TaskRepository;
 import org.sagebionetworks.research.domain.task.navigation.StepNavigatorFactory;
 import org.sagebionetworks.research.presentation.mapper.TaskMapper;
+import org.sagebionetworks.research.presentation.model.TaskView;
+
+import java.util.UUID;
 
 import javax.inject.Inject;
 
 import static com.google.common.base.Preconditions.checkNotNull;
 
 public class PerformTaskViewModelFactory {
-    private final TaskMapper taskMapper;
-
     private final StepNavigatorFactory stepNavigatorFactory;
+
+    private final TaskMapper taskMapper;
 
     private final TaskRepository taskRepository;
 
@@ -59,8 +62,9 @@ public class PerformTaskViewModelFactory {
         this.taskRepository = taskRepository;
     }
 
-    public ViewModelProvider.Factory create(@NonNull String taskIdentifier) {
-        checkNotNull(taskIdentifier);
+    public ViewModelProvider.Factory create(@NonNull TaskView taskView, @NonNull UUID taskRunUUID) {
+        checkNotNull(taskView);
+        checkNotNull(taskRunUUID);
 
         return new ViewModelProvider.Factory() {
             @NonNull
@@ -69,8 +73,8 @@ public class PerformTaskViewModelFactory {
             public <T extends ViewModel> T create(@NonNull Class<T> modelClass) {
                 if (modelClass.isAssignableFrom(PerformTaskViewModel.class)) {
                     // noinspection unchecked
-                    return (T) new PerformTaskViewModel(taskIdentifier, stepNavigatorFactory, taskRepository,
-                            taskMapper);
+                    return (T) new PerformTaskViewModel(taskView, taskRunUUID, stepNavigatorFactory,
+                            taskRepository, taskMapper);
                 }
                 throw new IllegalArgumentException("Unknown ViewModel class");
             }

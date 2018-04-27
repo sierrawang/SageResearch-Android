@@ -32,17 +32,21 @@
 
 package org.sagebionetworks.research.domain.inject;
 
+import com.dampcake.gson.immutable.ImmutableAdapterFactory;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.JsonDeserializer;
+import com.google.gson.TypeAdapterFactory;
 
-import org.sagebionetworks.research.domain.RuntimeTypeAdapterFactory;
+import org.aaronhe.threetengson.ThreeTenGsonAdapter;
+import org.sagebionetworks.research.domain.step.json.AutoValueTypeAdapterFactory;
 
 import java.util.Map;
 import java.util.Set;
 
 import dagger.Module;
 import dagger.Provides;
+import dagger.multibindings.IntoSet;
 import dagger.multibindings.Multibinds;
 import javax.inject.Singleton;
 
@@ -50,20 +54,34 @@ import javax.inject.Singleton;
 public abstract class GsonModule {
 
     @Multibinds
-    abstract Map<Class, JsonDeserializer> jsonDeserializerMap();
+    abstract Map<Class<?>, JsonDeserializer> jsonDeserializerMap();
+
+    @Provides
+    @IntoSet
+    static TypeAdapterFactory provideAutoValueTypeAdapter() {
+        return AutoValueTypeAdapterFactory.create();
+    }
 
     @Provides
     @Singleton
-    static Gson provideGson(Map<Class, JsonDeserializer> jsonDeserializerMap,
-        Set<RuntimeTypeAdapterFactory<?>> runtimeTypeAdapterFactories) {
+    static Gson provideGson(Map<Class<?>, JsonDeserializer> jsonDeserializerMap,
+            Set<TypeAdapterFactory> typeAdapterFactories) {
         GsonBuilder builder = new GsonBuilder();
-        for (Map.Entry<Class, JsonDeserializer> entry : jsonDeserializerMap.entrySet()) {
+        for (Map.Entry<Class<?>, JsonDeserializer> entry : jsonDeserializerMap.entrySet()) {
             builder.registerTypeAdapter(entry.getKey(), entry.getValue());
         }
-        for (RuntimeTypeAdapterFactory runtimeTypeAdapterFactory : runtimeTypeAdapterFactories) {
-            builder.registerTypeAdapterFactory(runtimeTypeAdapterFactory);
+        for (TypeAdapterFactory typeAdapterFactory : typeAdapterFactories) {
+            builder.registerTypeAdapterFactory(typeAdapterFactory);
         }
 
+        ThreeTenGsonAdapter.registerAll(builder);
+
         return builder.create();
+    }
+
+    @Provides
+    @IntoSet
+    static TypeAdapterFactory provideGuavaImmutableTypeAdapter() {
+        return ImmutableAdapterFactory.forGuava();
     }
 }

@@ -33,15 +33,23 @@
 package org.sagebionetworks.research.app.inject;
 
 import org.sagebionetworks.research.app.ResearchStackDemoApplication;
-import org.sagebionetworks.research.data.inject.DataModule;
-import org.sagebionetworks.research.mobile_ui.inject.PerformTaskModule;
+import org.sagebionetworks.research.app.ResearchStackDemoApplicationModule;
 
+import dagger.BindsInstance;
 import dagger.Component;
-import dagger.android.AndroidInjectionModule;
 import javax.inject.Singleton;
 
-@Component(modules = {AndroidInjectionModule.class, PerformTaskModule.class, DataModule.class})
+@Component(modules = {ResearchStackDemoApplicationModule.class})
 @Singleton
 public abstract class ResearchStackDemoApplicationComponent {
-    public abstract void inject(ResearchStackDemoApplication app);
+    @Component.Builder
+    public interface Builder {
+
+        @BindsInstance
+        public Builder application(ResearchStackDemoApplication application);
+
+        public ResearchStackDemoApplicationComponent build();
+    }
+
+    public abstract ResearchStackDemoApplication inject(ResearchStackDemoApplication app);
 }

@@ -30,19 +30,34 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.sagebionetworks.research.domain.async.runner;
+package org.sagebionetworks.research.presentation.perform_task.active.async.runner;
 
-import org.sagebionetworks.research.domain.async.Request;
+import android.support.annotation.CallSuper;
+
+import org.sagebionetworks.research.domain.async.Recorder;
+import org.sagebionetworks.research.domain.step.Step;
 
 /**
  * Created by liujoshua on 10/11/2017.
  */
 
-public abstract class RequestRunner extends AsyncActionRunner {
-    private final Request request;
+public abstract class RecorderRunner extends AsyncActionRunner {
+    private final Recorder recorder;
 
-    public RequestRunner(Request request) {
-        super(request);
-        this.request = request;
+    public RecorderRunner(Recorder recorder) {
+        super(recorder);
+        this.recorder = recorder;
     }
+
+    public abstract void doFinish();
+
+    @Override
+    @CallSuper
+    public final void onFinishStep(Step step) {
+        super.onFinishStep(step);
+        if (recorder.getStopStepIdentifier().equals(step.getIdentifier())) {
+            ;
+        }
+    }
+
 }

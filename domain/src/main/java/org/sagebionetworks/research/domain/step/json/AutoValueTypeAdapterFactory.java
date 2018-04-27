@@ -33,13 +33,13 @@
 package org.sagebionetworks.research.domain.step.json;
 
 import com.google.gson.TypeAdapterFactory;
+import com.ryanharter.auto.value.gson.GsonTypeAdapterFactory;
 
-//@GsonTypeAdapterFactory
+@GsonTypeAdapterFactory
 public abstract class AutoValueTypeAdapterFactory implements TypeAdapterFactory {
     //     Static factory method to access the package
     //     private generated implementation
     public static TypeAdapterFactory create() {
-        return null;
-//        return new AutoValueGson_AutoValueTypeAdapterFactory();
+        return new AutoValueGson_AutoValueTypeAdapterFactory();
     }
 }

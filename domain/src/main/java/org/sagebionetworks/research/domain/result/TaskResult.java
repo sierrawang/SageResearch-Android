@@ -33,95 +33,66 @@
 package org.sagebionetworks.research.domain.result;
 
 import android.support.annotation.NonNull;
+
+import com.google.auto.value.AutoValue;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableSet;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-import java.util.UUID;
+
 import org.threeten.bp.Instant;
 
+import java.util.UUID;
 
-public class TaskResult extends ResultBase {
-    @NonNull
-    private final UUID taskRunUUID;
+@AutoValue
+public abstract class TaskResult implements Result {
+    private static final String KEY_TYPE = "task";
 
-    @NonNull
-    private final ImmutableList<Result> stepHistory;
+    @AutoValue.Builder
+    public abstract static class Builder {
 
-    @NonNull
-    private final ImmutableSet<Result> asyncResults;
-
-    public TaskResult(@NonNull final String identifier, @NonNull UUID taskRunUUID, @NonNull Instant startTime,
-        @NonNull Instant endTime, List<Result> stepHistory, Set<Result> asyncResults) {
-        super(identifier, ResultType.TASK, startTime, endTime);
-        this.taskRunUUID = taskRunUUID;
-        this.stepHistory = ImmutableList.copyOf(stepHistory);
-        this.asyncResults = ImmutableSet.copyOf(asyncResults);
-    }
-
-    @NonNull
-    public UUID getTaskRunUUID() {
-        return taskRunUUID;
-    }
-
-    @NonNull
-    public ImmutableList<Result> getStepHistory() {
-        return stepHistory;
-    }
-
-    @NonNull
-    public ImmutableSet<Result> getAsyncResults() {
-        return asyncResults;
-    }
-
-    public static class Builder {
-        private final String identifier;
-
-        private final UUID taskRunUUID;
-
-        private final Map<String, Result> asyncResults;
-
-        private final List<Result> stepHistory;
-
-        private Instant startTime;
-
-        private Instant endTime;
-
-        public Builder(@NonNull String identifier, @NonNull final UUID taskRunUUID) {
-            this.identifier = identifier;
-            this.taskRunUUID = taskRunUUID;
-            stepHistory = new ArrayList<>();
-            asyncResults = new HashMap<>();
-        }
-
-        public Builder setStartTime(final Instant startTime) {
-            this.startTime = startTime;
-            return this;
-        }
-
-        public Builder setEndTime(final Instant endTime) {
-            this.endTime = endTime;
+        public Builder addAsyncResult(Result result) {
+            asyncResultsBuilder().add(result);
             return this;
         }
 
         public Builder addStepResult(Result result) {
-            // TODO: fix logic for moving back
-            stepHistory.add(result);
+            asyncResultsBuilder().add(result);
             return this;
         }
 
-        public Builder addAsyncResult(Result result) {
-            asyncResults.put(result.getIdentifier(), result);
-            return this;
-        }
+        public abstract TaskResult build();
 
-        public TaskResult build() {
-            return new TaskResult(identifier, taskRunUUID, startTime, endTime, stepHistory,
-                new HashSet<>(asyncResults.values()));
-        }
+        public abstract Builder setEndTime(final Instant endTime);
+
+        public abstract Builder setIdentifier(String identifier);
+
+        abstract Builder setType(String type);
+
+        abstract ImmutableSet.Builder<Result> asyncResultsBuilder();
+
+        abstract Builder setStartTime(final Instant startTime);
+
+        abstract Builder setTaskRunUUID(UUID taskRunUUID);
+
+        abstract ImmutableList.Builder<Result> stepHistoryBuilder();
     }
+
+    @NonNull
+    public static Builder builder(UUID taskRunUUID, Instant startTime) {
+        return new AutoValue_TaskResult.Builder()
+                .setType(KEY_TYPE)
+                .setTaskRunUUID(taskRunUUID)
+                .setStartTime(startTime);
+    }
+
+    @NonNull
+    public abstract ImmutableSet<Result> getAsyncResults();
+
+    @NonNull
+    public abstract ImmutableList<Result> getStepHistory();
+
+    @NonNull
+    public abstract UUID getTaskRunUUID();
+
+    @NonNull
+    public abstract Builder toBuilder();
 }

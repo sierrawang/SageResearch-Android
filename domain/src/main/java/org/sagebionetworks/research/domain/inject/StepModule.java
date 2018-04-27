@@ -32,9 +32,12 @@
 
 package org.sagebionetworks.research.domain.inject;
 
+import com.google.gson.TypeAdapterFactory;
+
 import org.sagebionetworks.research.domain.RuntimeTypeAdapterFactory;
-import org.sagebionetworks.research.domain.step.ActiveUIStep;
 import org.sagebionetworks.research.domain.step.Step;
+import org.sagebionetworks.research.domain.step.StepBase;
+import org.sagebionetworks.research.domain.step.ui.ActiveUIStep;
 
 import java.util.Map;
 import java.util.Map.Entry;
@@ -71,12 +74,12 @@ public class StepModule {
      */
     @IntoSet
     @Provides
-    static RuntimeTypeAdapterFactory<?> provideType(Map<Class<? extends Step>, String> stepClasses) {
+    static TypeAdapterFactory provideType(Map<Class<? extends Step>, String> stepClasses) {
         RuntimeTypeAdapterFactory<Step> stepAdapterFactory = RuntimeTypeAdapterFactory.of(Step.class, Step.KEY_TYPE);
 
         for (Entry<Class<? extends Step>, String> stepClassEntry : stepClasses.entrySet()) {
             stepAdapterFactory.registerSubtype(stepClassEntry.getKey(), stepClassEntry.getValue());
         }
-        return stepAdapterFactory;
+        return stepAdapterFactory.registerDefaultType(StepBase.class);
     }
 }

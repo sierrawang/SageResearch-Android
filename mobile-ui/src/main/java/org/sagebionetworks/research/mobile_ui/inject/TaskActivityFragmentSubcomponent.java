@@ -41,8 +41,6 @@ import dagger.android.AndroidInjector;
 @Subcomponent(modules = ShowStepModule.class)
 public abstract class TaskActivityFragmentSubcomponent implements AndroidInjector<PerformTaskFragment> {
 
-//    public abstract PerformTaskFragment providePerformTaskFragment2();
-
     @Subcomponent.Builder
     public static abstract class Builder extends AndroidInjector.Builder<PerformTaskFragment> {
         public abstract TaskActivityFragmentSubcomponent build();

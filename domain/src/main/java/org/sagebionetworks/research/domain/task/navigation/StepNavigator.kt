@@ -34,7 +34,6 @@ package org.sagebionetworks.research.domain.task.navigation
 
 import org.sagebionetworks.research.domain.result.TaskResult
 import org.sagebionetworks.research.domain.step.Step
-import org.sagebionetworks.research.domain.task.Task.Progress
 
 /**
  * RSDStepNavigator` is the model object used by the `RSDTaskController` to determine the order of
@@ -57,7 +56,7 @@ interface StepNavigator {
      * step. By default, the UI defined in ResearchStack2UI will hide the "BackStepStrategy" button if there is no step before
      * the given step.
      *
-     * @param step current step, or null if retrieving first step for Task
+     * @param step current step, or null if retrieving first step for TaskInfo
      * @param taskResult current step result
      * @return next step, or null if there is no next step
      */
@@ -79,5 +78,5 @@ interface StepNavigator {
      * @param taskResult current step result
      * @return progress within the task
      */
-    fun getProgress(step: Step, taskResult: TaskResult): Progress
+    fun getProgress(step: Step, taskResult: TaskResult): TaskProgress
 }

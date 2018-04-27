@@ -45,7 +45,6 @@ public class ConstantNextStepStrategyTest {
     public void getNextStepIdentifier() {
         String nextIdentifier = "nextIdentifier";
         NextStepStrategy constantNextStepStrategy = new ConstantNextStepStrategy(nextIdentifier);
-
         assertEquals(nextIdentifier, constantNextStepStrategy.getNextStepIdentifier(mock(TaskResult.class)));
     }
 }

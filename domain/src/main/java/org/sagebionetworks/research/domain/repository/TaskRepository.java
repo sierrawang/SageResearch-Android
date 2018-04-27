@@ -38,10 +38,13 @@ import android.support.annotation.NonNull;
 import org.sagebionetworks.research.domain.result.TaskResult;
 import org.sagebionetworks.research.domain.step.Step;
 import org.sagebionetworks.research.domain.task.Task;
+import org.sagebionetworks.research.domain.task.TaskInfo;
 
 import java.util.List;
+import java.util.UUID;
 
 import io.reactivex.Completable;
+import io.reactivex.Maybe;
 import io.reactivex.Single;
 
 public interface TaskRepository {
@@ -49,7 +52,10 @@ public interface TaskRepository {
     Single<Task> getTask(String taskIdentifier);
 
     @NonNull
-    Single<List<Step>> getTaskSteps(Task task);
+    Single<TaskInfo> getTaskInfo(String taskIdentifier);
+
+    @NonNull
+    Maybe<TaskResult> getTaskResult(UUID taskRunUUID);
 
     @NonNull
     @CheckResult

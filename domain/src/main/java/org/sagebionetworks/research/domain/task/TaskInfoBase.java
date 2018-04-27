@@ -30,32 +30,40 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.sagebionetworks.research.domain.async.runner;
+package org.sagebionetworks.research.domain.task;
 
-import android.support.annotation.CallSuper;
-import org.sagebionetworks.research.domain.async.Recorder;
-import org.sagebionetworks.research.domain.step.Step;
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
+
+import com.google.auto.value.AutoValue;
+
+import org.threeten.bp.Duration;
 
 /**
- * Created by liujoshua on 10/11/2017.
+ * Created by liujoshua on 10/2/2017.
  */
+@AutoValue
+public abstract class TaskInfoBase implements TaskInfo {
+    @AutoValue.Builder
+    public abstract static class Builder {
+        public abstract TaskInfoBase build();
 
-public abstract class RecorderRunner extends AsyncActionRunner {
-    private final Recorder recorder;
+        public abstract Builder setCopyright(@Nullable String copyright);
 
-    public RecorderRunner(Recorder recorder) {
-        super(recorder);
-        this.recorder = recorder;
+        public abstract Builder setDetail(@Nullable String detail);
+
+        public abstract Builder setEstimatedDuration(@Nullable Duration duration);
+
+        public abstract Builder setIdentifier(@NonNull String identifier);
+
+        public abstract Builder setSubtitle(@Nullable String subtitle);
+
+        public abstract Builder setTitle(@Nullable String title);
     }
 
-    @Override
-    @CallSuper
-    public final void onFinishStep(Step step) {
-        super.onFinishStep(step);
-        if (recorder.getStopStepIdentifier().equals(step.getIdentifier()));
-
+    public static Builder builder() {
+        return new AutoValue_TaskInfoBase.Builder();
     }
 
-    public abstract void doFinish();
-
+    public abstract Builder toBuilder();
 }

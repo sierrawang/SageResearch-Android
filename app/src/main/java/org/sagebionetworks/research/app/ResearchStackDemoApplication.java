@@ -49,7 +49,11 @@ public class ResearchStackDemoApplication extends MultiDexApplication implements
     @Override
     public void onCreate() {
         super.onCreate();
-        DaggerResearchStackDemoApplicationComponent.create().inject(this);
+        DaggerResearchStackDemoApplicationComponent
+                .builder()
+                .application(this)
+                .build()
+                .inject(this);
     }
 
     @Override

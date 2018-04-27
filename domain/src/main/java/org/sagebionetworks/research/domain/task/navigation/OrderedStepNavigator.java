@@ -32,31 +32,28 @@
 
 package org.sagebionetworks.research.domain.task.navigation;
 
-import static com.google.common.base.Preconditions.checkNotNull;
-
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
-import android.support.annotation.VisibleForTesting;
+
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.ImmutableMap.Builder;
-import java.util.List;
+
 import org.sagebionetworks.research.domain.result.TaskResult;
 import org.sagebionetworks.research.domain.step.Step;
-import org.sagebionetworks.research.domain.task.Task.Progress;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import java.util.List;
+
+import static com.google.common.base.Preconditions.checkNotNull;
 
 /**
  * The OrderedStepNavigator moves through a linear series of steps.
  * <p>
- * Any simple sequential task, such as a survey or an active task, can be presented by an
- * OrderedStepNavigator.
+ * Any simple sequential task, such as a survey or an active task, can be presented by an OrderedStepNavigator.
  */
 public class OrderedStepNavigator implements StepNavigator {
-
-    private static final Logger LOGGER = LoggerFactory.getLogger(
-        OrderedStepNavigator.class);
 
     public static final class Factory implements StepNavigatorFactory {
 
@@ -65,6 +62,9 @@ public class OrderedStepNavigator implements StepNavigator {
             return new OrderedStepNavigator(steps);
         }
     }
+
+    private static final Logger LOGGER = LoggerFactory.getLogger(
+            OrderedStepNavigator.class);
 
     private final ImmutableList<Step> steps;
 
@@ -78,6 +78,12 @@ public class OrderedStepNavigator implements StepNavigator {
             mapBuilder.put(step.getIdentifier(), step);
         }
         this.stepsById = mapBuilder.build();
+    }
+
+    @Override
+    @Nullable
+    public Step getStep(@NonNull final String identifier) {
+        return stepsById.get(identifier);
     }
 
     @Nullable
@@ -123,15 +129,9 @@ public class OrderedStepNavigator implements StepNavigator {
 
     @NonNull
     @Override
-    public Progress getProgress(@NonNull final Step step, @NonNull TaskResult taskResult) {
+    public TaskProgress getProgress(@NonNull final Step step, @NonNull TaskResult taskResult) {
         int stepNumber = steps.indexOf(step) + 1;
         int totalSteps = steps.size();
-        return new Progress(stepNumber, totalSteps, false);
-    }
-
-    @Override
-    @Nullable
-    public Step getStep(@NonNull final String identifier) {
-        return stepsById.get(identifier);
+        return new TaskProgress(stepNumber, totalSteps, false);
     }
 }

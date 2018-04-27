@@ -32,40 +32,25 @@
 
 package org.sagebionetworks.research.domain.step.ui;
 
-import android.support.annotation.StringRes;
+import android.support.annotation.Nullable;
+
 import org.sagebionetworks.research.domain.step.Step;
 
 /**
  * A UIStep defines a display unit.
- *
+ * <p>
  * Depending upon the available real-estate, more than one ui step may be displayed at a time. For example, on an
  * tablet, you may choose to group a set of questions using a @see SectionStep.
  */
 public interface UIStep extends Step {
     /**
-     * The primary text to display for the step in a localized string.
-     *
-     * @return itle text
-     */
-    String getTitle();
-
-    /**
-     * Additional text to display for the step in a localized string.
-     * <p>
-     * The additional text is often displayed in a smaller font below `title`. If you need to display a long
-     * question, it can work well to keep the title short and put the additional content in the `text` property.
-     *
-     * @return additional text
-     */
-    String getText();
-
-    /**
      * Additional detailed explanation for the step.
      * <p>
      * The font size and display of this property will depend upon the device type.
      *
-     * @return  detail text
+     * @return detail text
      */
+    @Nullable
     String getDetail();
 
     /**
@@ -77,5 +62,25 @@ public interface UIStep extends Step {
      *
      * @return footnote text
      */
+    @Nullable
     String getFootnote();
+
+    /**
+     * Additional text to display for the step in a localized string.
+     * <p>
+     * The additional text is often displayed in a smaller font below `title`. If you need to display a long question,
+     * it can work well to keep the title short and put the additional content in the `text` property.
+     *
+     * @return additional text
+     */
+    @Nullable
+    String getText();
+
+    /**
+     * The primary text to display for the step in a localized string.
+     *
+     * @return title text
+     */
+    @Nullable
+    String getTitle();
 }

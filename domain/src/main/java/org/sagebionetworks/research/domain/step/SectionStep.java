@@ -32,6 +32,8 @@
 
 package org.sagebionetworks.research.domain.step;
 
+import com.google.common.collect.ImmutableList;
+
 import java.util.List;
 
 /**
@@ -47,5 +49,5 @@ public interface SectionStep extends Step {
      *
      * @return list of the steps in the subgrouping
      */
-    List<Step> getSteps();
+    ImmutableList<Step> getSteps();
 }

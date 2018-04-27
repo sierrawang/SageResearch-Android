@@ -32,93 +32,20 @@
 
 package org.sagebionetworks.research.domain.task;
 
-import android.support.annotation.DrawableRes;
 import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
-import android.support.annotation.StringRes;
-import com.google.common.base.MoreObjects;
-import com.google.common.base.Objects;
-import org.sagebionetworks.research.domain.Schema;
-import org.threeten.bp.Duration;
 
+import com.google.common.collect.ImmutableList;
 
-/**
- * Created by liujoshua on 10/2/2017.
- */
+import org.sagebionetworks.research.domain.async.AsyncAction;
+import org.sagebionetworks.research.domain.step.Step;
 
 public interface Task {
     @NonNull
+    ImmutableList<AsyncAction> getAsyncActions();
+
+    @NonNull
     String getIdentifier();
 
-    @Nullable
-    Schema getSchema();
-
-    @StringRes
-    int getTitle();
-
-    @StringRes
-    int getDetail();
-
-    @StringRes
-    int getCopyright();
-
-    @Nullable
-    Duration getEstimatedDuration();
-
-    @DrawableRes
-    int getIcon();
-
-    class Progress {
-        private final int progress;
-
-        private final int total;
-
-        private final boolean isEstimated;
-
-        public Progress(int progress, int total, boolean isEstimated) {
-            this.progress = progress;
-            this.total = total;
-            this.isEstimated = isEstimated;
-        }
-
-        public int getProgress() {
-            return progress;
-        }
-
-        public int getTotal() {
-            return total;
-        }
-
-        public boolean isEstimated() {
-            return isEstimated;
-        }
-
-        @Override
-        public boolean equals(Object o) {
-            if (this == o) {
-                return true;
-            }
-            if (o == null || getClass() != o.getClass()) {
-                return false;
-            }
-            Progress progress1 = (Progress) o;
-            return progress == progress1.progress &&
-                total == progress1.total &&
-                isEstimated == progress1.isEstimated;
-        }
-
-        @Override
-        public int hashCode() {
-            return Objects.hashCode(progress, total, isEstimated);
-        }
-
-        @Override
-        public String toString() {
-            return MoreObjects.toStringHelper(this)
-                .add("progress", progress)
-                .add("total", total)
-                .add("isEstimated", isEstimated)
-                .toString();
-        }
-    }
+    @NonNull
+    ImmutableList<Step> getSteps();
 }

@@ -32,41 +32,84 @@
 
 package org.sagebionetworks.research.domain.step.ui;
 
+import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 
-import java.time.Duration;
+import com.google.auto.value.AutoValue;
+import com.google.common.collect.ImmutableSortedMap;
+import com.google.gson.Gson;
+import com.google.gson.TypeAdapter;
 
-public interface ActiveUIStep extends UIStep {
+import java.time.Duration;
+import java.util.SortedMap;
+
+@AutoValue
+public abstract class ActiveUIStep implements UIStep {
+    @AutoValue.Builder
+    public abstract static class Builder {
+        public abstract ActiveUIStep build();
+
+        public abstract Builder setBackgroundAudioRequired(boolean isBackgroundAudioRequired);
+
+        public abstract Builder setDetail(String detail);
+
+        public abstract Builder setDuration(double duration);
+
+        public abstract Builder setFootnote(String footnote);
+
+        public abstract Builder setIdentifier(String identifier);
+
+        public abstract Builder setSpokenInstructions(SortedMap<String, String> spokenInstructions);
+
+        public abstract Builder setText(String text);
+
+        public abstract Builder setTitle(String title);
+    }
+
+    public static final String TYPE_KEY = "active";
+
+    public static Builder builder() {
+        return new AutoValue_ActiveUIStep.Builder();
+    }
+
+    public static TypeAdapter<ActiveUIStep> typeAdapter(Gson gson) {
+        return new AutoValue_ActiveUIStep.GsonTypeAdapter(gson);
+    }
+
     /**
-     * The duration of time to run the step. If null, then this value is ignored.
+     * The duration of time in seconds to run the step. If null, then this value is ignored.
      *
      * @return step duration
      */
-    @Nullable
-    Duration getDuration();
+    public abstract double getDuration();
+
+    /**
+     * Localized text that represents an instructional voice prompt. Instructional speech begins when the step passes
+     * the time indicated by the given time.  If `timeInterval` is greater than or equal to `duration` or is equal to
+     * `Double.infinity`, then the spoken instruction returned should be for when the step is finished. - parameter
+     * timeInterval: The time interval at which to speak the instruction. - returns: The localized instruction to
+     * speak or `nil` if there isn't an instruction. spokenInstruction(at timeInterval: TimeInterval) -> String?
+     */
+    public abstract ImmutableSortedMap<String, String> getSpokenInstructions();
 
     /**
      * The set of commands to apply to this active step. These indicate actions to fire at the beginning and end of
      * the step such as playing a sound as well as whether or not to automatically start and finish the step.
      */
     // TODO: commands
+    @NonNull
+    @Override
+    public String getType() {
+        return TYPE_KEY;
+    }
 
     /**
-     * Whether or not the step uses audio, such as the speech synthesizer, that should play whether or not the user has
-     * the mute switch turned on.
+     * Whether or not the step uses audio, such as the speech synthesizer, that should play whether or not the user
+     * has the mute switch turned on.
      *
      * @return whether the step requires background audio
      */
-    boolean isBackgroundAudioRequired();
+    public abstract boolean isBackgroundAudioRequired();
 
-    // TODO: spoken instructions
-    /**
-     * Localized text that represents an instructional voice prompt. Instructional speech begins when the step passes
-     * the time indicated by the given time.  If `timeInterval` is greater than or equal to `duration` or is equal to
-     * `Double.infinity`, then the spoken instruction returned should be for when the step is finished.
-     *  - parameter timeInterval: The time interval at which to speak the instruction.
-     *  - returns: The localized
-     *  instruction to speak or `nil` if there isn't an instruction.
-     *  spokenInstruction(at timeInterval: TimeInterval) -> String?
-     */
+    public abstract Builder toBuilder();
 }

@@ -30,18 +30,24 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.sagebionetworks.research.domain.step;
+package org.sagebionetworks.research.presentation.perform_task.active.async;
 
-import android.support.annotation.NonNull;
+public enum AsyncActionStatus {
+    IDLE(0),
+    REQUESTING_PERMISSION(1),
+    PERMISSION_GRANTED(2),
+    STARTING(3),
+    RUNNING(4),
+    WAITING_TO_STOP(5),
+    PROCESSING_RESULTS(6),
+    STOPPING(7),
+    FINISHED(8),
+    CANCELLED(9),
+    FAILED(10);
 
-/**
- * Created by liujoshua on 10/11/2017.
- */
+    public final int state;
 
-public interface StepChangeListener {
-    void onShowStep(@NonNull Step step);
-
-    void onCancelStep(@NonNull Step step);
-
-    void onFinishStep(@NonNull Step step);
+    AsyncActionStatus(final int state) {
+        this.state = state;
+    }
 }

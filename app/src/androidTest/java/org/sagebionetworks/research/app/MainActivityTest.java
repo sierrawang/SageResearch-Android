@@ -30,21 +30,29 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.sagebionetworks.research.domain.step;
+package org.sagebionetworks.research.app;
 
-import android.support.annotation.NonNull;
+import android.support.test.filters.LargeTest;
+import android.support.test.rule.ActivityTestRule;
+import android.support.test.runner.AndroidJUnit4;
 
-public class ActiveUIStep implements Step {
-    public static final String TYPE_KEY = "active";
-    @NonNull
-    @Override
-    public String getIdentifier() {
-        return null;
-    }
+import org.junit.*;
+import org.junit.runner.*;
 
-    @NonNull
-    @Override
-    public String getType() {
-        return TYPE_KEY;
+import static android.support.test.espresso.Espresso.onView;
+import static android.support.test.espresso.assertion.ViewAssertions.matches;
+import static android.support.test.espresso.matcher.ViewMatchers.isDisplayed;
+import static android.support.test.espresso.matcher.ViewMatchers.withText;
+
+@RunWith(AndroidJUnit4.class)
+@LargeTest
+public class MainActivityTest {
+    @Rule
+    public ActivityTestRule<MainActivity> activityRule =
+            new ActivityTestRule(MainActivity.class);
+
+    @Test
+    public void listGoesOverTheFold() {
+        onView(withText("Hello world!")).check(matches(isDisplayed()));
     }
 }
