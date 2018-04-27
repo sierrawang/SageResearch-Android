@@ -33,6 +33,7 @@
 package org.sagebionetworks.research.domain.result;
 
 import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 
 import com.google.auto.value.AutoValue;
 import com.google.common.collect.ImmutableList;
@@ -44,8 +45,6 @@ import java.util.UUID;
 
 @AutoValue
 public abstract class TaskResult implements Result {
-    private static final String KEY_TYPE = "task";
-
     @AutoValue.Builder
     public abstract static class Builder {
 
@@ -65,16 +64,18 @@ public abstract class TaskResult implements Result {
 
         public abstract Builder setIdentifier(String identifier);
 
-        abstract Builder setType(String type);
-
         abstract ImmutableSet.Builder<Result> asyncResultsBuilder();
 
         abstract Builder setStartTime(final Instant startTime);
 
         abstract Builder setTaskRunUUID(UUID taskRunUUID);
 
+        abstract Builder setType(String type);
+
         abstract ImmutableList.Builder<Result> stepHistoryBuilder();
     }
+
+    private static final String KEY_TYPE = "task";
 
     @NonNull
     public static Builder builder(UUID taskRunUUID, Instant startTime) {
@@ -86,6 +87,25 @@ public abstract class TaskResult implements Result {
 
     @NonNull
     public abstract ImmutableSet<Result> getAsyncResults();
+
+    /**
+     * Returns the first result in the step history with the given identifier.
+     *
+     * @param identifier
+     *         The identifier to search for in the step history.
+     * @return the first result in the step history with the given identifier, or null if the identifier isn't found
+     * in the step history.
+     */
+    @Nullable
+    public Result getResult(String identifier) {
+        for (Result result : getStepHistory()) {
+            if (result.getIdentifier().equals(identifier)) {
+                return result;
+            }
+        }
+
+        return null;
+    }
 
     @NonNull
     public abstract ImmutableList<Result> getStepHistory();

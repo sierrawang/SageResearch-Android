@@ -34,117 +34,100 @@ package org.sagebionetworks.research.domain.task.navigation.strategy;
 
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
-import android.support.annotation.VisibleForTesting;
 
-import com.google.common.collect.ImmutableList;
-import com.google.common.collect.ImmutableMap;
-import com.google.common.collect.ImmutableMap.Builder;
-
+import org.sagebionetworks.research.domain.result.Result;
 import org.sagebionetworks.research.domain.result.TaskResult;
 import org.sagebionetworks.research.domain.step.Step;
 import org.sagebionetworks.research.domain.task.navigation.StepNavigator;
 import org.sagebionetworks.research.domain.task.navigation.TaskProgress;
-import org.sagebionetworks.research.domain.task.navigation.strategy.ConditionalStepNavigationStrategy.ReplacementStepNavigationStrategy;
-import org.sagebionetworks.research.domain.task.navigation.strategy.StepNavigationStrategy.NextStepStrategy.Identifiers;
+import org.sagebionetworks.research.domain.task.navigation.TreeNavigator;
+import org.sagebionetworks.research.domain.task.navigation.strategy.StepNavigationStrategy.BackStepStrategy;
+import org.sagebionetworks.research.domain.task.navigation.strategy.StepNavigationStrategy.NextStepStrategy;
 import org.sagebionetworks.research.domain.task.navigation.strategy.StepNavigationStrategy.SkipStepStrategy;
 
+import java.util.List;
+
 public class StrategyBasedNavigator implements StepNavigator {
+    // The tree navigator that backs up this StrategyBasedNavigator whenever the various navigation rules aren't
+    // applicable.
     @NonNull
-    private final ImmutableList<Step> steps;
+    private final TreeNavigator treeNavigator;
 
-    @Nullable
-    private final ConditionalStepNavigationStrategy conditionalRule;
-
-    @NonNull
-    private final ImmutableMap<String, Step> stepsById;
-
-    public StrategyBasedNavigator(@NonNull final ImmutableList<Step> steps,
-        @Nullable final ConditionalStepNavigationStrategy conditionalRule) {
-        this.steps = steps;
-        this.conditionalRule = conditionalRule;
-
-        Builder<String, Step> mapBuilder = ImmutableMap.builderWithExpectedSize(this.steps.size());
-        for (Step step : this.steps) {
-            mapBuilder.put(step.getIdentifier(), step);
-        }
-        this.stepsById = mapBuilder.build();
+    /**
+     * Constructs a new StrategyBasedNavigator from the given list of steps, and the given list of progress markers.
+     * @param steps The list of steps to create this StepBasedNavigator from.
+     * @param progressMarkers The list of progress markers to create this StepBasedNavigator from.
+     */
+    public StrategyBasedNavigator(@NonNull final List<Step> steps, @Nullable List<String> progressMarkers) {
+        this.treeNavigator = new TreeNavigator(steps, progressMarkers);
     }
 
     @Override
     public Step getNextStep(final Step step, @NonNull TaskResult taskResult) {
         Step nextStep = null;
-        Step previousStep = step;
-        boolean shouldSkip;
-        do {
-            shouldSkip = false;
-            if (previousStep == null) {
-                nextStep = steps.get(0);
-            } else {
-                String nextStepIdentifier = getNextStepIdentifier(previousStep, taskResult);
-                if (nextStepIdentifier != null) {
-                    if (Identifiers.Exit.getKey().equals(nextStepIdentifier)) {
-                        return null;
-                    } else {
-                        nextStep = getStep(nextStepIdentifier);
-                    }
-                }
-                if (nextStep == null) {
-                    int indexOfNextStep = steps.indexOf(previousStep) + 1;
-                    if (indexOfNextStep < steps.size()) {
-                        return steps.get(indexOfNextStep);
-                    }
-                }
+        // First we try to get the next step from the step by casting it to a NextStepStrategy.
+        if (step instanceof NextStepStrategy) {
+            String nextStepId = ((NextStepStrategy)step).getNextStepIdentifier(taskResult);
+            if (nextStepId != null) {
+                nextStep = this.getStep(nextStepId);
             }
-
-            String nextStepIdentifier = conditionalRule.skipToStep(previousStep, taskResult);
-            if (Identifiers.NextStep.getKey().equals(nextStepIdentifier)) {
-                shouldSkip = true;
-            } else {
-                nextStep = getStep(nextStepIdentifier);
-            }
-
-            if (!shouldSkip && nextStep != null && step instanceof SkipStepStrategy) {
-                shouldSkip = ((SkipStepStrategy) step).shouldSkip(taskResult);
-            }
-
-            if (shouldSkip) {
-                previousStep = nextStep;
-            }
-        } while (shouldSkip);
-
-        if (conditionalRule instanceof ReplacementStepNavigationStrategy) {
-            nextStep = ((ReplacementStepNavigationStrategy) conditionalRule).getReplacementStep(nextStep, taskResult);
         }
-        return nextStep;
-    }
 
-    @Nullable
-    @VisibleForTesting
-    String getNextStepIdentifier(@NonNull Step step, @NonNull TaskResult taskResult) {
-        String nextStepIdentifier;
-        if (step instanceof StepNavigationStrategy.NextStepStrategy) {
-            StepNavigationStrategy.NextStepStrategy nextRule = (StepNavigationStrategy.NextStepStrategy) step;
-            nextStepIdentifier = nextRule.getNextStepIdentifier(taskResult);
-        } else {
-            nextStepIdentifier = conditionalRule.nextStepIdentifier(step, taskResult);
+        // If we don't get a valid step from casting to a NextStepStrategy we default to using the tree navigator to
+        // get the next step.
+        if (nextStep == null) {
+            nextStep = treeNavigator.getNextStep(step, taskResult);
         }
-        return nextStepIdentifier;
+
+        if (nextStep != null) {
+            // As long as the next step we have found shouldn't be skipped we return it.
+            if (!(nextStep instanceof SkipStepStrategy) ||
+                    !((SkipStepStrategy)nextStep).shouldSkip(taskResult)) {
+                return nextStep;
+            }
+
+            // If we should skip the next step we found, we recurse on the next step to get the one after that.
+            return getNextStep(nextStep, taskResult);
+        }
+
+        // If the tree navigator returns null we also return null.
+        return null;
     }
 
     @Override
     public Step getPreviousStep(@NonNull final Step step, @NonNull TaskResult taskResult) {
-        return null;
+        // First we make sure that the given step allows backward navigation.
+        if (step instanceof BackStepStrategy && !((BackStepStrategy)step).isBackAllowed(taskResult)) {
+           return null;
+        }
+
+        // If backward navigation is allowed we check the result.
+        Step previousStep = null;
+        List<Result> stepHistory = taskResult.getStepHistory();
+        int idx = stepHistory.indexOf(taskResult.getResult(step.getIdentifier()));
+        if (idx > 0) {
+            String previousStepId = stepHistory.get(idx - 1).getIdentifier();
+            previousStep = this.getStep(previousStepId);
+        }
+
+        // If the task result doesn't give us a previous step to go back to we default to using the tree navigator
+        // to get a previous step.
+        if (previousStep == null) {
+            previousStep = this.treeNavigator.getPreviousStep(step, taskResult);
+        }
+
+        return previousStep;
     }
 
-    @NonNull
+    @Nullable
     @Override
     public TaskProgress getProgress(@NonNull final Step step, @NonNull TaskResult taskResult) {
-        return null;
+        return this.treeNavigator.getProgress(step, taskResult);
     }
 
     @Override
     @Nullable
     public Step getStep(@NonNull final String identifier) {
-        return stepsById.get(identifier);
+        return this.treeNavigator.getStep(identifier);
     }
 }
