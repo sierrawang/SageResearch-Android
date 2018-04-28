@@ -1,0 +1,7 @@
+{
+  "identifier": "stepId",
+  "type": "active",
+  "spokenInstructions": {
+    "1": "Instruction at 1"
+  }
+}

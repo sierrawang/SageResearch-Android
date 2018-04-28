@@ -33,12 +33,17 @@
 package org.sagebionetworks.research.app;
 
 import org.junit.*;
-import org.sagebionetworks.research.domain.step.ActiveUIStep;
 import org.sagebionetworks.research.domain.step.Step;
+import org.sagebionetworks.research.domain.step.ui.ActiveUIStep;
+
+import java.io.File;
+import java.io.IOException;
+import java.net.URL;
+import java.nio.file.Files;
 
 import static org.junit.Assert.*;
 
-public class InstructionStepTest {
+public class StepJsonDeserializationTest {
     AppStepTestComponent stepTestComponent;
 
     @Before
@@ -47,22 +52,33 @@ public class InstructionStepTest {
     }
 
     @Test
-    public void testActiveUIStep() {
+    public void testActiveUIStep() throws IOException {
         String id = "stepId";
         String type = "active";
 
-        Step step = stepTestComponent.gson().fromJson("{'identifier':'stepId', 'type': 'active'}", Step.class);
+        // TODO: add a test for null spokenInstructions once Immutable collection descrialization of nulls is fixed
+        String json = getStringFromPath("step/active.json");
+        Step step = stepTestComponent.gson().fromJson(json, Step.class);
 
         assertTrue(step instanceof ActiveUIStep);
     }
 
     @Test
-    public void testInstructionStep() {
+    public void testInstructionStep() throws IOException {
         String id = "stepId";
         String type = "intruction";
 
-        Step step = stepTestComponent.gson().fromJson("{'identifier':'stepId', 'type': 'instruction'}", Step.class);
+        String json = getStringFromPath("step/instruction.json");
+        Step step = stepTestComponent.gson().fromJson(json, Step.class);
 
         assertTrue(step instanceof InstructionStep);
+    }
+
+    private static String getStringFromPath(String fileName) throws IOException {
+        ClassLoader classLoader = StepJsonDeserializationTest.class.getClassLoader();
+        URL resource = classLoader.getResource(fileName);
+        File f = new File(resource.getPath());
+        byte[] b = Files.readAllBytes(f.toPath());
+        return new String(b);
     }
 }
