@@ -30,25 +30,43 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.sagebionetworks.research.domain.step;
+package org.sagebionetworks.research.domain.step.gson;
 
-import android.support.annotation.NonNull;
+import org.junit.*;
+import org.sagebionetworks.research.domain.step.SectionStep;
+import org.sagebionetworks.research.domain.step.Step;
+import org.sagebionetworks.research.domain.step.ui.ActiveUIStep;
+import org.sagebionetworks.research.domain.step.ui.UIStep;
 
 import java.util.List;
 
-/**
- * Created by liujoshua on 10/4/2017.
- */
+import static junit.framework.Assert.assertEquals;
+import static junit.framework.Assert.assertNotNull;
+import static junit.framework.Assert.assertTrue;
 
-/**
- * Defines a logical subgrouping of steps. Examples would be a section in a longer survey or an
- * active step that includes an instruction step, countdown step, and activity step.
- */
-public interface SectionStep extends Step {
-    /**
-     *
-     * @return list of the steps in the subgrouping
-     */
-    @NonNull
-    List<Step> getSteps();
+public class SectionStepGsonTests extends IndividualStepGsonTest {
+   @Test
+   public void testEmpty() {
+       Step step = this.readJsonFile("EmptySectionStep.json");
+       assertTrue(step instanceof SectionStep);
+       SectionStep sectionStep = (SectionStep) step;
+       assertEquals("emptySectionStep", sectionStep.getIdentifier());
+       assertTrue(sectionStep.getSteps().isEmpty());
+   }
+
+   @Test
+   public void testExample_1() {
+       Step step = this.readJsonFile("SectionStep_1.json");
+       assertTrue(step instanceof SectionStep);
+       SectionStep sectionStep = (SectionStep) step;
+       assertEquals("testSectionStep1", sectionStep.getIdentifier());
+       List<Step> steps = sectionStep.getSteps();
+       assertNotNull(steps);
+       assertEquals(2, steps.size());
+       Step substep1 = steps.get(0);
+       assertTrue(substep1 instanceof UIStep);
+       Step substep2 = steps.get(1);
+       assertTrue(substep2 instanceof ActiveUIStep);
+   }
+
 }

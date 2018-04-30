@@ -33,7 +33,11 @@
 package org.sagebionetworks.research.domain.step.ui;
 
 import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
+
 import java.util.List;
+
+import org.sagebionetworks.research.domain.form.InputDataType;
 import org.sagebionetworks.research.domain.form.InputField;
 
 /**
@@ -42,4 +46,26 @@ import org.sagebionetworks.research.domain.form.InputField;
 public interface FormUIStep extends UIStep {
     @NonNull
     List<InputField> getInputFields();
+
+    @NonNull
+    InputDataType getDataType();
+
+    boolean isOptional();
+
+    @Nullable
+    String getInputPrompt();
+
+    // TODO: rkolmos 04/30/2018 port RSDFormUIHint and add getUIHint()
+
+    @Nullable
+    String getPlaceholder();
+
+    // TODO: rkolmos 04/30/2018 port RSDTextFieldOptions and add getTextFieldOptions()
+
+    // TODO: rkolmos 04/30/2018 create a range for number picker weheels and add getRange()
+
+    // TODO: rkolmos 04/30/2018 port getFormatter()
+
+    // TODO: rkolmos 04/30/2018 port getPickerSource()
+
 }

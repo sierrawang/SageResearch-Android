@@ -1,0 +1,6 @@
+{
+  "identifier" : "testUIStep1",
+  "type" : "ui",
+  "title" : "title",
+  "text" : "text"
+}

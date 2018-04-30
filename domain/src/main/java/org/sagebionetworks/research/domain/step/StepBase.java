@@ -72,7 +72,8 @@ public class StepBase implements Step {
             return false;
         }
         StepBase stepBase = (StepBase) o;
-        return Objects.equal(identifier, stepBase.identifier);
+        return Objects.equal(identifier, stepBase.identifier) &&
+                Objects.equal(type, stepBase.type);
     }
 
     @Override

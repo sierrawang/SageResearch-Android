@@ -33,8 +33,11 @@
 package org.sagebionetworks.research.domain.inject;
 
 import org.sagebionetworks.research.domain.RuntimeTypeAdapterFactory;
-import org.sagebionetworks.research.domain.step.ActiveUIStep;
+import org.sagebionetworks.research.domain.step.ActiveUIStepBase;
+import org.sagebionetworks.research.domain.step.SectionStep;
+import org.sagebionetworks.research.domain.step.SectionStepBase;
 import org.sagebionetworks.research.domain.step.Step;
+import org.sagebionetworks.research.domain.step.UIStepBase;
 
 import java.util.Map;
 import java.util.Map.Entry;
@@ -44,6 +47,7 @@ import dagger.Module;
 import dagger.Provides;
 import dagger.multibindings.IntoMap;
 import dagger.multibindings.IntoSet;
+import dagger.multibindings.Multibinds;
 
 @Module(includes = {GsonModule.class})
 public class StepModule {
@@ -57,13 +61,33 @@ public class StepModule {
     }
 
     /**
-     * @return json type key for ActiveUIStep.class
+     * @return json type key for ActiveUIStepBase.class
      */
     @Provides
     @IntoMap
-    @StepClassKey(ActiveUIStep.class)
+    @StepClassKey(ActiveUIStepBase.class)
     static String provideActiveUIStep() {
-        return ActiveUIStep.TYPE_KEY;
+        return ActiveUIStepBase.TYPE_KEY;
+    }
+
+    /**
+     * @return json type key for UIStepBase.class
+     */
+    @Provides
+    @IntoMap
+    @StepClassKey(UIStepBase.class)
+    static String provideUIStep() {
+        return UIStepBase.TYPE_KEY;
+    }
+
+    /**
+     * @return json type key for SectionStepBase.class
+     */
+    @Provides
+    @IntoMap
+    @StepClassKey(SectionStepBase.class)
+    static String provideSectionStep() {
+        return SectionStepBase.TYPE_KEY;
     }
 
     /**
