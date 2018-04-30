@@ -52,13 +52,17 @@ android {
         }
     }
 
+    compileOptions {
+        targetCompatibility JavaVersion.VERSION_1_8
+        sourceCompatibility JavaVersion.VERSION_1_8
+    }
 }
 
 dependencies {
     implementation fileTree(dir: 'libs', include: ['*.jar'])
 
     api project(':domain')
-
+    implementation 'com.google.code.gson:gson:2.8.2'
     implementation 'com.google.auto.value:auto-value-annotations:1.6'
     annotationProcessor "com.google.auto.value:auto-value:1.6"
 

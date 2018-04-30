@@ -35,51 +35,28 @@ package org.sagebionetworks.research.presentation.model;
 import android.os.Parcelable;
 import android.support.annotation.IntDef;
 
-import com.google.auto.value.AutoValue;
 import com.google.common.collect.ImmutableSet;
 
 import org.sagebionetworks.research.domain.step.Step;
 
 import java.lang.annotation.Retention;
-import java.util.Collections;
-import java.util.Set;
 
 import static java.lang.annotation.RetentionPolicy.SOURCE;
 
 /**
  * Map a {@link Step} to a {@link StepView} when data is moving from the Domain layer to this layer.
  */
-@AutoValue
-public abstract class StepView implements Parcelable {
-    @AutoValue.Builder
-    public static abstract class Builder {
-        public abstract StepView build();
-
-        public abstract Builder setIdentifier(String identifier);
-
-        public abstract Builder setNavDirection(@NavDirection int navDirection);
-
-        public abstract Builder setStepActionViews(Set<StepActionView> stepActionViews);
-    }
-
+public interface StepView extends Parcelable {
     @Retention(SOURCE)
     @IntDef({NavDirection.SHIFT_LEFT, NavDirection.SHIFT_RIGHT})
-    public @interface NavDirection {
+    @interface NavDirection {
         int SHIFT_LEFT = 1;
         int SHIFT_RIGHT = -1;
     }
 
-    public static Builder builder() {
-        return new AutoValue_StepView.Builder()
-                .setNavDirection(NavDirection.SHIFT_LEFT)
-                .setStepActionViews(Collections.emptySet());
-    }
+    String getIdentifier();
 
-    public abstract String getIdentifier();
+    int getNavDirection();
 
-    public abstract int getNavDirection();
-
-    public abstract ImmutableSet<StepActionView> getStepActionViews();
-
-    public abstract Builder toBuilder();
+    ImmutableSet<StepActionView> getStepActionViews();
 }

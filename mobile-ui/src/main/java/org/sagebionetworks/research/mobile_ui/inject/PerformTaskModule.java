@@ -33,8 +33,8 @@
 package org.sagebionetworks.research.mobile_ui.inject;
 
 import org.sagebionetworks.research.domain.inject.GsonModule;
+import org.sagebionetworks.research.domain.inject.StepModule;
 import org.sagebionetworks.research.domain.inject.TaskModule;
-import org.sagebionetworks.research.domain.ui.show_step.ShowStepModule;
 import org.sagebionetworks.research.mobile_ui.perform_task.PerformTaskFragment;
 
 import dagger.Binds;
@@ -42,9 +42,8 @@ import dagger.Module;
 import dagger.android.AndroidInjector;
 import dagger.android.support.FragmentKey;
 import dagger.multibindings.IntoMap;
-import javax.inject.Singleton;
 
-@Module(includes = {GsonModule.class, TaskModule.class, ShowStepModule.class},
+@Module(includes = {GsonModule.class, TaskModule.class, StepModule.class},
         subcomponents = TaskActivityFragmentSubcomponent.class)
 public abstract class PerformTaskModule {
     @Binds

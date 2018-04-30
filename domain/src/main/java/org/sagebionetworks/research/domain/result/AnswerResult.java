@@ -33,68 +33,43 @@
 package org.sagebionetworks.research.domain.result;
 
 import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
-import com.google.common.base.MoreObjects;
-import com.google.common.base.Objects;
-import java.util.HashMap;
-import java.util.Map;
+
+import com.google.auto.value.AutoValue;
+
 import org.threeten.bp.Instant;
 
-public class AnswerResult<T> extends ResultBase {
+@AutoValue
+public abstract class AnswerResult<T> implements Result {
+    @AutoValue.Builder
+    public static abstract class Builder<T> {
+        public abstract AnswerResult<T> build();
+
+        public abstract Builder<T> setAnswer(T answer);
+
+        public abstract Builder<T> setAnswerResultType(AnswerResultType answerType);
+
+        public abstract Builder<T> setEndTime(final Instant endTime);
+
+        public abstract Builder<T> setIdentifier(String identifier);
+
+        public abstract Builder<T> setStartTime(final Instant startTime);
+
+        public abstract Builder<T> setType(String type);
+    }
+
+    public enum AnswerResultType {
+        BOOLEAN, DATA, DATE, DECIMAL, INTEGER, STRING, JSON
+    }
+
+    public static <T> Builder<T> builder() {
+        return new AutoValue_AnswerResult.Builder<T>();
+    }
+
     @NonNull
-    private final T answer;
+    public abstract T getAnswer();
 
     @NonNull
-    private final Map<String, T> metadata;
+    public abstract AnswerResultType getAnswerResultType();
 
-    public AnswerResult(@NonNull String identifier, @NonNull String type, @NonNull final Instant startTime,
-        @NonNull final Instant endTime, @NonNull T answer) {
-        this(identifier, type, startTime, endTime, answer, new HashMap<String, T>());
-    }
-
-
-    public AnswerResult(@NonNull String identifier, @NonNull String type, @NonNull final Instant startTime,
-        @NonNull final Instant endTime, @NonNull T answer, @NonNull Map<String, T> metadata) {
-        super(identifier, type, startTime, endTime);
-
-        this.answer = answer;
-        this.metadata = metadata;
-    }
-
-    @NonNull
-    public T getAnswer() {
-        return answer;
-    }
-
-    @Nullable
-    public T getMetadata(String key) {
-        return metadata.get(key);
-    }
-
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) {
-            return true;
-        }
-        if (o == null || getClass() != o.getClass()) {
-            return false;
-        }
-        AnswerResult<?>
-            that = (AnswerResult<?>) o;
-        return Objects.equal(answer, that.answer) &&
-            Objects.equal(metadata, that.metadata);
-    }
-
-    @Override
-    public int hashCode() {
-        return Objects.hashCode(answer, metadata);
-    }
-
-    @Override
-    public String toString() {
-        return MoreObjects.toStringHelper(this)
-            .add("answer", answer)
-            .add("metadata", metadata)
-            .toString();
-    }
+    public abstract Builder<T> toBuilder();
 }

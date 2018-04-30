@@ -32,13 +32,23 @@
 
 package org.sagebionetworks.research.domain.inject;
 
+import com.google.gson.JsonDeserializationContext;
+import com.google.gson.JsonDeserializer;
+import com.google.gson.JsonElement;
+import com.google.gson.JsonObject;
+import com.google.gson.JsonParseException;
+
 import org.sagebionetworks.research.domain.RuntimeTypeAdapterFactory;
+import org.sagebionetworks.research.domain.inject.GsonModule.ClassKey;
 import org.sagebionetworks.research.domain.step.ActiveUIStepBase;
-import org.sagebionetworks.research.domain.step.SectionStep;
 import org.sagebionetworks.research.domain.step.SectionStepBase;
 import org.sagebionetworks.research.domain.step.Step;
+import org.sagebionetworks.research.domain.step.StepBase;
 import org.sagebionetworks.research.domain.step.UIStepBase;
+import org.sagebionetworks.research.domain.step.ui.ActiveUIStep;
+import org.threeten.bp.Duration;
 
+import java.lang.reflect.Type;
 import java.util.Map;
 import java.util.Map.Entry;
 
@@ -47,7 +57,6 @@ import dagger.Module;
 import dagger.Provides;
 import dagger.multibindings.IntoMap;
 import dagger.multibindings.IntoSet;
-import dagger.multibindings.Multibinds;
 
 @Module(includes = {GsonModule.class})
 public class StepModule {
@@ -70,14 +79,44 @@ public class StepModule {
         return ActiveUIStepBase.TYPE_KEY;
     }
 
+
     /**
-     * @return json type key for UIStepBase.class
+     * @return The json Deserializer for an active step.
      */
     @Provides
     @IntoMap
-    @StepClassKey(UIStepBase.class)
-    static String provideUIStep() {
-        return UIStepBase.TYPE_KEY;
+    @ClassKey(ActiveUIStepBase.class)
+    static JsonDeserializer provideActiveUIStepDeserializer() {
+        return new JsonDeserializer<ActiveUIStep>() {
+            @Override
+            public ActiveUIStep deserialize(final JsonElement json, final Type typeOfT,
+                    final JsonDeserializationContext context)
+                    throws JsonParseException {
+                if (json.isJsonObject()) {
+                    JsonObject object = json.getAsJsonObject();
+                    String identifier = getStringFieldNonNull(object, "identifier");
+                    String title = getStringFieldNullable(object, "title");
+                    String text = getStringFieldNullable(object, "text");
+                    String detail = getStringFieldNullable(object, "detail");
+                    String footnote = getStringFieldNullable(object, "footnote");
+                    Duration duration = null;
+                    JsonElement durationElement = object.get("duration");
+                    if (durationElement != null) {
+                        if (!durationElement.isJsonPrimitive()) {
+                            throw new JsonParseException(
+                                    "duration " + durationElement.toString() + " should be an integer");
+                        }
+                        int durationInSeconds = durationElement.getAsInt();
+                        duration = Duration.ofSeconds(durationInSeconds);
+                    }
+
+                    return new ActiveUIStepBase(identifier, title, text, detail, footnote,
+                            duration, false);
+                }
+
+                throw new JsonParseException("json " + json.toString() + "is not an object");
+            }
+        };
     }
 
     /**
@@ -95,12 +134,64 @@ public class StepModule {
      */
     @IntoSet
     @Provides
-    static RuntimeTypeAdapterFactory<?> provideType(Map<Class<? extends Step>, String> stepClasses) {
+    static RuntimeTypeAdapterFactory provideType(Map<Class<? extends Step>, String> stepClasses) {
         RuntimeTypeAdapterFactory<Step> stepAdapterFactory = RuntimeTypeAdapterFactory.of(Step.class, Step.KEY_TYPE);
 
         for (Entry<Class<? extends Step>, String> stepClassEntry : stepClasses.entrySet()) {
             stepAdapterFactory.registerSubtype(stepClassEntry.getKey(), stepClassEntry.getValue());
         }
-        return stepAdapterFactory;
+        return stepAdapterFactory.registerDefaultType(StepBase.class);
+    }
+
+    /**
+     * @return json type key for UIStepBase.class
+     */
+    @Provides
+    @IntoMap
+    @StepClassKey(UIStepBase.class)
+    static String provideUIStep() {
+        return UIStepBase.TYPE_KEY;
+    }
+
+    /**
+     * Returns the string corresponding to the given key in the given json object, or throws a JsonParseExecption if
+     * no such String exists.
+     *
+     * @param json
+     *         The json to get the string field from.
+     * @param key
+     *         The field to get as a string from the given json.
+     * @return The string corresponding to the given key in the given json object.
+     * @throws JsonParseException
+     *         if there is no string corresponding to the given key in the json object.
+     */
+    private static String getStringFieldNonNull(JsonObject json, String key) throws JsonParseException {
+        JsonElement element = json.get(key);
+        if (element != null) {
+            String result = element.getAsString();
+            if (result != null) {
+                return result;
+            }
+        }
+
+        throw new JsonParseException("NonNull field " + key + "of object " + json.toString() + "couldn't be parsed");
+    }
+
+    /**
+     * Returns the string from the given field or null if the given field has been ommited from the JSON
+     *
+     * @param json
+     *         the json object to get the field from
+     * @param key
+     *         the name of the field to get from the json object
+     * @return The string that corresponds to key or null if no such String exists
+     */
+    private static String getStringFieldNullable(JsonObject json, String key) {
+        JsonElement element = json.get(key);
+        if (element != null) {
+            return element.getAsString();
+        }
+
+        return null;
     }
 }

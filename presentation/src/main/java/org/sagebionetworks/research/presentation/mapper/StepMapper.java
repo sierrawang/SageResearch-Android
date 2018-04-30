@@ -37,6 +37,7 @@ import android.support.annotation.Nullable;
 import com.google.common.base.Function;
 
 import org.sagebionetworks.research.domain.step.Step;
+import org.sagebionetworks.research.presentation.model.BaseStepView;
 import org.sagebionetworks.research.presentation.model.StepView;
 import org.sagebionetworks.research.presentation.model.StepView.NavDirection;
 
@@ -53,7 +54,7 @@ public class StepMapper implements Function<Step, StepView> {
         if (input == null) {
             return null;
         }
-        return StepView.builder()
+        return BaseStepView.builder()
                 .setIdentifier(input.getIdentifier())
                 .setNavDirection(NavDirection.SHIFT_LEFT)
                 .build();

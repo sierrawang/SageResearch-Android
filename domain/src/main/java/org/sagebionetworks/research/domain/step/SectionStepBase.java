@@ -34,6 +34,8 @@ package org.sagebionetworks.research.domain.step;
 
 import android.support.annotation.NonNull;
 
+import com.google.common.collect.ImmutableList;
+
 import java.util.List;
 
 public class SectionStepBase implements SectionStep {
@@ -41,16 +43,18 @@ public class SectionStepBase implements SectionStep {
 
     @NonNull
     private final String identifier;
+
+    @NonNull
+    private final ImmutableList<Step> steps;
+
     @NonNull
     private final String type;
-    @NonNull
-    private final List<Step> steps;
 
-    public SectionStepBase(@NonNull  final String identifier, @NonNull final String type,
+    public SectionStepBase(@NonNull final String identifier, @NonNull final String type,
             @NonNull final List<Step> steps) {
         this.identifier = identifier;
         this.type = type;
-        this.steps = steps;
+        this.steps = ImmutableList.copyOf(steps);
     }
 
     @NonNull
@@ -67,7 +71,7 @@ public class SectionStepBase implements SectionStep {
 
     @NonNull
     @Override
-    public List<Step> getSteps() {
+    public ImmutableList<Step> getSteps() {
         return this.steps;
     }
 }

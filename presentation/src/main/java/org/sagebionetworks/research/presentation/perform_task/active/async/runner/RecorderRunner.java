@@ -30,39 +30,34 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.sagebionetworks.research.app;
+package org.sagebionetworks.research.presentation.perform_task.active.async.runner;
 
-import org.junit.*;
-import org.sagebionetworks.research.domain.step.ActiveUIStepBase;
+import android.support.annotation.CallSuper;
+
+import org.sagebionetworks.research.domain.async.Recorder;
 import org.sagebionetworks.research.domain.step.Step;
 
-import static org.junit.Assert.*;
+/**
+ * Created by liujoshua on 10/11/2017.
+ */
 
-public class InstructionStepTest {
-    AppStepTestComponent stepTestComponent;
+public abstract class RecorderRunner extends AsyncActionRunner {
+    private final Recorder recorder;
 
-    @Before
-    public void setup() {
-        stepTestComponent = DaggerAppStepTestComponent.builder().build();
+    public RecorderRunner(Recorder recorder) {
+        super(recorder);
+        this.recorder = recorder;
     }
 
-    @Test
-    public void testActiveUIStep() {
-        String id = "stepId";
-        String type = "active";
+    public abstract void doFinish();
 
-        Step step = stepTestComponent.gson().fromJson("{'identifier':'stepId', 'type': 'active'}", Step.class);
-
-        assertTrue(step instanceof ActiveUIStepBase);
+    @Override
+    @CallSuper
+    public final void onFinishStep(Step step) {
+        super.onFinishStep(step);
+        if (recorder.getStopStepIdentifier().equals(step.getIdentifier())) {
+            ;
+        }
     }
 
-    @Test
-    public void testInstructionStep() {
-        String id = "stepId";
-        String type = "intruction";
-
-        Step step = stepTestComponent.gson().fromJson("{'identifier':'stepId', 'type': 'instruction'}", Step.class);
-
-        assertTrue(step instanceof InstructionStep);
-    }
 }

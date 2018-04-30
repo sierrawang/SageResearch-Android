@@ -30,19 +30,40 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.sagebionetworks.research.domain.async.runner;
+package org.sagebionetworks.research.domain.task;
 
-import org.sagebionetworks.research.domain.async.Request;
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
+
+import com.google.auto.value.AutoValue;
+
+import org.threeten.bp.Duration;
 
 /**
- * Created by liujoshua on 10/11/2017.
+ * Created by liujoshua on 10/2/2017.
  */
+@AutoValue
+public abstract class TaskInfoBase implements TaskInfo {
+    @AutoValue.Builder
+    public abstract static class Builder {
+        public abstract TaskInfoBase build();
 
-public abstract class RequestRunner extends AsyncActionRunner {
-    private final Request request;
+        public abstract Builder setCopyright(@Nullable String copyright);
 
-    public RequestRunner(Request request) {
-        super(request);
-        this.request = request;
+        public abstract Builder setDetail(@Nullable String detail);
+
+        public abstract Builder setEstimatedDuration(@Nullable Duration duration);
+
+        public abstract Builder setIdentifier(@NonNull String identifier);
+
+        public abstract Builder setSubtitle(@Nullable String subtitle);
+
+        public abstract Builder setTitle(@Nullable String title);
     }
+
+    public static Builder builder() {
+        return new AutoValue_TaskInfoBase.Builder();
+    }
+
+    public abstract Builder toBuilder();
 }

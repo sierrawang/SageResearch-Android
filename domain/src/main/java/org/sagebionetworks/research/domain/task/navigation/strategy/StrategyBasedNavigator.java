@@ -38,8 +38,8 @@ import android.support.annotation.Nullable;
 import org.sagebionetworks.research.domain.result.Result;
 import org.sagebionetworks.research.domain.result.TaskResult;
 import org.sagebionetworks.research.domain.step.Step;
-import org.sagebionetworks.research.domain.task.Task.Progress;
 import org.sagebionetworks.research.domain.task.navigation.StepNavigator;
+import org.sagebionetworks.research.domain.task.navigation.TaskProgress;
 import org.sagebionetworks.research.domain.task.navigation.TreeNavigator;
 import org.sagebionetworks.research.domain.task.navigation.strategy.StepNavigationStrategy.BackStepStrategy;
 import org.sagebionetworks.research.domain.task.navigation.strategy.StepNavigationStrategy.NextStepStrategy;
@@ -121,7 +121,7 @@ public class StrategyBasedNavigator implements StepNavigator {
 
     @Nullable
     @Override
-    public Progress getProgress(@NonNull final Step step, @NonNull TaskResult taskResult) {
+    public TaskProgress getProgress(@NonNull final Step step, @NonNull TaskResult taskResult) {
         return this.treeNavigator.getProgress(step, taskResult);
     }
 

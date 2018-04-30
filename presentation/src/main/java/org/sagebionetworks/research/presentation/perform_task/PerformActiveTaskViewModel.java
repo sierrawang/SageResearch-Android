@@ -30,17 +30,32 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.sagebionetworks.research.domain.step;
+package org.sagebionetworks.research.presentation.perform_task;
 
-public interface StepController {
-    interface StepModel {
-        boolean isForwardEnabled();
-        boolean isBackEnabled();
+import android.support.annotation.NonNull;
+
+import org.sagebionetworks.research.domain.repository.TaskRepository;
+import org.sagebionetworks.research.domain.task.navigation.StepNavigatorFactory;
+import org.sagebionetworks.research.presentation.mapper.TaskMapper;
+import org.sagebionetworks.research.presentation.model.TaskView;
+
+import java.util.UUID;
+import java.util.concurrent.TimeUnit;
+
+import io.reactivex.Observable;
+
+public class PerformActiveTaskViewModel extends PerformTaskViewModel {
+
+    public PerformActiveTaskViewModel(@NonNull final TaskView taskView,
+            @NonNull final UUID taskRunUUID,
+            @NonNull final StepNavigatorFactory stepNavigatorFactory,
+            @NonNull final TaskRepository taskRepository,
+            @NonNull final TaskMapper taskMapper) {
+        super(taskView, taskRunUUID, stepNavigatorFactory, taskRepository, taskMapper);
     }
 
-    void didFinishLoading();
-    void goForward();
-    void goBack();
-    void skipForward();
-    void cancel();
+    public Observable<Long> getCountdown() {
+        return Observable.intervalRange(10, 1, 1, 10, TimeUnit.SECONDS)
+                .map(i -> 10 - i);
+    }
 }

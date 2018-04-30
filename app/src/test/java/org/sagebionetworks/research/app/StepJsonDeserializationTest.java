@@ -30,47 +30,60 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.sagebionetworks.research.domain.async.runner;
+package org.sagebionetworks.research.app;
 
-import static com.google.common.base.Preconditions.checkNotNull;
-
-import android.support.annotation.CallSuper;
-import android.support.annotation.NonNull;
-import org.sagebionetworks.research.domain.async.AsyncAction;
+import org.junit.*;
 import org.sagebionetworks.research.domain.step.Step;
-import org.sagebionetworks.research.domain.step.StepChangeListener;
+import org.sagebionetworks.research.domain.step.ui.ActiveUIStep;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
-/**
- * Created by liujoshua on 10/11/2017.
- */
+import java.io.File;
+import java.io.IOException;
+import java.net.URL;
+import java.nio.file.Files;
 
-public abstract class AsyncActionRunner implements StepChangeListener {
-    private final AsyncAction asyncAction;
+import static java.nio.charset.StandardCharsets.UTF_8;
+import static org.junit.Assert.*;
 
-    public AsyncActionRunner(@NonNull AsyncAction asyncAction) {
-        checkNotNull(asyncAction);
-        this.asyncAction = asyncAction;
+public class StepJsonDeserializationTest {
+    private static final Logger LOGGER = LoggerFactory.getLogger(StepJsonDeserializationTest.class);
+
+    AppStepTestComponent stepTestComponent;
+
+    @Before
+    public void setup() {
+        stepTestComponent = DaggerAppStepTestComponent.builder().build();
     }
 
-    @Override
-    @CallSuper
-    public void onShowStep(Step step) {
-        if (asyncAction.getStartStepIdentifier().equals(step.getIdentifier())) {
-            runAction();
-        }
+    @Test
+    public void testActiveUIStep() throws IOException {
+        String id = "stepId";
+        String type = "active";
+
+        // TODO: add a test for null spokenInstructions once Immutable collection descrialization of nulls is fixed
+        String json = getStringFromPath("step/active.json");
+        Step step = stepTestComponent.gson().fromJson(json, Step.class);
+
+        assertTrue(step instanceof ActiveUIStep);
     }
 
-    protected abstract void runAction();
+    @Test
+    public void testInstructionStep() throws IOException {
+        String id = "stepId";
+        String type = "intruction";
 
-    @Override
-    @CallSuper
-    public void onCancelStep(Step step) {
-        //no-op
+        String json = getStringFromPath("step/instruction.json");
+        Step step = stepTestComponent.gson().fromJson(json, Step.class);
+
+        assertTrue(step instanceof InstructionStep);
     }
 
-    @Override
-    @CallSuper
-    public void onFinishStep(Step step) {
-        //no-op
+    private static String getStringFromPath(String fileName) throws IOException {
+        ClassLoader classLoader = StepJsonDeserializationTest.class.getClassLoader();
+        URL resource = classLoader.getResource(fileName);
+        File f = new File(resource.getPath());
+        byte[] b = Files.readAllBytes(f.toPath());
+        return new String(b, UTF_8);
     }
 }

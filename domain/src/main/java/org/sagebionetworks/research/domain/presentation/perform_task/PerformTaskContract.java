@@ -35,14 +35,14 @@ package org.sagebionetworks.research.domain.presentation.perform_task;
 import android.arch.lifecycle.LiveData;
 import android.support.annotation.NonNull;
 import org.sagebionetworks.research.domain.presentation.model.LoadableResource;
-import org.sagebionetworks.research.domain.task.Task;
+import org.sagebionetworks.research.domain.task.TaskInfo;
 
 public interface PerformTaskContract {
 //    @NonNull
 //    TaskView getTaskView();
 
     @NonNull
-    LiveData<LoadableResource<Task>> getTask();
+    LiveData<LoadableResource<TaskInfo>> getTask();
 
     @NonNull
 //    LiveData<StepView> getStep();

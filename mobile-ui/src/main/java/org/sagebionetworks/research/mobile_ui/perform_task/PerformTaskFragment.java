@@ -35,7 +35,9 @@ package org.sagebionetworks.research.mobile_ui.perform_task;
 import android.arch.lifecycle.ViewModelProviders;
 import android.content.Context;
 import android.os.Bundle;
+import android.os.ParcelUuid;
 import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.support.annotation.VisibleForTesting;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
@@ -43,17 +45,20 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-import com.google.common.base.Strings;
-
 import org.sagebionetworks.research.domain.mobile_ui.R;
-import org.sagebionetworks.research.mobile_ui.mapper.StepMapper;
-import org.sagebionetworks.research.mobile_ui.show_step.StepPresenterFactory;
+import org.sagebionetworks.research.domain.result.TaskResult;
 import org.sagebionetworks.research.mobile_ui.show_step.view.ShowStepFragment;
 import org.sagebionetworks.research.mobile_ui.show_step.view.ShowStepFragmentBase;
 import org.sagebionetworks.research.presentation.model.StepView;
 import org.sagebionetworks.research.presentation.model.StepView.NavDirection;
+import org.sagebionetworks.research.presentation.model.TaskView;
 import org.sagebionetworks.research.presentation.perform_task.PerformTaskViewModel;
 import org.sagebionetworks.research.presentation.perform_task.PerformTaskViewModelFactory;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.threeten.bp.Instant;
+
+import java.util.UUID;
 
 import butterknife.ButterKnife;
 import butterknife.Unbinder;
@@ -64,22 +69,19 @@ import dagger.android.support.HasSupportFragmentInjector;
 import javax.inject.Inject;
 
 import static com.google.common.base.Preconditions.checkNotNull;
-import static com.google.common.base.Preconditions.checkState;
 
 /**
  * A placeholder fragment containing a simple view.
  */
 public class PerformTaskFragment extends Fragment implements HasSupportFragmentInjector {
-    private static final String ARGUMENT_TASK_IDENTIFIER = "TASK_VIEW";
+    private static final Logger LOGGER = LoggerFactory.getLogger(PerformTaskFragment.class);
+
+    private static final String ARGUMENT_TASK_VIEW = "TASK_VIEW";
+
+    private static final String ARGUMENT_TASK_RUN_UUID = "TASK_RUN_UUID";
 
     @Inject
     DispatchingAndroidInjector<Fragment> fragmentDispatchingAndroidInjector;
-
-    @Inject
-    StepMapper stepMapper;
-
-    @Inject
-    StepPresenterFactory stepPresenterFactory;
 
     @Inject
     PerformTaskViewModelFactory taskViewModelFactory;
@@ -88,15 +90,18 @@ public class PerformTaskFragment extends Fragment implements HasSupportFragmentI
 
     private PerformTaskViewModel performTaskViewModel;
 
-    private String taskIdentifier;
+    private ParcelUuid taskRunParcelableUuid;
+
+    private TaskView taskView;
 
     private Unbinder unbinder;
 
-    public static PerformTaskFragment newInstance(@NonNull String taskIdentifier) {
-        checkNotNull(taskIdentifier);
+    public static PerformTaskFragment newInstance(@NonNull TaskView taskView, @Nullable UUID taskRunUUID) {
+        checkNotNull(taskView);
 
         Bundle arguments = new Bundle();
-        arguments.putString(ARGUMENT_TASK_IDENTIFIER, taskIdentifier);
+        arguments.putParcelable(ARGUMENT_TASK_VIEW, taskView);
+        arguments.putParcelable(ARGUMENT_TASK_RUN_UUID, new ParcelUuid(taskRunUUID));
 
         PerformTaskFragment fragment = new PerformTaskFragment();
         fragment.setArguments(arguments);
@@ -117,18 +122,29 @@ public class PerformTaskFragment extends Fragment implements HasSupportFragmentI
         if (savedInstanceState == null) {
             Bundle arguments = getArguments();
             if (arguments != null) {
-                taskIdentifier = getArguments().getString(ARGUMENT_TASK_IDENTIFIER);
+                taskView = getArguments().getParcelable(ARGUMENT_TASK_VIEW);
+                taskRunParcelableUuid = getArguments().getParcelable(ARGUMENT_TASK_RUN_UUID);
             }
         } else {
-            taskIdentifier = savedInstanceState.getString(ARGUMENT_TASK_IDENTIFIER);
+            taskView = savedInstanceState.getParcelable(ARGUMENT_TASK_VIEW);
+            taskRunParcelableUuid = savedInstanceState.getParcelable(ARGUMENT_TASK_RUN_UUID);
         }
-        checkState(!Strings.isNullOrEmpty(taskIdentifier), "taskIdentifier cannot be null or empty");
 
-        performTaskViewModel = ViewModelProviders.of(this, taskViewModelFactory.create(taskIdentifier))
+        checkNotNull(taskView, "taskView cannot be null");
+        LOGGER.debug("taskView: {}", taskView);
+
+        if (taskRunParcelableUuid == null) {
+            LOGGER.debug("No taskRunUUID found, generating random UUID");
+            taskRunParcelableUuid = new ParcelUuid(UUID.randomUUID());
+        }
+
+        TaskResult taskResult = TaskResult.builder(taskView.getIdentifier(), UUID.randomUUID(), Instant.now())
+                .setIdentifier("taskId").build();
+        performTaskViewModel = ViewModelProviders
+                .of(this, taskViewModelFactory.create(taskView, taskRunParcelableUuid.getUuid()))
                 .get(PerformTaskViewModel.class);
 
         performTaskViewModel.getStep().observe(this, this::showStep);
-        performTaskViewModel.goForward();
     }
 
     @Override
@@ -141,7 +157,8 @@ public class PerformTaskFragment extends Fragment implements HasSupportFragmentI
     @Override
     public void onSaveInstanceState(Bundle outState) {
         if (outState != null) {
-            outState.putString(ARGUMENT_TASK_IDENTIFIER, taskIdentifier);
+            outState.putParcelable(ARGUMENT_TASK_VIEW, taskView);
+            outState.putParcelable(ARGUMENT_TASK_RUN_UUID, taskRunParcelableUuid);
         }
     }
 

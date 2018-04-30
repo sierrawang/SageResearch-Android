@@ -32,92 +32,79 @@
 
 package org.sagebionetworks.research.data;
 
+import android.content.Context;
+import android.content.res.AssetManager;
 import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
 
-import org.sagebionetworks.research.data.model.step.ConcreteUIStep;
-import org.sagebionetworks.research.domain.Schema;
+import com.google.common.io.ByteStreams;
+import com.google.gson.Gson;
+
 import org.sagebionetworks.research.domain.repository.TaskRepository;
 import org.sagebionetworks.research.domain.result.TaskResult;
-import org.sagebionetworks.research.domain.step.Step;
-import org.sagebionetworks.research.domain.step.ui.UIStep;
 import org.sagebionetworks.research.domain.task.Task;
-import org.threeten.bp.Duration;
+import org.sagebionetworks.research.domain.task.TaskInfo;
+import org.sagebionetworks.research.domain.task.TaskInfoBase;
+import org.sagebionetworks.research.domain.task.navigation.TaskBase;
 
-import java.util.Arrays;
-import java.util.List;
+import java.io.IOException;
+import java.io.InputStreamReader;
 import java.util.UUID;
 
 import io.reactivex.Completable;
+import io.reactivex.Maybe;
 import io.reactivex.Single;
 import javax.inject.Inject;
 
-public class FakeTaskRepository implements TaskRepository {
-    @Inject public FakeTaskRepository() {}
-    @Override
-    public Single<Task> getTask(final String taskIdentifier) {
-        return Single.<Task>just(new Task() {
-            @NonNull
-            @Override
-            public String getIdentifier() {
-                return UUID.randomUUID().toString();
-            }
+public class ResourceTaskRepository implements TaskRepository {
+    private final Context context;
 
-            @Nullable
-            @Override
-            public Schema getSchema() {
-                return null;
-            }
+    private final Gson gson;
 
-            @Override
-            public int getTitle() {
-                return 0;
-            }
-
-            @Override
-            public int getDetail() {
-                return 0;
-            }
-
-            @Override
-            public int getCopyright() {
-                return 0;
-            }
-
-            @Nullable
-            @Override
-            public Duration getEstimatedDuration() {
-                return null;
-            }
-
-            @Override
-            public int getIcon() {
-                return 0;
-            }
-        });
+    @Inject
+    public ResourceTaskRepository(Context context, Gson gson) {
+        this.context = context;
+        this.gson = gson;
     }
 
+    @NonNull
     @Override
-    public Single<List<Step>> getTaskSteps(final Task task) {
-        return Single.just(Arrays.<Step>asList(
-                createUIStep(UUID.randomUUID().toString()),
-                createUIStep(UUID.randomUUID().toString())
-        ));
+    public Single<Task> getTask(final String taskIdentifier) {
+        AssetManager assetManager = context.getAssets();
+
+        try {
+            byte[] bytes = ByteStreams
+                    .toByteArray(assetManager.open("task/" + taskIdentifier + ".json"));
+            String json = new String(bytes);
+            System.out.println(json);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return Single.fromCallable(() ->
+                gson.fromJson(
+                        new InputStreamReader(assetManager.open("task/" + taskIdentifier + ".json")),
+                        TaskBase.class));
+    }
+
+    @NonNull
+    @Override
+    public Single<TaskInfo> getTaskInfo(final String taskIdentifier) {
+        AssetManager assetManager = context.getAssets();
+
+        return Single.fromCallable(() ->
+                gson.fromJson(
+                        new InputStreamReader(assetManager.open("task/info/" + taskIdentifier + ".json")),
+                        TaskInfoBase.class));
+    }
+
+    @NonNull
+    @Override
+    public Maybe<TaskResult> getTaskResult(final UUID taskRunUUID) {
+        return Maybe.error(new UnsupportedOperationException("Not implemented"));
     }
 
     @NonNull
     @Override
     public Completable setTaskResult(final TaskResult taskResult) {
-        return Completable.error(new UnsupportedOperationException("Not implemented yet"));
-    }
-
-    private UIStep createUIStep(String id) {
-        return ConcreteUIStep.builder()
-                .setIdentifier(id)
-                .setTitle("Step: " + id)
-                .setText("Step description for " + id)
-                .setDetail("Detail for " + id)
-                .setFootnote("Footnote for " + id)
-                .build();
+        return Completable.error(new UnsupportedOperationException("Not implemented"));
     }
 }

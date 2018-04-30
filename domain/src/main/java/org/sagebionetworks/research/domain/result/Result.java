@@ -34,11 +34,12 @@ package org.sagebionetworks.research.domain.result;
 
 import android.support.annotation.Keep;
 import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
+
 import org.threeten.bp.Instant;
 
 @Keep
 public interface Result {
-
     @NonNull
     String getIdentifier();
 
@@ -49,6 +50,6 @@ public interface Result {
     @NonNull
     Instant getStartTime();
 
-    @NonNull
+    @Nullable
     Instant getEndTime();
 }

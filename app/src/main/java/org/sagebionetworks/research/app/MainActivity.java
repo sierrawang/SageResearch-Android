@@ -38,6 +38,8 @@ import android.support.v7.app.AppCompatActivity;
 import org.sagebionetworks.research.mobile_ui.perform_task.PerformTaskFragment;
 import org.sagebionetworks.research.presentation.model.TaskView;
 
+import java.util.UUID;
+
 public class MainActivity extends AppCompatActivity {
     public static final String EXTRA_TASK_VIEW = "TASK_VIEW";
 
@@ -53,11 +55,11 @@ public class MainActivity extends AppCompatActivity {
 
         if (taskView == null) {
             taskView = TaskView.builder()
-                    .setIdentifier("taskId")
+                    .setIdentifier("foo")
                     .build();
         }
         if (performTaskFragment == null) {
-            performTaskFragment = PerformTaskFragment.newInstance("taskId");
+            performTaskFragment = PerformTaskFragment.newInstance(taskView, UUID.randomUUID());
 
             getSupportFragmentManager()
                     .beginTransaction()

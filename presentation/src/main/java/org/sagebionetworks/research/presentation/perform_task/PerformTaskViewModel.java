@@ -37,6 +37,7 @@ import android.arch.lifecycle.MutableLiveData;
 import android.arch.lifecycle.ViewModel;
 import android.support.annotation.MainThread;
 import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.support.annotation.VisibleForTesting;
 
 import org.sagebionetworks.research.domain.presentation.model.LoadableResource;
@@ -45,9 +46,11 @@ import org.sagebionetworks.research.domain.result.Result;
 import org.sagebionetworks.research.domain.result.TaskResult;
 import org.sagebionetworks.research.domain.step.Step;
 import org.sagebionetworks.research.domain.task.Task;
+import org.sagebionetworks.research.domain.task.TaskInfo;
 import org.sagebionetworks.research.domain.task.navigation.StepNavigator;
 import org.sagebionetworks.research.domain.task.navigation.StepNavigatorFactory;
 import org.sagebionetworks.research.presentation.mapper.TaskMapper;
+import org.sagebionetworks.research.presentation.model.BaseStepView;
 import org.sagebionetworks.research.presentation.model.StepView;
 import org.sagebionetworks.research.presentation.model.StepView.NavDirection;
 import org.sagebionetworks.research.presentation.model.TaskView;
@@ -55,12 +58,12 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.threeten.bp.Instant;
 
-import java.util.List;
 import java.util.UUID;
 
 import io.reactivex.disposables.CompositeDisposable;
 
 import static com.google.common.base.Preconditions.checkNotNull;
+import static com.google.common.base.Preconditions.checkState;
 
 @MainThread
 public class PerformTaskViewModel extends ViewModel {
@@ -76,45 +79,49 @@ public class PerformTaskViewModel extends ViewModel {
 
     private final MutableLiveData<StepView> stepViewLiveData;
 
-    private final String taskIdentifier;
-
-    private final MutableLiveData<LoadableResource<Task>> taskLiveData;
+    private final MutableLiveData<TaskInfo> taskLiveData;
 
     private final TaskMapper taskMapper;
 
     private final TaskRepository taskRepository;
 
-    private final TaskResult.Builder taskResultBuilder;
+    @Nullable
+    private TaskResult.Builder taskResultBuilder;
 
     private final MutableLiveData<TaskResult> taskResultLiveData;
 
-    private TaskView taskView;
+    private final UUID taskRunUuid;
 
-    public PerformTaskViewModel(@NonNull String taskIdentifier, @NonNull StepNavigatorFactory stepNavigatorFactory,
-            @NonNull TaskRepository taskRepository, @NonNull TaskMapper taskMapper) {
-        this.taskIdentifier = checkNotNull(taskIdentifier);
+    private final TaskView taskView;
+
+    private final MutableLiveData<LoadableResource<TaskView>> taskViewLiveData;
+
+    public PerformTaskViewModel(@NonNull TaskView taskView, @NonNull UUID taskRunUUID,
+            @NonNull StepNavigatorFactory stepNavigatorFactory, @NonNull TaskRepository taskRepository,
+            @NonNull TaskMapper taskMapper) {
+        this.taskView = checkNotNull(taskView);
+        this.taskRunUuid = checkNotNull(taskRunUUID);
         this.stepNavigatorFactory = checkNotNull(stepNavigatorFactory);
         this.taskRepository = checkNotNull(taskRepository);
         this.taskMapper = checkNotNull(taskMapper);
 
         taskLiveData = new MutableLiveData<>();
         taskResultLiveData = new MutableLiveData<>();
-        taskResultBuilder = new TaskResult.Builder("id", UUID.randomUUID());
-        taskResultBuilder.setStartTime(Instant.now());
-
-        initTaskSteps();
-
-        taskResultLiveData.setValue(taskResultBuilder.build());
 
         currentStepLiveData = new MutableLiveData<>();
         currentStepLiveData.setValue(null);
 
         stepViewLiveData = new MutableLiveData<>();
         compositeDisposable = new CompositeDisposable();
+        taskViewLiveData = new MutableLiveData<>();
+
+        initTaskSteps(taskView, taskRunUuid);
     }
 
     public void addAsyncResult(Result result) {
-        if (LOGGER.isDebugEnabled()){
+        checkState(taskResultBuilder != null);
+
+        if (LOGGER.isDebugEnabled()) {
             LOGGER.debug("addAsyncResult called with result: {}", result);
         }
         taskResultBuilder.addAsyncResult(result);
@@ -122,7 +129,9 @@ public class PerformTaskViewModel extends ViewModel {
     }
 
     public void addStepResult(Result result) {
-        if (LOGGER.isDebugEnabled()){
+        checkState(taskResultBuilder != null);
+
+        if (LOGGER.isDebugEnabled()) {
             LOGGER.debug("addStepResult called with result: {}", result);
         }
         taskResultBuilder.addStepResult(result);
@@ -135,7 +144,7 @@ public class PerformTaskViewModel extends ViewModel {
     }
 
     @NonNull
-    public LiveData<LoadableResource<Task>> getTask() {
+    public LiveData<TaskInfo> getTask() {
         return taskLiveData;
     }
 
@@ -155,7 +164,7 @@ public class PerformTaskViewModel extends ViewModel {
         Step backStep = stepNavigator.getPreviousStep(currentStepLiveData.getValue(), taskResultBuilder.build());
         currentStepLiveData.setValue(backStep);
         stepViewLiveData.setValue(
-                StepView.builder()
+                BaseStepView.builder()
                         .setIdentifier(backStep.getIdentifier())
                         .setNavDirection(NavDirection.SHIFT_RIGHT)
                         .build()
@@ -168,26 +177,58 @@ public class PerformTaskViewModel extends ViewModel {
         Step forwardStep = stepNavigator.getNextStep(currentStepLiveData.getValue(), taskResultBuilder.build());
         currentStepLiveData.setValue(forwardStep);
         stepViewLiveData.setValue(
-                StepView.builder()
+                BaseStepView.builder()
                         .setIdentifier(forwardStep.getIdentifier())
                         .setNavDirection(NavDirection.SHIFT_LEFT)
                         .build()
         );
     }
 
-
-
-    @VisibleForTesting
-    void handleTaskSteps(List<Step> steps, Throwable t) {
-
+    protected void onCleared() {
+        compositeDisposable.dispose();
     }
 
-    void initTaskSteps() {
-        compositeDisposable.add(taskRepository.getTask(taskIdentifier)
-                .doOnSuccess(task -> {
-                    taskView = taskMapper.apply(task);
-                })
-                .flatMap(taskRepository::getTaskSteps)
-                .subscribe(this::handleTaskSteps));
+    @VisibleForTesting
+    void handleTaskLoad(Task task, Throwable t) {
+        LOGGER.debug("Loaded task: {}", task);
+
+        // TODO: initialize at last shown step, for when there starting with saved taskResult state
+        if (t != null) {
+            // TODO: handle in UI
+            LOGGER.warn("Failed to load task steps", t);
+        } else {
+            stepNavigator = stepNavigatorFactory.create(task.getSteps());
+            stepNavigator.getNextStep(null, taskResultBuilder.build());
+        }
+    }
+
+    @VisibleForTesting
+    void handleTaskResultFound(TaskResult taskResult) {
+        taskResultBuilder = taskResult.toBuilder();
+        taskResultLiveData.setValue(taskResultBuilder.build());
+    }
+
+    @VisibleForTesting
+    void handleTaskResultLoadError(Throwable t) {
+        // TODO: handle task result load error in UI
+        LOGGER.warn("Failed to load TaskResult", t);
+    }
+
+    @VisibleForTesting
+    void handleTaskResultMissing() {
+        LOGGER.debug("No TaskResult found, using new TaskResult");
+        taskResultBuilder = TaskResult.builder(taskView.getIdentifier(), taskRunUuid, Instant.now());
+        taskResultLiveData.setValue(taskResultBuilder.build());
+    }
+
+    void initTaskSteps(TaskView taskView, UUID taskRunUuid) {
+        compositeDisposable.add(taskRepository.getTask(taskView.getIdentifier())
+                .subscribe(this::handleTaskLoad));
+
+        compositeDisposable.add(taskRepository.getTaskResult(taskRunUuid)
+                .subscribe(
+                        this::handleTaskResultFound,
+                        this::handleTaskResultLoadError,
+                        this::handleTaskResultMissing));
     }
 }

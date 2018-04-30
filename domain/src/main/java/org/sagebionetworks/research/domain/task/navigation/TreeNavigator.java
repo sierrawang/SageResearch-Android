@@ -185,7 +185,7 @@ public class TreeNavigator implements StepNavigator {
 
     @Nullable
     @Override
-    public Task.Progress getProgress(@NonNull final Step step, @NonNull TaskResult taskResult) {
+    public TaskProgress getProgress(@NonNull final Step step, @NonNull TaskResult taskResult) {
         if (this.progressMarkers != null) {
             // Get the list of steps that have executed, and add the current step in case it hasn't
             // been added to the step history yet.
@@ -210,7 +210,7 @@ public class TreeNavigator implements StepNavigator {
 
             // The progress is the current step index, out of the total number of markers, and it
             // isn't estimated.
-            return new Task.Progress(current, this.progressMarkers.size(), false);
+            return new TaskProgress(current, this.progressMarkers.size(), false);
         }
 
         // If there are no progress markers, default to using the total number of steps, and the
@@ -235,7 +235,7 @@ public class TreeNavigator implements StepNavigator {
         finishedStepIDs.remove(step.getIdentifier());
         // We add one here because the progress should be 1 indexed.
         int current = finishedStepIDs.size() + 1;
-        return new Task.Progress(current, total, true);
+        return new TaskProgress(current, total, true);
 
     }
 

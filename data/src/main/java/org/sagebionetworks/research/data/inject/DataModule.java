@@ -32,7 +32,11 @@
 
 package org.sagebionetworks.research.data.inject;
 
-import org.sagebionetworks.research.data.FakeTaskRepository;
+import android.content.Context;
+
+import com.google.gson.Gson;
+
+import org.sagebionetworks.research.data.ResourceTaskRepository;
 import org.sagebionetworks.research.domain.repository.TaskRepository;
 
 import dagger.Module;
@@ -41,7 +45,7 @@ import dagger.Provides;
 @Module
 public class DataModule {
     @Provides
-    TaskRepository provideTaskRepository() {
-        return new FakeTaskRepository();
+    TaskRepository provideTaskRepository(Context context, Gson gson) {
+        return new ResourceTaskRepository(context, gson);
     }
 }
