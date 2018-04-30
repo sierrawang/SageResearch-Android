@@ -38,7 +38,6 @@ import android.support.annotation.Nullable;
 import com.google.common.base.MoreObjects.ToStringHelper;
 import com.google.common.base.Objects;
 
-import org.sagebionetworks.research.domain.form.InputDataType;
 import org.sagebionetworks.research.domain.form.InputField;
 import org.sagebionetworks.research.domain.step.ui.FormUIStep;
 
@@ -48,58 +47,19 @@ public class FormUIStepBase extends UIStepBase implements FormUIStep {
     @NonNull
     private final List<InputField> inputFields;
 
-    @NonNull
-    private final InputDataType dataType;
-
-    private final boolean isOptional;
-
-    @Nullable
-    private final String inputPrompt;
-
-    @Nullable
-    private final String placeholder;
-
     public static final String TYPE_KEY = "form";
 
     public FormUIStepBase(@NonNull final String identifier, @Nullable final String title,
             @Nullable final String text, @Nullable final String detail, @Nullable final String footnote,
-            @NonNull final List<InputField> inputFields, @NonNull final InputDataType dataType,
-            final boolean isOptional, @Nullable final String inputPrompt, @Nullable final String placeholder) {
+            @NonNull final List<InputField> inputFields) {
         super(identifier, title, text, detail, footnote);
         this.inputFields = inputFields;
-        this.dataType = dataType;
-        this.isOptional = isOptional;
-        this.inputPrompt = inputPrompt;
-        this.placeholder = placeholder;
     }
-
 
     @NonNull
     @Override
     public List<InputField> getInputFields() {
         return this.inputFields;
-    }
-
-    @NonNull
-    @Override
-    public InputDataType getDataType() {
-        return this.dataType;
-    }
-
-    @Override
-    public boolean isOptional() {
-        return this.isOptional;
-    }
-
-    @Nullable
-    @Override
-    public String getInputPrompt() {
-        return this.inputPrompt;
-    }
-
-    @Override
-    public String getPlaceholder() {
-        return this.placeholder;
     }
 
     @NonNull
@@ -110,13 +70,11 @@ public class FormUIStepBase extends UIStepBase implements FormUIStep {
 
     @Override
     public int hashCode() {
-        return super.hashCode() + 3 * Objects.hashCode(this.inputFields, this.dataType, this.isOptional,
-                this.inputPrompt, this.placeholder);
+        return super.hashCode() + 3 * Objects.hashCode(this.inputFields);
     }
 
     /**
-     * Override equalsHelper to also compare the input fields, data type, input prompt, placeholder, and isOptional
-     * values.
+     * Override equalsHelper to also compare the input fields.
      * @param o The object to check for equality with this.
      * @return True if this is equal to o, false otherwise.
      */
@@ -124,25 +82,16 @@ public class FormUIStepBase extends UIStepBase implements FormUIStep {
     protected boolean equalsHelper(Object o) {
         FormUIStepBase formStep = (FormUIStepBase) o;
         return super.equalsHelper(o) &&
-                Objects.equal(this.getInputFields(), formStep.getInputFields()) &&
-                Objects.equal(this.getDataType(), formStep.getDataType()) &&
-                Objects.equal(this.getInputPrompt(), formStep.getInputPrompt()) &&
-                Objects.equal(this.getPlaceholder(), formStep.getPlaceholder()) &&
-                this.isOptional == formStep.isOptional;
+                Objects.equal(this.getInputFields(), formStep.getInputFields());
     }
 
     /**
-     * Override toStringHelper to also add the input fields, data type, input prompt, placeholder, and isOptional
-     * values to the toString.
+     * Override toStringHelper to also add the input fields.
      * @return The ToStringHelper that can produce the toString for this.
      */
     @Override
     protected ToStringHelper toStringHelper() {
         return super.toStringHelper()
-                .add("inputFields", this.getInputFields())
-                .add("dataType", this.getDataType())
-                .add("inputPrompt", this.getInputPrompt())
-                .add("placeholder", this.getPlaceholder())
-                .add("isOptional", this.isOptional());
+                .add("inputFields", this.getInputFields());
     }
 }
