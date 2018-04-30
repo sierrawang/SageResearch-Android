@@ -35,7 +35,7 @@
 
     <logger name="org.sagebionetworks" level="DEBUG" />
     <logger name="org.sagebase.crf" level="DEBUG" />
-    <root level="INFO">
+    <root level="DEBUG">
         <appender-ref ref="logcat" />
     </root>
 </configuration>

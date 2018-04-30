@@ -74,7 +74,7 @@ public class StepModule {
      */
     @IntoSet
     @Provides
-    static TypeAdapterFactory provideType(Map<Class<? extends Step>, String> stepClasses) {
+    static RuntimeTypeAdapterFactory provideType(Map<Class<? extends Step>, String> stepClasses) {
         RuntimeTypeAdapterFactory<Step> stepAdapterFactory = RuntimeTypeAdapterFactory.of(Step.class, Step.KEY_TYPE);
 
         for (Entry<Class<? extends Step>, String> stepClassEntry : stepClasses.entrySet()) {

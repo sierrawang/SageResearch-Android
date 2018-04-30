@@ -1,10 +1,9 @@
 package org.sagebionetworks.research.domain.navigation;
 
 import org.junit.*;
-import org.sagebionetworks.research.domain.navigation.IndividualNavigatorTests;
 import org.sagebionetworks.research.domain.result.TaskResult;
 import org.sagebionetworks.research.domain.step.Step;
-import org.sagebionetworks.research.domain.task.Task;
+import org.sagebionetworks.research.domain.task.navigation.TaskProgress;
 import org.sagebionetworks.research.domain.task.navigation.TreeNavigator;
 
 import java.util.List;
@@ -26,7 +25,7 @@ public class TreeNavigatorTests extends IndividualNavigatorTests {
         TreeNavigator navigator = new TreeNavigator(steps, null);
         TaskResult taskResult = mockTaskResult("task", steps.subList(0, 1));
 
-        Task.Progress progress = navigator.getProgress(steps.get(1), taskResult);
+        TaskProgress progress = navigator.getProgress(steps.get(1), taskResult);
         assertNotNull(progress);
         assertEquals(2, progress.getProgress());
         assertEquals(4, progress.getTotal());

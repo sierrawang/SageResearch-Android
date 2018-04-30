@@ -33,6 +33,7 @@
 package org.sagebionetworks.research.domain.step;
 
 import org.junit.*;
+import org.sagebionetworks.research.domain.step.ui.ActiveUIStep;
 
 import static org.junit.Assert.*;
 

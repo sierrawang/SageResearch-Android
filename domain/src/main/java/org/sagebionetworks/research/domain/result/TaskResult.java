@@ -78,9 +78,10 @@ public abstract class TaskResult implements Result {
     private static final String KEY_TYPE = "task";
 
     @NonNull
-    public static Builder builder(UUID taskRunUUID, Instant startTime) {
+    public static Builder builder(String identifier, UUID taskRunUUID, Instant startTime) {
         return new AutoValue_TaskResult.Builder()
                 .setType(KEY_TYPE)
+                .setIdentifier(identifier)
                 .setTaskRunUUID(taskRunUUID)
                 .setStartTime(startTime);
     }

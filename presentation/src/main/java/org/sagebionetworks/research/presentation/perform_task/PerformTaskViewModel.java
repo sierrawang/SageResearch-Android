@@ -206,8 +206,6 @@ public class PerformTaskViewModel extends ViewModel {
     void handleTaskResultFound(TaskResult taskResult) {
         taskResultBuilder = taskResult.toBuilder();
         taskResultLiveData.setValue(taskResultBuilder.build());
-        taskResultBuilder = TaskResult.builder(taskRunUuid, Instant.now());
-        taskResultLiveData.setValue(taskResultBuilder.build());
     }
 
     @VisibleForTesting
@@ -219,7 +217,7 @@ public class PerformTaskViewModel extends ViewModel {
     @VisibleForTesting
     void handleTaskResultMissing() {
         LOGGER.debug("No TaskResult found, using new TaskResult");
-        taskResultBuilder = TaskResult.builder(taskRunUuid, Instant.now());
+        taskResultBuilder = TaskResult.builder(taskView.getIdentifier(), taskRunUuid, Instant.now());
         taskResultLiveData.setValue(taskResultBuilder.build());
     }
 

@@ -35,15 +35,20 @@ package org.sagebionetworks.research.app;
 import org.junit.*;
 import org.sagebionetworks.research.domain.step.Step;
 import org.sagebionetworks.research.domain.step.ui.ActiveUIStep;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.io.File;
 import java.io.IOException;
 import java.net.URL;
 import java.nio.file.Files;
 
+import static java.nio.charset.StandardCharsets.UTF_8;
 import static org.junit.Assert.*;
 
 public class StepJsonDeserializationTest {
+    private static final Logger LOGGER = LoggerFactory.getLogger(StepJsonDeserializationTest.class);
+
     AppStepTestComponent stepTestComponent;
 
     @Before
@@ -79,6 +84,6 @@ public class StepJsonDeserializationTest {
         URL resource = classLoader.getResource(fileName);
         File f = new File(resource.getPath());
         byte[] b = Files.readAllBytes(f.toPath());
-        return new String(b);
+        return new String(b, UTF_8);
     }
 }

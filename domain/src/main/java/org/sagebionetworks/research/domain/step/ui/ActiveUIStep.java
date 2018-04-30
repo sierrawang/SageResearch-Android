@@ -33,14 +33,12 @@
 package org.sagebionetworks.research.domain.step.ui;
 
 import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
 
 import com.google.auto.value.AutoValue;
 import com.google.common.collect.ImmutableSortedMap;
 import com.google.gson.Gson;
 import com.google.gson.TypeAdapter;
 
-import java.time.Duration;
 import java.util.SortedMap;
 
 @AutoValue
@@ -73,7 +71,8 @@ public abstract class ActiveUIStep implements UIStep {
     }
 
     public static TypeAdapter<ActiveUIStep> typeAdapter(Gson gson) {
-        return new AutoValue_ActiveUIStep.GsonTypeAdapter(gson);
+        return new AutoValue_ActiveUIStep.GsonTypeAdapter(gson)
+                .setDefaultSpokenInstructions(ImmutableSortedMap.<String, String>of());
     }
 
     /**

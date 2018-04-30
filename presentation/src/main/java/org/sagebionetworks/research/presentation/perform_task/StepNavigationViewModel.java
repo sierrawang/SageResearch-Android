@@ -66,7 +66,7 @@ public class StepNavigationViewModel {
         currentStepLiveData = new MutableLiveData<>();
         currentStepLiveData.setValue(null);
 
-        taskResultBuilder = TaskResult.builder(UUID.randomUUID(), Instant.now());
+        taskResultBuilder = TaskResult.builder("identifier", UUID.randomUUID(), Instant.now());
 
         taskResultMutableLiveData = new MutableLiveData<>();
         taskResultMutableLiveData.setValue(taskResultBuilder.build());

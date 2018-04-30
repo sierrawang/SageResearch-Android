@@ -138,7 +138,7 @@ public class PerformTaskFragment extends Fragment implements HasSupportFragmentI
             taskRunParcelableUuid = new ParcelUuid(UUID.randomUUID());
         }
 
-        TaskResult taskResult = TaskResult.builder(UUID.randomUUID(), Instant.now())
+        TaskResult taskResult = TaskResult.builder(taskView.getIdentifier(), UUID.randomUUID(), Instant.now())
                 .setIdentifier("taskId").build();
         performTaskViewModel = ViewModelProviders
                 .of(this, taskViewModelFactory.create(taskView, taskRunParcelableUuid.getUuid()))

@@ -39,7 +39,10 @@ import com.google.gson.JsonDeserializer;
 import com.google.gson.TypeAdapterFactory;
 
 import org.aaronhe.threetengson.ThreeTenGsonAdapter;
+import org.sagebionetworks.research.domain.RuntimeTypeAdapterFactory;
 import org.sagebionetworks.research.domain.step.json.AutoValueTypeAdapterFactory;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.Map;
 import java.util.Set;
@@ -52,6 +55,7 @@ import javax.inject.Singleton;
 
 @Module
 public abstract class GsonModule {
+    private static final Logger LOGGER = LoggerFactory.getLogger(GsonModule.class);
 
     @Multibinds
     abstract Map<Class<?>, JsonDeserializer> jsonDeserializerMap();
@@ -65,13 +69,21 @@ public abstract class GsonModule {
     @Provides
     @Singleton
     static Gson provideGson(Map<Class<?>, JsonDeserializer> jsonDeserializerMap,
-            Set<TypeAdapterFactory> typeAdapterFactories) {
+            Set<TypeAdapterFactory> typeAdapterFactories,
+            Set<RuntimeTypeAdapterFactory> runtimeTypeAdapterFactories) {
         GsonBuilder builder = new GsonBuilder();
+
         for (Map.Entry<Class<?>, JsonDeserializer> entry : jsonDeserializerMap.entrySet()) {
+            LOGGER.debug("Registering JsonDeserializer: {}", entry);
             builder.registerTypeAdapter(entry.getKey(), entry.getValue());
         }
         for (TypeAdapterFactory typeAdapterFactory : typeAdapterFactories) {
+            LOGGER.debug("Registering TypeAdapterFactory: {}", typeAdapterFactory);
             builder.registerTypeAdapterFactory(typeAdapterFactory);
+        }
+        for (RuntimeTypeAdapterFactory runtimeTypeAdapterFactory : runtimeTypeAdapterFactories) {
+            LOGGER.debug("Registering RuntimeTypeAdapterFactory: {}", runtimeTypeAdapterFactory);
+            builder.registerTypeAdapterFactory(runtimeTypeAdapterFactory);
         }
 
         ThreeTenGsonAdapter.registerAll(builder);
