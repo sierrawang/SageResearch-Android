@@ -30,25 +30,33 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.sagebionetworks.research.domain.step;
+package org.sagebionetworks.research.domain.step.gson;
 
-import android.support.annotation.NonNull;
+import org.junit.*;
+import org.sagebionetworks.research.domain.step.Step;
+import org.sagebionetworks.research.domain.step.UIStepBase;
+import org.sagebionetworks.research.domain.step.ui.UIStep;
 
-import java.util.List;
+import static org.junit.Assert.*;
 
-/**
- * Created by liujoshua on 10/4/2017.
- */
+public class UIStepGsonTests extends IndividualStepGsonTest {
+    @Test
+    public void testExample_1() {
+        UIStep expected = new UIStepBase("testUIStep1","title", "text", null,
+                null);
+        testCommon(expected, "UIStep_1.json");
+    }
 
-/**
- * Defines a logical subgrouping of steps. Examples would be a section in a longer survey or an
- * active step that includes an instruction step, countdown step, and activity step.
- */
-public interface SectionStep extends Step {
-    /**
-     *
-     * @return list of the steps in the subgrouping
-     */
-    @NonNull
-    List<Step> getSteps();
+    @Test
+    public void testExample_2() {
+        UIStep expected = new UIStepBase("testUIStep2", "title", "text", "detail",
+                "footnote");
+        testCommon(expected, "UIStep_2.json");
+    }
+
+    private void testCommon(UIStep expected, String filename) {
+        Step step = this.readJsonFile(filename);
+        assertTrue(step instanceof UIStep);
+        assertEquals(expected, step);
+    }
 }

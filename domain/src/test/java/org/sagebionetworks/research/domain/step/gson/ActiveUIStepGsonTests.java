@@ -30,25 +30,46 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.sagebionetworks.research.domain.step;
+package org.sagebionetworks.research.domain.step.gson;
 
-import android.support.annotation.NonNull;
+import org.junit.*;
+import org.sagebionetworks.research.domain.step.ActiveUIStepBase;
+import org.sagebionetworks.research.domain.step.Step;
+import org.sagebionetworks.research.domain.step.StepType;
+import org.sagebionetworks.research.domain.step.ui.ActiveUIStep;
+import org.threeten.bp.Duration;
 
-import java.util.List;
 
-/**
- * Created by liujoshua on 10/4/2017.
- */
+import static junit.framework.Assert.assertEquals;
+import static junit.framework.Assert.assertNull;
+import static junit.framework.Assert.assertTrue;
 
-/**
- * Defines a logical subgrouping of steps. Examples would be a section in a longer survey or an
- * active step that includes an instruction step, countdown step, and activity step.
- */
-public interface SectionStep extends Step {
-    /**
-     *
-     * @return list of the steps in the subgrouping
-     */
-    @NonNull
-    List<Step> getSteps();
+public class ActiveUIStepGsonTests extends IndividualStepGsonTest {
+    @Test
+    public void testExample_1() {
+        ActiveUIStepBase expected = new ActiveUIStepBase("testActiveUIStep1","title", "text",
+                null, null, null, false);
+        commonTest(expected, "ActiveUIStep_1.json");
+    }
+
+    @Test
+    public void testExample_2() {
+        ActiveUIStepBase expected = new ActiveUIStepBase("testActiveUIStep2", "title","text",
+                "detail", "footnote", null, false);
+        commonTest(expected, "ActiveUIStep_2.json");
+    }
+
+    @Test
+    public void testExample_3() {
+        ActiveUIStepBase expected = new ActiveUIStepBase("testActiveUIStep3", "title","text",
+                "detail", "footnote", Duration.ofSeconds(5),
+                false);
+        commonTest(expected, "ActiveUIStep_3.json");
+    }
+
+    private void commonTest(ActiveUIStep expected, String filename) {
+        Step step = this.readJsonFile(filename);
+        assertTrue(step instanceof ActiveUIStep);
+        assertEquals(expected, step);
+    }
 }

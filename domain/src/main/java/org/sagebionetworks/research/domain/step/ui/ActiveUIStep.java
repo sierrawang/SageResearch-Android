@@ -34,7 +34,8 @@ package org.sagebionetworks.research.domain.step.ui;
 
 import android.support.annotation.Nullable;
 
-import java.time.Duration;
+import org.threeten.bp.Duration;
+
 
 public interface ActiveUIStep extends UIStep {
     /**

@@ -33,8 +33,10 @@
 package org.sagebionetworks.research.domain.step.ui;
 
 import android.support.annotation.NonNull;
-import java.util.List;
+
 import org.sagebionetworks.research.domain.form.InputField;
+
+import java.util.List;
 
 /**
  * Properties used in creating a form input.

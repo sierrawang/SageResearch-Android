@@ -32,59 +32,66 @@
 
 package org.sagebionetworks.research.domain.step;
 
-import static com.google.common.base.Preconditions.checkNotNull;
-
 import android.support.annotation.NonNull;
-import com.google.common.base.MoreObjects;
+import android.support.annotation.Nullable;
+
+import com.google.common.base.MoreObjects.ToStringHelper;
 import com.google.common.base.Objects;
 
+import org.sagebionetworks.research.domain.form.InputField;
+import org.sagebionetworks.research.domain.step.ui.FormUIStep;
 
-public class StepBase implements Step {
+import java.util.List;
+
+public class FormUIStepBase extends UIStepBase implements FormUIStep {
     @NonNull
-    private final String identifier;
+    private final List<InputField> inputFields;
 
-    @NonNull
-    private final String type;
+    public static final String TYPE_KEY = "form";
 
-    public StepBase(@NonNull String identifier, @NonNull String type) {
-        this.identifier = checkNotNull(identifier);
-        this.type = checkNotNull(type);
+    public FormUIStepBase(@NonNull final String identifier, @Nullable final String title,
+            @Nullable final String text, @Nullable final String detail, @Nullable final String footnote,
+            @NonNull final List<InputField> inputFields) {
+        super(identifier, title, text, detail, footnote);
+        this.inputFields = inputFields;
     }
 
-    @Override
     @NonNull
-    public String getIdentifier() {
-        return identifier;
+    @Override
+    public List<InputField> getInputFields() {
+        return this.inputFields;
     }
 
     @NonNull
     @Override
     public String getType() {
-        return type;
-    }
-
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) {
-            return true;
-        }
-        if (o == null || getClass() != o.getClass()) {
-            return false;
-        }
-        StepBase stepBase = (StepBase) o;
-        return Objects.equal(identifier, stepBase.identifier) &&
-                Objects.equal(type, stepBase.type);
+        return TYPE_KEY;
     }
 
     @Override
     public int hashCode() {
-        return Objects.hashCode(identifier);
+        return super.hashCode() + 3 * Objects.hashCode(this.inputFields);
     }
 
+    /**
+     * Override equalsHelper to also compare the input fields.
+     * @param o The object to check for equality with this.
+     * @return True if this is equal to o, false otherwise.
+     */
     @Override
-    public String toString() {
-        return MoreObjects.toStringHelper(this)
-            .add("identifier", identifier)
-            .toString();
+    protected boolean equalsHelper(Object o) {
+        FormUIStepBase formStep = (FormUIStepBase) o;
+        return super.equalsHelper(o) &&
+                Objects.equal(this.getInputFields(), formStep.getInputFields());
+    }
+
+    /**
+     * Override toStringHelper to also add the input fields.
+     * @return The ToStringHelper that can produce the toString for this.
+     */
+    @Override
+    protected ToStringHelper toStringHelper() {
+        return super.toStringHelper()
+                .add("inputFields", this.getInputFields());
     }
 }

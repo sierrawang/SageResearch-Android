@@ -33,7 +33,7 @@
 package org.sagebionetworks.research.app;
 
 import org.junit.*;
-import org.sagebionetworks.research.domain.step.ActiveUIStep;
+import org.sagebionetworks.research.domain.step.ActiveUIStepBase;
 import org.sagebionetworks.research.domain.step.Step;
 
 import static org.junit.Assert.*;
@@ -53,7 +53,7 @@ public class InstructionStepTest {
 
         Step step = stepTestComponent.gson().fromJson("{'identifier':'stepId', 'type': 'active'}", Step.class);
 
-        assertTrue(step instanceof ActiveUIStep);
+        assertTrue(step instanceof ActiveUIStepBase);
     }
 
     @Test

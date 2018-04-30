@@ -30,21 +30,14 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.sagebionetworks.research.domain.step;
+package org.sagebionetworks.research.domain.step.gson;
 
-import android.support.annotation.NonNull;
+import org.junit.runner.*;
+import org.junit.runners.*;
+import org.junit.runners.Suite.*;
 
-public class ActiveUIStep implements Step {
-    public static final String TYPE_KEY = "active";
-    @NonNull
-    @Override
-    public String getIdentifier() {
-        return null;
-    }
+@RunWith(Suite.class)
+@SuiteClasses({ActiveUIStepGsonTests.class, SectionStepGsonTests.class, UIStepGsonTests.class })
+public class AllStepGsonTests {
 
-    @NonNull
-    @Override
-    public String getType() {
-        return TYPE_KEY;
-    }
 }

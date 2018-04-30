@@ -32,27 +32,42 @@
 
 package org.sagebionetworks.research.domain.step;
 
-import org.junit.*;
+import android.support.annotation.NonNull;
 
-import static org.junit.Assert.*;
+import java.util.List;
 
-public class StepGsonTest {
+public class SectionStepBase implements SectionStep {
+    public static final String TYPE_KEY = "section";
 
-    StepTestComponent stepTestComponent;
+    @NonNull
+    private final String identifier;
+    @NonNull
+    private final String type;
+    @NonNull
+    private final List<Step> steps;
 
-    @Before
-    public void setup() {
-        stepTestComponent = DaggerStepTestComponent.builder().build();
+    public SectionStepBase(@NonNull  final String identifier, @NonNull final String type,
+            @NonNull final List<Step> steps) {
+        this.identifier = identifier;
+        this.type = type;
+        this.steps = steps;
     }
 
+    @NonNull
+    @Override
+    public String getIdentifier() {
+        return this.identifier;
+    }
 
-    @Test
-    public void testActiveUIStep() {
-        String id = "stepId";
-        String type = "active";
+    @NonNull
+    @Override
+    public String getType() {
+        return this.type;
+    }
 
-        Step step = stepTestComponent.gson().fromJson("{'identifier':'stepId', 'type': 'active'}", Step.class);
-
-        assertTrue(step instanceof ActiveUIStep);
+    @NonNull
+    @Override
+    public List<Step> getSteps() {
+        return this.steps;
     }
 }
