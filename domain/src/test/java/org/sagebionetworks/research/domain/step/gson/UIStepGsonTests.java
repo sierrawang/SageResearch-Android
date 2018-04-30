@@ -30,18 +30,33 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.sagebionetworks.research.domain.step.ui;
+package org.sagebionetworks.research.domain.step.gson;
 
-import android.support.annotation.NonNull;
+import org.junit.*;
+import org.sagebionetworks.research.domain.step.Step;
+import org.sagebionetworks.research.domain.step.UIStepBase;
+import org.sagebionetworks.research.domain.step.ui.UIStep;
 
-import org.sagebionetworks.research.domain.form.InputField;
+import static org.junit.Assert.*;
 
-import java.util.List;
+public class UIStepGsonTests extends IndividualStepGsonTest {
+    @Test
+    public void testExample_1() {
+        UIStep expected = new UIStepBase("testUIStep1","title", "text", null,
+                null);
+        testCommon(expected, "UIStep_1.json");
+    }
 
-/**
- * Properties used in creating a form input.
- */
-public interface FormUIStep extends UIStep {
-    @NonNull
-    List<InputField> getInputFields();
+    @Test
+    public void testExample_2() {
+        UIStep expected = new UIStepBase("testUIStep2", "title", "text", "detail",
+                "footnote");
+        testCommon(expected, "UIStep_2.json");
+    }
+
+    private void testCommon(UIStep expected, String filename) {
+        Step step = this.readJsonFile(filename);
+        assertTrue(step instanceof UIStep);
+        assertEquals(expected, step);
+    }
 }

@@ -30,30 +30,14 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.sagebionetworks.research.domain.step;
+package org.sagebionetworks.research.domain.step.gson;
 
-import org.junit.*;
-import org.sagebionetworks.research.domain.step.ui.ActiveUIStep;
+import org.junit.runner.*;
+import org.junit.runners.*;
+import org.junit.runners.Suite.*;
 
-import static org.junit.Assert.*;
+@RunWith(Suite.class)
+@SuiteClasses({ActiveUIStepGsonTests.class, SectionStepGsonTests.class, UIStepGsonTests.class })
+public class AllStepGsonTests {
 
-public class StepGsonTest {
-
-    StepTestComponent stepTestComponent;
-
-    @Before
-    public void setup() {
-        stepTestComponent = DaggerStepTestComponent.builder().build();
-    }
-
-
-    @Test
-    public void testActiveUIStep() {
-        String id = "stepId";
-        String type = "active";
-
-        Step step = stepTestComponent.gson().fromJson("{'identifier':'stepId', 'type': 'active'}", Step.class);
-
-        assertTrue(step instanceof ActiveUIStep);
-    }
 }

@@ -47,6 +47,7 @@ import org.slf4j.LoggerFactory;
 import java.util.Map;
 import java.util.Set;
 
+import dagger.MapKey;
 import dagger.Module;
 import dagger.Provides;
 import dagger.multibindings.IntoSet;
@@ -55,6 +56,11 @@ import javax.inject.Singleton;
 
 @Module
 public abstract class GsonModule {
+    @MapKey
+    public @interface ClassKey {
+        Class<?> value();
+    }
+
     private static final Logger LOGGER = LoggerFactory.getLogger(GsonModule.class);
 
     @Multibinds

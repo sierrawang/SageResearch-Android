@@ -1,0 +1,19 @@
+{
+  "identifier" : "testSectionStep1",
+  "type" : "section",
+  "steps" : [
+    {
+      "identifier" : "substep1",
+      "type" : "ui",
+      "title" : "substep1 title",
+      "text" : "substep1 text"
+    },
+    {
+      "identifier" : "substep2",
+      "type" : "active",
+      "title" : "substep2 title",
+      "text" : "substep2 text",
+      "footnote" : "substep2 footnote"
+    }
+  ]
+}

@@ -1,0 +1,9 @@
+{
+  "identifier" : "testActiveUIStep3",
+  "type" : "active",
+  "title" : "title",
+  "text" : "text",
+  "detail" : "detail",
+  "footnote" : "footnote",
+  "duration" : 5
+}

@@ -30,18 +30,46 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.sagebionetworks.research.domain.step.ui;
+package org.sagebionetworks.research.domain.step.gson;
 
-import android.support.annotation.NonNull;
+import org.junit.*;
+import org.sagebionetworks.research.domain.step.ActiveUIStepBase;
+import org.sagebionetworks.research.domain.step.Step;
+import org.sagebionetworks.research.domain.step.StepType;
+import org.sagebionetworks.research.domain.step.ui.ActiveUIStep;
+import org.threeten.bp.Duration;
 
-import org.sagebionetworks.research.domain.form.InputField;
 
-import java.util.List;
+import static junit.framework.Assert.assertEquals;
+import static junit.framework.Assert.assertNull;
+import static junit.framework.Assert.assertTrue;
 
-/**
- * Properties used in creating a form input.
- */
-public interface FormUIStep extends UIStep {
-    @NonNull
-    List<InputField> getInputFields();
+public class ActiveUIStepGsonTests extends IndividualStepGsonTest {
+    @Test
+    public void testExample_1() {
+        ActiveUIStepBase expected = new ActiveUIStepBase("testActiveUIStep1","title", "text",
+                null, null, null, false);
+        commonTest(expected, "ActiveUIStep_1.json");
+    }
+
+    @Test
+    public void testExample_2() {
+        ActiveUIStepBase expected = new ActiveUIStepBase("testActiveUIStep2", "title","text",
+                "detail", "footnote", null, false);
+        commonTest(expected, "ActiveUIStep_2.json");
+    }
+
+    @Test
+    public void testExample_3() {
+        ActiveUIStepBase expected = new ActiveUIStepBase("testActiveUIStep3", "title","text",
+                "detail", "footnote", Duration.ofSeconds(5),
+                false);
+        commonTest(expected, "ActiveUIStep_3.json");
+    }
+
+    private void commonTest(ActiveUIStep expected, String filename) {
+        Step step = this.readJsonFile(filename);
+        assertTrue(step instanceof ActiveUIStep);
+        assertEquals(expected, step);
+    }
 }

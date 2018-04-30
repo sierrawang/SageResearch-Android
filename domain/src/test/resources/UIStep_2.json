@@ -1,0 +1,8 @@
+{
+  "identifier" : "testUIStep2",
+  "type" : "ui",
+  "title" : "title",
+  "text" : "text",
+  "detail" : "detail",
+  "footnote" : "footnote"
+}

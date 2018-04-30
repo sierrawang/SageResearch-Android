@@ -30,18 +30,48 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.sagebionetworks.research.domain.step.ui;
+package org.sagebionetworks.research.domain.step;
 
 import android.support.annotation.NonNull;
 
-import org.sagebionetworks.research.domain.form.InputField;
+import com.google.common.collect.ImmutableList;
 
 import java.util.List;
 
-/**
- * Properties used in creating a form input.
- */
-public interface FormUIStep extends UIStep {
+public class SectionStepBase implements SectionStep {
+    public static final String TYPE_KEY = "section";
+
     @NonNull
-    List<InputField> getInputFields();
+    private final String identifier;
+
+    @NonNull
+    private final ImmutableList<Step> steps;
+
+    @NonNull
+    private final String type;
+
+    public SectionStepBase(@NonNull final String identifier, @NonNull final String type,
+            @NonNull final List<Step> steps) {
+        this.identifier = identifier;
+        this.type = type;
+        this.steps = ImmutableList.copyOf(steps);
+    }
+
+    @NonNull
+    @Override
+    public String getIdentifier() {
+        return this.identifier;
+    }
+
+    @NonNull
+    @Override
+    public String getType() {
+        return this.type;
+    }
+
+    @NonNull
+    @Override
+    public ImmutableList<Step> getSteps() {
+        return this.steps;
+    }
 }

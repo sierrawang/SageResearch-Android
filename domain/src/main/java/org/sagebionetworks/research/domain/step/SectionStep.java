@@ -33,6 +33,7 @@
 package org.sagebionetworks.research.domain.step;
 
 import com.google.common.collect.ImmutableList;
+import android.support.annotation.NonNull;
 
 import java.util.List;
 
@@ -49,5 +50,6 @@ public interface SectionStep extends Step {
      *
      * @return list of the steps in the subgrouping
      */
+    @NonNull
     ImmutableList<Step> getSteps();
 }
