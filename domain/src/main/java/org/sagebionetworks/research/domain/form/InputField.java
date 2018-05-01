@@ -34,7 +34,8 @@ package org.sagebionetworks.research.domain.form;
 
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
-import android.util.Range;
+
+import com.google.common.collect.Range;
 
 import org.sagebionetworks.research.domain.form.TextField.TextFieldOptions;
 
@@ -102,6 +103,9 @@ public interface InputField {
     @Nullable
     Range getRange();
 
+    /**
+     * @return the list of survey rules that are used by this input field or null if this is not applicable.
+     */
     @Nullable
     List<SurveyRule> getSurveyRules();
 }

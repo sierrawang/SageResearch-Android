@@ -34,7 +34,8 @@ package org.sagebionetworks.research.domain.form;
 
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
-import android.util.Range;
+
+import com.google.common.collect.Range;
 
 import org.sagebionetworks.research.domain.form.TextField.TextFieldOptions;
 
