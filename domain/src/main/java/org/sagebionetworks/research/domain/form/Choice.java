@@ -32,76 +32,36 @@
 
 package org.sagebionetworks.research.domain.form;
 
-import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
-import android.util.Range;
 
-import org.sagebionetworks.research.domain.form.TextField.TextFieldOptions;
-
-import java.util.List;
+import org.sagebionetworks.research.domain.result.Result;
 
 /**
- * Describes a form input within a step. Contains information about data type and hints on how
- * the UI should be displayed.
+ * A choice represents a single option in a form that allows for picking between options.
+ * @param <E> The type of the answer for the choice.
  */
-public interface InputField {
+public interface Choice<E> {
     /**
-     * @return identifier that is unique among form items within the step
-     */
-    @NonNull
-    String getIdentifier();
-
-    /**
-     * @return short text offering hint for data to be entered
+     * @return the answer for this choice.
      */
     @Nullable
-    String getPrompt();
+    E getAnswerValue();
 
     /**
-     * @return text for display giving additional detail about this input field.
+     * @return the text to display for this choice.
      */
     @Nullable
-    String getPromptDetail();
+    String getText();
 
     /**
-     * @return text for display in a text field or text area to help users understand how to
-     * answer the item's question
+     * @return true if this choice is mutually exclusive (e.g. "none of the above"), false otherwise
      */
-    @Nullable
-    String getPlaceholderText();
+    boolean isExclusive();
 
     /**
-     * @return true if this survey option is optional, false otherwise.
+     * Return true if the given result is equal to this choice.
+     * @param result the result to test for equality.
+     * @return true if the given result is equal to this choice.
      */
-    boolean isOptional();
-
-    /**
-     * @return data type for this input field. The data type can have an associated ui hint
-     */
-    @NonNull
-    @InputDataType
-    String getFormDataType();
-
-    /**
-     * @return UI hint for how the study would prefer that the input field is displayed to the user
-     */
-    @Nullable
-    @InputUIHint
-    String getFormUIHint();
-
-    /**
-     * @return The text field options for this InputField or null if there are none.
-     */
-    @Nullable
-    TextFieldOptions getTextFieldOptions();
-
-    /**
-     * @return The range used by dates and numbers for setting up a picker wheel, slider, or providing
-     * text input validation, or null if this is not applicable
-     */
-    @Nullable
-    Range getRange();
-
-    @Nullable
-    List<SurveyRule> getSurveyRules();
+    boolean isEqualToResult(Result result);
 }
