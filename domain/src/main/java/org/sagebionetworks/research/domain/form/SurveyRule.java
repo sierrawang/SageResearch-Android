@@ -32,80 +32,39 @@
 
 package org.sagebionetworks.research.domain.form;
 
-import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 
-import com.google.common.collect.Range;
+import com.google.common.collect.ImmutableSet;
 
-import org.sagebionetworks.research.domain.form.TextField.TextFieldOptions;
+import org.sagebionetworks.research.domain.result.Result;
 
-import java.util.List;
-
-/**
- * Describes a form input within a step. Contains information about data type and hints on how
- * the UI should be displayed.
- */
-public interface InputField {
+public interface SurveyRule {
     /**
-     * @return identifier that is unique among form items within the step
-     */
-    @NonNull
-    String getIdentifier();
-
-    /**
-     * @return short text offering hint for data to be entered
+     * For the given result, what is the next step the survey should go to.
+     * @param result The result to evaluate
+     * @return The identifier to skip to or null if this is not applicable.
      */
     @Nullable
-    String getPrompt();
+    String evaluateRule(Result result);
 
     /**
-     * @return text for display giving additional detail about this input field.
+     * For the given result, what are the cohorts to add or remove?
+     * @param result The result to evaluate
+     * @return The cohorts to add, and remove
      */
     @Nullable
-    String getPromptDetail();
+    CohortResult evaluateCohorts(Result result);
 
     /**
-     * @return text for display in a text field or text area to help users understand how to
-     * answer the item's question
+     * A class to store the result of a call to evaluate cohorts.
      */
-    @Nullable
-    String getPlaceholderText();
+    class CohortResult {
+        public final ImmutableSet<String> add;
+        public final ImmutableSet<String> remove;
 
-    /**
-     * @return true if this survey option is optional, false otherwise.
-     */
-    boolean isOptional();
-
-    /**
-     * @return data type for this input field. The data type can have an associated ui hint
-     */
-    @NonNull
-    @InputDataType
-    String getFormDataType();
-
-    /**
-     * @return UI hint for how the study would prefer that the input field is displayed to the user
-     */
-    @Nullable
-    @InputUIHint
-    String getFormUIHint();
-
-    /**
-     * @return The text field options for this InputField or null if there are none.
-     */
-    @Nullable
-    TextFieldOptions getTextFieldOptions();
-
-    /**
-     * @return The range used by dates and numbers for setting up a picker wheel, slider, or providing
-     * text input validation, or null if this is not applicable
-     */
-    @Nullable
-    Range getRange();
-
-    /**
-     * @return the list of survey rules that are used by this input field or null if this is not applicable.
-     */
-    @Nullable
-    List<SurveyRule> getSurveyRules();
+        public CohortResult(ImmutableSet<String> add, ImmutableSet<String> remove) {
+            this.add = add;
+            this.remove = remove;
+        }
+    }
 }

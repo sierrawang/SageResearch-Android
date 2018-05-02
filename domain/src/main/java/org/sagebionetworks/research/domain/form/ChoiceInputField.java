@@ -42,70 +42,45 @@ import org.sagebionetworks.research.domain.form.TextField.TextFieldOptions;
 import java.util.List;
 
 /**
- * Describes a form input within a step. Contains information about data type and hints on how
- * the UI should be displayed.
+ * This class represents an input field that has multiple choices for the user to select.
+ * @param <E> - The type of the choices that the user may select.
  */
-public interface InputField {
-    /**
-     * @return identifier that is unique among form items within the step
-     */
+public class ChoiceInputField<E> extends InputFieldBase implements ChoiceOptions<E> {
     @NonNull
-    String getIdentifier();
+    private final List<Choice<E>> choices;
 
-    /**
-     * @return short text offering hint for data to be entered
-     */
     @Nullable
-    String getPrompt();
+    private final Choice<E> defaultAnswer;
 
-    /**
-     * @return text for display giving additional detail about this input field.
-     */
-    @Nullable
-    String getPromptDetail();
+    public ChoiceInputField(@NonNull final String identifier,
+            @Nullable final String prompt,
+            @Nullable final String promptDetail,
+            @Nullable final String placeholderText, final boolean isOptional,
+            @NonNull final String formDataType,
+            @Nullable final String formUIHint,
+            @Nullable final TextFieldOptions textFieldOptions,
+            @Nullable final Range range,
+            @Nullable final List<SurveyRule> surveyRules,
+            @NonNull final List<Choice<E>> choices,
+            @Nullable final Choice<E> defaultAnswer) {
+        super(identifier, prompt, promptDetail, placeholderText, isOptional, formDataType, formUIHint,
+                textFieldOptions,
+                range, surveyRules);
+        this.choices = choices;
+        this.defaultAnswer = defaultAnswer;
+    }
 
-    /**
-     * @return text for display in a text field or text area to help users understand how to
-     * answer the item's question
-     */
-    @Nullable
-    String getPlaceholderText();
-
-    /**
-     * @return true if this survey option is optional, false otherwise.
-     */
-    boolean isOptional();
-
-    /**
-     * @return data type for this input field. The data type can have an associated ui hint
-     */
     @NonNull
-    @InputDataType
-    String getFormDataType();
+    @Override
+    public List<Choice<E>> getChoices() {
+        return this.choices;
+    }
 
     /**
-     * @return UI hint for how the study would prefer that the input field is displayed to the user
+     * @return The default answer this ChoiceInputField.
      */
     @Nullable
-    @InputUIHint
-    String getFormUIHint();
-
-    /**
-     * @return The text field options for this InputField or null if there are none.
-     */
-    @Nullable
-    TextFieldOptions getTextFieldOptions();
-
-    /**
-     * @return The range used by dates and numbers for setting up a picker wheel, slider, or providing
-     * text input validation, or null if this is not applicable
-     */
-    @Nullable
-    Range getRange();
-
-    /**
-     * @return the list of survey rules that are used by this input field or null if this is not applicable.
-     */
-    @Nullable
-    List<SurveyRule> getSurveyRules();
+    public Choice<E> getDefaultAnswer() {
+        return this.defaultAnswer;
+    }
 }
