@@ -34,6 +34,8 @@ package org.sagebionetworks.research.presentation.model;
 
 import android.os.Parcelable;
 import android.support.annotation.IntDef;
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 
 import com.google.common.collect.ImmutableSet;
 
@@ -54,9 +56,14 @@ public interface StepView extends Parcelable {
         int SHIFT_RIGHT = -1;
     }
 
+    @NonNull
     String getIdentifier();
 
     int getNavDirection();
 
+    @NonNull
     ImmutableSet<StepActionView> getStepActionViews();
+
+    @Nullable
+    String getTitle();
 }

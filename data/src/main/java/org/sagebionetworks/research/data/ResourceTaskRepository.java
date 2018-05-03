@@ -36,7 +36,6 @@ import android.content.Context;
 import android.content.res.AssetManager;
 import android.support.annotation.NonNull;
 
-import com.google.common.io.ByteStreams;
 import com.google.gson.Gson;
 
 import org.sagebionetworks.research.domain.repository.TaskRepository;
@@ -45,8 +44,9 @@ import org.sagebionetworks.research.domain.task.Task;
 import org.sagebionetworks.research.domain.task.TaskInfo;
 import org.sagebionetworks.research.domain.task.TaskInfoBase;
 import org.sagebionetworks.research.domain.task.navigation.TaskBase;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
-import java.io.IOException;
 import java.io.InputStreamReader;
 import java.util.UUID;
 
@@ -56,6 +56,8 @@ import io.reactivex.Single;
 import javax.inject.Inject;
 
 public class ResourceTaskRepository implements TaskRepository {
+    private static final Logger LOGGER = LoggerFactory.getLogger(ResourceTaskRepository.class);
+
     private final Context context;
 
     private final Gson gson;
@@ -71,14 +73,6 @@ public class ResourceTaskRepository implements TaskRepository {
     public Single<Task> getTask(final String taskIdentifier) {
         AssetManager assetManager = context.getAssets();
 
-        try {
-            byte[] bytes = ByteStreams
-                    .toByteArray(assetManager.open("task/" + taskIdentifier + ".json"));
-            String json = new String(bytes);
-            System.out.println(json);
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
         return Single.fromCallable(() ->
                 gson.fromJson(
                         new InputStreamReader(assetManager.open("task/" + taskIdentifier + ".json")),
@@ -99,7 +93,8 @@ public class ResourceTaskRepository implements TaskRepository {
     @NonNull
     @Override
     public Maybe<TaskResult> getTaskResult(final UUID taskRunUUID) {
-        return Maybe.error(new UnsupportedOperationException("Not implemented"));
+        LOGGER.warn("Always returning no task result");
+        return Maybe.empty();
     }
 
     @NonNull

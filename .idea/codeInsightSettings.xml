@@ -6,6 +6,7 @@
       <name>android.support.v4.util.Preconditions</name>
       <name>ch.qos.logback.core.util.Duration</name>
       <name>com.google.gson.internal</name>
+      <name>io.reactivex.annotations.Nullable</name>
       <name>java.time</name>
       <name>javax.xml.datatype</name>
       <name>junit.framework</name>

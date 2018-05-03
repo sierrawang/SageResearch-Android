@@ -45,6 +45,7 @@ import org.sagebionetworks.research.domain.repository.TaskRepository;
 import org.sagebionetworks.research.domain.result.Result;
 import org.sagebionetworks.research.domain.result.TaskResult;
 import org.sagebionetworks.research.domain.step.Step;
+import org.sagebionetworks.research.domain.step.ui.UIStep;
 import org.sagebionetworks.research.domain.task.Task;
 import org.sagebionetworks.research.domain.task.TaskInfo;
 import org.sagebionetworks.research.domain.task.navigation.StepNavigator;
@@ -60,6 +61,7 @@ import org.threeten.bp.Instant;
 
 import java.util.UUID;
 
+import io.reactivex.Completable;
 import io.reactivex.disposables.CompositeDisposable;
 
 import static com.google.common.base.Preconditions.checkNotNull;
@@ -161,27 +163,53 @@ public class PerformTaskViewModel extends ViewModel {
     public void goBack() {
         LOGGER.debug("goBack called");
 
+        Step currentStep = currentStepLiveData.getValue();
+        checkState(currentStep != null);
+
         Step backStep = stepNavigator.getPreviousStep(currentStepLiveData.getValue(), taskResultBuilder.build());
+
+        LOGGER.debug("Setting backStep: {}", backStep);
         currentStepLiveData.setValue(backStep);
-        stepViewLiveData.setValue(
-                BaseStepView.builder()
-                        .setIdentifier(backStep.getIdentifier())
-                        .setNavDirection(NavDirection.SHIFT_RIGHT)
-                        .build()
-        );
+
+        // TODO: Use Mapper/Factory for Step -> StepView
+        StepView stepView = null;
+        if (backStep != null) {
+            BaseStepView.Builder stepViewBuilder = BaseStepView.builder()
+                    .setIdentifier(backStep.getIdentifier())
+                    .setNavDirection(NavDirection.SHIFT_RIGHT);
+            if (backStep instanceof UIStep) {
+                UIStep uiStep = (UIStep) backStep;
+                stepViewBuilder.setTitle(uiStep.getTitle());
+            }
+            stepView = stepViewBuilder.build();
+        }
+
+        stepViewLiveData.setValue(stepView);
     }
 
     public void goForward() {
         LOGGER.debug("goForward called");
 
         Step forwardStep = stepNavigator.getNextStep(currentStepLiveData.getValue(), taskResultBuilder.build());
+
+        LOGGER.debug("Setting forwardStep: {}", forwardStep);
+
         currentStepLiveData.setValue(forwardStep);
-        stepViewLiveData.setValue(
-                BaseStepView.builder()
-                        .setIdentifier(forwardStep.getIdentifier())
-                        .setNavDirection(NavDirection.SHIFT_LEFT)
-                        .build()
-        );
+
+        // TODO: Use Mapper/Factory for Step -> StepView
+        StepView stepView = null;
+        if (forwardStep != null) {
+            BaseStepView.Builder stepViewBuilder = BaseStepView.builder()
+                    .setIdentifier(forwardStep.getIdentifier())
+                    .setNavDirection(NavDirection.SHIFT_LEFT);
+            if (forwardStep instanceof UIStep) {
+                UIStep uiStep = (UIStep) forwardStep;
+                stepViewBuilder.setTitle(uiStep.getTitle());
+            }
+            stepView = stepViewBuilder.build();
+        }
+
+        stepViewLiveData.setValue(stepView);
     }
 
     protected void onCleared() {
@@ -189,46 +217,45 @@ public class PerformTaskViewModel extends ViewModel {
     }
 
     @VisibleForTesting
-    void handleTaskLoad(Task task, Throwable t) {
+    void handleTaskLoad(Task task) {
         LOGGER.debug("Loaded task: {}", task);
-
-        // TODO: initialize at last shown step, for when there starting with saved taskResult state
-        if (t != null) {
-            // TODO: handle in UI
-            LOGGER.warn("Failed to load task steps", t);
-        } else {
-            stepNavigator = stepNavigatorFactory.create(task.getSteps());
-            stepNavigator.getNextStep(null, taskResultBuilder.build());
-        }
+        stepNavigator = stepNavigatorFactory.create(task.getSteps());
     }
 
     @VisibleForTesting
     void handleTaskResultFound(TaskResult taskResult) {
+        LOGGER.debug("Loaded taskResult: {}", taskResult);
+
         taskResultBuilder = taskResult.toBuilder();
         taskResultLiveData.setValue(taskResultBuilder.build());
     }
 
+    // TODO: Make this private and have Fragment call, instead of calling in constructor. This should make it easier to test
     @VisibleForTesting
-    void handleTaskResultLoadError(Throwable t) {
-        // TODO: handle task result load error in UI
-        LOGGER.warn("Failed to load TaskResult", t);
-    }
-
-    @VisibleForTesting
-    void handleTaskResultMissing() {
-        LOGGER.debug("No TaskResult found, using new TaskResult");
-        taskResultBuilder = TaskResult.builder(taskView.getIdentifier(), taskRunUuid, Instant.now());
-        taskResultLiveData.setValue(taskResultBuilder.build());
-    }
-
     void initTaskSteps(TaskView taskView, UUID taskRunUuid) {
-        compositeDisposable.add(taskRepository.getTask(taskView.getIdentifier())
-                .subscribe(this::handleTaskLoad));
+        compositeDisposable.add(
+                Completable.mergeArray(
+                        taskRepository.getTask(taskView.getIdentifier())
+                                .doOnSuccess(this::handleTaskLoad)
+                                .toCompletable(),
+                        taskRepository.getTaskResult(taskRunUuid)
+                                .toSingle(TaskResult.builder(taskView.getIdentifier(), taskRunUuid, Instant.now())
+                                        .build())
+                                .doOnSuccess(this::handleTaskResultFound)
+                                .toCompletable()
+                ).subscribe(this::taskInitSuccess, this::taskInitFail)
+        );
+    }
 
-        compositeDisposable.add(taskRepository.getTaskResult(taskRunUuid)
-                .subscribe(
-                        this::handleTaskResultFound,
-                        this::handleTaskResultLoadError,
-                        this::handleTaskResultMissing));
+    @VisibleForTesting
+    void taskInitFail(Throwable t) {
+        LOGGER.warn("Failed to init task", t);
+    }
+
+    @VisibleForTesting
+    void taskInitSuccess() {
+        checkState(taskResultBuilder != null, "taskResultBuilder must be set before taskInitSuccess is called");
+
+        goForward();
     }
 }

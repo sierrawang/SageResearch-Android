@@ -37,6 +37,7 @@ import android.content.Context;
 import android.os.Bundle;
 import android.support.annotation.LayoutRes;
 import android.support.annotation.NonNull;
+import android.support.annotation.VisibleForTesting;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -48,6 +49,8 @@ import org.sagebionetworks.research.presentation.model.StepView;
 import org.sagebionetworks.research.presentation.perform_task.PerformTaskViewModel;
 import org.sagebionetworks.research.presentation.show_step.ShowStepViewModel;
 import org.sagebionetworks.research.presentation.show_step.ShowStepViewModelFactory;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import butterknife.ButterKnife;
 import butterknife.Unbinder;
@@ -57,6 +60,8 @@ import javax.inject.Inject;
 import static com.google.common.base.Preconditions.checkNotNull;
 
 public abstract class ShowStepFragmentBase<S extends StepView, VM extends ShowStepViewModel<S>> extends Fragment {
+    private static final Logger LOGGER = LoggerFactory.getLogger(ShowStepFragmentBase.class);
+
     private static final String ARGUMENT_STEP_VIEW = "STEP_VIEW";
 
     @Inject
@@ -108,7 +113,7 @@ public abstract class ShowStepFragmentBase<S extends StepView, VM extends ShowSt
                 .of(this, showStepViewModelFactory.create(performTaskViewModel, stepViewArg))
                 .get(stepViewArg.getIdentifier(), showStepViewModelFactory.getViewModelClass(stepViewArg));
 
-        showStepViewModel.getStepView().observe(this, sv -> stepView = sv);
+        showStepViewModel.getStepView().observe(this, this::update);
     }
 
     @Override
@@ -135,4 +140,12 @@ public abstract class ShowStepFragmentBase<S extends StepView, VM extends ShowSt
     protected abstract int getLayoutId();
 
     protected abstract void handleActionButtonClick(@NonNull ActionButton ab);
+
+    @VisibleForTesting
+    protected void update(S stepView) {
+        LOGGER.debug("Update stepView: {}", stepView);
+
+        this.stepView = stepView;
+        stepViewBinding.title.setText(this.stepView.getTitle());
+    }
 }

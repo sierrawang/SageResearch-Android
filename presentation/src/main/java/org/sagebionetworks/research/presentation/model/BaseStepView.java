@@ -33,6 +33,8 @@
 package org.sagebionetworks.research.presentation.model;
 
 import android.os.Parcelable;
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 
 import com.google.auto.value.AutoValue;
 import com.google.common.collect.ImmutableSet;
@@ -53,11 +55,13 @@ public abstract class BaseStepView implements StepView, Parcelable {
     public abstract static class Builder {
         public abstract BaseStepView build();
 
-        public abstract Builder setIdentifier(String identifier);
+        public abstract Builder setIdentifier(@NonNull String identifier);
 
         public abstract Builder setNavDirection(@NavDirection int navDirection);
 
-        public abstract Builder setStepActionViews(Set<StepActionView> stepActionViews);
+        public abstract Builder setStepActionViews(@NonNull Set<StepActionView> stepActionViews);
+
+        public abstract Builder setTitle(@Nullable String title);
     }
 
     public static Builder builder() {
@@ -66,14 +70,15 @@ public abstract class BaseStepView implements StepView, Parcelable {
                 .setStepActionViews(Collections.emptySet());
     }
 
+    public static TypeAdapter<BaseStepView> typeAdapter(Gson gson) {
+        return new AutoValue_BaseStepView.GsonTypeAdapter(gson);
+    }
+
     public abstract String getIdentifier();
 
     public abstract int getNavDirection();
 
     public abstract ImmutableSet<StepActionView> getStepActionViews();
 
-    public static TypeAdapter<BaseStepView> typeAdapter(Gson gson) {
-        return new AutoValue_BaseStepView.GsonTypeAdapter(gson);
-    }
     public abstract Builder toBuilder();
 }
