@@ -39,28 +39,44 @@ import com.google.common.base.MoreObjects.ToStringHelper;
 import com.google.common.base.Objects;
 
 import org.sagebionetworks.research.domain.step.ui.ActiveUIStep;
-import org.threeten.bp.Duration;
+import org.sagebionetworks.research.domain.step.ui.UIAction;
+
+import java.util.Map;
 
 
 public class ActiveUIStepBase extends UIStepBase implements ActiveUIStep {
     public static final String TYPE_KEY = "active";
 
-    @Nullable
-    private final Duration duration;
     private final boolean backgroundAudioRequired;
 
-    public ActiveUIStepBase(@NonNull  final String identifier,
+    @Nullable
+    private final Double duration;
+
+    // Gson initialize defaults
+    ActiveUIStepBase() {
+        super();
+        duration = null;
+        backgroundAudioRequired = false;
+    }
+
+    public ActiveUIStepBase(@NonNull final String identifier, @NonNull final Map<String, UIAction> actions,
             @Nullable final String title, @Nullable final String text,
             @Nullable final String detail, @Nullable final String footnote,
-            @Nullable final Duration duration, final boolean backgroundAudioRequired) {
-        super(identifier, title, text, detail, footnote);
+            @Nullable final Double duration, final boolean backgroundAudioRequired) {
+        super(identifier, actions, title, text, detail, footnote);
         this.duration = duration;
         this.backgroundAudioRequired = backgroundAudioRequired;
     }
+
     @Nullable
     @Override
-    public Duration getDuration() {
+    public Double getDuration() {
         return this.duration;
+    }
+
+    @Override
+    public boolean isBackgroundAudioRequired() {
+        return this.backgroundAudioRequired;
     }
 
     @NonNull
@@ -70,18 +86,36 @@ public class ActiveUIStepBase extends UIStepBase implements ActiveUIStep {
     }
 
     @Override
-    public boolean isBackgroundAudioRequired() {
-        return this.backgroundAudioRequired;
-    }
-
-    @Override
     public int hashCode() {
         return super.hashCode() + 3 * Objects.hashCode(this.duration, this.backgroundAudioRequired);
     }
 
+    @Override
+    public boolean equals(final Object o) {
+        if (this == o) {
+            return true;
+        }
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
+        if (!super.equals(o)) {
+            return false;
+        }
+        final ActiveUIStepBase that = (ActiveUIStepBase) o;
+        return equalsHelper(o);
+    }
+
+    @Override
+    public String toString() {
+        return toStringHelper()
+                .toString();
+    }
+
     /**
      * Override equalsHelepr to also check the equality of Duration and isBackgroundAudioRequired.
-     * @param o The object to check for equality with this.
+     *
+     * @param o
+     *         The object to check for equality with this.
      * @return True if this is equal to other, false otherwise.
      */
     @Override
@@ -93,8 +127,8 @@ public class ActiveUIStepBase extends UIStepBase implements ActiveUIStep {
     }
 
     /**
-     * Override toStringHelper to add the duration and isBackgroundAudioRequired fields to the
-     * ToStringHelper.
+     * Override toStringHelper to add the duration and isBackgroundAudioRequired fields to the ToStringHelper.
+     *
      * @return The ToStringHelper that can create a String representation of this.
      */
     @Override

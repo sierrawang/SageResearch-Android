@@ -30,33 +30,29 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.sagebionetworks.research.data.model.step;
+package org.sagebionetworks.research.domain.step.ui;
 
 import com.google.auto.value.AutoValue;
-
-import org.sagebionetworks.research.domain.step.ui.UIStep;
+import com.google.gson.Gson;
+import com.google.gson.TypeAdapter;
 
 @AutoValue
-public abstract class ConcreteUIStep implements UIStep {
+public abstract class ConcreteUIAction implements UIAction {
     @AutoValue.Builder
-    public static abstract class Builder {
-        public abstract ConcreteUIStep build();
+    public abstract static class Builder {
+        public abstract ConcreteUIAction build();
 
-        public abstract Builder setDetail(String detail);
+        public abstract Builder setButtonIcon(String buttonIcon);
 
-        public abstract Builder setFootnote(String footnote);
-
-        public abstract Builder setIdentifier(String identifier);
-
-        public abstract Builder setText(String text);
-
-        public abstract Builder setTitle(String title);
-
-        public abstract Builder setType(String type);
+        public abstract Builder setButtonTitle(String buttonTitle);
     }
 
     public static Builder builder() {
-        return new AutoValue_ConcreteUIStep.Builder();
+        return new AutoValue_ConcreteUIAction.Builder();
+    }
+
+    public static TypeAdapter<ConcreteUIAction> typeAdapter(Gson gson) {
+        return new AutoValue_ConcreteUIAction.GsonTypeAdapter(gson);
     }
 
     public abstract Builder toBuilder();

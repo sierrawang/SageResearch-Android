@@ -38,27 +38,56 @@ import android.support.annotation.Nullable;
 import com.google.common.base.MoreObjects;
 import com.google.common.base.MoreObjects.ToStringHelper;
 import com.google.common.base.Objects;
+import com.google.common.base.Strings;
+import com.google.common.collect.ImmutableMap;
 
+import org.sagebionetworks.research.domain.step.ui.UIAction;
 import org.sagebionetworks.research.domain.step.ui.UIStep;
+
+import java.util.Map;
+
+import static com.google.common.base.Preconditions.checkArgument;
+import static com.google.common.base.Preconditions.checkNotNull;
 
 public class UIStepBase implements UIStep {
     public static final String TYPE_KEY = "ui";
 
     @NonNull
-    private final String identifier;
-    @Nullable
-    private final String title;
-    @Nullable
-    private final String text;
+    private final ImmutableMap<String, UIAction> actions;
+
     @Nullable
     private final String detail;
+
     @Nullable
     private final String footnote;
 
-    public UIStepBase(@NonNull final String identifier,
-            @Nullable final String title, @Nullable  final String text,
+    @NonNull
+    private final String identifier;
+
+    @Nullable
+    private final String text;
+
+    @Nullable
+    private final String title;
+
+    // Gson initialize defaults
+    UIStepBase() {
+        actions = ImmutableMap.of();
+        detail = null;
+        footnote = null;
+        identifier = "";
+        text = null;
+        title = null;
+    }
+
+    public UIStepBase(@NonNull final String identifier, @NonNull final Map<String, UIAction> actions,
+            @Nullable final String title, @Nullable final String text,
             @Nullable final String detail, @Nullable final String footnote) {
+        checkArgument(!Strings.isNullOrEmpty(identifier));
+        checkNotNull(actions);
+
         this.identifier = identifier;
+        this.actions = ImmutableMap.copyOf(actions);
         this.title = title;
         this.text = text;
         this.detail = detail;
@@ -67,27 +96,8 @@ public class UIStepBase implements UIStep {
 
     @NonNull
     @Override
-    public String getIdentifier() {
-        return this.identifier;
-    }
-
-
-    @NonNull
-    @Override
-    public String getType() {
-        return TYPE_KEY;
-    }
-
-    @Nullable
-    @Override
-    public String getTitle() {
-        return this.title;
-    }
-
-    @Nullable
-    @Override
-    public String getText() {
-        return this.text;
+    public ImmutableMap<String, UIAction> getActions() {
+        return actions;
     }
 
     @Nullable
@@ -102,32 +112,67 @@ public class UIStepBase implements UIStep {
         return this.footnote;
     }
 
+    @Nullable
     @Override
-    public boolean equals(Object o) {
-        return this == o || (o != null && this.getClass() == o.getClass() && this.equalsHelper(o));
+    public String getText() {
+        return this.text;
     }
 
+    @Nullable
     @Override
-    public String toString() {
-        return this.toStringHelper().toString();
+    public String getTitle() {
+        return this.title;
+    }
+
+    @NonNull
+    @Override
+    public String getIdentifier() {
+        return this.identifier;
+    }
+
+    @NonNull
+    @Override
+    public String getType() {
+        return TYPE_KEY;
     }
 
     @Override
     public int hashCode() {
-        return Objects.hashCode(this.identifier, this.title, this.text, this.detail, this.footnote);
+        return Objects.hashCode(actions, detail, footnote, identifier, text, title);
+    }
+
+    @Override
+    public boolean equals(final Object o) {
+        if (this == o) {
+            return true;
+        }
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
+        final UIStepBase that = (UIStepBase) o;
+        return equalsHelper(o);
+    }
+
+    @Override
+    public String toString() {
+        return toStringHelper()
+                .toString();
     }
 
     /**
-     * Returns true if all the UIStepBase fields of this object are equal to all the UIStepBase fields of o,
-     * false otherwise. It is expected that subclasses will override this to add their fields to the comparison.
-     * Requires: this.getClass() == o.getClass()
-     * @param o The object to check for equality with this.
-     * @return True if all the UIStepBase fields of this object are equal to all the UIStepBase fields of o,
-     *      false otherwise.
+     * Returns true if all the UIStepBase fields of this object are equal to all the UIStepBase fields of o, false
+     * otherwise. It is expected that subclasses will override this to add their fields to the comparison. Requires:
+     * this.getClass() == o.getClass()
+     *
+     * @param o
+     *         The object to check for equality with this.
+     * @return True if all the UIStepBase fields of this object are equal to all the UIStepBase fields of o, false
+     * otherwise.
      */
     protected boolean equalsHelper(Object o) {
         UIStepBase uiStep = (UIStepBase) o;
         return Objects.equal(this.identifier, uiStep.identifier) &&
+                Objects.equal(this.actions, uiStep.actions) &&
                 Objects.equal(this.title, uiStep.title) &&
                 Objects.equal(this.text, uiStep.text) &&
                 Objects.equal(this.detail, uiStep.detail) &&
@@ -137,12 +182,14 @@ public class UIStepBase implements UIStep {
     /**
      * Returns the ToStringHelper that can be used to create the toString() representation of this as a UIStepBase
      * object. It is expected that subclasses will override this to add their own fields to the toString().
+     *
      * @return The toStringHelper for this UIStepBase.
      */
     protected ToStringHelper toStringHelper() {
         return MoreObjects.toStringHelper(this)
                 .add("identifier", this.getIdentifier())
                 .add("type", this.getType())
+                .add("actions", actions)
                 .add("title", this.getTitle())
                 .add("text", this.getText())
                 .add("detail", this.getDetail())

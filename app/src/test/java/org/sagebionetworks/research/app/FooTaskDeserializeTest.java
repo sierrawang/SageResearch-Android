@@ -33,38 +33,20 @@
 package org.sagebionetworks.research.app;
 
 import org.junit.*;
-import org.sagebionetworks.research.domain.step.Step;
-import org.sagebionetworks.research.domain.step.ui.ActiveUIStep;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import org.sagebionetworks.research.domain.task.Task;
+import org.sagebionetworks.research.domain.task.navigation.TaskBase;
 
 import java.io.IOException;
 
 import static org.junit.Assert.*;
 
-public class StepJsonDeserializationTest extends JsonDeserializationTestBase {
-    private static final Logger LOGGER = LoggerFactory.getLogger(StepJsonDeserializationTest.class);
-
+public class FooTaskDeserializeTest extends JsonDeserializationTestBase{
     @Test
-    public void testActiveUIStep() throws IOException {
-        String id = "stepId";
-        String type = "active";
+    public void testDeserializeFooTask() throws IOException {
+        String json = getStringFromPath("task/foo.json");
 
-        // TODO: add a test for null spokenInstructions once Immutable collection descrialization of nulls is fixed
-        String json = getStringFromPath("step/active.json");
-        Step step = stepTestComponent.gson().fromJson(json, Step.class);
+        Task t = gson.fromJson(json, TaskBase.class);
 
-        assertTrue(step instanceof ActiveUIStep);
-    }
-
-    @Test
-    public void testInstructionStep() throws IOException {
-        String id = "stepId";
-        String type = "intruction";
-
-        String json = getStringFromPath("step/instruction.json");
-        Step step = stepTestComponent.gson().fromJson(json, Step.class);
-
-        assertTrue(step instanceof InstructionStep);
+        assertNotNull(t);
     }
 }

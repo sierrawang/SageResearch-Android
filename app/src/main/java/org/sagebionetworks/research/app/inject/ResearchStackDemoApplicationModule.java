@@ -30,41 +30,19 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.sagebionetworks.research.app;
+package org.sagebionetworks.research.app.inject;
 
-import org.junit.*;
-import org.sagebionetworks.research.domain.step.Step;
-import org.sagebionetworks.research.domain.step.ui.ActiveUIStep;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import android.content.Context;
 
-import java.io.IOException;
+import org.sagebionetworks.research.app.ResearchStackDemoApplication;
+import org.sagebionetworks.research.data.inject.DataModule;
 
-import static org.junit.Assert.*;
+import dagger.Binds;
+import dagger.Module;
+import dagger.android.AndroidInjectionModule;
 
-public class StepJsonDeserializationTest extends JsonDeserializationTestBase {
-    private static final Logger LOGGER = LoggerFactory.getLogger(StepJsonDeserializationTest.class);
-
-    @Test
-    public void testActiveUIStep() throws IOException {
-        String id = "stepId";
-        String type = "active";
-
-        // TODO: add a test for null spokenInstructions once Immutable collection descrialization of nulls is fixed
-        String json = getStringFromPath("step/active.json");
-        Step step = stepTestComponent.gson().fromJson(json, Step.class);
-
-        assertTrue(step instanceof ActiveUIStep);
-    }
-
-    @Test
-    public void testInstructionStep() throws IOException {
-        String id = "stepId";
-        String type = "intruction";
-
-        String json = getStringFromPath("step/instruction.json");
-        Step step = stepTestComponent.gson().fromJson(json, Step.class);
-
-        assertTrue(step instanceof InstructionStep);
-    }
+@Module(includes = {AndroidInjectionModule.class, AppTaskModule.class, DataModule.class})
+public abstract class ResearchStackDemoApplicationModule {
+    @Binds
+    public abstract Context provideApplicationContext(ResearchStackDemoApplication app);
 }

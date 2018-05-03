@@ -33,7 +33,6 @@
 package org.sagebionetworks.research.app.inject;
 
 import org.sagebionetworks.research.app.ResearchStackDemoApplication;
-import org.sagebionetworks.research.app.ResearchStackDemoApplicationModule;
 
 import dagger.BindsInstance;
 import dagger.Component;

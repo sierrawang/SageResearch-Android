@@ -40,7 +40,7 @@ import com.google.gson.TypeAdapterFactory;
 
 import org.aaronhe.threetengson.ThreeTenGsonAdapter;
 import org.sagebionetworks.research.domain.RuntimeTypeAdapterFactory;
-import org.sagebionetworks.research.domain.step.json.AutoValueTypeAdapterFactory;
+import org.sagebionetworks.research.domain.step.json.DomainAutoValueTypeAdapterFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -69,7 +69,7 @@ public abstract class GsonModule {
     @Provides
     @IntoSet
     static TypeAdapterFactory provideAutoValueTypeAdapter() {
-        return AutoValueTypeAdapterFactory.create();
+        return DomainAutoValueTypeAdapterFactory.create();
     }
 
     @Provides

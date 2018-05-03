@@ -46,7 +46,9 @@ import org.sagebionetworks.research.domain.step.Step;
 import org.sagebionetworks.research.domain.step.StepBase;
 import org.sagebionetworks.research.domain.step.UIStepBase;
 import org.sagebionetworks.research.domain.step.ui.ActiveUIStep;
-import org.threeten.bp.Duration;
+import org.sagebionetworks.research.domain.step.ui.ConcreteUIAction;
+import org.sagebionetworks.research.domain.step.ui.UIAction;
+import org.sagebionetworks.research.domain.step.ui.UIStep;
 
 import java.lang.reflect.Type;
 import java.util.Map;
@@ -74,7 +76,7 @@ public class StepModule {
      */
     @Provides
     @IntoMap
-    @StepClassKey(ActiveUIStepBase.class)
+    @StepClassKey(ActiveUIStep.class)
     static String provideActiveUIStep() {
         return ActiveUIStepBase.TYPE_KEY;
     }
@@ -85,7 +87,7 @@ public class StepModule {
      */
     @Provides
     @IntoMap
-    @ClassKey(ActiveUIStepBase.class)
+    @ClassKey(ActiveUIStep.class)
     static JsonDeserializer provideActiveUIStepDeserializer() {
         return new JsonDeserializer<ActiveUIStep>() {
             @Override
@@ -93,25 +95,7 @@ public class StepModule {
                     final JsonDeserializationContext context)
                     throws JsonParseException {
                 if (json.isJsonObject()) {
-                    JsonObject object = json.getAsJsonObject();
-                    String identifier = getStringFieldNonNull(object, "identifier");
-                    String title = getStringFieldNullable(object, "title");
-                    String text = getStringFieldNullable(object, "text");
-                    String detail = getStringFieldNullable(object, "detail");
-                    String footnote = getStringFieldNullable(object, "footnote");
-                    Duration duration = null;
-                    JsonElement durationElement = object.get("duration");
-                    if (durationElement != null) {
-                        if (!durationElement.isJsonPrimitive()) {
-                            throw new JsonParseException(
-                                    "duration " + durationElement.toString() + " should be an integer");
-                        }
-                        int durationInSeconds = durationElement.getAsInt();
-                        duration = Duration.ofSeconds(durationInSeconds);
-                    }
-
-                    return new ActiveUIStepBase(identifier, title, text, detail, footnote,
-                            duration, false);
+                    return context.deserialize(json, ActiveUIStepBase.class);
                 }
 
                 throw new JsonParseException("json " + json.toString() + "is not an object");
@@ -143,13 +127,41 @@ public class StepModule {
         return stepAdapterFactory.registerDefaultType(StepBase.class);
     }
 
+    @Provides
+    @IntoMap
+    @ClassKey(UIAction.class)
+    static JsonDeserializer provideUIActionDeseriazlier() {
+        return new JsonDeserializer() {
+            @Override
+            public Object deserialize(final JsonElement json, final Type typeOfT,
+                    final JsonDeserializationContext context)
+                    throws JsonParseException {
+                return context.deserialize(json, ConcreteUIAction.class);
+            }
+        };
+    }
+
+    @Provides
+    @IntoMap
+    @ClassKey(UIStep.class)
+    static JsonDeserializer provideUIStepDeserizlier() {
+        return new JsonDeserializer() {
+            @Override
+            public Object deserialize(final JsonElement json, final Type typeOfT,
+                    final JsonDeserializationContext context)
+                    throws JsonParseException {
+                return context.deserialize(json, UIStepBase.class);
+            }
+        };
+    }
+
     /**
      * @return json type key for UIStepBase.class
      */
     @Provides
     @IntoMap
-    @StepClassKey(UIStepBase.class)
-    static String provideUIStep() {
+    @StepClassKey(UIStep.class)
+    static String provideUIStepMap() {
         return UIStepBase.TYPE_KEY;
     }
 

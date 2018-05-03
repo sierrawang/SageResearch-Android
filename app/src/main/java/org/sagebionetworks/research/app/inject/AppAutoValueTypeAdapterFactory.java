@@ -30,16 +30,15 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.sagebionetworks.research.domain.step.json;
+package org.sagebionetworks.research.app.inject;
 
 import com.google.gson.TypeAdapterFactory;
-import com.ryanharter.auto.value.gson.GsonTypeAdapterFactory;
 
-@GsonTypeAdapterFactory
-public abstract class AutoValueTypeAdapterFactory implements TypeAdapterFactory {
+//@GsonTypeAdapterFactory
+public abstract class AppAutoValueTypeAdapterFactory implements TypeAdapterFactory {
     //     Static factory method to access the package
     //     private generated implementation
-    public static TypeAdapterFactory create() {
-        return new AutoValueGson_AutoValueTypeAdapterFactory();
-    }
+//    public static TypeAdapterFactory create() {
+//        return new AutoValueGson_AppAutoValueTypeAdapterFactory();
+//    }
 }

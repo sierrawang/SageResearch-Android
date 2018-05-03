@@ -1,8 +1,13 @@
 {
-  "identifier" : "testUIStep2",
-  "type" : "ui",
-  "title" : "title",
-  "text" : "text",
-  "detail" : "detail",
-  "footnote" : "footnote"
+  "identifier": "testUIStep2",
+  "type": "ui",
+  "title": "title",
+  "text": "text",
+  "detail": "detail",
+  "footnote": "footnote",
+  "actions": {
+    "goForward": {
+      "buttonTitle": "Go, Dogs!"
+    }
+  }
 }

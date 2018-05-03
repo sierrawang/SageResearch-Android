@@ -32,7 +32,10 @@
 
 package org.sagebionetworks.research.domain.step.ui;
 
+import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+
+import com.google.common.collect.ImmutableMap;
 
 import org.sagebionetworks.research.domain.step.Step;
 
@@ -43,6 +46,12 @@ import org.sagebionetworks.research.domain.step.Step;
  * tablet, you may choose to group a set of questions using a @see SectionStep.
  */
 public interface UIStep extends Step {
+    /**
+     * @return custom UI actions for this step
+     */
+    @NonNull
+    ImmutableMap<String, UIAction> getActions();
+
     /**
      * Additional detailed explanation for the step.
      * <p>

@@ -32,17 +32,33 @@
 
 package org.sagebionetworks.research.app;
 
-import android.content.Context;
+import com.google.gson.Gson;
 
-import org.sagebionetworks.research.data.inject.DataModule;
-import org.sagebionetworks.research.mobile_ui.inject.PerformTaskModule;
+import org.junit.*;
 
-import dagger.Binds;
-import dagger.Module;
-import dagger.android.AndroidInjectionModule;
+import java.io.File;
+import java.io.IOException;
+import java.net.URL;
+import java.nio.file.Files;
 
-@Module(includes = {AndroidInjectionModule.class, PerformTaskModule.class, DataModule.class})
-public abstract class ResearchStackDemoApplicationModule {
-    @Binds
-    public abstract Context provideApplicationContext(ResearchStackDemoApplication app);
+import static java.nio.charset.StandardCharsets.UTF_8;
+
+class JsonDeserializationTestBase {
+    protected Gson gson;
+
+    protected AppTestComponent stepTestComponent;
+
+    @Before
+    public void setup() {
+        stepTestComponent = DaggerAppTestComponent.builder().build();
+        gson = stepTestComponent.gson();
+    }
+
+    protected static String getStringFromPath(String fileName) throws IOException {
+        ClassLoader classLoader = JsonDeserializationTestBase.class.getClassLoader();
+        URL resource = classLoader.getResource(fileName);
+        File f = new File(resource.getPath());
+        byte[] b = Files.readAllBytes(f.toPath());
+        return new String(b, UTF_8);
+    }
 }
