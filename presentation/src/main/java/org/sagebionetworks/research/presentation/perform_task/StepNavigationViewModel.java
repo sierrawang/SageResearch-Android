@@ -40,13 +40,14 @@ import org.sagebionetworks.research.domain.result.TaskResult;
 import org.sagebionetworks.research.domain.step.Step;
 import org.sagebionetworks.research.domain.task.navigation.StepNavigator;
 import org.sagebionetworks.research.domain.task.navigation.TaskProgress;
-import org.threeten.bp.Instant;
-
-import java.util.UUID;
 
 public class StepNavigationViewModel {
 
     private final MutableLiveData<Step> currentStepLiveData;
+
+    private final LiveData<Boolean> hasNextStepLiveData;
+
+    private final LiveData<Boolean> hasPreviousStepLiveData;
 
     private final LiveData<Step> nextStepLiveData;
 
@@ -56,26 +57,21 @@ public class StepNavigationViewModel {
 
     private final LiveData<TaskProgress> taskProgressStepLiveData;
 
-    private final TaskResult.Builder taskResultBuilder;
-
-    private final MutableLiveData<TaskResult> taskResultMutableLiveData;
-
-    public StepNavigationViewModel(final StepNavigator stepNavigator) {
+    public StepNavigationViewModel(final StepNavigator stepNavigator, final LiveData<TaskResult> taskResultLiveData) {
         this.stepNavigator = stepNavigator;
 
         currentStepLiveData = new MutableLiveData<>();
         currentStepLiveData.setValue(null);
 
-        taskResultBuilder = TaskResult.builder("identifier", UUID.randomUUID(), Instant.now());
-
-        taskResultMutableLiveData = new MutableLiveData<>();
-        taskResultMutableLiveData.setValue(taskResultBuilder.build());
-
-        nextStepLiveData = Transformations.switchMap(taskResultMutableLiveData,
+        nextStepLiveData = Transformations.switchMap(taskResultLiveData,
                 tr -> Transformations.map(currentStepLiveData, s -> stepNavigator.getNextStep(s, tr)));
-        previousStepLiveData = Transformations.switchMap(taskResultMutableLiveData,
+        hasNextStepLiveData = Transformations.map(nextStepLiveData, n -> (n != null));
+
+        previousStepLiveData = Transformations.switchMap(taskResultLiveData,
                 tr -> Transformations.map(currentStepLiveData, s -> stepNavigator.getPreviousStep(s, tr)));
-        taskProgressStepLiveData = Transformations.switchMap(taskResultMutableLiveData,
+        hasPreviousStepLiveData = Transformations.map(previousStepLiveData, n -> (n != null));
+
+        taskProgressStepLiveData = Transformations.switchMap(taskResultLiveData,
                 tr -> Transformations.map(currentStepLiveData, s -> stepNavigator.getProgress(s, tr)));
     }
 
@@ -93,10 +89,6 @@ public class StepNavigationViewModel {
 
     public LiveData<TaskProgress> getTaskProgressLiveData() {
         return taskProgressStepLiveData;
-    }
-
-    public MutableLiveData<TaskResult> getTaskResultMutableLiveData() {
-        return taskResultMutableLiveData;
     }
 
     public void goBackward() {

@@ -33,6 +33,7 @@
 package org.sagebionetworks.research.presentation.perform_task;
 
 import android.arch.core.executor.testing.InstantTaskExecutorRule;
+import android.arch.lifecycle.MutableLiveData;
 import android.arch.lifecycle.Observer;
 
 import org.junit.*;
@@ -52,45 +53,44 @@ public class StepNavigationViewModelTest {
     @Mock
     private StepNavigator stepNavigator;
 
-    @Before
-    public void setup() {
-        MockitoAnnotations.initMocks(this);
-        stepNavigationViewModel = new StepNavigationViewModel(stepNavigator);
-    }
+    private TaskResult.Builder taskResultBuilder;
+
+    private MutableLiveData<TaskResult> taskResultMutableLiveData;
 
     @Test
     public void getCurrentStepLiveData() {
         Observer<Step> currentStepObs = mock(Observer.class);
         Observer<Step> previousStepObs = mock(Observer.class);
         Observer<Step> nextStepObs = mock(Observer.class);
-        Observer<TaskResult> taskResultObs = mock(Observer.class);
 
         Step nextStep = mock(Step.class);
         Step nextStep2 = mock(Step.class);
 
-        when(stepNavigator.getNextStep(isNull(), any())).thenReturn(nextStep);
+        TaskResult taskResult = mock(TaskResult.class);
+
+        when(stepNavigator.getNextStep(isNull(), eq(taskResult))).thenReturn(nextStep);
 
         stepNavigationViewModel.getCurrentStepLiveData().observeForever(currentStepObs);
         stepNavigationViewModel.getNextStepLiveData().observeForever(nextStepObs);
         stepNavigationViewModel.getPreviousStepLiveData().observeForever(previousStepObs);
-        stepNavigationViewModel.getTaskResultMutableLiveData().observeForever(taskResultObs);
+
+        taskResultMutableLiveData.setValue(taskResult);
 
         verify(currentStepObs, atLeastOnce()).onChanged(null);
         verify(previousStepObs, atLeastOnce()).onChanged(null);
         verify(nextStepObs, atLeastOnce()).onChanged(nextStep);
 
-        when(stepNavigator.getNextStep(eq(nextStep), any())).thenReturn(nextStep2);
-        when(stepNavigator.getPreviousStep(eq(nextStep), any())).thenReturn(null);
+        when(stepNavigator.getNextStep(eq(nextStep), eq(taskResult))).thenReturn(nextStep2);
+        when(stepNavigator.getPreviousStep(eq(nextStep), eq(taskResult))).thenReturn(null);
 
         stepNavigationViewModel.goForward();
-
 
         verify(currentStepObs, atLeastOnce()).onChanged(nextStep);
         verify(previousStepObs, atLeastOnce()).onChanged(null);
         verify(nextStepObs, atLeastOnce()).onChanged(nextStep2);
 
-        when(stepNavigator.getNextStep(eq(nextStep2), any())).thenReturn(null);
-        when(stepNavigator.getPreviousStep(eq(nextStep2), any())).thenReturn(nextStep);
+        when(stepNavigator.getNextStep(eq(nextStep2), eq(taskResult))).thenReturn(null);
+        when(stepNavigator.getPreviousStep(eq(nextStep2), eq(taskResult))).thenReturn(nextStep);
 
         stepNavigationViewModel.goForward();
 
@@ -103,5 +103,28 @@ public class StepNavigationViewModelTest {
         verify(currentStepObs, atLeastOnce()).onChanged(nextStep);
         verify(previousStepObs, atLeastOnce()).onChanged(null);
         verify(nextStepObs, atLeastOnce()).onChanged(nextStep2);
+
+        // Test a change in TaskResult
+        reset(stepNavigator);
+
+        TaskResult taskResult2 = mock(TaskResult.class);
+        when(stepNavigator.getNextStep(eq(nextStep), eq(taskResult2))).thenReturn(null);
+        when(stepNavigator.getPreviousStep(eq(nextStep), eq(taskResult2))).thenReturn(nextStep2);
+
+        taskResultMutableLiveData.setValue(taskResult2);
+
+        verify(currentStepObs, atLeastOnce()).onChanged(nextStep);
+        verify(previousStepObs, atLeastOnce()).onChanged(nextStep2);
+        verify(nextStepObs, atLeastOnce()).onChanged(null);
+
+        verify(stepNavigator).getNextStep(eq(nextStep), eq(taskResult2));
+        verify(stepNavigator).getPreviousStep(eq(nextStep), eq(taskResult2));
+    }
+
+    @Before
+    public void setup() {
+        MockitoAnnotations.initMocks(this);
+        taskResultMutableLiveData = new MutableLiveData<>();
+        stepNavigationViewModel = new StepNavigationViewModel(stepNavigator, taskResultMutableLiveData);
     }
 }
