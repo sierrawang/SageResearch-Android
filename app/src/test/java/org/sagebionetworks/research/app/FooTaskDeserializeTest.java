@@ -39,6 +39,7 @@ import org.junit.*;
 import org.sagebionetworks.research.domain.step.Step;
 import org.sagebionetworks.research.domain.step.ui.ActiveUIStep;
 import org.sagebionetworks.research.domain.step.ui.ConcreteUIAction;
+import org.sagebionetworks.research.domain.step.ui.FormUIStep;
 import org.sagebionetworks.research.domain.task.Task;
 
 import java.io.IOException;
@@ -76,8 +77,10 @@ public class FooTaskDeserializeTest extends JsonDeserializationTestBase {
                     step1.getActions());
         }
         {
-            Step step2 = steps.get(1);
+            assertThat(steps.get(1), instanceOf(FormUIStep.class));
+            FormUIStep step2 = (FormUIStep) steps.get(1);
             assertEquals("happiness", step2.getIdentifier());
+            assertEquals("How happy are you?", step2.getTitle());
         }
         {
             Step step3 = steps.get(2);
@@ -88,12 +91,16 @@ public class FooTaskDeserializeTest extends JsonDeserializationTestBase {
             assertEquals("selectMultiple", step4.getIdentifier());
         }
         {
-            Step step5 = steps.get(4);
+            assertThat(steps.get(4), instanceOf(FormUIStep.class));
+            FormUIStep step5 = (FormUIStep) steps.get(4);
             assertEquals("step4", step5.getIdentifier());
+            assertEquals(4, step5.getInputFields().size());
         }
         {
-            Step step6 = steps.get(5);
+            assertThat(steps.get(5), instanceOf(FormUIStep.class));
+            FormUIStep step6 = (FormUIStep) steps.get(5);
             assertEquals("step5", step6.getIdentifier());
+            assertEquals(4, step6.getInputFields().size());
         }
         {
             Step step7 = steps.get(6);

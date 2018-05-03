@@ -42,11 +42,18 @@ import org.sagebionetworks.research.domain.form.InputField;
 import org.sagebionetworks.research.domain.step.ui.FormUIStep;
 import org.sagebionetworks.research.domain.step.ui.UIAction;
 
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 
 public class FormUIStepBase extends UIStepBase implements FormUIStep {
     public static final String TYPE_KEY = "form";
+
+    // Gson initialize defaults
+    FormUIStepBase() {
+        super();
+        inputFields = Collections.emptyList();
+    }
 
     @NonNull
     private final List<InputField> inputFields;
