@@ -33,12 +33,13 @@
 package org.sagebionetworks.research.app.inject;
 
 import com.google.gson.TypeAdapterFactory;
+import com.ryanharter.auto.value.gson.GsonTypeAdapterFactory;
 
-//@GsonTypeAdapterFactory
+@GsonTypeAdapterFactory
 public abstract class AppAutoValueTypeAdapterFactory implements TypeAdapterFactory {
     //     Static factory method to access the package
     //     private generated implementation
-//    public static TypeAdapterFactory create() {
-//        return new AutoValueGson_AppAutoValueTypeAdapterFactory();
-//    }
+    public static TypeAdapterFactory create() {
+        return new AutoValueGson_AppAutoValueTypeAdapterFactory();
+    }
 }

@@ -80,10 +80,13 @@ dependencies {
     annotationProcessor 'com.google.dagger:dagger-android-processor:2.15'
     annotationProcessor "com.google.dagger:dagger-compiler:2.15"
 
-    implementation 'com.google.auto.value:auto-value-annotations:1.6'
+    implementation 'com.google.code.gson:gson:2.8.2'
+
     implementation 'com.ryanharter.auto.value:auto-value-parcel-adapter:0.2.6'
 
     annotationProcessor "com.google.auto.value:auto-value:1.6"
+    annotationProcessor 'com.ryanharter.auto.value:auto-value-gson:0.7.0'
+    annotationProcessor 'com.google.auto.value:auto-value-annotations:1.6' // include again for auto-value-gson
     annotationProcessor 'com.ryanharter.auto.value:auto-value-parcel:0.2.6'
 
     implementation 'com.android.support:appcompat-v7:27.1.1'

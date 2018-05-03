@@ -36,6 +36,8 @@ import android.os.Parcelable;
 
 import com.google.auto.value.AutoValue;
 import com.google.common.collect.ImmutableSet;
+import com.google.gson.Gson;
+import com.google.gson.TypeAdapter;
 
 import org.sagebionetworks.research.domain.step.Step;
 
@@ -70,5 +72,8 @@ public abstract class BaseStepView implements StepView, Parcelable {
 
     public abstract ImmutableSet<StepActionView> getStepActionViews();
 
+    public static TypeAdapter<BaseStepView> typeAdapter(Gson gson) {
+        return new AutoValue_BaseStepView.GsonTypeAdapter(gson);
+    }
     public abstract Builder toBuilder();
 }

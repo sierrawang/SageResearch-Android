@@ -171,8 +171,8 @@ public class UIStepBase implements UIStep {
      */
     protected boolean equalsHelper(Object o) {
         UIStepBase uiStep = (UIStepBase) o;
-        return Objects.equal(this.identifier, uiStep.identifier) &&
-                Objects.equal(this.actions, uiStep.actions) &&
+        return Objects.equal(actions, uiStep.actions) &&
+                Objects.equal(this.identifier, uiStep.identifier) &&
                 Objects.equal(this.title, uiStep.title) &&
                 Objects.equal(this.text, uiStep.text) &&
                 Objects.equal(this.detail, uiStep.detail) &&
@@ -187,9 +187,9 @@ public class UIStepBase implements UIStep {
      */
     protected ToStringHelper toStringHelper() {
         return MoreObjects.toStringHelper(this)
+                .add("actions", actions)
                 .add("identifier", this.getIdentifier())
                 .add("type", this.getType())
-                .add("actions", actions)
                 .add("title", this.getTitle())
                 .add("text", this.getText())
                 .add("detail", this.getDetail())

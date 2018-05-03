@@ -32,21 +32,93 @@
 
 package org.sagebionetworks.research.app;
 
+
+import com.google.common.collect.ImmutableMap;
+
 import org.junit.*;
+import org.sagebionetworks.research.domain.step.Step;
+import org.sagebionetworks.research.domain.step.ui.ActiveUIStep;
+import org.sagebionetworks.research.domain.step.ui.ConcreteUIAction;
 import org.sagebionetworks.research.domain.task.Task;
-import org.sagebionetworks.research.domain.task.navigation.TaskBase;
 
 import java.io.IOException;
+import java.util.List;
 
+import static org.hamcrest.CoreMatchers.instanceOf;
 import static org.junit.Assert.*;
 
-public class FooTaskDeserializeTest extends JsonDeserializationTestBase{
+public class FooTaskDeserializeTest extends JsonDeserializationTestBase {
     @Test
     public void testDeserializeFooTask() throws IOException {
         String json = getStringFromPath("task/foo.json");
 
-        Task t = gson.fromJson(json, TaskBase.class);
+        Task task = gson.fromJson(json, Task.class);
 
-        assertNotNull(t);
+        assertNotNull(task);
+        assertEquals("foo", task.getIdentifier());
+
+        List<Step> steps = task.getSteps();
+
+        assertEquals(10, steps.size());
+
+        {
+            assertThat(steps.get(0), instanceOf(InstructionStep.class));
+            InstructionStep step1 = (InstructionStep) steps.get(0);
+            assertEquals("step1", step1.getIdentifier());
+            assertEquals("Step 1", step1.getTitle());
+            assertEquals(
+                    ImmutableMap.builder()
+                            .put("goForward", ConcreteUIAction.builder()
+                                    .setButtonTitle("Go, Dogs!")
+                                    .build())
+                            .build(),
+                    step1.getActions());
+        }
+        {
+            Step step2 = steps.get(1);
+            assertEquals("happiness", step2.getIdentifier());
+        }
+        {
+            Step step3 = steps.get(2);
+            assertEquals("selectOne", step3.getIdentifier());
+        }
+        {
+            Step step4 = steps.get(3);
+            assertEquals("selectMultiple", step4.getIdentifier());
+        }
+        {
+            Step step5 = steps.get(4);
+            assertEquals("step4", step5.getIdentifier());
+        }
+        {
+            Step step6 = steps.get(5);
+            assertEquals("step5", step6.getIdentifier());
+        }
+        {
+            Step step7 = steps.get(6);
+            assertEquals("year", step7.getIdentifier());
+        }
+        {
+            assertThat(steps.get(7), instanceOf(InstructionStep.class));
+            InstructionStep step8 = (InstructionStep) steps.get(7);
+            assertEquals("step2", step8.getIdentifier());
+            assertEquals(
+                    ImmutableMap.builder()
+                            .put("goForward", ConcreteUIAction.builder()
+                                    .setButtonTitle("Start")
+                                    .build())
+                            .build(),
+                    step8.getActions());
+        }
+        {
+            Step step9 = steps.get(8);
+            assertEquals("countdownStep", step9.getIdentifier());
+        }
+        {
+            assertThat(steps.get(9), instanceOf(ActiveUIStep.class));
+            ActiveUIStep step10 = (ActiveUIStep) steps.get(9);
+            assertEquals("movingStep", step10.getIdentifier());
+            assertEquals(Double.valueOf(20.0), step10.getDuration());
+        }
     }
 }

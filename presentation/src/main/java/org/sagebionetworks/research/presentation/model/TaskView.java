@@ -35,6 +35,9 @@ package org.sagebionetworks.research.presentation.model;
 import android.os.Parcelable;
 
 import com.google.auto.value.AutoValue;
+import com.google.gson.Gson;
+import com.google.gson.TypeAdapter;
+
 
 @AutoValue
 public abstract class TaskView implements Parcelable {
@@ -47,6 +50,10 @@ public abstract class TaskView implements Parcelable {
 
     public static Builder builder() {
         return new AutoValue_TaskView.Builder();
+    }
+
+    public static TypeAdapter<TaskView> typeAdapter(Gson gson) {
+        return new AutoValue_TaskView.GsonTypeAdapter(gson);
     }
 
     public abstract String getIdentifier();

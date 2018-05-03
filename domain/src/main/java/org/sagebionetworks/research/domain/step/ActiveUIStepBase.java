@@ -37,6 +37,7 @@ import android.support.annotation.Nullable;
 
 import com.google.common.base.MoreObjects.ToStringHelper;
 import com.google.common.base.Objects;
+import com.google.common.collect.ImmutableMap;
 
 import org.sagebionetworks.research.domain.step.ui.ActiveUIStep;
 import org.sagebionetworks.research.domain.step.ui.UIAction;
@@ -101,7 +102,6 @@ public class ActiveUIStepBase extends UIStepBase implements ActiveUIStep {
         if (!super.equals(o)) {
             return false;
         }
-        final ActiveUIStepBase that = (ActiveUIStepBase) o;
         return equalsHelper(o);
     }
 

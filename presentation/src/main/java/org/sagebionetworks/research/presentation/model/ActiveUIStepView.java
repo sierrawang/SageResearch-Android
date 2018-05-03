@@ -33,8 +33,12 @@
 package org.sagebionetworks.research.presentation.model;
 
 import com.google.auto.value.AutoValue;
+import com.google.gson.Gson;
+import com.google.gson.TypeAdapter;
 
 @AutoValue
 public abstract class ActiveUIStepView implements StepView {
-
+    public static TypeAdapter<ActiveUIStepView> typeAdapter(Gson gson) {
+        return new AutoValue_ActiveUIStepView.GsonTypeAdapter(gson);
+    }
 }

@@ -33,21 +33,53 @@
 package org.sagebionetworks.research.app;
 
 import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 
-import org.sagebionetworks.research.domain.step.Step;
+import com.google.auto.value.AutoValue;
+import com.google.common.collect.ImmutableMap;
+import com.google.gson.Gson;
+import com.google.gson.TypeAdapter;
 
-public class InstructionStep implements Step {
+import org.sagebionetworks.research.domain.step.ui.UIAction;
+import org.sagebionetworks.research.domain.step.ui.UIStep;
+
+import java.util.Map;
+
+@AutoValue
+public abstract class InstructionStep implements UIStep {
+    @AutoValue.Builder
+    public abstract static class Builder {
+        public abstract InstructionStep builder();
+
+        public abstract Builder setActions(@NonNull Map<String, UIAction> actions);
+
+        public abstract Builder setDetail(@Nullable String detail);
+
+        public abstract Builder setFootnote(@Nullable String footnote);
+
+        public abstract Builder setIdentifier(@NonNull String identifier);
+
+        public abstract Builder setText(@Nullable String text);
+
+        public abstract Builder setTitle(@Nullable String title);
+    }
+
     public static final String TYPE_KEY = "instruction";
 
-    @NonNull
-    @Override
-    public String getIdentifier() {
-        return null;
+    public static Builder builder() {
+        return new AutoValue_InstructionStep.Builder();
+    }
+
+    public static TypeAdapter<InstructionStep> typeAdapter(Gson gson) {
+        return new AutoValue_InstructionStep.GsonTypeAdapter(gson)
+                .setDefaultActions(ImmutableMap.of());
     }
 
     @NonNull
     @Override
-    public String getType() {
+    public final String getType() {
         return TYPE_KEY;
     }
+
+    public abstract Builder toBuilder();
 }

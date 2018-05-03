@@ -60,6 +60,8 @@ import dagger.Provides;
 import dagger.multibindings.IntoMap;
 import dagger.multibindings.IntoSet;
 
+import static org.sagebionetworks.research.domain.inject.GsonModule.createPassthroughDeserializer;
+
 @Module(includes = {GsonModule.class})
 public class StepModule {
 
@@ -131,28 +133,14 @@ public class StepModule {
     @IntoMap
     @ClassKey(UIAction.class)
     static JsonDeserializer provideUIActionDeseriazlier() {
-        return new JsonDeserializer() {
-            @Override
-            public Object deserialize(final JsonElement json, final Type typeOfT,
-                    final JsonDeserializationContext context)
-                    throws JsonParseException {
-                return context.deserialize(json, ConcreteUIAction.class);
-            }
-        };
+        return createPassthroughDeserializer(ConcreteUIAction.class);
     }
 
     @Provides
     @IntoMap
     @ClassKey(UIStep.class)
     static JsonDeserializer provideUIStepDeserizlier() {
-        return new JsonDeserializer() {
-            @Override
-            public Object deserialize(final JsonElement json, final Type typeOfT,
-                    final JsonDeserializationContext context)
-                    throws JsonParseException {
-                return context.deserialize(json, UIStepBase.class);
-            }
-        };
+        return createPassthroughDeserializer(UIStepBase.class);
     }
 
     /**

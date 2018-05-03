@@ -35,7 +35,10 @@ package org.sagebionetworks.research.domain.inject;
 import com.dampcake.gson.immutable.ImmutableAdapterFactory;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
+import com.google.gson.JsonDeserializationContext;
 import com.google.gson.JsonDeserializer;
+import com.google.gson.JsonElement;
+import com.google.gson.JsonParseException;
 import com.google.gson.TypeAdapterFactory;
 
 import org.aaronhe.threetengson.ThreeTenGsonAdapter;
@@ -44,6 +47,7 @@ import org.sagebionetworks.research.domain.step.json.DomainAutoValueTypeAdapterF
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.lang.reflect.Type;
 import java.util.Map;
 import java.util.Set;
 
@@ -80,15 +84,15 @@ public abstract class GsonModule {
         GsonBuilder builder = new GsonBuilder();
 
         for (Map.Entry<Class<?>, JsonDeserializer> entry : jsonDeserializerMap.entrySet()) {
-            LOGGER.debug("Registering JsonDeserializer: {}", entry);
+            LOGGER.debug("Registering JsonDeserializer for: {}", entry.getKey());
             builder.registerTypeAdapter(entry.getKey(), entry.getValue());
         }
         for (TypeAdapterFactory typeAdapterFactory : typeAdapterFactories) {
-            LOGGER.debug("Registering TypeAdapterFactory: {}", typeAdapterFactory);
+            LOGGER.debug("Registering TypeAdapterFactory: {}", typeAdapterFactory.getClass());
             builder.registerTypeAdapterFactory(typeAdapterFactory);
         }
         for (RuntimeTypeAdapterFactory runtimeTypeAdapterFactory : runtimeTypeAdapterFactories) {
-            LOGGER.debug("Registering RuntimeTypeAdapterFactory: {}", runtimeTypeAdapterFactory);
+            LOGGER.debug("Registering RuntimeTypeAdapterFactory: {}", runtimeTypeAdapterFactory.getClass());
             builder.registerTypeAdapterFactory(runtimeTypeAdapterFactory);
         }
 
@@ -101,5 +105,16 @@ public abstract class GsonModule {
     @IntoSet
     static TypeAdapterFactory provideGuavaImmutableTypeAdapter() {
         return ImmutableAdapterFactory.forGuava();
+    }
+
+    public static <T> JsonDeserializer<T> createPassthroughDeserializer(final Class<? extends T> type) {
+        return new JsonDeserializer<T>() {
+            @Override
+            public T deserialize(final JsonElement json, final Type typeOfT,
+                    final JsonDeserializationContext context)
+                    throws JsonParseException {
+                return context.deserialize(json, type);
+            }
+        };
     }
 }
