@@ -31,6 +31,5 @@
   -->
 
 <resources>
-    <string name="app_name">sdk</string>
-
+    <string name="app_name">SageResearch Test App</string>
 </resources>

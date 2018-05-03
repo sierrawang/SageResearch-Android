@@ -55,6 +55,8 @@ public abstract class BaseStepView implements StepView, Parcelable {
     public abstract static class Builder {
         public abstract BaseStepView build();
 
+        public abstract Builder setDetail(@Nullable String description);
+
         public abstract Builder setIdentifier(@NonNull String identifier);
 
         public abstract Builder setNavDirection(@NavDirection int navDirection);

@@ -149,7 +149,7 @@ public class PerformTaskFragment extends Fragment implements HasSupportFragmentI
 
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.rs2_fragment_perform_task2, container, false);
+        View view = inflater.inflate(R.layout.rs2_fragment_perform_task, container, false);
         unbinder = ButterKnife.bind(this, view);
         return view;
     }

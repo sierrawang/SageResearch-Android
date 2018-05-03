@@ -147,5 +147,6 @@ public abstract class ShowStepFragmentBase<S extends StepView, VM extends ShowSt
 
         this.stepView = stepView;
         stepViewBinding.title.setText(this.stepView.getTitle());
+        stepViewBinding.description.setText(this.stepView.getDetail());
     }
 }

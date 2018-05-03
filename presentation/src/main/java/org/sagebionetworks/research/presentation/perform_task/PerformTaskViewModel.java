@@ -180,6 +180,7 @@ public class PerformTaskViewModel extends ViewModel {
             if (backStep instanceof UIStep) {
                 UIStep uiStep = (UIStep) backStep;
                 stepViewBuilder.setTitle(uiStep.getTitle());
+                stepViewBuilder.setDetail(uiStep.getDetail());
             }
             stepView = stepViewBuilder.build();
         }
@@ -205,6 +206,7 @@ public class PerformTaskViewModel extends ViewModel {
             if (forwardStep instanceof UIStep) {
                 UIStep uiStep = (UIStep) forwardStep;
                 stepViewBuilder.setTitle(uiStep.getTitle());
+                stepViewBuilder.setDetail(uiStep.getDetail());
             }
             stepView = stepViewBuilder.build();
         }
