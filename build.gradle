@@ -95,10 +95,6 @@ subprojects {
 //            archives javadocJar
             archives sourcesJar
         }
-
-        task findConventions.doLast {
-            println project.getConvention()
-        }
     }
 
 }
