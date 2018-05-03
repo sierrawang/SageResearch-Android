@@ -32,44 +32,24 @@
 
 package org.sagebionetworks.research.domain.task;
 
-import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
+import org.junit.*;
 
-import com.google.auto.value.AutoValue;
-import com.google.gson.Gson;
-import com.google.gson.TypeAdapter;
+import static org.junit.Assert.*;
 
-import org.threeten.bp.Duration;
+public class TaskInfoDeserializationTest {
 
-/**
- * Created by liujoshua on 10/2/2017.
- */
-@AutoValue
-public abstract class TaskInfoBase implements TaskInfo {
-    @AutoValue.Builder
-    public abstract static class Builder {
-        public abstract TaskInfoBase build();
+    private TaskTestComponent taskTestComponent;
 
-        public abstract Builder setCopyright(@Nullable String copyright);
-
-        public abstract Builder setDetail(@Nullable String detail);
-
-        public abstract Builder setEstimatedDuration(@Nullable Duration duration);
-
-        public abstract Builder setIdentifier(@NonNull String identifier);
-
-        public abstract Builder setSubtitle(@Nullable String subtitle);
-
-        public abstract Builder setTitle(@Nullable String title);
+    @Before
+    public void setup() {
+        this.taskTestComponent = DaggerTaskTestComponent.builder().build();
     }
 
-    public static Builder builder() {
-        return new AutoValue_TaskInfoBase.Builder();
-    }
-
-    public abstract Builder toBuilder();
-
-    public static TypeAdapter<TaskInfoBase> typeAdapter(Gson gson) {
-        return new AutoValue_TaskInfoBase.GsonTypeAdapter(gson);
+    @Test
+    public void testTaskInfoDeserialization() {
+        String json = "{\"identifier\":\"id\"}";
+        TaskInfo taskInfo = taskTestComponent.gson().fromJson(json, TaskInfo.class);
+        assertNotNull(taskInfo);
+        assertEquals("id", taskInfo.getIdentifier());
     }
 }

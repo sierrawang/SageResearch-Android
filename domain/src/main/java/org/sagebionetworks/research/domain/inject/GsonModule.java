@@ -92,6 +92,12 @@ public abstract class GsonModule {
     @Multibinds
     abstract Map<Class<?>, JsonDeserializer> jsonDeserializerMap();
 
+    @Multibinds
+    abstract Set<JsonDeserializer> provideJsonDeserializers();
+
+    @Multibinds
+    abstract Set<RuntimeTypeAdapterFactory> provideRuntimeTypeAdapterFactories();
+
     @Provides
     @IntoSet
     static TypeAdapterFactory provideAutoValueTypeAdapter() {

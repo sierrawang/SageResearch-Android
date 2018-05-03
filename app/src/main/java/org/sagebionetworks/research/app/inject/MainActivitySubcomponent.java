@@ -30,46 +30,16 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.sagebionetworks.research.domain.task;
+package org.sagebionetworks.research.app.inject;
 
-import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
+import org.sagebionetworks.research.app.MainActivity;
 
-import com.google.auto.value.AutoValue;
-import com.google.gson.Gson;
-import com.google.gson.TypeAdapter;
+import dagger.Subcomponent;
+import dagger.android.AndroidInjector;
 
-import org.threeten.bp.Duration;
-
-/**
- * Created by liujoshua on 10/2/2017.
- */
-@AutoValue
-public abstract class TaskInfoBase implements TaskInfo {
-    @AutoValue.Builder
-    public abstract static class Builder {
-        public abstract TaskInfoBase build();
-
-        public abstract Builder setCopyright(@Nullable String copyright);
-
-        public abstract Builder setDetail(@Nullable String detail);
-
-        public abstract Builder setEstimatedDuration(@Nullable Duration duration);
-
-        public abstract Builder setIdentifier(@NonNull String identifier);
-
-        public abstract Builder setSubtitle(@Nullable String subtitle);
-
-        public abstract Builder setTitle(@Nullable String title);
-    }
-
-    public static Builder builder() {
-        return new AutoValue_TaskInfoBase.Builder();
-    }
-
-    public abstract Builder toBuilder();
-
-    public static TypeAdapter<TaskInfoBase> typeAdapter(Gson gson) {
-        return new AutoValue_TaskInfoBase.GsonTypeAdapter(gson);
+@Subcomponent
+public interface MainActivitySubcomponent extends AndroidInjector<MainActivity> {
+    @Subcomponent.Builder
+    public abstract class Builder extends AndroidInjector.Builder<MainActivity> {
     }
 }

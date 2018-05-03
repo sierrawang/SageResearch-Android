@@ -32,6 +32,7 @@
 
 package org.sagebionetworks.research.app;
 
+import android.app.Activity;
 import android.support.multidex.MultiDexApplication;
 import android.support.v4.app.Fragment;
 
@@ -39,10 +40,15 @@ import org.sagebionetworks.research.app.inject.DaggerResearchStackDemoApplicatio
 
 import dagger.android.AndroidInjector;
 import dagger.android.DispatchingAndroidInjector;
+import dagger.android.HasActivityInjector;
 import dagger.android.support.HasSupportFragmentInjector;
 import javax.inject.Inject;
 
-public class ResearchStackDemoApplication extends MultiDexApplication implements HasSupportFragmentInjector {
+public class ResearchStackDemoApplication extends MultiDexApplication implements HasSupportFragmentInjector,
+        HasActivityInjector {
+    @Inject
+    DispatchingAndroidInjector<Activity> dispatchingActivityInjector;
+
     @Inject
     DispatchingAndroidInjector<Fragment> dispatchingSupportFragmentInjector;
 
@@ -54,6 +60,11 @@ public class ResearchStackDemoApplication extends MultiDexApplication implements
                 .application(this)
                 .build()
                 .inject(this);
+    }
+
+    @Override
+    public AndroidInjector<Activity> activityInjector() {
+        return dispatchingActivityInjector;
     }
 
     @Override
