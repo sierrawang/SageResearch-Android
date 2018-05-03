@@ -54,7 +54,7 @@ class JsonDeserializationTestBase {
         gson = stepTestComponent.gson();
     }
 
-    protected static String getStringFromPath(String fileName) throws IOException {
+    protected static String getClasspathResourceAsString(String fileName) throws IOException {
         ClassLoader classLoader = JsonDeserializationTestBase.class.getClassLoader();
         URL resource = classLoader.getResource(fileName);
         File f = new File(resource.getPath());

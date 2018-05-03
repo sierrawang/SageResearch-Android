@@ -49,23 +49,31 @@ import java.util.Map;
 public abstract class InstructionStep implements UIStep {
     @AutoValue.Builder
     public abstract static class Builder {
-        public abstract InstructionStep builder();
+        @NonNull
+        public abstract InstructionStep build();
 
+        @NonNull
         public abstract Builder setActions(@NonNull Map<String, UIAction> actions);
 
+        @NonNull
         public abstract Builder setDetail(@Nullable String detail);
 
+        @NonNull
         public abstract Builder setFootnote(@Nullable String footnote);
 
+        @NonNull
         public abstract Builder setIdentifier(@NonNull String identifier);
 
+        @NonNull
         public abstract Builder setText(@Nullable String text);
 
+        @NonNull
         public abstract Builder setTitle(@Nullable String title);
     }
 
     public static final String TYPE_KEY = "instruction";
 
+    @NonNull
     public static Builder builder() {
         return new AutoValue_InstructionStep.Builder();
     }
@@ -81,5 +89,6 @@ public abstract class InstructionStep implements UIStep {
         return TYPE_KEY;
     }
 
+    @NonNull
     public abstract Builder toBuilder();
 }

@@ -44,13 +44,13 @@ import org.sagebionetworks.research.domain.task.Task;
 import java.io.IOException;
 import java.util.List;
 
-import static org.hamcrest.CoreMatchers.instanceOf;
+import static org.hamcrest.CoreMatchers.*;
 import static org.junit.Assert.*;
 
 public class FooTaskDeserializeTest extends JsonDeserializationTestBase {
     @Test
     public void testDeserializeFooTask() throws IOException {
-        String json = getStringFromPath("task/foo.json");
+        String json = getClasspathResourceAsString("task/foo.json");
 
         Task task = gson.fromJson(json, Task.class);
 
@@ -61,6 +61,7 @@ public class FooTaskDeserializeTest extends JsonDeserializationTestBase {
 
         assertEquals(10, steps.size());
 
+        // TODO: test Step subclasses once implemented and assert remaining fields
         {
             assertThat(steps.get(0), instanceOf(InstructionStep.class));
             InstructionStep step1 = (InstructionStep) steps.get(0);

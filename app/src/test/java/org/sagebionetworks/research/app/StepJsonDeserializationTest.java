@@ -51,7 +51,7 @@ public class StepJsonDeserializationTest extends JsonDeserializationTestBase {
         String type = "active";
 
         // TODO: add a test for null spokenInstructions once Immutable collection descrialization of nulls is fixed
-        String json = getStringFromPath("step/active.json");
+        String json = getClasspathResourceAsString("step/active.json");
         Step step = stepTestComponent.gson().fromJson(json, Step.class);
 
         assertTrue(step instanceof ActiveUIStep);
@@ -62,7 +62,7 @@ public class StepJsonDeserializationTest extends JsonDeserializationTestBase {
         String id = "stepId";
         String type = "intruction";
 
-        String json = getStringFromPath("step/instruction.json");
+        String json = getClasspathResourceAsString("step/instruction.json");
         Step step = stepTestComponent.gson().fromJson(json, Step.class);
 
         assertTrue(step instanceof InstructionStep);

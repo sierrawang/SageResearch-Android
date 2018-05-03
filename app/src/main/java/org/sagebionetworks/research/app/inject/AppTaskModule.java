@@ -32,19 +32,11 @@
 
 package org.sagebionetworks.research.app.inject;
 
-import com.google.gson.TypeAdapterFactory;
-
 import org.sagebionetworks.research.mobile_ui.inject.PerformTaskModule;
 
 import dagger.Module;
-import dagger.Provides;
-import dagger.multibindings.IntoSet;
 
 @Module(includes = {PerformTaskModule.class, AppStepModule.class})
 public class AppTaskModule {
-    @Provides
-    @IntoSet
-    static TypeAdapterFactory provideAutoValueTypeAdapter() {
-        return AppAutoValueTypeAdapterFactory.create();
-    }
+
 }

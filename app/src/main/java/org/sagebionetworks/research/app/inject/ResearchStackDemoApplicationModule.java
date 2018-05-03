@@ -34,15 +34,25 @@ package org.sagebionetworks.research.app.inject;
 
 import android.content.Context;
 
+import com.google.gson.TypeAdapterFactory;
+
 import org.sagebionetworks.research.app.ResearchStackDemoApplication;
 import org.sagebionetworks.research.data.inject.DataModule;
 
 import dagger.Binds;
 import dagger.Module;
+import dagger.Provides;
 import dagger.android.AndroidInjectionModule;
+import dagger.multibindings.IntoSet;
 
 @Module(includes = {AndroidInjectionModule.class, AppTaskModule.class, DataModule.class})
 public abstract class ResearchStackDemoApplicationModule {
     @Binds
     public abstract Context provideApplicationContext(ResearchStackDemoApplication app);
+
+    @Provides
+    @IntoSet
+    static TypeAdapterFactory provideAutoValueTypeAdapter() {
+        return AppAutoValueTypeAdapterFactory.create();
+    }
 }

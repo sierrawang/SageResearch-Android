@@ -67,6 +67,28 @@ public abstract class GsonModule {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(GsonModule.class);
 
+    /**
+     * Redirects deserialization of one type to a subtype. This can be useful when registering a type adapter which
+     * specifies a concrete class for an interface, e.g. gsonBuilder.registerTypeAdapter(MyInterface.class,
+     * createPassThroughDeserializer(MyInterfaceImpl.class));
+     *
+     * @param subtype
+     *         subtype to use for deserialization
+     * @param <T>
+     *         type targeted for deserialization
+     * @return deserializer which defers/delegates/redirects to subtype
+     */
+    public static <T> JsonDeserializer<T> createPassthroughDeserializer(final Class<? extends T> subtype) {
+        return new JsonDeserializer<T>() {
+            @Override
+            public T deserialize(final JsonElement json, final Type typeOfT,
+                    final JsonDeserializationContext context)
+                    throws JsonParseException {
+                return context.deserialize(json, subtype);
+            }
+        };
+    }
+
     @Multibinds
     abstract Map<Class<?>, JsonDeserializer> jsonDeserializerMap();
 
@@ -105,16 +127,5 @@ public abstract class GsonModule {
     @IntoSet
     static TypeAdapterFactory provideGuavaImmutableTypeAdapter() {
         return ImmutableAdapterFactory.forGuava();
-    }
-
-    public static <T> JsonDeserializer<T> createPassthroughDeserializer(final Class<? extends T> type) {
-        return new JsonDeserializer<T>() {
-            @Override
-            public T deserialize(final JsonElement json, final Type typeOfT,
-                    final JsonDeserializationContext context)
-                    throws JsonParseException {
-                return context.deserialize(json, type);
-            }
-        };
     }
 }
