@@ -33,9 +33,6 @@
 package org.sagebionetworks.research.domain.inject;
 
 import com.google.gson.JsonDeserializer;
-import com.google.gson.JsonElement;
-import com.google.gson.JsonObject;
-import com.google.gson.JsonParseException;
 
 import org.sagebionetworks.research.domain.RuntimeTypeAdapterFactory;
 import org.sagebionetworks.research.domain.inject.GsonModule.ClassKey;
@@ -167,49 +164,4 @@ public class StepModule {
     static JsonDeserializer provideUIStepDeserizlier() {
         return createPassthroughDeserializer(UIStepBase.class);
     }
-
-
-    // region JSON Parsing
-    /**
-     * Returns the string corresponding to the given key in the given json object, or throws a JsonParseExecption if
-     * no such String exists.
-     *
-     * @param json
-     *         The json to get the string field from.
-     * @param key
-     *         The field to get as a string from the given json.
-     * @return The string corresponding to the given key in the given json object.
-     * @throws JsonParseException
-     *         if there is no string corresponding to the given key in the json object.
-     */
-    public static String getStringFieldNonNull(JsonObject json, String key) throws JsonParseException {
-        JsonElement element = json.get(key);
-        if (element != null) {
-            String result = element.getAsString();
-            if (result != null) {
-                return result;
-            }
-        }
-
-        throw new JsonParseException("NonNull field " + key + "of object " + json.toString() + " couldn't be parsed");
-    }
-
-    /**
-     * Returns the string from the given field or null if the given field has been ommited from the JSON
-     *
-     * @param json
-     *         the json object to get the field from
-     * @param key
-     *         the name of the field to get from the json object
-     * @return The string that corresponds to key or null if no such String exists
-     */
-    public static String getStringFieldNullable(JsonObject json, String key) {
-        JsonElement element = json.get(key);
-        if (element != null) {
-            return element.getAsString();
-        }
-
-        return null;
-    }
-    // endregion
 }
