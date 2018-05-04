@@ -43,35 +43,26 @@ import java.util.List;
 
 public class InputFieldBase implements InputField {
     @NonNull
+    private final String identifier;
+    @Nullable
+    private final String prompt;
+    @Nullable
+    private final String promptDetail;
+    @Nullable
+    private final String placeholderText;
+    private final boolean isOptional;
+    @NonNull
     @InputDataType
     private final String formDataType;
-
     @Nullable
     @InputUIHint
     private final String formUIHint;
-
-    @NonNull
-    private final String identifier;
-
-    private final boolean isOptional;
-
-    @Nullable
-    private final String placeholderText;
-
-    @Nullable
-    private final String prompt;
-
-    @Nullable
-    private final String promptDetail;
-
-    @Nullable
-    private final Range range;
-
-    @Nullable
-    private final List<SurveyRule> surveyRules;
-
     @Nullable
     private final TextFieldOptions textFieldOptions;
+    @Nullable
+    private final Range range;
+    @Nullable
+    private final List<SurveyRule> surveyRules;
 
     public InputFieldBase(@NonNull final String identifier, @Nullable final String prompt,
             @Nullable final String promptDetail,
