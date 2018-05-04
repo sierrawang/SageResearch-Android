@@ -40,13 +40,13 @@ import com.google.common.collect.ImmutableMap;
 import com.google.gson.Gson;
 import com.google.gson.TypeAdapter;
 
+import org.sagebionetworks.research.domain.step.ui.ActiveUIStep;
 import org.sagebionetworks.research.domain.step.ui.UIAction;
-import org.sagebionetworks.research.domain.step.ui.UIStep;
 
 import java.util.Map;
 
 @AutoValue
-public abstract class InstructionStep implements UIStep {
+public abstract class InstructionStep implements ActiveUIStep {
     @AutoValue.Builder
     public abstract static class Builder {
         @NonNull
@@ -69,6 +69,12 @@ public abstract class InstructionStep implements UIStep {
 
         @NonNull
         public abstract Builder setTitle(@Nullable String title);
+
+        @NonNull
+        public abstract Builder setDuration(@Nullable Double duration);
+
+        @NonNull
+        public abstract Builder setBackgroundAudioRequired(boolean isBackgroundAudioRequired);
     }
 
     public static final String TYPE_KEY = "instruction";
