@@ -30,17 +30,27 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.sagebionetworks.research.domain.form;
+package org.sagebionetworks.research.domain.form.DataTypes;
 
-import android.support.annotation.StringDef;
-import java.lang.annotation.Retention;
-import java.lang.annotation.RetentionPolicy;
+public abstract class InputDataType {
+    public boolean equals(Object o) {
+        if (this == o) {
+            return true;
+        }
 
-@Retention(RetentionPolicy.SOURCE)
-@StringDef({InputDataType.BOOLEAN, InputDataType.DATE, InputDataType.DATE_COMPONENTS})
-public @interface InputDataType {
-    String BOOLEAN = "boolean";
-    String DATE = "date";
-    String DATE_COMPONENTS = "dateComponents";
-    // TODO: populate remaining types
+        if (o == null || this.getClass() != o.getClass()) {
+            return false;
+        }
+
+        return this.equalsHelper(o);
+    }
+
+    /**
+     * Returns true if this objects fields are equal to o's fields.
+     * Expected that subclasses will override to also compare their own fields.
+     * Requires: this.getClass() == o.getClass()
+     * @param o The object to check for equality with.
+     * @return true if this is equal to o false otherwise.
+     */
+    protected abstract boolean equalsHelper(Object o);
 }

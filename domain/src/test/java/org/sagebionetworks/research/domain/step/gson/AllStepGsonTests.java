@@ -37,7 +37,8 @@ import org.junit.runners.*;
 import org.junit.runners.Suite.*;
 
 @RunWith(Suite.class)
-@SuiteClasses({ActiveUIStepGsonTests.class, SectionStepGsonTests.class, UIStepGsonTests.class })
+@SuiteClasses({ActiveUIStepGsonTests.class, FormUIStepGsonTests.class,
+        SectionStepGsonTests.class, UIStepGsonTests.class })
 public class AllStepGsonTests {
 
 }

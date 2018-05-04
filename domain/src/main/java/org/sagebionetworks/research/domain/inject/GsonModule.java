@@ -60,6 +60,9 @@ import javax.inject.Singleton;
 
 @Module
 public abstract class GsonModule {
+    /**
+     * Annotation marker for registering a custom deserializer for a class.
+     */
     @MapKey
     public @interface ClassKey {
         Class<?> value();

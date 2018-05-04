@@ -1,0 +1,31 @@
+{
+  "identifier": "selectMultiple",
+  "type": "form",
+  "title": "Multiple Choice",
+  "text": "Select as many as you want",
+  "inputFields": [
+    {
+      "uiHint": "list",
+      "dataType": "multipleChoice.integer",
+      "choices": [
+        {
+          "text": "Alpha",
+          "value": 1
+        },
+        {
+          "text": "Beta",
+          "value": 2
+        },
+        {
+          "text": "Gamma",
+          "value": 3
+        },
+        {
+          "text": "None of the above",
+          "value": 0,
+          "isExclusive": true
+        }
+      ]
+    }
+  ]
+}

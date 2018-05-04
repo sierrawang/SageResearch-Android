@@ -47,7 +47,6 @@ import org.sagebionetworks.research.domain.step.ui.UIStep;
 import java.util.Map;
 
 import static com.google.common.base.Preconditions.checkArgument;
-import static com.google.common.base.Preconditions.checkNotNull;
 
 public class UIStepBase implements UIStep {
     public static final String TYPE_KEY = "ui";
@@ -80,14 +79,16 @@ public class UIStepBase implements UIStep {
         title = null;
     }
 
-    public UIStepBase(@NonNull final String identifier, @NonNull final Map<String, UIAction> actions,
+    public UIStepBase(@NonNull final String identifier, @Nullable final Map<String, UIAction> actions,
             @Nullable final String title, @Nullable final String text,
             @Nullable final String detail, @Nullable final String footnote) {
         checkArgument(!Strings.isNullOrEmpty(identifier));
-        checkNotNull(actions);
-
+        if (actions == null) {
+            this.actions = ImmutableMap.of();
+        } else {
+            this.actions = ImmutableMap.copyOf(actions);
+        }
         this.identifier = identifier;
-        this.actions = ImmutableMap.copyOf(actions);
         this.title = title;
         this.text = text;
         this.detail = detail;

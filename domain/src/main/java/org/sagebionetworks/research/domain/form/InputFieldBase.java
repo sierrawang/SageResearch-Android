@@ -35,25 +35,33 @@ package org.sagebionetworks.research.domain.form;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 
+import com.google.common.base.MoreObjects;
+import com.google.common.base.MoreObjects.ToStringHelper;
+import com.google.common.base.Objects;
 import com.google.common.collect.Range;
+import com.google.gson.annotations.SerializedName;
 
+import org.sagebionetworks.research.domain.form.DataTypes.InputDataType;
 import org.sagebionetworks.research.domain.form.TextField.TextFieldOptions;
 
 import java.util.List;
 
 public class InputFieldBase implements InputField {
-    @NonNull
+    @Nullable
     private final String identifier;
     @Nullable
     private final String prompt;
     @Nullable
     private final String promptDetail;
     @Nullable
+    @SerializedName("placeholder")
     private final String placeholderText;
+    @SerializedName("optional")
     private final boolean isOptional;
+    @SerializedName("dataType")
     @NonNull
-    @InputDataType
-    private final String formDataType;
+    private final InputDataType formDataType;
+    @SerializedName("uiHint")
     @Nullable
     @InputUIHint
     private final String formUIHint;
@@ -64,9 +72,9 @@ public class InputFieldBase implements InputField {
     @Nullable
     private final List<SurveyRule> surveyRules;
 
-    public InputFieldBase(@NonNull final String identifier, @Nullable final String prompt,
+    public InputFieldBase(@Nullable final String identifier, @Nullable final String prompt,
             @Nullable final String promptDetail,
-            @Nullable final String placeholderText, final boolean isOptional, @NonNull final String formDataType,
+            @Nullable final String placeholderText, final boolean isOptional, @NonNull final InputDataType formDataType,
             @Nullable final String formUIHint,
             @Nullable final TextFieldOptions textFieldOptions, @Nullable final Range range,
             @Nullable final List<SurveyRule> surveyRules) {
@@ -82,7 +90,7 @@ public class InputFieldBase implements InputField {
         this.surveyRules = surveyRules;
     }
 
-    @NonNull
+    @Nullable
     @Override
     public String getIdentifier() {
         return this.identifier;
@@ -112,9 +120,8 @@ public class InputFieldBase implements InputField {
     }
 
     @NonNull
-    @InputDataType
     @Override
-    public String getFormDataType() {
+    public InputDataType getFormDataType() {
         return this.formDataType;
     }
 
@@ -141,5 +148,64 @@ public class InputFieldBase implements InputField {
     @Override
     public List<SurveyRule> getSurveyRules() {
         return this.surveyRules;
+    }
+
+    @Override
+    public String toString() {
+        return this.toStringHelper().toString();
+    }
+
+    /**
+     * Returns a MoreObjects.ToStringHelper which can be used to build a toString for this object
+     * as an InputFieldBase.
+     * Expected that subclasses will override this to add their own fields to the helper.
+     * @return A ToStringHelper that can be used to build a toString for this object.
+     */
+    protected ToStringHelper toStringHelper() {
+        return MoreObjects.toStringHelper(this)
+                .add("identifier", identifier)
+                .add("prompt", prompt)
+                .add("promptDetail", promptDetail)
+                .add("placeholder", placeholderText)
+                .add("optional", isOptional)
+                .add("dataType", formDataType)
+                .add("uiHint", formUIHint)
+                .add("textFieldOptions", textFieldOptions)
+                .add("range", range)
+                .add("surveyRules", surveyRules);
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) {
+            return true;
+        }
+
+        if (o == null || this.getClass() != o.getClass()) {
+            return false;
+        }
+
+        return this.equalsHelper(o);
+    }
+
+    /**
+     * Returns true if this objects InputFieldBase fields are equal to o's InputFieldBase fields.
+     * Expected that subclasses will override to also compare their own fields.
+     * Requires: this.getClass() == o.getClass()
+     * @param o The object to check for equality with.
+     * @return true if this is equal to o false otherwise.
+     */
+    protected boolean equalsHelper(Object o) {
+        InputFieldBase inputField = (InputFieldBase) o;
+        return Objects.equal(this.getIdentifier(), inputField.getIdentifier()) &&
+                Objects.equal(this.getPrompt(), inputField.getPrompt()) &&
+                Objects.equal(this.getPromptDetail(), inputField.getPromptDetail()) &&
+                Objects.equal(this.getPlaceholderText(), inputField.getPlaceholderText()) &&
+                Objects.equal(this.isOptional(), inputField.isOptional()) &&
+                Objects.equal(this.getFormDataType(), inputField.getFormDataType()) &&
+                Objects.equal(this.getFormUIHint(), inputField.getFormUIHint()) &&
+                Objects.equal(this.getTextFieldOptions(), inputField.getTextFieldOptions()) &&
+                Objects.equal(this.getRange(), inputField.getRange()) &&
+                Objects.equal(this.getSurveyRules(), inputField.getSurveyRules());
     }
 }
