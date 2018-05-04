@@ -56,6 +56,17 @@ public class PerformTaskActivity extends AppCompatActivity {
 
     public static final String EXTRA_TASK_RUN_UUID = "TASK_RUN_UUID";
 
+    /**
+     * Creates an intent for launching an activity to perform a task.
+     *
+     * @param context
+     *         package context
+     * @param taskView
+     *         task view to launch
+     * @param taskRunUuid
+     *         identifier of previous task run to continue, or null if not applicable
+     * @return intent to launch task
+     */
     public static Intent createIntent(@NonNull Context context, @NonNull TaskView taskView,
             @Nullable UUID taskRunUuid) {
         checkNotNull(context);

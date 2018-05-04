@@ -79,9 +79,8 @@ public class MainActivity extends AppCompatActivity {
                                         .beginTransaction()
                                         .add(R.id.rs2_task_content_frame, newPerformTaskFragment)
                                         .commit();
-                            }, throwable -> {
-                                LOGGER.error("Failed to retrieve task", throwable);
-                            }));
+                            }, throwable ->
+                                    LOGGER.error("Failed to retrieve task", throwable)));
         } else {
             LOGGER.debug("Found existing PerformTaskFragment");
         }
