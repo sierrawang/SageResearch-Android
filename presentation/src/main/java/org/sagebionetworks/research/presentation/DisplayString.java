@@ -44,7 +44,7 @@ public class DisplayString {
     @Nullable
     public final String displayString;
 
-    public DisplayString(final int defaultDisplayStringRes, @Nullable final String displayString) {
+    public DisplayString(@StringRes final int defaultDisplayStringRes, @Nullable final String displayString) {
         this.defaultDisplayStringRes = defaultDisplayStringRes;
         this.displayString = displayString;
     }

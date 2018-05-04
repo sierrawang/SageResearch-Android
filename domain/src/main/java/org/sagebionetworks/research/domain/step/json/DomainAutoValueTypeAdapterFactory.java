@@ -30,34 +30,20 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.sagebionetworks.research.data.model.step;
+package org.sagebionetworks.research.domain.step.json;
 
-import com.google.auto.value.AutoValue;
+import com.google.gson.TypeAdapterFactory;
+import com.ryanharter.auto.value.gson.GsonTypeAdapterFactory;
 
-import org.sagebionetworks.research.domain.step.ui.UIStep;
-
-@AutoValue
-public abstract class ConcreteUIStep implements UIStep {
-    @AutoValue.Builder
-    public static abstract class Builder {
-        public abstract ConcreteUIStep build();
-
-        public abstract Builder setDetail(String detail);
-
-        public abstract Builder setFootnote(String footnote);
-
-        public abstract Builder setIdentifier(String identifier);
-
-        public abstract Builder setText(String text);
-
-        public abstract Builder setTitle(String title);
-
-        public abstract Builder setType(String type);
+/**
+ * Auto-generated TypeAdapterFactory for @AutoValue classes in the :domain module. Due to how the auto-value-gson
+ * annotationProcessor works, a separate @GsonTypeAdapterFactory is needed for each gradle module.
+ */
+@GsonTypeAdapterFactory
+public abstract class DomainAutoValueTypeAdapterFactory implements TypeAdapterFactory {
+    //     Static factory method to access the package
+    //     private generated implementation
+    public static TypeAdapterFactory create() {
+        return new AutoValueGson_DomainAutoValueTypeAdapterFactory();
     }
-
-    public static Builder builder() {
-        return new AutoValue_ConcreteUIStep.Builder();
-    }
-
-    public abstract Builder toBuilder();
 }

@@ -40,19 +40,29 @@ import com.google.common.base.Objects;
 
 import org.sagebionetworks.research.domain.form.InputField;
 import org.sagebionetworks.research.domain.step.ui.FormUIStep;
+import org.sagebionetworks.research.domain.step.ui.UIAction;
 
+import java.util.Collections;
 import java.util.List;
+import java.util.Map;
 
 public class FormUIStepBase extends UIStepBase implements FormUIStep {
+    public static final String TYPE_KEY = "form";
+
+    // Gson initialize defaults
+    FormUIStepBase() {
+        super();
+        inputFields = Collections.emptyList();
+    }
+
     @NonNull
     private final List<InputField> inputFields;
 
-    public static final String TYPE_KEY = "form";
-
-    public FormUIStepBase(@NonNull final String identifier, @Nullable final String title,
+    public FormUIStepBase(@NonNull final String identifier, @NonNull Map<String, UIAction> actions,
+            @Nullable final String title,
             @Nullable final String text, @Nullable final String detail, @Nullable final String footnote,
             @NonNull final List<InputField> inputFields) {
-        super(identifier, title, text, detail, footnote);
+        super(identifier, actions, title, text, detail, footnote);
         this.inputFields = inputFields;
     }
 
@@ -75,7 +85,9 @@ public class FormUIStepBase extends UIStepBase implements FormUIStep {
 
     /**
      * Override equalsHelper to also compare the input fields.
-     * @param o The object to check for equality with this.
+     *
+     * @param o
+     *         The object to check for equality with this.
      * @return True if this is equal to o, false otherwise.
      */
     @Override
@@ -87,6 +99,7 @@ public class FormUIStepBase extends UIStepBase implements FormUIStep {
 
     /**
      * Override toStringHelper to also add the input fields.
+     *
      * @return The ToStringHelper that can produce the toString for this.
      */
     @Override

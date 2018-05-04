@@ -30,15 +30,42 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.sagebionetworks.research.presentation.model;
+package org.sagebionetworks.research.app.inject;
 
-import com.google.auto.value.AutoValue;
-import com.google.gson.Gson;
-import com.google.gson.TypeAdapter;
+import android.app.Activity;
+import android.content.Context;
 
-@AutoValue
-public abstract class ActiveUIStepView implements StepView {
-    public static TypeAdapter<ActiveUIStepView> typeAdapter(Gson gson) {
-        return new AutoValue_ActiveUIStepView.GsonTypeAdapter(gson);
+import com.google.gson.TypeAdapterFactory;
+
+import org.sagebionetworks.research.app.MainActivity;
+import org.sagebionetworks.research.app.ResearchStackDemoApplication;
+import org.sagebionetworks.research.data.inject.DataModule;
+
+import dagger.Binds;
+import dagger.Module;
+import dagger.Provides;
+import dagger.android.ActivityKey;
+import dagger.android.AndroidInjectionModule;
+import dagger.android.AndroidInjector;
+import dagger.multibindings.IntoMap;
+import dagger.multibindings.IntoSet;
+
+@Module(includes = {AndroidInjectionModule.class, AppTaskModule.class, DataModule.class},
+        subcomponents = {MainActivitySubcomponent.class})
+public abstract class ResearchStackDemoApplicationModule {
+    @Binds
+    public abstract Context provideApplicationContext(ResearchStackDemoApplication app);
+
+    @Binds
+    @IntoMap
+    @ActivityKey(MainActivity.class)
+    abstract AndroidInjector.Factory<? extends Activity> bindYourActivityInjectorFactory(
+            MainActivitySubcomponent.Builder builder);
+
+
+    @Provides
+    @IntoSet
+    static TypeAdapterFactory provideAutoValueTypeAdapter() {
+        return AppAutoValueTypeAdapterFactory.create();
     }
 }

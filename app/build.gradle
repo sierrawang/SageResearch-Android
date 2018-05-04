@@ -44,6 +44,11 @@ android {
         versionName "0.0.0"
         multiDexEnabled true
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
+        javaCompileOptions {
+            annotationProcessorOptions {
+                arguments = ['autovaluegson.mutableAdaptersWithDefaultSetters': 'true']
+            }
+        }
     }
     buildTypes {
         release {
@@ -79,10 +84,12 @@ dependencies {
     }
     testImplementation 'org.slf4j:slf4j-simple:1.7.21'
 
-    implementation 'com.google.auto.value:auto-value-annotations:1.6'
+    implementation 'com.ryanharter.auto.value:auto-value-parcel-adapter:0.2.6'
+    implementation 'com.ryanharter.auto.value:auto-value-gson-annotations:0.7.0'
     annotationProcessor "com.google.auto.value:auto-value:1.6"
     annotationProcessor 'com.ryanharter.auto.value:auto-value-parcel:0.2.6'
-    implementation 'com.ryanharter.auto.value:auto-value-parcel-adapter:0.2.6'
+    annotationProcessor 'com.ryanharter.auto.value:auto-value-gson:0.7.0'
+    annotationProcessor 'com.google.auto.value:auto-value-annotations:1.6' // include again for auto-value-gson
 
     implementation "android.arch.lifecycle:extensions:1.1.1"
     implementation 'com.google.code.findbugs:jsr305:2.0.1'

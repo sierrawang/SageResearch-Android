@@ -38,23 +38,12 @@ import org.sagebionetworks.research.domain.step.ui.ActiveUIStep;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.io.File;
 import java.io.IOException;
-import java.net.URL;
-import java.nio.file.Files;
 
-import static java.nio.charset.StandardCharsets.UTF_8;
 import static org.junit.Assert.*;
 
-public class StepJsonDeserializationTest {
+public class StepJsonDeserializationTest extends JsonDeserializationTestBase {
     private static final Logger LOGGER = LoggerFactory.getLogger(StepJsonDeserializationTest.class);
-
-    AppStepTestComponent stepTestComponent;
-
-    @Before
-    public void setup() {
-        stepTestComponent = DaggerAppStepTestComponent.builder().build();
-    }
 
     @Test
     public void testActiveUIStep() throws IOException {
@@ -62,7 +51,7 @@ public class StepJsonDeserializationTest {
         String type = "active";
 
         // TODO: add a test for null spokenInstructions once Immutable collection descrialization of nulls is fixed
-        String json = getStringFromPath("step/active.json");
+        String json = getClasspathResourceAsString("step/active.json");
         Step step = stepTestComponent.gson().fromJson(json, Step.class);
 
         assertTrue(step instanceof ActiveUIStep);
@@ -73,17 +62,9 @@ public class StepJsonDeserializationTest {
         String id = "stepId";
         String type = "intruction";
 
-        String json = getStringFromPath("step/instruction.json");
+        String json = getClasspathResourceAsString("step/instruction.json");
         Step step = stepTestComponent.gson().fromJson(json, Step.class);
 
         assertTrue(step instanceof InstructionStep);
-    }
-
-    private static String getStringFromPath(String fileName) throws IOException {
-        ClassLoader classLoader = StepJsonDeserializationTest.class.getClassLoader();
-        URL resource = classLoader.getResource(fileName);
-        File f = new File(resource.getPath());
-        byte[] b = Files.readAllBytes(f.toPath());
-        return new String(b, UTF_8);
     }
 }

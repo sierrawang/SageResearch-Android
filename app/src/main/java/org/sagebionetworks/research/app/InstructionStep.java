@@ -33,21 +33,68 @@
 package org.sagebionetworks.research.app;
 
 import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 
-import org.sagebionetworks.research.domain.step.Step;
+import com.google.auto.value.AutoValue;
+import com.google.common.collect.ImmutableMap;
+import com.google.gson.Gson;
+import com.google.gson.TypeAdapter;
 
-public class InstructionStep implements Step {
+import org.sagebionetworks.research.domain.step.ui.ActiveUIStep;
+import org.sagebionetworks.research.domain.step.ui.UIAction;
+
+import java.util.Map;
+
+@AutoValue
+public abstract class InstructionStep implements ActiveUIStep {
+    @AutoValue.Builder
+    public abstract static class Builder {
+        @NonNull
+        public abstract InstructionStep build();
+
+        @NonNull
+        public abstract Builder setActions(@NonNull Map<String, UIAction> actions);
+
+        @NonNull
+        public abstract Builder setDetail(@Nullable String detail);
+
+        @NonNull
+        public abstract Builder setFootnote(@Nullable String footnote);
+
+        @NonNull
+        public abstract Builder setIdentifier(@NonNull String identifier);
+
+        @NonNull
+        public abstract Builder setText(@Nullable String text);
+
+        @NonNull
+        public abstract Builder setTitle(@Nullable String title);
+
+        @NonNull
+        public abstract Builder setDuration(@Nullable Double duration);
+
+        @NonNull
+        public abstract Builder setBackgroundAudioRequired(boolean isBackgroundAudioRequired);
+    }
+
     public static final String TYPE_KEY = "instruction";
 
     @NonNull
-    @Override
-    public String getIdentifier() {
-        return null;
+    public static Builder builder() {
+        return new AutoValue_InstructionStep.Builder();
+    }
+
+    public static TypeAdapter<InstructionStep> typeAdapter(Gson gson) {
+        return new AutoValue_InstructionStep.GsonTypeAdapter(gson)
+                .setDefaultActions(ImmutableMap.of());
     }
 
     @NonNull
     @Override
-    public String getType() {
+    public final String getType() {
         return TYPE_KEY;
     }
+
+    @NonNull
+    public abstract Builder toBuilder();
 }

@@ -45,6 +45,7 @@ import org.sagebionetworks.research.domain.mobile_ui.R2;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 import butterknife.Optional;
@@ -61,6 +62,12 @@ public class NavigationActionBar extends ConstraintLayout {
     }
 
     private static final Logger LOGGER = LoggerFactory.getLogger(NavigationActionBar.class);
+
+    @BindView(R2.id.rs2_step_navigation_action_backward)
+    ActionButton backwardButton;
+
+    @BindView(R2.id.rs2_step_navigation_action_forward)
+    ActionButton forwardButton;
 
     private ActionButtonClickListener actionButtonClickListener;
 

@@ -32,31 +32,54 @@
 
 package org.sagebionetworks.research.domain.step.gson;
 
+import com.google.common.collect.ImmutableMap;
+
 import org.junit.*;
 import org.sagebionetworks.research.domain.step.Step;
-import org.sagebionetworks.research.domain.step.UIStepBase;
+import org.sagebionetworks.research.domain.step.ui.ConcreteUIAction;
+import org.sagebionetworks.research.domain.step.ui.UIAction;
 import org.sagebionetworks.research.domain.step.ui.UIStep;
 
 import static org.junit.Assert.*;
+import static org.mockito.Mockito.*;
 
 public class UIStepGsonTests extends IndividualStepGsonTest {
     @Test
     public void testExample_1() {
-        UIStep expected = new UIStepBase("testUIStep1","title", "text", null,
-                null);
+        UIStep expected = mock(UIStep.class);
+        when(expected.getIdentifier()).thenReturn("testUIStep1");
+        when(expected.getActions()).thenReturn(ImmutableMap.<String, UIAction>of());
+        when(expected.getTitle()).thenReturn("title");
+        when(expected.getText()).thenReturn("text");
+        when(expected.getDetail()).thenReturn(null);
+        when(expected.getFootnote()).thenReturn(null);
+
         testCommon(expected, "UIStep_1.json");
     }
 
     @Test
     public void testExample_2() {
-        UIStep expected = new UIStepBase("testUIStep2", "title", "text", "detail",
-                "footnote");
+        UIStep expected = mock(UIStep.class);
+        when(expected.getIdentifier()).thenReturn("testUIStep2");
+        when(expected.getActions()).thenReturn(ImmutableMap.<String, UIAction>builder()
+                .put("goForward", ConcreteUIAction.builder().setButtonTitle("Go, Dogs!").build()).build());
+        when(expected.getTitle()).thenReturn("title");
+        when(expected.getText()).thenReturn("text");
+        when(expected.getDetail()).thenReturn("detail");
+        when(expected.getFootnote()).thenReturn("footnote");
+
         testCommon(expected, "UIStep_2.json");
     }
 
     private void testCommon(UIStep expected, String filename) {
         Step step = this.readJsonFile(filename);
         assertTrue(step instanceof UIStep);
-        assertEquals(expected, step);
+        UIStep uistep = (UIStep) step;
+
+        assertEquals(expected.getActions(), uistep.getActions());
+        assertEquals(expected.getDetail(), uistep.getDetail());
+        assertEquals(expected.getFootnote(), uistep.getFootnote());
+        assertEquals(expected.getText(), uistep.getText());
+        assertEquals(expected.getTitle(), uistep.getTitle());
     }
 }

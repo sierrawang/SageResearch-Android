@@ -35,6 +35,7 @@ package org.sagebionetworks.research.domain.task.navigation;
 import android.support.annotation.NonNull;
 
 import com.google.auto.value.AutoValue;
+import com.google.common.collect.ImmutableList;
 import com.google.gson.Gson;
 import com.google.gson.TypeAdapter;
 
@@ -65,6 +66,8 @@ public abstract class TaskBase implements Task {
     }
 
     public static TypeAdapter<TaskBase> typeAdapter(Gson gson) {
-        return new AutoValue_TaskBase.GsonTypeAdapter(gson);
+        return new AutoValue_TaskBase.GsonTypeAdapter(gson)
+                .setDefaultSteps(ImmutableList.<Step>of())
+                .setDefaultAsyncActions(ImmutableList.<AsyncAction>of());
     }
 }

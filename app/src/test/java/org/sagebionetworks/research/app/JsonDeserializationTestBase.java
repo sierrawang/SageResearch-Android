@@ -30,16 +30,35 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.sagebionetworks.research.domain.step.json;
+package org.sagebionetworks.research.app;
 
-import com.google.gson.TypeAdapterFactory;
-import com.ryanharter.auto.value.gson.GsonTypeAdapterFactory;
+import com.google.gson.Gson;
 
-@GsonTypeAdapterFactory
-public abstract class AutoValueTypeAdapterFactory implements TypeAdapterFactory {
-    //     Static factory method to access the package
-    //     private generated implementation
-    public static TypeAdapterFactory create() {
-        return new AutoValueGson_AutoValueTypeAdapterFactory();
+import org.junit.*;
+
+import java.io.File;
+import java.io.IOException;
+import java.net.URL;
+import java.nio.file.Files;
+
+import static java.nio.charset.StandardCharsets.UTF_8;
+
+class JsonDeserializationTestBase {
+    protected Gson gson;
+
+    protected AppTestComponent stepTestComponent;
+
+    @Before
+    public void setup() {
+        stepTestComponent = DaggerAppTestComponent.builder().build();
+        gson = stepTestComponent.gson();
+    }
+
+    protected static String getClasspathResourceAsString(String fileName) throws IOException {
+        ClassLoader classLoader = JsonDeserializationTestBase.class.getClassLoader();
+        URL resource = classLoader.getResource(fileName);
+        File f = new File(resource.getPath());
+        byte[] b = Files.readAllBytes(f.toPath());
+        return new String(b, UTF_8);
     }
 }

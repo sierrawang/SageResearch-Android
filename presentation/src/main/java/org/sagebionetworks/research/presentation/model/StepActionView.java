@@ -34,7 +34,6 @@ package org.sagebionetworks.research.presentation.model;
 
 import android.support.annotation.DrawableRes;
 import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
 
 import org.sagebionetworks.research.presentation.ActionType;
 import org.sagebionetworks.research.presentation.DisplayString;
@@ -49,10 +48,11 @@ public class StepActionView {
 
     public final boolean isHidden;
 
-    @Nullable
+    @NonNull
     public final DisplayString title;
 
-    public StepActionView(@ActionType String actionType, @NonNull DisplayString title, @DrawableRes int iconRes,
+    public StepActionView(@NonNull @ActionType String actionType, @NonNull DisplayString title,
+            @DrawableRes int iconRes,
             boolean isHidden, boolean isEnabled) {
         this.actionType = actionType;
         this.title = title;

@@ -32,17 +32,46 @@
 
 package org.sagebionetworks.research.domain.inject;
 
-import dagger.Module;
-import dagger.Provides;
-import javax.inject.Singleton;
+import com.google.gson.JsonDeserializer;
+
+import org.sagebionetworks.research.domain.inject.GsonModule.ClassKey;
+import org.sagebionetworks.research.domain.task.Task;
+import org.sagebionetworks.research.domain.task.TaskInfo;
+import org.sagebionetworks.research.domain.task.TaskInfoBase;
 import org.sagebionetworks.research.domain.task.navigation.OrderedStepNavigator;
 import org.sagebionetworks.research.domain.task.navigation.StepNavigatorFactory;
+import org.sagebionetworks.research.domain.task.navigation.TaskBase;
 
-@Module
+import dagger.Module;
+import dagger.Provides;
+import dagger.multibindings.IntoMap;
+import javax.inject.Singleton;
+
+import static org.sagebionetworks.research.domain.inject.GsonModule.createPassthroughDeserializer;
+
+@Module(includes = {GsonModule.class})
 public abstract class TaskModule {
+
+    /**
+     * @return The json Deserializer for a task info.
+     */
+    @Provides
+    @IntoMap
+    @ClassKey(TaskInfo.class)
+    static JsonDeserializer provideFormUIStepDeserializer() {
+        return createPassthroughDeserializer(TaskInfoBase.class);
+    }
+
     @Singleton
     @Provides
     static StepNavigatorFactory provideStepNavigatorFactory() {
         return new OrderedStepNavigator.Factory();
+    }
+
+    @Provides
+    @IntoMap
+    @ClassKey(Task.class)
+    static JsonDeserializer provideTaskDeserializer() {
+        return createPassthroughDeserializer(TaskBase.class);
     }
 }

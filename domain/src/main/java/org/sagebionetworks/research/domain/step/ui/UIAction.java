@@ -32,17 +32,15 @@
 
 package org.sagebionetworks.research.domain.step.ui;
 
-import android.support.annotation.DrawableRes;
-import android.support.annotation.StringRes;
+import android.support.annotation.Nullable;
 
 /**
  * Defines a title and image for an asyncAction.
  */
 public interface UIAction {
+    @Nullable
+    String getButtonIcon();
 
-    @StringRes
-    int getButtonTitle();
-
-    @DrawableRes
-    int getButtonIcon();
+    @Nullable
+    String getButtonTitle();
 }

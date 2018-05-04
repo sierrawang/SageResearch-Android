@@ -30,19 +30,18 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.sagebionetworks.research.app;
+package org.sagebionetworks.research.domain.task;
 
-import android.content.Context;
+import com.google.gson.Gson;
 
-import org.sagebionetworks.research.data.inject.DataModule;
-import org.sagebionetworks.research.mobile_ui.inject.PerformTaskModule;
+import org.sagebionetworks.research.domain.inject.GsonModule;
+import org.sagebionetworks.research.domain.inject.TaskModule;
 
-import dagger.Binds;
-import dagger.Module;
-import dagger.android.AndroidInjectionModule;
+import dagger.Component;
+import javax.inject.Singleton;
 
-@Module(includes = {AndroidInjectionModule.class, PerformTaskModule.class, DataModule.class})
-public abstract class ResearchStackDemoApplicationModule {
-    @Binds
-    public abstract Context provideApplicationContext(ResearchStackDemoApplication app);
+@Component(modules = {TaskModule.class, GsonModule.class})
+@Singleton
+public interface TaskTestComponent {
+    Gson gson();
 }

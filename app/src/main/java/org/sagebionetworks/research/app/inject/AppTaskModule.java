@@ -30,24 +30,13 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.sagebionetworks.research.app.step.ui;
+package org.sagebionetworks.research.app.inject;
 
-import org.junit.*;
+import org.sagebionetworks.research.mobile_ui.inject.PerformTaskModule;
 
-public class ActiveUIStepBaseTest {
-    @Test
-    public void testCreate() {
-//        ActiveUIStepBase uiStepBase = ActiveUIStepBase.builder()
-//                .setIdentifier("id")
-//                .setTitle(1)
-//                .setText(2)
-//                .setDetail(3)
-//                .setFootnote(4)
-//                .setBackgroundAudioRequired(true)
-//                .setDuration(Duration.ofSeconds(4))
-//                .build();
-//
-//        assertEquals("id", uiStepBase.getIdentifier());
-//        assertEquals(1, uiStepBase.getTitle());
-    }
+import dagger.Module;
+
+@Module(includes = {PerformTaskModule.class, AppStepModule.class})
+public class AppTaskModule {
+
 }

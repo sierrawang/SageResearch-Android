@@ -39,12 +39,12 @@ import org.threeten.bp.Duration;
 
 public interface ActiveUIStep extends UIStep {
     /**
-     * The duration of time to run the step. If null, then this value is ignored.
+     * The duration of time in seconds to run the step. If null, then this value is ignored.
      *
-     * @return step duration
+     * @return step duration in seconds
      */
     @Nullable
-    Duration getDuration();
+    Double getDuration();
 
     /**
      * The set of commands to apply to this active step. These indicate actions to fire at the beginning and end of

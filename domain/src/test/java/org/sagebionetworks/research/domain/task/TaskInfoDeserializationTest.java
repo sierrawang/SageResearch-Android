@@ -30,15 +30,26 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.sagebionetworks.research.presentation.model;
+package org.sagebionetworks.research.domain.task;
 
-import com.google.auto.value.AutoValue;
-import com.google.gson.Gson;
-import com.google.gson.TypeAdapter;
+import org.junit.*;
 
-@AutoValue
-public abstract class ActiveUIStepView implements StepView {
-    public static TypeAdapter<ActiveUIStepView> typeAdapter(Gson gson) {
-        return new AutoValue_ActiveUIStepView.GsonTypeAdapter(gson);
+import static org.junit.Assert.*;
+
+public class TaskInfoDeserializationTest {
+
+    private TaskTestComponent taskTestComponent;
+
+    @Before
+    public void setup() {
+        this.taskTestComponent = DaggerTaskTestComponent.builder().build();
+    }
+
+    @Test
+    public void testTaskInfoDeserialization() {
+        String json = "{\"identifier\":\"id\"}";
+        TaskInfo taskInfo = taskTestComponent.gson().fromJson(json, TaskInfo.class);
+        assertNotNull(taskInfo);
+        assertEquals("id", taskInfo.getIdentifier());
     }
 }

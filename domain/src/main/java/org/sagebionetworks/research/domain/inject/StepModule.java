@@ -32,23 +32,27 @@
 
 package org.sagebionetworks.research.domain.inject;
 
-import com.google.gson.JsonDeserializationContext;
 import com.google.gson.JsonDeserializer;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParseException;
 
 import org.sagebionetworks.research.domain.RuntimeTypeAdapterFactory;
+import org.sagebionetworks.research.domain.form.InputField;
+import org.sagebionetworks.research.domain.form.InputFieldBase;
 import org.sagebionetworks.research.domain.inject.GsonModule.ClassKey;
 import org.sagebionetworks.research.domain.step.ActiveUIStepBase;
+import org.sagebionetworks.research.domain.step.FormUIStepBase;
 import org.sagebionetworks.research.domain.step.SectionStepBase;
 import org.sagebionetworks.research.domain.step.Step;
 import org.sagebionetworks.research.domain.step.StepBase;
 import org.sagebionetworks.research.domain.step.UIStepBase;
 import org.sagebionetworks.research.domain.step.ui.ActiveUIStep;
-import org.threeten.bp.Duration;
+import org.sagebionetworks.research.domain.step.ui.ConcreteUIAction;
+import org.sagebionetworks.research.domain.step.ui.FormUIStep;
+import org.sagebionetworks.research.domain.step.ui.UIAction;
+import org.sagebionetworks.research.domain.step.ui.UIStep;
 
-import java.lang.reflect.Type;
 import java.util.Map;
 import java.util.Map.Entry;
 
@@ -57,6 +61,8 @@ import dagger.Module;
 import dagger.Provides;
 import dagger.multibindings.IntoMap;
 import dagger.multibindings.IntoSet;
+
+import static org.sagebionetworks.research.domain.inject.GsonModule.createPassthroughDeserializer;
 
 @Module(includes = {GsonModule.class})
 public class StepModule {
@@ -70,53 +76,52 @@ public class StepModule {
     }
 
     /**
-     * @return json type key for ActiveUIStepBase.class
+     * @return json type key for ActiveUIStep.class
      */
     @Provides
     @IntoMap
-    @StepClassKey(ActiveUIStepBase.class)
+    @StepClassKey(ActiveUIStep.class)
     static String provideActiveUIStep() {
         return ActiveUIStepBase.TYPE_KEY;
     }
 
+    /**
+     * @return json type key for ActiveUIStepBase.class
+     */
+    @Provides
+    @IntoMap
+    @StepClassKey(FormUIStep.class)
+    static String provideFormUIStep() {
+        return FormUIStepBase.TYPE_KEY;
+    }
 
     /**
      * @return The json Deserializer for an active step.
      */
     @Provides
     @IntoMap
-    @ClassKey(ActiveUIStepBase.class)
+    @ClassKey(FormUIStep.class)
+    static JsonDeserializer provideFormUIStepDeserializer() {
+        return createPassthroughDeserializer(FormUIStepBase.class);
+    }
+    /**
+     * @return The json Deserializer for an input field.
+     */
+    @Provides
+    @IntoMap
+    @ClassKey(InputField.class)
+    static JsonDeserializer provideInputFieldDeserializer() {
+        return createPassthroughDeserializer(InputFieldBase.class);
+    }
+
+    /**
+     * @return The json Deserializer for an active step.
+     */
+    @Provides
+    @IntoMap
+    @ClassKey(ActiveUIStep.class)
     static JsonDeserializer provideActiveUIStepDeserializer() {
-        return new JsonDeserializer<ActiveUIStep>() {
-            @Override
-            public ActiveUIStep deserialize(final JsonElement json, final Type typeOfT,
-                    final JsonDeserializationContext context)
-                    throws JsonParseException {
-                if (json.isJsonObject()) {
-                    JsonObject object = json.getAsJsonObject();
-                    String identifier = getStringFieldNonNull(object, "identifier");
-                    String title = getStringFieldNullable(object, "title");
-                    String text = getStringFieldNullable(object, "text");
-                    String detail = getStringFieldNullable(object, "detail");
-                    String footnote = getStringFieldNullable(object, "footnote");
-                    Duration duration = null;
-                    JsonElement durationElement = object.get("duration");
-                    if (durationElement != null) {
-                        if (!durationElement.isJsonPrimitive()) {
-                            throw new JsonParseException(
-                                    "duration " + durationElement.toString() + " should be an integer");
-                        }
-                        int durationInSeconds = durationElement.getAsInt();
-                        duration = Duration.ofSeconds(durationInSeconds);
-                    }
-
-                    return new ActiveUIStepBase(identifier, title, text, detail, footnote,
-                            duration, false);
-                }
-
-                throw new JsonParseException("json " + json.toString() + "is not an object");
-            }
-        };
+        return createPassthroughDeserializer(ActiveUIStepBase.class);
     }
 
     /**
@@ -143,13 +148,27 @@ public class StepModule {
         return stepAdapterFactory.registerDefaultType(StepBase.class);
     }
 
+    @Provides
+    @IntoMap
+    @ClassKey(UIAction.class)
+    static JsonDeserializer provideUIActionDeseriazlier() {
+        return createPassthroughDeserializer(ConcreteUIAction.class);
+    }
+
+    @Provides
+    @IntoMap
+    @ClassKey(UIStep.class)
+    static JsonDeserializer provideUIStepDeserizlier() {
+        return createPassthroughDeserializer(UIStepBase.class);
+    }
+
     /**
      * @return json type key for UIStepBase.class
      */
     @Provides
     @IntoMap
-    @StepClassKey(UIStepBase.class)
-    static String provideUIStep() {
+    @StepClassKey(UIStep.class)
+    static String provideUIStepMap() {
         return UIStepBase.TYPE_KEY;
     }
 

@@ -30,15 +30,44 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.sagebionetworks.research.presentation.model;
+package org.sagebionetworks.research.app;
 
-import com.google.auto.value.AutoValue;
-import com.google.gson.Gson;
-import com.google.gson.TypeAdapter;
+import android.content.Intent;
+import android.support.test.InstrumentationRegistry;
+import android.support.test.filters.LargeTest;
+import android.support.test.rule.ActivityTestRule;
+import android.support.test.runner.AndroidJUnit4;
 
-@AutoValue
-public abstract class ActiveUIStepView implements StepView {
-    public static TypeAdapter<ActiveUIStepView> typeAdapter(Gson gson) {
-        return new AutoValue_ActiveUIStepView.GsonTypeAdapter(gson);
+import org.junit.*;
+import org.junit.runner.*;
+import org.sagebionetworks.research.presentation.model.TaskView;
+
+import java.util.UUID;
+
+import static android.support.test.espresso.Espresso.onView;
+import static android.support.test.espresso.assertion.ViewAssertions.matches;
+import static android.support.test.espresso.matcher.ViewMatchers.isDisplayed;
+import static android.support.test.espresso.matcher.ViewMatchers.withText;
+
+@RunWith(AndroidJUnit4.class)
+@LargeTest
+public class PerformFooTaskTest {
+    @Rule
+    public ActivityTestRule<PerformTaskActivity> activityRule =
+            createTestRuleForTask(TaskView.builder().setIdentifier("foo").build(), null);
+
+    public static ActivityTestRule<PerformTaskActivity> createTestRuleForTask(TaskView taskView, UUID taskRunUUID) {
+        return new ActivityTestRule<PerformTaskActivity>(PerformTaskActivity.class) {
+            @Override
+            protected Intent getActivityIntent() {
+                return PerformTaskActivity.createIntent(
+                        InstrumentationRegistry.getInstrumentation().getTargetContext(), taskView, taskRunUUID);
+            }
+        };
+    }
+
+    @Test
+    public void showsStep() {
+        onView(withText("Step 1")).check(matches(isDisplayed()));
     }
 }

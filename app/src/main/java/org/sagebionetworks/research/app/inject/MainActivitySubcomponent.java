@@ -30,15 +30,16 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.sagebionetworks.research.presentation.model;
+package org.sagebionetworks.research.app.inject;
 
-import com.google.auto.value.AutoValue;
-import com.google.gson.Gson;
-import com.google.gson.TypeAdapter;
+import org.sagebionetworks.research.app.MainActivity;
 
-@AutoValue
-public abstract class ActiveUIStepView implements StepView {
-    public static TypeAdapter<ActiveUIStepView> typeAdapter(Gson gson) {
-        return new AutoValue_ActiveUIStepView.GsonTypeAdapter(gson);
+import dagger.Subcomponent;
+import dagger.android.AndroidInjector;
+
+@Subcomponent
+public interface MainActivitySubcomponent extends AndroidInjector<MainActivity> {
+    @Subcomponent.Builder
+    public abstract class Builder extends AndroidInjector.Builder<MainActivity> {
     }
 }

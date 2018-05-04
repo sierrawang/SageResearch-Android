@@ -32,10 +32,14 @@
 
 package org.sagebionetworks.research.app;
 
+import android.content.Context;
+import android.content.Intent;
 import android.os.Bundle;
+import android.os.ParcelUuid;
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
 
-import org.sagebionetworks.research.domain.repository.TaskRepository;
 import org.sagebionetworks.research.mobile_ui.perform_task.PerformTaskFragment;
 import org.sagebionetworks.research.presentation.model.TaskView;
 import org.slf4j.Logger;
@@ -43,46 +47,68 @@ import org.slf4j.LoggerFactory;
 
 import java.util.UUID;
 
-import dagger.android.AndroidInjection;
-import io.reactivex.disposables.CompositeDisposable;
-import javax.inject.Inject;
+import static com.google.common.base.Preconditions.checkNotNull;
 
-public class MainActivity extends AppCompatActivity {
-    private static final Logger LOGGER = LoggerFactory.getLogger(MainActivity.class);
+public class PerformTaskActivity extends AppCompatActivity {
+    private static final Logger LOGGER = LoggerFactory.getLogger(PerformTaskActivity.class);
 
-    CompositeDisposable compositeDisposable = new CompositeDisposable();
+    public static final String EXTRA_TASK_VIEW = "TASK_VIEW";
 
-    @Inject
-    TaskRepository taskRepository;
+    public static final String EXTRA_TASK_RUN_UUID = "TASK_RUN_UUID";
+
+    /**
+     * Creates an intent for launching an activity to perform a task.
+     *
+     * @param context
+     *         package context
+     * @param taskView
+     *         task view to launch
+     * @param taskRunUuid
+     *         identifier of previous task run to continue, or null if not applicable
+     * @return intent to launch task
+     */
+    public static Intent createIntent(@NonNull Context context, @NonNull TaskView taskView,
+            @Nullable UUID taskRunUuid) {
+        checkNotNull(context);
+        checkNotNull(taskView);
+
+        Intent intent = new Intent(context, PerformTaskActivity.class)
+                .addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+                .putExtra(EXTRA_TASK_VIEW, TaskView.builder().setIdentifier("foo").build());
+        if (taskRunUuid != null) {
+            intent.putExtra(EXTRA_TASK_RUN_UUID, new ParcelUuid(taskRunUuid));
+        }
+        return intent;
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-        AndroidInjection.inject(this);
         super.onCreate(savedInstanceState);
         setContentView(R.layout.rs2_perform_task_activity_layout);
+
+        TaskView taskView = getIntent().getParcelableExtra(EXTRA_TASK_VIEW);
+        UUID taskRunUuid = null;
+
+        ParcelUuid taskRunParcelableUuid = getIntent().getParcelableExtra(EXTRA_TASK_RUN_UUID);
+        if (taskRunParcelableUuid != null) {
+            taskRunUuid = taskRunParcelableUuid.getUuid();
+        }
+        if (taskRunUuid == null) {
+            LOGGER.debug("No taskRunUuid found, generating random");
+            taskRunUuid = UUID.randomUUID();
+        }
 
         PerformTaskFragment performTaskFragment = (PerformTaskFragment) getSupportFragmentManager()
                 .findFragmentById(R.id.rs2_task_content_frame);
 
-        // TODO: show list of available tasks
         if (performTaskFragment == null) {
-            compositeDisposable.add(
-                    taskRepository.getTaskInfo("foo")
-                            .map(taskInfo -> TaskView.builder()
-                                    .setIdentifier(taskInfo.getIdentifier())
-                                    .build())
-                            .subscribe(taskView -> {
-                                PerformTaskFragment newPerformTaskFragment = PerformTaskFragment
-                                        .newInstance(taskView, UUID.randomUUID());
+            //TODO: use factory to get type of TaskFragment, e.g. PerformActiveTaskFragment for an ActiveUITaskView
+            performTaskFragment = PerformTaskFragment.newInstance(taskView, taskRunUuid);
 
-                                getSupportFragmentManager()
-                                        .beginTransaction()
-                                        .add(R.id.rs2_task_content_frame, newPerformTaskFragment)
-                                        .commit();
-                            }, throwable ->
-                                    LOGGER.error("Failed to retrieve task", throwable)));
-        } else {
-            LOGGER.debug("Found existing PerformTaskFragment");
+            getSupportFragmentManager()
+                    .beginTransaction()
+                    .add(R.id.rs2_task_content_frame, performTaskFragment)
+                    .commit();
         }
     }
 }
