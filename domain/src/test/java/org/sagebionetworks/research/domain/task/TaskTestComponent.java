@@ -35,12 +35,11 @@ package org.sagebionetworks.research.domain.task;
 import com.google.gson.Gson;
 
 import org.sagebionetworks.research.domain.inject.GsonModule;
-import org.sagebionetworks.research.domain.inject.TaskModule;
 
 import dagger.Component;
 import javax.inject.Singleton;
 
-@Component(modules = {TaskModule.class, GsonModule.class})
+@Component(modules = {GsonModule.class})
 @Singleton
 public interface TaskTestComponent {
     Gson gson();

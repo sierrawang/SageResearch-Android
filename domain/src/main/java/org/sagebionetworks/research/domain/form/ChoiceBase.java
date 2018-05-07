@@ -35,13 +35,48 @@ package org.sagebionetworks.research.domain.form;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 
-import com.google.common.base.MoreObjects;
+import com.google.common.base.MoreObjects.ToStringHelper;
 import com.google.common.base.Objects;
+import com.google.common.reflect.TypeParameter;
+import com.google.common.reflect.TypeToken;
+import com.google.gson.JsonDeserializationContext;
+import com.google.gson.JsonDeserializer;
+import com.google.gson.JsonElement;
+import com.google.gson.JsonParseException;
 import com.google.gson.annotations.SerializedName;
 
+import org.sagebionetworks.research.domain.interfaces.ObjectHelper;
 import org.sagebionetworks.research.domain.result.Result;
 
-public class ChoiceBase<E> implements Choice<E> {
+import java.lang.reflect.Type;
+
+
+public class ChoiceBase<E> extends ObjectHelper implements Choice<E> {
+    public static final JsonDeserializer<ChoiceBase<?>> JSON_DESERIALIZER =
+            new JsonDeserializer<ChoiceBase<?>>() {
+        @Override
+        public ChoiceBase deserialize(final JsonElement json, final Type typeOfT,
+        final JsonDeserializationContext context)
+                        throws JsonParseException {
+            if (json.isJsonObject()) {
+                // Suppose we are deserializing a Choice<T> for some type T. We create a TypeToken<ChoiceBase<T>>
+                // then we deserialize using this.
+                TypeToken token = createChoiceBaseTypeToken(typeOfT);
+                ChoiceBase<?> result = context.deserialize(json, token.getType());
+                if (result != null) {
+                    return result;
+                }
+            } else if (json.isJsonPrimitive()) {
+                // If the json is just a primitive value we assume that it is just a string and create a
+                // ChoiceBase from it.
+                String answerValue = context.deserialize(json, String.class);
+                return new ChoiceBase<>(answerValue);
+            }
+
+            throw new JsonParseException("Unknown format for Choice");
+        }
+    };
+
     @NonNull
     @SerializedName("value")
     private final E answerValue;
@@ -53,6 +88,17 @@ public class ChoiceBase<E> implements Choice<E> {
     @SerializedName("icon")
     private final String iconName;
     private final boolean isExclusive;
+
+    /**
+     * Default initializer for gson.
+     */
+    public ChoiceBase() {
+        this.answerValue = null;
+        this.text = null;
+        this.detail = null;
+        this.iconName = null;
+        this.isExclusive = false;
+    }
 
     public ChoiceBase(@NonNull final E answerValue, @NonNull final String text, @Nullable final String detail,
             @Nullable final String iconName, final boolean isExclusive) {
@@ -70,7 +116,6 @@ public class ChoiceBase<E> implements Choice<E> {
         this.iconName = null;
         this.isExclusive = false;
     }
-
 
     @NonNull
     @Override
@@ -108,26 +153,17 @@ public class ChoiceBase<E> implements Choice<E> {
     }
 
     @Override
-    public String toString() {
-        return MoreObjects.toStringHelper(this)
+    protected ToStringHelper toStringHelper() {
+        return super.toStringHelper()
                 .add("answerValue", this.getAnswerValue())
                 .add("text", this.getText())
                 .add("detail", this.getDetail())
                 .add("iconName", this.getIconName())
-                .add("isExclusive", this.isExclusive())
-                .toString();
+                .add("isExclusive", this.isExclusive());
     }
 
     @Override
-    public boolean equals(Object o) {
-        if (this == o) {
-            return true;
-        }
-
-        if (o == null || this.getClass() != o.getClass()) {
-            return false;
-        }
-
+    protected boolean equalsHelper(Object o) {
         ChoiceBase<?> choice = (ChoiceBase<?>) o;
         return Objects.equal(this.getAnswerValue(), choice.getAnswerValue()) &&
                 Objects.equal(this.getText(), choice.getText()) &&
@@ -135,4 +171,63 @@ public class ChoiceBase<E> implements Choice<E> {
                 Objects.equal(this.isExclusive(), choice.isExclusive()) &&
                 Objects.equal(this.getIconName(), choice.getIconName());
     }
+
+    // region Deserialization
+
+
+    /**
+     * Given a Type corresponding to some Choice<T> returns a TypeToken corresponding to
+     * ChoiceBase<T>.
+     * @param typeOfT The type corresponding to some Choice<T> to produce a ChoiceBase<T> for.
+     * @return A TypeToken<ChoiceBase<T>> with the same generic parameter as the given Type which should
+     * be a Choice<T> for some Type T.
+     */
+    private static TypeToken<ChoiceBase<?>> createChoiceBaseTypeToken(Type typeOfT) {
+        TypeToken tToken = TypeToken.of(typeOfT);
+        try {
+            TypeToken token = tToken.resolveType(Choice.class.getMethod("getAnswerValue").getGenericReturnType());
+            return createChoiceBaseTypeTokenHelper(token);
+        } catch (NoSuchMethodException e) {
+            e.printStackTrace();
+        }
+
+        return null;
+    }
+
+    /**
+     * Returns a TypeToken<ChoiceBase<genericToken.getType()>>
+     * @param genericToken The TypeToken for the class to be the generic type argument to ChoiceBase.
+     * @param <T> The Type of the generic type argument to ChoiceBase.
+     * @return a TypeToken<ChoiceBase<genericToken.getType()>>
+     */
+    private static <T> TypeToken<ChoiceBase<T>> createChoiceBaseTypeTokenHelper(TypeToken<T> genericToken) {
+        return new TypeToken<ChoiceBase<T>>() {}.where(new TypeParameter<T>() {}, genericToken);
+    }
+
+    public static JsonDeserializer<ChoiceBase<?>> getJsonDeserializer() {
+        return new JsonDeserializer<ChoiceBase<?>>() {
+            @Override
+            public ChoiceBase deserialize(final JsonElement json, final Type typeOfT,
+                    final JsonDeserializationContext context)
+                    throws JsonParseException {
+                if (json.isJsonObject()) {
+                    // Suppose we are deserializing a Choice<T> for some type T. We create a TypeToken<ChoiceBase<T>>
+                    // then we deserialize using this.
+                    TypeToken token = createChoiceBaseTypeToken(typeOfT);
+                    ChoiceBase<?> result = context.deserialize(json, token.getType());
+                    if (result != null) {
+                        return result;
+                    }
+                } else if (json.isJsonPrimitive()) {
+                    // If the json is just a primitive value we assume that it is just a string and create a
+                    // ChoiceBase from it.
+                    String answerValue = context.deserialize(json, String.class);
+                    return new ChoiceBase<>(answerValue);
+                }
+
+                throw new JsonParseException("Unknown format for Choice");
+            }
+        };
+    }
+    // endregion
 }

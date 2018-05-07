@@ -55,6 +55,15 @@ public class ChoiceInputField<E> extends InputFieldBase implements ChoiceOptions
     @Nullable
     private final Choice<E> defaultAnswer;
 
+    /**
+     * Default intializer for gson.
+     */
+    public ChoiceInputField() {
+        super();
+        this.choices = null;
+        this.defaultAnswer = null;
+    }
+
     public ChoiceInputField(@Nullable final String identifier,
             @Nullable final String prompt,
             @Nullable final String promptDetail,

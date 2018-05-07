@@ -38,9 +38,17 @@ import android.support.annotation.NonNull;
 public interface Step {
     String KEY_TYPE = "type";
 
+    /**
+     * Returns the unique identifier that distinguishes this step from the other steps in the task.
+     * @return the unique identifier that distinguishes this step from the other steps in the task.
+     */
     @NonNull
     String getIdentifier();
 
+    /**
+     * Returns the type of this step.
+     * @return The type of this step.
+     */
     @NonNull
     String getType();
 }

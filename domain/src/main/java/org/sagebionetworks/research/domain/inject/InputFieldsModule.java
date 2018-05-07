@@ -34,12 +34,8 @@ package org.sagebionetworks.research.domain.inject;
 
 import com.google.common.reflect.TypeParameter;
 import com.google.common.reflect.TypeToken;
-import com.google.gson.JsonDeserializationContext;
-import com.google.gson.JsonDeserializer;
-import com.google.gson.JsonElement;
-import com.google.gson.JsonObject;
-import com.google.gson.JsonParseException;
 
+import org.sagebionetworks.research.domain.RuntimeTypeAdapterFactory;
 import org.sagebionetworks.research.domain.form.Choice;
 import org.sagebionetworks.research.domain.form.ChoiceBase;
 import org.sagebionetworks.research.domain.form.ChoiceInputField;
@@ -51,141 +47,72 @@ import org.sagebionetworks.research.domain.form.DataTypes.InputDataType;
 import org.sagebionetworks.research.domain.form.InputField;
 import org.sagebionetworks.research.domain.form.InputFieldBase;
 import org.sagebionetworks.research.domain.inject.GsonModule.ClassKey;
+import org.sagebionetworks.research.domain.step.ui.ConcreteUIAction;
+import org.sagebionetworks.research.domain.step.ui.UIAction;
 
 import java.lang.reflect.Type;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Map.Entry;
 
 import dagger.Module;
 import dagger.Provides;
 import dagger.multibindings.IntoMap;
+import dagger.multibindings.IntoSet;
 
 @Module(includes = {GsonModule.class})
 public class InputFieldsModule {
-    // region InputField
-    /**
-     * @return The JsonDeserializer to use for deserializing InputField.class
-     */
-    @Provides
-    @IntoMap
-    @ClassKey(InputField.class)
-    static JsonDeserializer provideInputFieldDeserializer() {
-        return new JsonDeserializer<InputField>() {
-            @Override
-            public InputField deserialize(final JsonElement json, final Type typeOfT,
-                    final JsonDeserializationContext context)
-                    throws JsonParseException {
-                if (json.isJsonObject()) {
-                    JsonObject object = json.getAsJsonObject();
-                    JsonElement dataTypeElement = object.get("dataType");
-                    InputDataType dataType = context.deserialize(dataTypeElement, InputDataType.class);
-                    if (dataType != null) {
-                        return deserializeInputFieldWithDataType(json, dataType, context);
-                    }
-                }
-
-                throw new JsonParseException("Unknown InputField format");
-            }
-        };
-    }
-
-    /**
-     * Deserializes and returns the InputField represented by the given JsonElement, assuming it has the type represented
-     * by the given InputDataType, using the given JsonDeserializationContext.
-     * @param json The JsonElement representing the InputField to be deserialized.
-     * @param dataType The InputDataType that the resulting InputField should have.
-     * @param context The JsonDeserializationContext to use for deserailization.
-     * @return The InputField represented by the given JsonElement.
-     */
-    private static InputField deserializeInputFieldWithDataType(JsonElement json, InputDataType dataType,
-            JsonDeserializationContext context) {
-        if (dataType instanceof CollectionInputDataType) {
-            // We are deserializing a Collection which means we have should create a ChoiceInputField.
-            CollectionInputDataType collectionType = (CollectionInputDataType) dataType;
-            // We use the baseType to get the expected answerValue type.
-            Class innerClass = BaseInputDataType.CLASSES.get(collectionType.getBaseType());
-            // Next we use attempt to parse the result as a ChoiceInputField with no generic parameter.
-            InputField result = null;
-            if (innerClass != null) {
-                // If we have an expected inner class we create a ChoiceInputField<innerClass> token
-                // and use this type to deserialize.
-                Type expectedType = createChoiceInputFieldTypeToken(TypeToken.of(innerClass)).getType();
-                return context.deserialize(json, expectedType);
-            }
-
-            // Otherwise we just allow gson to attempt to figure out the type.
-            return context.deserialize(json, ChoiceInputField.class);
-        } else if (dataType instanceof BaseInputDataType) {
-            return context.deserialize(json, InputFieldBase.class);
-        } else {
-            throw new JsonParseException("dataType: " + dataType + " is invalid");
-        }
-    }
-    // endregion
-
-    // region Choice
-    /**
-     * Allows a Choice to be deserialized in the default gson way, or as just a String.
-     * The latter results in both the answerValue and text of the choice being set to the
-     * given string.
-     * @return The JsonDeserializer to use for deserializing Choice.class
-     */
     @Provides
     @IntoMap
     @ClassKey(Choice.class)
-    static JsonDeserializer provideChoiceDeserializer() {
-        return new JsonDeserializer<Choice<?>>() {
-            @Override
-            public Choice deserialize(final JsonElement json, final Type typeOfT,
-                    final JsonDeserializationContext context)
-                    throws JsonParseException {
-                if (json.isJsonObject()) {
-                    // Suppose we are deserializing a Choice<T> for some type T. We create a TypeToken<ChoiceBase<T>>
-                    // then we deserialize using this.
-                    TypeToken token = createChoiceBaseTypeToken(typeOfT);
-                    Choice<?> result = context.deserialize(json, token.getType());
-                    if (result != null) {
-                       return result;
-                    }
-                } else if (json.isJsonPrimitive()) {
-                    // If the json is just a primitive value we assume that it is just a string and create a
-                    // ChoiceBase from it.
-                    String answerValue = context.deserialize(json, String.class);
-                    return new ChoiceBase<>(answerValue);
-                }
-
-                throw new JsonParseException("Unknown format for Choice");
-            }
-        };
+    static ClassInfo<?> provideChoiceClassInfo() {
+        return new ClassInfo<>(ChoiceBase.class, null, ChoiceBase.getJsonDeserializer());
     }
-    // endregion
 
-    // region TypeToken
+    @Provides
+    @IntoMap
+    @ClassKey(InputDataType.class)
+    static ClassInfo<?> provideInputDataTypeClassInfo() {
+        return new ClassInfo<>(InputDataType.class, null, InputDataType.getJsonDeserializer());
+    }
+
+    @Provides
+    @IntoMap
+    @ClassKey(UIAction.class)
+    static ClassInfo<?> providedUIActionClassInfo() {
+        return new ClassInfo<>(ConcreteUIAction.class, null, null);
+    }
+
     /**
-     * Given a Type corresponding to some Choice<T> returns a TypeToken corresponding to
-     * ChoiceBase<T>.
-     * @param typeOfT The type corresponding to some Choice<T> to produce a ChoiceBase<T> for.
-     * @return A TypeToken<ChoiceBase<T>> with the same generic parameter as the given Type which should
-     * be a Choice<T> for some Type T.
+     * @return Gson RuntimeTypeAdapterFactory for InputField.class.
      */
-    private static TypeToken<ChoiceBase<?>> createChoiceBaseTypeToken(Type typeOfT) {
-        TypeToken tToken = TypeToken.of(typeOfT);
-        try {
-            TypeToken token = tToken.resolveType(Choice.class.getMethod("getAnswerValue").getGenericReturnType());
-            return createChoiceBaseTypeTokenHelper(token);
-        } catch (NoSuchMethodException e) {
-            e.printStackTrace();
+    @Provides
+    @IntoSet
+    static RuntimeTypeAdapterFactory provideType() {
+        RuntimeTypeAdapterFactory<InputField> typeAdapterFactory = RuntimeTypeAdapterFactory.of(InputField.class,
+                InputField.KEY_TYPE);
+        Map<String, Type> choiceInputFieldTypes = new HashMap<>();
+        for (String collectionType : CollectionType.ALL) {
+            // A collection type with no base type corresponds to a raw ChoiceInputField.
+            choiceInputFieldTypes.put(collectionType, ChoiceInputField.class);
+            for (String baseType : BaseType.ALL) {
+                // We either use the registered class for the base type, or just use a raw ChoiceInputField.
+                Type type = BaseInputDataType.CLASSES.get(baseType);
+                if (type != null) {
+                    type = createChoiceInputFieldTypeToken(TypeToken.of(type)).getType();
+                } else {
+                    type = ChoiceInputField.class;
+                }
+                choiceInputFieldTypes.put(new CollectionInputDataType(collectionType, baseType).toString(), type);
+            }
         }
 
-        return null;
-    }
+        for (Entry<String, Type> entry : choiceInputFieldTypes.entrySet()) {
+            typeAdapterFactory.registerSubtype(entry.getValue(), entry.getKey());
+        }
 
-    /**
-     * Returns a TypeToken<ChoiceBase<genericToken.getType()>>
-     * @param genericToken The TypeToken for the class to be the generic type argument to ChoiceBase.
-     * @param <T> The Type of the generic type argument to ChoiceBase.
-     * @return a TypeToken<ChoiceBase<genericToken.getType()>>
-     */
-    private static <T> TypeToken<ChoiceBase<T>> createChoiceBaseTypeTokenHelper(TypeToken<T> genericToken) {
-        return new TypeToken<ChoiceBase<T>>() {}.where(new TypeParameter<T>() {}, genericToken);
+        typeAdapterFactory.registerDefaultType(InputFieldBase.class);
+        return typeAdapterFactory;
     }
 
     /**
@@ -197,37 +124,4 @@ public class InputFieldsModule {
     private static <T> TypeToken<ChoiceInputField<T>> createChoiceInputFieldTypeToken(TypeToken<T> genericToken) {
         return new TypeToken<ChoiceInputField<T>>() {}.where(new TypeParameter<T>() {}, genericToken);
     }
-    // endregion
-
-    // region InputDataType
-    /**
-     * @return The JsonDeserializer to use for deserializing InputDataType.class.
-     */
-    @Provides
-    @IntoMap
-    @ClassKey(InputDataType.class)
-    static JsonDeserializer provideInputDataTypeDeserializer() {
-        return new JsonDeserializer<InputDataType>() {
-            @Override
-            public InputDataType deserialize(final JsonElement json, final Type typeOfT,
-                    final JsonDeserializationContext context)
-                    throws JsonParseException {
-                String string = json.getAsString();
-                if (string != null) {
-                    String[] piecesArray = string.split("\\" + CollectionInputDataType.DELIMINATOR);
-                    if (piecesArray.length == 1 && BaseType.ALL.contains(piecesArray[0])) {
-                        return new BaseInputDataType(piecesArray[0]);
-                    } else if (piecesArray.length == 2 && CollectionType.ALL.contains(piecesArray[0]) &&
-                                    BaseType.ALL.contains(piecesArray[1])) {
-                        return new CollectionInputDataType(piecesArray[0], piecesArray[1]);
-                    } else if (piecesArray.length == 1 && CollectionType.ALL.contains(piecesArray[0])) {
-                        return new CollectionInputDataType(piecesArray[0]);
-                    }
-                }
-
-                throw new JsonParseException("JSON value " + json.toString() + " doesn't represent an InputDataType");
-            }
-        };
-    }
-    // endregion
 }

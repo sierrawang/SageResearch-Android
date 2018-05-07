@@ -32,6 +32,18 @@
 
 package org.sagebionetworks.research.domain.form.DataTypes;
 
+import android.support.annotation.Nullable;
+
+import com.google.gson.JsonDeserializationContext;
+import com.google.gson.JsonDeserializer;
+import com.google.gson.JsonElement;
+import com.google.gson.JsonParseException;
+
+import org.sagebionetworks.research.domain.form.DataTypes.BaseInputDataType.BaseType;
+import org.sagebionetworks.research.domain.form.DataTypes.CollectionInputDataType.CollectionType;
+
+import java.lang.reflect.Type;
+
 public abstract class InputDataType {
     public boolean equals(Object o) {
         if (this == o) {
@@ -53,4 +65,29 @@ public abstract class InputDataType {
      * @return true if this is equal to o false otherwise.
      */
     protected abstract boolean equalsHelper(Object o);
+
+    @Nullable
+    public static JsonDeserializer<? extends InputDataType> getJsonDeserializer() {
+        return new JsonDeserializer<InputDataType>() {
+            @Override
+            public InputDataType deserialize(final JsonElement json, final Type typeOfT,
+                    final JsonDeserializationContext context)
+                    throws JsonParseException {
+                String string = json.getAsString();
+                if (string != null) {
+                    String[] piecesArray = string.split("\\" + CollectionInputDataType.DELIMINATOR);
+                    if (piecesArray.length == 1 && BaseType.ALL.contains(piecesArray[0])) {
+                        return new BaseInputDataType(piecesArray[0]);
+                    } else if (piecesArray.length == 2 && CollectionType.ALL.contains(piecesArray[0]) &&
+                            BaseType.ALL.contains(piecesArray[1])) {
+                        return new CollectionInputDataType(piecesArray[0], piecesArray[1]);
+                    } else if (piecesArray.length == 1 && CollectionType.ALL.contains(piecesArray[0])) {
+                        return new CollectionInputDataType(piecesArray[0]);
+                    }
+                }
+
+                throw new JsonParseException("JSON value " + json.toString() + " doesn't represent an InputDataType");
+            }
+        };
+    }
 }

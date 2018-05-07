@@ -30,21 +30,44 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.sagebionetworks.research.domain.step.ui;
+package org.sagebionetworks.research.domain.inject;
 
 import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 
-import org.sagebionetworks.research.domain.form.InputField;
+import com.google.gson.JsonDeserializer;
 
-import java.util.List;
-
-/**
- * Properties used in creating a form input.
- */
-public interface FormUIStep extends UIStep {
-    /**
-     * @return The list of InputFields for this form step.
-     */
+public class ClassInfo<T> {
     @NonNull
-    List<InputField> getInputFields();
+    private final Class<T> implementationClass;
+    @Nullable
+    private final String typeKey;
+    @Nullable
+    private final JsonDeserializer<? extends T> jsonDeserializer;
+
+    public ClassInfo(@NonNull final Class<T> implementationClass,
+            @Nullable final String typeKey, @Nullable final JsonDeserializer<? extends T> jsonDeserializer) {
+        this.implementationClass = implementationClass;
+        this.typeKey = typeKey;
+        this.jsonDeserializer = jsonDeserializer;
+    }
+
+    public boolean hasCustomJsonDeserializer() {
+        return this.jsonDeserializer != null;
+    }
+
+    @NonNull
+    public Class<T> getImplementationClass() {
+        return implementationClass;
+    }
+
+    @Nullable
+    public String getTypeKey() {
+        return typeKey;
+    }
+
+    @Nullable
+    public JsonDeserializer<? extends T> getJsonDeserializer() {
+        return jsonDeserializer;
+    }
 }

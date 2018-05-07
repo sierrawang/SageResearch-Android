@@ -58,6 +58,14 @@ public class CollectionInputDataType extends InputDataType {
     @BaseType
     private final String baseType;
 
+    /**
+     * Default initializer for gson.
+     */
+    public CollectionInputDataType() {
+        this.collectionType = null;
+        this.baseType = null;
+    }
+
     public CollectionInputDataType(@CollectionType @NonNull final String collectionType,
             @BaseType @Nullable final String baseType) {
         this.collectionType = collectionType;
@@ -103,4 +111,5 @@ public class CollectionInputDataType extends InputDataType {
         return Objects.equal(this.getCollectionType(), collectionType.getCollectionType()) &&
                 Objects.equal(this.getBaseType(), collectionType.getBaseType());
     }
+
 }

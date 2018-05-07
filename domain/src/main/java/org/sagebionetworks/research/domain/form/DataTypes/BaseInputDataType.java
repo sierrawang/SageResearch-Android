@@ -63,6 +63,13 @@ public class BaseInputDataType extends InputDataType {
         CLASSES = builder.build();
     }
 
+    /**
+     * Default initilizer for gson.
+     */
+    public BaseInputDataType() {
+        this.baseType = null;
+    }
+
     public BaseInputDataType(@BaseType String baseType) {
         this.baseType = baseType;
     }

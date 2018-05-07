@@ -30,21 +30,45 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.sagebionetworks.research.domain.step.ui;
+package org.sagebionetworks.research.domain.interfaces;
 
-import android.support.annotation.NonNull;
+import com.google.common.base.MoreObjects;
+import com.google.common.base.MoreObjects.ToStringHelper;
 
-import org.sagebionetworks.research.domain.form.InputField;
+public abstract class ObjectHelper {
+    @Override
+    public String toString() {
+        return this.toStringHelper().toString();
+    }
 
-import java.util.List;
-
-/**
- * Properties used in creating a form input.
- */
-public interface FormUIStep extends UIStep {
     /**
-     * @return The list of InputFields for this form step.
+     * Returns a toStringHelper that can be used to produce the toString for this object. Expected
+     * that subclasses will override to add their own fields.
+     * @return The ToStringHelper that can be used to produce the toString for this object.
      */
-    @NonNull
-    List<InputField> getInputFields();
+    protected ToStringHelper toStringHelper() {
+        return MoreObjects.toStringHelper(this);
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) {
+            return true;
+        }
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
+
+        return this.equalsHelper(o);
+    }
+
+    /**
+     * Returns true if this objects fields are equal to the fields of the given object, false otherwise. Expected
+     * that subclasses will override to add their own fields.
+     * Requires: this.getClass() == o.getClass()
+     * @param o The object to check for equality with.
+     * @return true if this object's fields are equal to the fields of the given object.
+     */
+    protected abstract boolean equalsHelper(Object o);
+
 }

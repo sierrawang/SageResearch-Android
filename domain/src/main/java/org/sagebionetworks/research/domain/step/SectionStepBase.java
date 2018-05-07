@@ -34,44 +34,45 @@ package org.sagebionetworks.research.domain.step;
 
 import android.support.annotation.NonNull;
 
+import com.google.common.base.MoreObjects.ToStringHelper;
+import com.google.common.base.Objects;
 import com.google.common.collect.ImmutableList;
 
 import java.util.List;
 
-public class SectionStepBase implements SectionStep {
+public class SectionStepBase extends StepBase implements SectionStep {
     public static final String TYPE_KEY = "section";
-
-    @NonNull
-    private final String identifier;
 
     @NonNull
     private final ImmutableList<Step> steps;
 
-    @NonNull
-    private final String type;
-
-    public SectionStepBase(@NonNull final String identifier, @NonNull final String type,
-            @NonNull final List<Step> steps) {
-        this.identifier = identifier;
-        this.type = type;
+    public SectionStepBase(@NonNull final String identifier, @NonNull final List<Step> steps) {
+        super(identifier, TYPE_KEY);
         this.steps = ImmutableList.copyOf(steps);
     }
 
     @NonNull
     @Override
-    public String getIdentifier() {
-        return this.identifier;
-    }
-
-    @NonNull
-    @Override
     public String getType() {
-        return this.type;
+        return TYPE_KEY;
     }
 
     @NonNull
     @Override
     public ImmutableList<Step> getSteps() {
         return this.steps;
+    }
+
+    @Override
+    protected boolean equalsHelper(Object o) {
+        SectionStepBase sectionStep = (SectionStepBase) o;
+        return super.equalsHelper(o) &&
+                Objects.equal(this.getSteps(), sectionStep.getSteps());
+    }
+
+    @Override
+    protected ToStringHelper toStringHelper() {
+        return super.toStringHelper()
+                .add("steps", this.getSteps());
     }
 }

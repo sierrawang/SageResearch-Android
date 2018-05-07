@@ -35,7 +35,6 @@ package org.sagebionetworks.research.domain.form;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 
-import com.google.common.base.MoreObjects;
 import com.google.common.base.MoreObjects.ToStringHelper;
 import com.google.common.base.Objects;
 import com.google.common.collect.Range;
@@ -43,10 +42,11 @@ import com.google.gson.annotations.SerializedName;
 
 import org.sagebionetworks.research.domain.form.DataTypes.InputDataType;
 import org.sagebionetworks.research.domain.form.TextField.TextFieldOptions;
+import org.sagebionetworks.research.domain.interfaces.ObjectHelper;
 
 import java.util.List;
 
-public class InputFieldBase implements InputField {
+public class InputFieldBase extends ObjectHelper implements InputField {
     @Nullable
     private final String identifier;
     @Nullable
@@ -71,6 +71,22 @@ public class InputFieldBase implements InputField {
     private final Range range;
     @Nullable
     private final List<SurveyRule> surveyRules;
+
+    /**
+     * Default initializer for gson.
+     */
+    public InputFieldBase() {
+        this.identifier = null;
+        this.prompt = null;
+        this.promptDetail = null;
+        this.placeholderText = null;
+        this.isOptional = false;
+        this.formDataType = null;
+        this.formUIHint = null;
+        this.textFieldOptions = null;
+        this.range = null;
+        this.surveyRules = null;
+    }
 
     public InputFieldBase(@Nullable final String identifier, @Nullable final String prompt,
             @Nullable final String promptDetail,
@@ -155,14 +171,9 @@ public class InputFieldBase implements InputField {
         return this.toStringHelper().toString();
     }
 
-    /**
-     * Returns a MoreObjects.ToStringHelper which can be used to build a toString for this object
-     * as an InputFieldBase.
-     * Expected that subclasses will override this to add their own fields to the helper.
-     * @return A ToStringHelper that can be used to build a toString for this object.
-     */
+    @Override
     protected ToStringHelper toStringHelper() {
-        return MoreObjects.toStringHelper(this)
+        return super.toStringHelper()
                 .add("identifier", identifier)
                 .add("prompt", prompt)
                 .add("promptDetail", promptDetail)
@@ -176,25 +187,6 @@ public class InputFieldBase implements InputField {
     }
 
     @Override
-    public boolean equals(Object o) {
-        if (this == o) {
-            return true;
-        }
-
-        if (o == null || this.getClass() != o.getClass()) {
-            return false;
-        }
-
-        return this.equalsHelper(o);
-    }
-
-    /**
-     * Returns true if this objects InputFieldBase fields are equal to o's InputFieldBase fields.
-     * Expected that subclasses will override to also compare their own fields.
-     * Requires: this.getClass() == o.getClass()
-     * @param o The object to check for equality with.
-     * @return true if this is equal to o false otherwise.
-     */
     protected boolean equalsHelper(Object o) {
         InputFieldBase inputField = (InputFieldBase) o;
         return Objects.equal(this.getIdentifier(), inputField.getIdentifier()) &&

@@ -47,6 +47,8 @@ import java.util.List;
  * the UI should be displayed.
  */
 public interface InputField {
+    final String KEY_TYPE = "dataType";
+
     /**
      * @return identifier that is unique among form items within the step
      */

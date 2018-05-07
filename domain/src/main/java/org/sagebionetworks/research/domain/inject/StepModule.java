@@ -32,136 +32,81 @@
 
 package org.sagebionetworks.research.domain.inject;
 
-import com.google.gson.JsonDeserializer;
+import com.google.common.reflect.TypeToken;
 
 import org.sagebionetworks.research.domain.RuntimeTypeAdapterFactory;
 import org.sagebionetworks.research.domain.inject.GsonModule.ClassKey;
 import org.sagebionetworks.research.domain.step.ActiveUIStepBase;
 import org.sagebionetworks.research.domain.step.FormUIStepBase;
+import org.sagebionetworks.research.domain.step.SectionStep;
 import org.sagebionetworks.research.domain.step.SectionStepBase;
 import org.sagebionetworks.research.domain.step.Step;
-import org.sagebionetworks.research.domain.step.StepBase;
 import org.sagebionetworks.research.domain.step.UIStepBase;
 import org.sagebionetworks.research.domain.step.ui.ActiveUIStep;
-import org.sagebionetworks.research.domain.step.ui.ConcreteUIAction;
 import org.sagebionetworks.research.domain.step.ui.FormUIStep;
-import org.sagebionetworks.research.domain.step.ui.UIAction;
 import org.sagebionetworks.research.domain.step.ui.UIStep;
 
 import java.util.Map;
 import java.util.Map.Entry;
 
-import dagger.MapKey;
 import dagger.Module;
 import dagger.Provides;
 import dagger.multibindings.IntoMap;
 import dagger.multibindings.IntoSet;
 
-import static org.sagebionetworks.research.domain.inject.GsonModule.createPassthroughDeserializer;
-
 @Module(includes = {GsonModule.class})
 public class StepModule {
-    /**
-     * Annotation marker for registering a Step subclass for polymorphic deserialization.
-     */
-    @MapKey
-    public @interface StepClassKey {
-        Class<? extends Step> value();
-    }
-
-    // region ActiveUIStepBase
-    /**
-     * @return json type key for ActiveUIStep.class
-     */
-    @Provides
-    @IntoMap
-    @StepClassKey(ActiveUIStep.class)
-    static String provideActiveUIStep() {
-        return ActiveUIStepBase.TYPE_KEY;
-    }
-
-    /**
-     * @return The json Deserializer for an active step.
-     */
-    @Provides
-    @IntoMap
-    @ClassKey(FormUIStep.class)
-    static JsonDeserializer provideFormUIStepDeserializer() {
-        return createPassthroughDeserializer(FormUIStepBase.class);
-    }
-
-    /**
-     * @return The json Deserializer for an active step.
-     */
+    // region Step Class Info
     @Provides
     @IntoMap
     @ClassKey(ActiveUIStep.class)
-    static JsonDeserializer provideActiveUIStepDeserializer() {
-        return createPassthroughDeserializer(ActiveUIStepBase.class);
+    static ClassInfo<?> provideActiveUIStepImplementation() {
+        return new ClassInfo<>(ActiveUIStepBase.class, ActiveUIStepBase.TYPE_KEY, null);
     }
-    // endregion
 
-    //region SectionStepBase
-    /**
-     * @return json type key for SectionStepBase.class
-     */
     @Provides
     @IntoMap
-    @StepClassKey(SectionStepBase.class)
-    static String provideSectionStep() {
-        return SectionStepBase.TYPE_KEY;
+    @ClassKey(FormUIStep.class)
+    static ClassInfo<?> providedFormUIStepImplementation() {
+        return new ClassInfo<>(FormUIStepBase.class, FormUIStepBase.TYPE_KEY, null);
     }
-    // endregion
 
-    // region UIStepBase
-    /**
-     * @return json type key for UIStepBase.class
-     */
     @Provides
     @IntoMap
-    @StepClassKey(UIStep.class)
-    static String provideUIStepMap() {
-        return UIStepBase.TYPE_KEY;
+    @ClassKey(SectionStep.class)
+    static ClassInfo<?> proivdeSectionStepImplementation() {
+       return new ClassInfo<>(SectionStepBase.class, SectionStepBase.TYPE_KEY, null);
     }
-    // endregion
 
-    // region FormUIStepBase
-    /**
-     * @return json type key for FormUIStepBase.class
-     */
     @Provides
     @IntoMap
-    @StepClassKey(FormUIStepBase.class)
-    static String provideFormStep() {
-        return FormUIStepBase.TYPE_KEY;
+    @ClassKey(UIStep.class)
+    static ClassInfo<?> providedUIStepImplementation() {
+        return new ClassInfo<>(UIStepBase.class, UIStepBase.TYPE_KEY, null);
     }
     // endregion
 
     /**
      * @return GSON runtime type adapter factory for polymorphic deserialization of Step classes
      */
-    @IntoSet
     @Provides
-    static RuntimeTypeAdapterFactory provideType(Map<Class<? extends Step>, String> stepClasses) {
+    @IntoSet
+    static RuntimeTypeAdapterFactory provideType(Map<Class<?>, ClassInfo<?>> stepClasses) {
         RuntimeTypeAdapterFactory<Step> stepAdapterFactory = RuntimeTypeAdapterFactory.of(Step.class, Step.KEY_TYPE);
 
-        for (Entry<Class<? extends Step>, String> stepClassEntry : stepClasses.entrySet()) {
-            stepAdapterFactory.registerSubtype(stepClassEntry.getKey(), stepClassEntry.getValue());
+        for (Entry<Class<?>, ClassInfo<?>> stepClassEntry : stepClasses.entrySet()) {
+            Class<?> interfaceClass = stepClassEntry.getKey();
+            ClassInfo<?> implementationClassInfo = stepClassEntry.getValue();
+            Class<?> implementationClass = implementationClassInfo.getImplementationClass();
+            if (TypeToken.of(implementationClass).isSubtypeOf(Step.class)) {
+                // The class is some type of step so we register it in the runtime type adapter factory.
+                stepAdapterFactory.registerSubtype((Class<? extends Step>)implementationClass,
+                        implementationClassInfo.getTypeKey());
+            }
         }
-        return stepAdapterFactory.registerDefaultType(StepBase.class);
+
+        return stepAdapterFactory.registerDefaultType(UIStep.class);
     }
 
-    @Provides
-    @IntoMap
-    @ClassKey(UIAction.class)
-    static JsonDeserializer provideUIActionDeseriazlier() {
-        return createPassthroughDeserializer(ConcreteUIAction.class);
-    }
 
-    @Provides
-    @IntoMap
-    @ClassKey(UIStep.class)
-    static JsonDeserializer provideUIStepDeserizlier() {
-        return createPassthroughDeserializer(UIStepBase.class);
-    }
 }
