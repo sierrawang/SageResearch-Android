@@ -185,9 +185,10 @@ public class ChoiceBase<E> extends ObjectHelper implements Choice<E> {
     private static TypeToken<ChoiceBase<?>> createChoiceBaseTypeToken(Type typeOfT) {
         TypeToken tToken = TypeToken.of(typeOfT);
         try {
-            TypeToken token = tToken.resolveType(Choice.class.getMethod("getAnswerValue").getGenericReturnType());
+            TypeToken token = tToken.resolveType(tToken.getRawType().getDeclaredField("answerValue")
+                    .getGenericType());
             return createChoiceBaseTypeTokenHelper(token);
-        } catch (NoSuchMethodException e) {
+        } catch (NoSuchFieldException e) {
             e.printStackTrace();
         }
 
