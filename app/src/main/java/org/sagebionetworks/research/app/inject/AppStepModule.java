@@ -48,7 +48,8 @@ import dagger.multibindings.IntoMap;
 @Module(includes = {InputFieldsModule.class, StepModule.class})
 public class AppStepModule {
     /**
-     * @return ClassInfo for InstructionStep.class
+     * Returns ClassInfo for InstructionStep.class.
+     * @return ClassInfo for InstructionStep.class.
      */
     @Provides
     @IntoMap
