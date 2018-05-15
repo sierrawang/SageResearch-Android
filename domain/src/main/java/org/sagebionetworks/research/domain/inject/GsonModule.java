@@ -96,7 +96,7 @@ public abstract class GsonModule {
     }
 
     @Multibinds
-    abstract Map<Class<?>, ClassInfo<?>> provideClassInfoMap();
+    abstract Map<Class<?>, JsonDeserializer<?>> provideJsonDeserializerMap();
 
     @Multibinds
     abstract Set<TypeAdapter> provideJsonDeserializers();
@@ -112,19 +112,14 @@ public abstract class GsonModule {
 
     @Provides
     @Singleton
-    static Gson provideGson(Map<Class<?>, ClassInfo<?>> classInfoMap,
+    static Gson provideGson(Map<Class<?>, JsonDeserializer<?>> jsonDeserializerMap,
             Set<TypeAdapterFactory> typeAdapterFactories,
             Set<RuntimeTypeAdapterFactory> runtimeTypeAdapterFactories) {
         GsonBuilder builder = new GsonBuilder();
 
-        for (Entry<Class<?>, ClassInfo<?>> entry : classInfoMap.entrySet()) {
-            Class<?> interfaceClass = entry.getKey();
-            LOGGER.debug("Registering JsonDeserializer for: {}", interfaceClass);
-            ClassInfo<?> implementationClassInfo = entry.getValue();
-            Class<?> implementationClass = implementationClassInfo.getImplementationClass();
-            JsonDeserializer<?> deserializer = implementationClassInfo.hasCustomJsonDeserializer() ?
-                implementationClassInfo.getJsonDeserializer() : createPassThroughDeserializer(implementationClass);
-            builder.registerTypeAdapter(interfaceClass, deserializer);
+        for (Entry<Class<?>, JsonDeserializer<?>> entry : jsonDeserializerMap.entrySet()) {
+            LOGGER.debug("Registering JsonDeserializer for: {}", entry.getKey());
+            builder.registerTypeAdapter(entry.getKey(), entry.getValue());
         }
         for (TypeAdapterFactory typeAdapterFactory : typeAdapterFactories) {
             LOGGER.debug("Registering TypeAdapterFactory: {}", typeAdapterFactory.getClass());

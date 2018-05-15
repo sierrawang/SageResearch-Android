@@ -33,10 +33,9 @@
 package org.sagebionetworks.research.app.inject;
 
 import org.sagebionetworks.research.app.InstructionStep;
-import org.sagebionetworks.research.domain.inject.ClassInfo;
-import org.sagebionetworks.research.domain.inject.GsonModule.ClassKey;
 import org.sagebionetworks.research.domain.inject.InputFieldsModule;
 import org.sagebionetworks.research.domain.inject.StepModule;
+import org.sagebionetworks.research.domain.inject.StepModule.StepClassKey;
 
 import dagger.Module;
 import dagger.Provides;
@@ -53,8 +52,8 @@ public class AppStepModule {
      */
     @Provides
     @IntoMap
-    @ClassKey(InstructionStep.class)
-    static ClassInfo<?> provideInstructionStepClassInfo() {
-        return new ClassInfo<>(InstructionStep.class, InstructionStep.TYPE_KEY, null);
+    @StepClassKey(InstructionStep.class)
+    static String provideInstructionStepClassInfo() {
+        return InstructionStep.TYPE_KEY;
     }
 }

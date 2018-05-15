@@ -34,6 +34,7 @@ package org.sagebionetworks.research.domain.inject;
 
 import com.google.common.reflect.TypeParameter;
 import com.google.common.reflect.TypeToken;
+import com.google.gson.JsonDeserializer;
 
 import org.sagebionetworks.research.domain.RuntimeTypeAdapterFactory;
 import org.sagebionetworks.research.domain.form.Choice;
@@ -60,27 +61,29 @@ import dagger.Provides;
 import dagger.multibindings.IntoMap;
 import dagger.multibindings.IntoSet;
 
+import static org.sagebionetworks.research.domain.inject.GsonModule.createPassThroughDeserializer;
+
 @Module(includes = {GsonModule.class})
 public class InputFieldsModule {
     @Provides
     @IntoMap
     @ClassKey(Choice.class)
-    static ClassInfo<?> provideChoiceClassInfo() {
-        return new ClassInfo<>(ChoiceBase.class, null, ChoiceBase.getJsonDeserializer());
+    static JsonDeserializer<?> provideChoiceDeserializer() {
+        return ChoiceBase.getJsonDeserializer();
     }
 
     @Provides
     @IntoMap
     @ClassKey(InputDataType.class)
-    static ClassInfo<?> provideInputDataTypeClassInfo() {
-        return new ClassInfo<>(InputDataType.class, null, InputDataType.getJsonDeserializer());
+    static JsonDeserializer<?> provideInputDataTypeClassInfo() {
+        return InputDataType.getJsonDeserializer();
     }
 
     @Provides
     @IntoMap
     @ClassKey(UIAction.class)
-    static ClassInfo<?> providedUIActionClassInfo() {
-        return new ClassInfo<>(ConcreteUIAction.class, null, null);
+    static JsonDeserializer<?> providedUIActionClassInfo() {
+        return createPassThroughDeserializer(ConcreteUIAction.class);
     }
 
     /**
@@ -103,6 +106,7 @@ public class InputFieldsModule {
                 } else {
                     type = ChoiceInputField.class;
                 }
+
                 choiceInputFieldTypes.put(new CollectionInputDataType(collectionType, baseType).toString(), type);
             }
         }
