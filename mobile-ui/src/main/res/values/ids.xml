@@ -41,6 +41,10 @@
     <id name="rs2_step_navigation_action_learn_more" />
     <id name="rs2_step_navigation_action_add_more" />
 
+    <id name="footer_action_forward"/>
+    <id name="footer_action_backward"/>
+    <id name="footer_action_reminder"/>
+
     <id name="rs2_step_navigation_action_bar"/>
 
     <id name="rs2_step_container"/>

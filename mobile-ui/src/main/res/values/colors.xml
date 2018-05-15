@@ -32,6 +32,42 @@
   -->
 
 <resources>
+    <!-- Mark Royal Purple -->
+    <color name="royal400">#907FBA</color>
+    <color name="royal500">#5A478F</color>
+    <color name="royal600">#47337D</color>
+    <color name="royal700">#332069</color>
+    <!-- Mark Butterscotch -->
+    <color name="butterscotch500">#F5B33C</color>
+    <color name="butterscotch600">#DE9A1F</color>
+    <!-- Mark end mPower -->
+
+    <color name="primaryTint">#506BCB</color>
+    <color name="lightPrimaryTint">#6D7BAB</color>
+    <color name="darkPrimaryTint">#2F58E9</color>
+    <color name="veryDarkPrimaryTint">#1A4BFF</color>
+    <color name="secondaryTint">#FF8875</color>
+    <color name="darkSecondaryTint">#FF8875</color>
+
+    <color name="appTextDark">#1A1C29</color>
+
+    <color name="scrollShadowBottom">#40000000</color>
+    <color name="scrollShadowTop">#00000000</color>
+
+    <color name="appWhite">#FFFFFF</color>
+    <color name="appVeryLightGray">#EDEDED</color>
+    <color name="appLightGray">#8D93A1</color>
+    <color name="appDarkGrey">#414859</color>
+
+    <color name="appAlertRed">#FC6275</color>
+    <color name="appSuccessGreen">#63D49E</color>
+
+    <color name="progressBarBackground">#251454</color>
+    <color name="progressBarForeground">#B2A5D1</color>
+
+    <color name="rsdCompletionGradientLeft">#63D49E</color>
+    <color name="rsdCompletionGradientRight">#63D49E</color>
+
     <color name="colorPrimary">#3F51B5</color>
     <color name="colorPrimaryDark">#303F9F</color>
     <color name="colorAccent">#FF4081</color>

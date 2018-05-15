@@ -37,7 +37,6 @@ import android.support.annotation.NonNull;
 import org.sagebionetworks.research.mobile_ui.model.StepViewModel;
 import org.sagebionetworks.research.mobile_ui.perform_task.PerformTaskFragment;
 import org.sagebionetworks.research.mobile_ui.show_step.view.ShowStepFragment;
-import org.sagebionetworks.research.mobile_ui.show_step.view.ShowStepFragmentBase;
 import org.sagebionetworks.research.presentation.model.StepView;
 
 import javax.inject.Inject;
@@ -55,7 +54,8 @@ public class StepMapper {
     }
 
     @NonNull
-    public ShowStepFragmentBase create(@NonNull StepView input) {
+    public ShowStepFragment create(@NonNull StepView input) {
+
         // TODO: handle other types of Steps
         return ShowStepFragment.newInstance(input);
     }

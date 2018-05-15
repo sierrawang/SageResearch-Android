@@ -101,102 +101,6 @@
       ]
     },
     {
-      "identifier": "step4",
-      "type": "form",
-      "title": "Pick some values",
-      "text": "This step shows examples of various text fields that use a picker view.",
-      "inputFields": [
-        {
-          "identifier": "date",
-          "dataType": "date",
-          "uiHint": "picker",
-          "prompt": "Pick a date in the future",
-          "range": {
-            "allowPast": false,
-            "codingFormat": "yyyy-MM-dd"
-          }
-        },
-        {
-          "identifier": "number",
-          "dataType": "integer",
-          "prompt": "Pick a number between -2 and +3",
-          "uiHint": "picker",
-          "range": {
-            "minimumValue": -2,
-            "maximumValue": 3,
-            "stepInterval": 1
-          }
-        },
-        {
-          "identifier": "multipleComponent",
-          "dataType": "multipleComponent",
-          "prompt": "Pick a combination of colors and animals",
-          "choices": [
-            [
-              "blue",
-              "red",
-              "green",
-              "yellow"
-            ],
-            [
-              "dog",
-              "cat",
-              "rat",
-              "duck"
-            ]
-          ]
-        },
-        {
-          "identifier": "duration",
-          "dataType": "duration",
-          "prompt": "Pick a time interval"
-        }
-      ]
-    },
-    {
-      "identifier": "step5",
-      "type": "form",
-      "title": "Height and Weight",
-      "text": "This step shows examples entering height and weight in the user's Locale.",
-      "inputFields": [
-        {
-          "identifier": "heightAdult",
-          "dataType": "height.adult",
-          "uiHint": "picker",
-          "prompt": "Enter a height for an adult"
-        },
-        {
-          "identifier": "weightAdult",
-          "dataType": "weight.adult",
-          "uiHint": "picker",
-          "prompt": "Enter a weight for an adult"
-        },
-        {
-          "identifier": "heightInfant",
-          "dataType": "height.infant",
-          "uiHint": "picker",
-          "prompt": "Enter a height for a baby"
-        },
-        {
-          "identifier": "weightInfant",
-          "dataType": "weight.infant",
-          "prompt": "Enter a weight for a baby",
-          "uiHint": "picker"
-        }
-      ]
-    },
-    {
-      "identifier": "year",
-      "type": "form",
-      "title": "Enter a year",
-      "text": "Enter a year in the past.",
-      "dataType": "year",
-      "uiHint": "textfield",
-      "range": {
-        "allowFuture": false
-      }
-    },
-    {
       "identifier": "step2",
       "type": "instruction",
       "title": "Step 2",
@@ -211,17 +115,6 @@
           "buttonTitle": "Start"
         }
       }
-    },
-    {
-      "identifier": "countdownStep",
-      "type": "countdown",
-      "title": "It's the Final Countdown",
-      "text": "Some text.",
-      "duration": 5,
-      "commands": [
-        "vibrate",
-        "transitionAutomatically"
-      ]
     },
     {
       "identifier": "movingStep",

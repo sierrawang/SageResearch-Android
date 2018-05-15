@@ -60,7 +60,7 @@ public interface StepView extends Parcelable {
     @Nullable
     String getDetail();
 
-    int getNavDirection();
+    @NavDirection int getNavDirection();
 
     @NonNull
     ImmutableSet<StepActionView> getStepActionViews();

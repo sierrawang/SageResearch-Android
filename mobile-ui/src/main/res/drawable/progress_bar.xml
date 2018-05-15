@@ -31,8 +31,26 @@
   ~ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
   -->
 
-<resources>
-    <color name="colorPrimary">#3F51B5</color>
-    <color name="colorPrimaryDark">#303F9F</color>
-    <color name="colorAccent">#FF4081</color>
-</resources>
+<layer-list xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:xsl="http://schemas.android.com/tools">
+    <!-- Define the background properties like color etc -->
+    <item android:id="@android:id/background">
+        <shape>
+            <solid
+                android:color="@color/progressBarBackground"/>
+        </shape>
+    </item>
+
+    <!-- Define the progress properties like start color, end color etc -->
+    <item android:id="@android:id/progress">
+        <scale android:scaleWidth="100%">
+            <shape>
+                <solid
+                    android:color="@color/progressBarForeground"/>
+                <corners
+                    android:bottomRightRadius="@dimen/progressBarHeight"
+                    android:topRightRadius="@dimen/progressBarHeight"/>
+            </shape>
+        </scale>
+    </item>
+</layer-list>

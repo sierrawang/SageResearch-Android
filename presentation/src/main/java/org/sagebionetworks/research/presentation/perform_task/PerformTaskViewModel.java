@@ -254,8 +254,6 @@ public class PerformTaskViewModel extends ViewModel {
 
     @VisibleForTesting
     void taskInitSuccess() {
-        checkState(taskResult != null, "taskResultBuilder must be set before taskInitSuccess is called");
-
         goForward();
     }
 }
