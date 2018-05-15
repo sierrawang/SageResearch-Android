@@ -39,6 +39,8 @@ import com.google.common.collect.ImmutableList;
 import org.sagebionetworks.research.domain.async.AsyncAction;
 import org.sagebionetworks.research.domain.step.Step;
 
+import java.util.List;
+
 public interface Task {
     @NonNull
     ImmutableList<AsyncAction> getAsyncActions();
@@ -48,4 +50,7 @@ public interface Task {
 
     @NonNull
     ImmutableList<Step> getSteps();
+
+    @NonNull
+    Task copyWithSteps(List<Step> steps);
 }

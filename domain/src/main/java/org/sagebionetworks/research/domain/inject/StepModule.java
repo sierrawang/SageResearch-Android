@@ -45,6 +45,8 @@ import org.sagebionetworks.research.domain.step.FormUIStepBase;
 import org.sagebionetworks.research.domain.step.SectionStep;
 import org.sagebionetworks.research.domain.step.SectionStepBase;
 import org.sagebionetworks.research.domain.step.Step;
+import org.sagebionetworks.research.domain.step.TransformerStep;
+import org.sagebionetworks.research.domain.step.TransformerStepBase;
 import org.sagebionetworks.research.domain.step.UIStepBase;
 import org.sagebionetworks.research.domain.step.ui.ActiveUIStep;
 import org.sagebionetworks.research.domain.step.ui.FormUIStep;
@@ -98,6 +100,13 @@ public class StepModule {
     static String provideUIStepTypeKey() {
         return UIStepBase.TYPE_KEY;
     }
+
+    @Provides
+    @IntoMap
+    @StepClassKey(TransformerStep.class)
+    static String provideTransformerStepTypeKey() {
+        return TransformerStepBase.TYPE_KEY;
+    }
     // endregion
 
 
@@ -128,6 +137,13 @@ public class StepModule {
     @ClassKey(UIStep.class)
     static JsonDeserializer<?> providedUIStepDeserializer() {
         return createPassThroughDeserializer(UIStepBase.class);
+    }
+
+    @Provides
+    @IntoMap
+    @ClassKey(TransformerStep.class)
+    static JsonDeserializer<?> provideTransformerStepDeserializer() {
+        return TransformerStepBase.getJsonDeserializer();
     }
     // endregion
 

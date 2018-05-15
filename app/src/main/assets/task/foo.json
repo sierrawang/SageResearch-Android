@@ -239,6 +239,11 @@
         "halfway": "Halfway there",
         "end": "Stop moving"
       }
+    },
+    {
+      "identifier":"left",
+      "type":"transform",
+      "resourceTransformer": { "resourceName": "TremorSectionStep.json"}
     }
   ]
 }

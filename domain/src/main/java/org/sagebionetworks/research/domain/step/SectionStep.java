@@ -32,10 +32,9 @@
 
 package org.sagebionetworks.research.domain.step;
 
-import com.google.common.collect.ImmutableList;
 import android.support.annotation.NonNull;
 
-import java.util.List;
+import com.google.common.collect.ImmutableList;
 
 /**
  * Created by liujoshua on 10/4/2017.
@@ -47,9 +46,16 @@ import java.util.List;
  */
 public interface SectionStep extends Step {
     /**
-     *
      * @return list of the steps in the subgrouping
      */
     @NonNull
     ImmutableList<Step> getSteps();
+
+    /**
+     * Returns a copy of this section step, with the identifier changed to the given identifier
+     * @param identifier The identifier for the new step to create.
+     * @return A copy of this section step, with the identifier changed to the given identifier.
+     */
+    @NonNull
+    SectionStep copyWithIdentifier(String identifier);
 }

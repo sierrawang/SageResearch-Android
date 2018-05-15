@@ -32,61 +32,10 @@
 
 package org.sagebionetworks.research.domain.step;
 
+
 import android.support.annotation.NonNull;
 
-import com.google.common.base.MoreObjects.ToStringHelper;
-import com.google.common.base.Objects;
-import com.google.common.collect.ImmutableList;
-
-import org.sagebionetworks.research.domain.interfaces.HashCodeHelper;
-
-import java.util.List;
-
-public class SectionStepBase extends StepBase implements SectionStep {
-    public static final String TYPE_KEY = "section";
-
+public interface TransformerStep extends Step {
     @NonNull
-    private final ImmutableList<Step> steps;
-
-    public SectionStepBase(@NonNull final String identifier, @NonNull final List<Step> steps) {
-        super(identifier);
-        this.steps = ImmutableList.copyOf(steps);
-    }
-
-    @NonNull
-    @Override
-    public String getType() {
-        return TYPE_KEY;
-    }
-
-    @NonNull
-    @Override
-    public ImmutableList<Step> getSteps() {
-        return this.steps;
-    }
-
-    @NonNull
-    @Override
-    public SectionStepBase copyWithIdentifier(String identifier) {
-        return new SectionStepBase(identifier, steps);
-    }
-
-    @Override
-    protected HashCodeHelper hashCodeHelper() {
-        return super.hashCodeHelper()
-                .addFields(this.steps);
-    }
-
-    @Override
-    protected boolean equalsHelper(Object o) {
-        SectionStepBase sectionStep = (SectionStepBase) o;
-        return super.equalsHelper(o) &&
-                Objects.equal(this.getSteps(), sectionStep.getSteps());
-    }
-
-    @Override
-    protected ToStringHelper toStringHelper() {
-        return super.toStringHelper()
-                .add("steps", this.getSteps());
-    }
+    String getResourceName();
 }

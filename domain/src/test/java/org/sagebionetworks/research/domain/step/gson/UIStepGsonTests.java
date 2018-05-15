@@ -73,9 +73,9 @@ public class UIStepGsonTests extends IndividualStepGsonTest {
 
     private void testCommon(UIStep expected, String filename) {
         Step step = this.readJsonFile(filename);
+        assertNotNull(step);
         assertTrue(step instanceof UIStep);
         UIStep uistep = (UIStep) step;
-
         assertEquals(expected.getActions(), uistep.getActions());
         assertEquals(expected.getDetail(), uistep.getDetail());
         assertEquals(expected.getFootnote(), uistep.getFootnote());

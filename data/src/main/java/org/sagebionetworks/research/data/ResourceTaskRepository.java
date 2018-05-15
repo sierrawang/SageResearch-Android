@@ -36,18 +36,24 @@ import android.content.Context;
 import android.content.res.AssetManager;
 import android.support.annotation.NonNull;
 
+import com.google.common.collect.ImmutableList;
 import com.google.gson.Gson;
 
 import org.sagebionetworks.research.domain.repository.TaskRepository;
 import org.sagebionetworks.research.domain.result.TaskResult;
+import org.sagebionetworks.research.domain.step.SectionStep;
+import org.sagebionetworks.research.domain.step.SectionStepBase;
+import org.sagebionetworks.research.domain.step.Step;
+import org.sagebionetworks.research.domain.step.TransformerStep;
 import org.sagebionetworks.research.domain.task.Task;
 import org.sagebionetworks.research.domain.task.TaskInfo;
-import org.sagebionetworks.research.domain.task.TaskInfoBase;
-import org.sagebionetworks.research.domain.task.navigation.TaskBase;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.io.IOException;
 import java.io.InputStreamReader;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.UUID;
 
 import io.reactivex.Completable;
@@ -71,23 +77,88 @@ public class ResourceTaskRepository implements TaskRepository {
     @NonNull
     @Override
     public Single<Task> getTask(final String taskIdentifier) {
-        AssetManager assetManager = context.getAssets();
+        return Single.fromCallable(() -> {
+            Task task = gson.fromJson(this.getJsonTaskAsset(taskIdentifier), Task.class);
+            ImmutableList<Step> taskSteps = task.getSteps();
+            List<Step> steps = new ArrayList<>();
+            for (Step step : taskSteps) {
+                steps.add(resolveTransformers(step));
+            }
 
-        return Single.fromCallable(() ->
-                gson.fromJson(
-                        new InputStreamReader(assetManager.open("task/" + taskIdentifier + ".json")),
-                        TaskBase.class));
+            return task.copyWithSteps(steps);
+        });
+    }
+
+    /**
+     * Returns the given step with all of the transformers that are substeps of it, recursively
+     * replaced with the result of getting their resource and creating a SectionStep from it.
+     * @param step The step to replace all the transformer substeps of.
+     * @return The givne step with all the transformer substeps replaced with the result of turning their resources
+     * into section steps.
+     * @throws IOException If any of the transformer steps has a resource that cannot be opened.
+     */
+    private Step resolveTransformers(Step step) throws IOException {
+        if (step instanceof TransformerStep) {
+            TransformerStep transformer = (TransformerStep) step;
+            // For now the transformer only supports SectionSteps.
+            SectionStep result = gson.fromJson(
+                    this.getJsonTransformerAsset(transformer.getResourceName()), SectionStep.class);
+            result = result.copyWithIdentifier(transformer.getIdentifier());
+            return resolveTransformers(result);
+        } else if (step instanceof SectionStep) {
+            SectionStep section = (SectionStep) step;
+            ImmutableList<Step> steps = section.getSteps();
+            ImmutableList.Builder<Step> builder = new ImmutableList.Builder<>();
+            for (Step innerStep : steps) {
+                builder.add(resolveTransformers(innerStep));
+            }
+
+            return new SectionStepBase(section.getIdentifier(), builder.build());
+        } else {
+            return step;
+        }
+    }
+
+    /**
+     * Returns an InputStreamReader for the given asset path.
+     * @param assetPath The path to the asset to open.
+     * @return An InputStreamReader for the given asset path.
+     * @throws IOException if the given assetPath cannot be opened.
+     */
+    @NonNull
+    private InputStreamReader getAsset(String assetPath) throws IOException {
+        AssetManager assetManager = context.getAssets();
+        return new InputStreamReader(assetManager.open(assetPath));
+    }
+
+    @NonNull
+    @Override
+    public InputStreamReader getJsonTaskAsset(String assetName) throws IOException {
+        String assetPath = "task/" + assetName + ".json";
+        return this.getAsset(assetPath);
+    }
+
+
+    @NonNull
+    @Override
+    public InputStreamReader getJsonTaskInfoAsset(String assetName) throws IOException {
+        String assetPath = "task/info/" + assetName + ".json";
+        return this.getAsset(assetPath);
+
+    }
+
+    @NonNull
+    @Override
+    public InputStreamReader getJsonTransformerAsset(String assetName) throws IOException {
+        String assetPath = "task/transformer/" + assetName;
+        return this.getAsset(assetPath);
     }
 
     @NonNull
     @Override
     public Single<TaskInfo> getTaskInfo(final String taskIdentifier) {
-        AssetManager assetManager = context.getAssets();
-
         return Single.fromCallable(() ->
-                gson.fromJson(
-                        new InputStreamReader(assetManager.open("task/info/" + taskIdentifier + ".json")),
-                        TaskInfoBase.class));
+                gson.fromJson(this.getJsonTaskInfoAsset(taskIdentifier), TaskInfo.class));
     }
 
     @NonNull

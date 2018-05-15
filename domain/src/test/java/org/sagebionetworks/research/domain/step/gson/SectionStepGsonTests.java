@@ -48,6 +48,7 @@ public class SectionStepGsonTests extends IndividualStepGsonTest {
    @Test
    public void testEmpty() {
        Step step = this.readJsonFile("EmptySectionStep.json");
+       assertNotNull(step);
        assertTrue(step instanceof SectionStep);
        SectionStep sectionStep = (SectionStep) step;
        assertEquals("emptySectionStep", sectionStep.getIdentifier());
@@ -57,6 +58,7 @@ public class SectionStepGsonTests extends IndividualStepGsonTest {
    @Test
    public void testExample_1() {
        Step step = this.readJsonFile("SectionStep_1.json");
+       assertNotNull(step);
        assertTrue(step instanceof SectionStep);
        SectionStep sectionStep = (SectionStep) step;
        assertEquals("testSectionStep1", sectionStep.getIdentifier());
