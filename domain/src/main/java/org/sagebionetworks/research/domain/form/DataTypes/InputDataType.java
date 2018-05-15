@@ -41,10 +41,17 @@ import com.google.gson.JsonParseException;
 
 import org.sagebionetworks.research.domain.form.DataTypes.BaseInputDataType.BaseType;
 import org.sagebionetworks.research.domain.form.DataTypes.CollectionInputDataType.CollectionType;
+import org.sagebionetworks.research.domain.interfaces.HashCodeHelper;
 
 import java.lang.reflect.Type;
 
 public abstract class InputDataType {
+    protected final int hashCode;
+
+    public InputDataType() {
+        this.hashCode = this.hashCodeHelper().hash();
+    }
+
     public boolean equals(Object o) {
         if (this == o) {
             return true;
@@ -55,6 +62,15 @@ public abstract class InputDataType {
         }
 
         return this.equalsHelper(o);
+    }
+
+    /**
+     * Returns the HashCodeHelper that can be used to produce the hash code for this object.
+     * expected that subclasses will override this to add their own fields.
+     * @return The HashCodeHelper that can be used to create the hashCode for this object.
+     */
+    protected HashCodeHelper hashCodeHelper() {
+        return new HashCodeHelper();
     }
 
     /**

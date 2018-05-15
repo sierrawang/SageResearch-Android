@@ -39,6 +39,7 @@ import com.google.common.base.MoreObjects.ToStringHelper;
 import com.google.common.base.Objects;
 import com.google.common.collect.ImmutableMap;
 
+import org.sagebionetworks.research.domain.interfaces.HashCodeHelper;
 import org.sagebionetworks.research.domain.step.ui.UIAction;
 import org.sagebionetworks.research.domain.step.ui.UIStep;
 
@@ -64,7 +65,7 @@ public class UIStepBase extends StepBase implements UIStep {
 
     // Gson initialize defaults
     UIStepBase() {
-        super("", TYPE_KEY);
+        super("");
         actions = ImmutableMap.of();
         detail = null;
         footnote = null;
@@ -75,7 +76,7 @@ public class UIStepBase extends StepBase implements UIStep {
     public UIStepBase(@NonNull final String identifier, @Nullable final Map<String, UIAction> actions,
             @Nullable final String title, @Nullable final String text,
             @Nullable final String detail, @Nullable final String footnote) {
-        super(identifier, TYPE_KEY);
+        super(identifier);
         if (actions == null) {
             this.actions = ImmutableMap.of();
         } else {
@@ -124,8 +125,9 @@ public class UIStepBase extends StepBase implements UIStep {
     }
 
     @Override
-    public int hashCode() {
-        return super.hashCode() + 3 * Objects.hashCode(actions, detail, footnote, text, title);
+    protected HashCodeHelper hashCodeHelper() {
+        return super.hashCodeHelper()
+                .addFields(this.title, this.text, this.detail, this.footnote, this.actions);
     }
 
     @Override

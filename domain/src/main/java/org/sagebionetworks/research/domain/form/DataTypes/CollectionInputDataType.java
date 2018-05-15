@@ -40,6 +40,7 @@ import android.support.annotation.StringDef;
 import com.google.common.base.Objects;
 
 import org.sagebionetworks.research.domain.form.DataTypes.BaseInputDataType.BaseType;
+import org.sagebionetworks.research.domain.interfaces.HashCodeHelper;
 
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
@@ -62,17 +63,20 @@ public class CollectionInputDataType extends InputDataType {
      * Default initializer for gson.
      */
     public CollectionInputDataType() {
+        super();
         this.collectionType = null;
         this.baseType = null;
     }
 
     public CollectionInputDataType(@CollectionType @NonNull final String collectionType,
             @BaseType @Nullable final String baseType) {
+        super();
         this.collectionType = collectionType;
         this.baseType = baseType;
     }
 
     public CollectionInputDataType(@CollectionType @NonNull final String collectionType) {
+        super();
         this.collectionType = collectionType;
         this.baseType = null;
     }
@@ -103,6 +107,12 @@ public class CollectionInputDataType extends InputDataType {
 
         Set<String> ALL = new HashSet<String>(Arrays.asList(
                 new String[]{SINGLE_CHOICE, MULTIPLE_CHOICE, MULTIPLE_COMPONENT}));
+    }
+
+    @Override
+    protected HashCodeHelper hashCodeHelper() {
+        return super.hashCodeHelper()
+                .addFields(this.collectionType, this.baseType);
     }
 
     @Override

@@ -38,6 +38,7 @@ import android.support.annotation.Nullable;
 import com.google.common.base.MoreObjects.ToStringHelper;
 import com.google.common.base.Objects;
 
+import org.sagebionetworks.research.domain.interfaces.HashCodeHelper;
 import org.sagebionetworks.research.domain.step.ui.ActiveUIStep;
 import org.sagebionetworks.research.domain.step.ui.UIAction;
 
@@ -86,8 +87,9 @@ public class ActiveUIStepBase extends UIStepBase implements ActiveUIStep {
     }
 
     @Override
-    public int hashCode() {
-        return super.hashCode() + 5 * Objects.hashCode(this.duration, this.backgroundAudioRequired);
+    protected HashCodeHelper hashCodeHelper() {
+        return super.hashCodeHelper()
+                .addFields(backgroundAudioRequired, duration);
     }
 
     @Override

@@ -39,6 +39,7 @@ import com.google.common.base.MoreObjects.ToStringHelper;
 import com.google.common.base.Objects;
 
 import org.sagebionetworks.research.domain.form.InputField;
+import org.sagebionetworks.research.domain.interfaces.HashCodeHelper;
 import org.sagebionetworks.research.domain.step.ui.FormUIStep;
 import org.sagebionetworks.research.domain.step.ui.UIAction;
 
@@ -79,10 +80,10 @@ public class FormUIStepBase extends UIStepBase implements FormUIStep {
     }
 
     @Override
-    public int hashCode() {
-        return super.hashCode() + 5 * Objects.hashCode(this.inputFields);
+    protected HashCodeHelper hashCodeHelper() {
+        return super.hashCodeHelper()
+                .addFields(this.inputFields);
     }
-
 
     @Override
     protected boolean equalsHelper(Object o) {

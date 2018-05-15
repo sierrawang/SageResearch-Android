@@ -38,6 +38,8 @@ import com.google.common.base.Objects;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.ImmutableMap.Builder;
 
+import org.sagebionetworks.research.domain.interfaces.HashCodeHelper;
+
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.util.Arrays;
@@ -67,10 +69,12 @@ public class BaseInputDataType extends InputDataType {
      * Default initilizer for gson.
      */
     public BaseInputDataType() {
+        super();
         this.baseType = null;
     }
 
     public BaseInputDataType(@BaseType String baseType) {
+        super();
         this.baseType = baseType;
     }
 
@@ -92,13 +96,19 @@ public class BaseInputDataType extends InputDataType {
         String STRING = "string";
         String YEAR = "year";
 
-        Set<String> ALL = new HashSet<String>(Arrays.asList(
-                new String[]{BOOLEAN, DATE, DECIMAL, DURATION, FRACTION, INTEGER, STRING, YEAR}));
+        Set<String> ALL = new HashSet<String>(Arrays.asList(BOOLEAN, DATE, DECIMAL, DURATION, FRACTION, INTEGER, STRING,
+                YEAR));
     }
 
     @Override
     public String toString() {
         return this.baseType;
+    }
+
+    @Override
+    protected HashCodeHelper hashCodeHelper() {
+        return super.hashCodeHelper()
+                .addFields(this.baseType);
     }
 
     @Override

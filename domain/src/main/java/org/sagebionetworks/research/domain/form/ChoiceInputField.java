@@ -41,6 +41,7 @@ import com.google.common.collect.Range;
 
 import org.sagebionetworks.research.domain.form.DataTypes.InputDataType;
 import org.sagebionetworks.research.domain.form.TextField.TextFieldOptions;
+import org.sagebionetworks.research.domain.interfaces.HashCodeHelper;
 
 import java.util.List;
 
@@ -96,10 +97,12 @@ public class ChoiceInputField<E> extends InputFieldBase implements ChoiceOptions
         return this.defaultAnswer;
     }
 
-    /**
-     * Override the toStringHelper to also add choices and defaultAnswer to the toString
-     * @return A ToStringHelper that can be used to represent this object as a String.
-     */
+    @Override
+    protected HashCodeHelper hashCodeHelper() {
+        return super.hashCodeHelper()
+                .addFields(this.choices, this.defaultAnswer);
+    }
+
     @Override
     protected ToStringHelper toStringHelper() {
         return super.toStringHelper()
@@ -107,11 +110,6 @@ public class ChoiceInputField<E> extends InputFieldBase implements ChoiceOptions
                 .add("defaultAnswer", defaultAnswer);
     }
 
-    /**
-     * Override equalsHelper to also check equality on choices and defaultAnswer
-     * @param o The object to check for equality with.
-     * @return True if this object is equal to o false otherwise.
-     */
     @Override
     protected boolean equalsHelper(Object o) {
         ChoiceInputField<?> inputField = (ChoiceInputField<?>) o;

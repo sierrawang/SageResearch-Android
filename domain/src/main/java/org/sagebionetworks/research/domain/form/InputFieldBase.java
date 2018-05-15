@@ -42,6 +42,7 @@ import com.google.gson.annotations.SerializedName;
 
 import org.sagebionetworks.research.domain.form.DataTypes.InputDataType;
 import org.sagebionetworks.research.domain.form.TextField.TextFieldOptions;
+import org.sagebionetworks.research.domain.interfaces.HashCodeHelper;
 import org.sagebionetworks.research.domain.interfaces.ObjectHelper;
 
 import java.util.List;
@@ -76,6 +77,7 @@ public class InputFieldBase extends ObjectHelper implements InputField {
      * Default initializer for gson.
      */
     public InputFieldBase() {
+        super();
         this.identifier = null;
         this.prompt = null;
         this.promptDetail = null;
@@ -94,6 +96,7 @@ public class InputFieldBase extends ObjectHelper implements InputField {
             @Nullable final String formUIHint,
             @Nullable final TextFieldOptions textFieldOptions, @Nullable final Range range,
             @Nullable final List<SurveyRule> surveyRules) {
+        super();
         this.identifier = identifier;
         this.prompt = prompt;
         this.promptDetail = promptDetail;
@@ -169,6 +172,13 @@ public class InputFieldBase extends ObjectHelper implements InputField {
     @Override
     public String toString() {
         return this.toStringHelper().toString();
+    }
+
+    @Override
+    protected HashCodeHelper hashCodeHelper() {
+        return super.hashCodeHelper()
+                .addFields(this.identifier, this.prompt, this.promptDetail, this.placeholderText, this.isOptional,
+                        this.formDataType, this.formUIHint, this.textFieldOptions, this.range, this.surveyRules);
     }
 
     @Override

@@ -36,6 +36,18 @@ import com.google.common.base.MoreObjects;
 import com.google.common.base.MoreObjects.ToStringHelper;
 
 public abstract class ObjectHelper {
+    // It is assumed that all classes that extend object helper are immutable. This is done in order
+    // to make storing a hash code possible.
+    protected final int hashCode;
+
+    /**
+     * Initializes the hashCode for this object. Subclasses should make sure to call this from all of their
+     * constructors.
+     */
+    public ObjectHelper() {
+        this.hashCode = this.hashCodeHelper().hash();
+    }
+
     @Override
     public String toString() {
         return this.toStringHelper().toString();
@@ -71,4 +83,17 @@ public abstract class ObjectHelper {
      */
     protected abstract boolean equalsHelper(Object o);
 
+    /**
+     * Returns a HashCodeHelper that can be used to produce the hashCode for this object. Expected that
+     * subclasses will override to add their own fields to the hash code, as with equals and toString helpers.
+     * @return The HashCodeHelper that can be used to produce the hashCode for this object.
+     */
+    protected HashCodeHelper hashCodeHelper() {
+        return new HashCodeHelper();
+    }
+
+    @Override
+    public int hashCode() {
+        return this.hashCode;
+    }
 }

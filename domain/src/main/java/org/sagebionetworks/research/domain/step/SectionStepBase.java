@@ -38,6 +38,8 @@ import com.google.common.base.MoreObjects.ToStringHelper;
 import com.google.common.base.Objects;
 import com.google.common.collect.ImmutableList;
 
+import org.sagebionetworks.research.domain.interfaces.HashCodeHelper;
+
 import java.util.List;
 
 public class SectionStepBase extends StepBase implements SectionStep {
@@ -47,7 +49,7 @@ public class SectionStepBase extends StepBase implements SectionStep {
     private final ImmutableList<Step> steps;
 
     public SectionStepBase(@NonNull final String identifier, @NonNull final List<Step> steps) {
-        super(identifier, TYPE_KEY);
+        super(identifier);
         this.steps = ImmutableList.copyOf(steps);
     }
 
@@ -61,6 +63,12 @@ public class SectionStepBase extends StepBase implements SectionStep {
     @Override
     public ImmutableList<Step> getSteps() {
         return this.steps;
+    }
+
+    @Override
+    protected HashCodeHelper hashCodeHelper() {
+        return super.hashCodeHelper()
+                .addFields(this.steps);
     }
 
     @Override

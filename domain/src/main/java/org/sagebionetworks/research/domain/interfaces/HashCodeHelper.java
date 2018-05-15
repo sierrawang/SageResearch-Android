@@ -30,56 +30,47 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.sagebionetworks.research.domain.step;
+package org.sagebionetworks.research.domain.interfaces;
 
-import android.support.annotation.NonNull;
-
-import com.google.common.base.MoreObjects.ToStringHelper;
 import com.google.common.base.Objects;
 
-import org.sagebionetworks.research.domain.interfaces.HashCodeHelper;
-import org.sagebionetworks.research.domain.interfaces.ObjectHelper;
+import java.util.Arrays;
+import java.util.HashSet;
+import java.util.Set;
 
-import static com.google.common.base.Preconditions.checkNotNull;
+/**
+ * A class to help with the creation of a hashCode without having to worry about doing any
+ * math. User's simply add all the fields they want to be hashed and then call hash().
+ */
+public class HashCodeHelper {
+    // This set represents the fields of the object that the HashCodeHelper is producing the hash code for.
+    private Set<Object> fields;
 
-
-public abstract class StepBase extends ObjectHelper implements Step {
-    public static final String TYPE_KEY = "base";
-    @NonNull
-    private final String identifier;
-
-    public StepBase(@NonNull String identifier) {
-        super();
-        this.identifier = checkNotNull(identifier);
+    /**
+     * Creates a new HashCodeHelper with no fields.
+     */
+    public HashCodeHelper() {
+        this.fields = new HashSet<>();
     }
 
-    @Override
-    @NonNull
-    public String getIdentifier() {
-        return this.identifier;
+    /**
+     * Adds all the given fields to the fields that this HashCodeHelper is hashing.
+     * @param objects The objects to add as fields to this HashCodeHelper.
+     * @return This HashCodeHelper.
+     */
+    public HashCodeHelper addFields(Object... objects) {
+        this.fields.addAll(Arrays.asList(objects));
+        return this;
     }
 
-    @NonNull
-    @Override
-    public String getType() {
-        return TYPE_KEY;
+    /**
+     * The hashCode for this hashCodeHelper.
+     * @return The hashCode for this hashCodeHelper.
+     */
+    public int hash() {
+        // We convert the set to an array to ensure the hashCode method is getting the
+        // correct form.
+        return Objects.hashCode(this.fields.toArray());
     }
 
-    @Override
-    protected boolean equalsHelper(Object o) {
-        StepBase stepBase = (StepBase) o;
-        return Objects.equal(this.getIdentifier(), stepBase.getIdentifier());
-    }
-
-    @Override
-    protected ToStringHelper toStringHelper() {
-        return super.toStringHelper()
-                .add("identifier", identifier);
-    }
-
-    @Override
-    protected HashCodeHelper hashCodeHelper() {
-        return super.hashCodeHelper()
-                .addFields(this.identifier);
-    }
 }

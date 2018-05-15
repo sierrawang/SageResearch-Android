@@ -45,6 +45,7 @@ import com.google.gson.JsonElement;
 import com.google.gson.JsonParseException;
 import com.google.gson.annotations.SerializedName;
 
+import org.sagebionetworks.research.domain.interfaces.HashCodeHelper;
 import org.sagebionetworks.research.domain.interfaces.ObjectHelper;
 import org.sagebionetworks.research.domain.result.Result;
 
@@ -52,31 +53,6 @@ import java.lang.reflect.Type;
 
 
 public class ChoiceBase<E> extends ObjectHelper implements Choice<E> {
-    public static final JsonDeserializer<ChoiceBase<?>> JSON_DESERIALIZER =
-            new JsonDeserializer<ChoiceBase<?>>() {
-        @Override
-        public ChoiceBase deserialize(final JsonElement json, final Type typeOfT,
-        final JsonDeserializationContext context)
-                        throws JsonParseException {
-            if (json.isJsonObject()) {
-                // Suppose we are deserializing a Choice<T> for some type T. We create a TypeToken<ChoiceBase<T>>
-                // then we deserialize using this.
-                TypeToken token = createChoiceBaseTypeToken(typeOfT);
-                ChoiceBase<?> result = context.deserialize(json, token.getType());
-                if (result != null) {
-                    return result;
-                }
-            } else if (json.isJsonPrimitive()) {
-                // If the json is just a primitive value we assume that it is just a string and create a
-                // ChoiceBase from it.
-                String answerValue = context.deserialize(json, String.class);
-                return new ChoiceBase<>(answerValue);
-            }
-
-            throw new JsonParseException("Unknown format for Choice");
-        }
-    };
-
     @NonNull
     @SerializedName("value")
     private final E answerValue;
@@ -93,6 +69,7 @@ public class ChoiceBase<E> extends ObjectHelper implements Choice<E> {
      * Default initializer for gson.
      */
     public ChoiceBase() {
+        super();
         this.answerValue = null;
         this.text = null;
         this.detail = null;
@@ -102,6 +79,7 @@ public class ChoiceBase<E> extends ObjectHelper implements Choice<E> {
 
     public ChoiceBase(@NonNull final E answerValue, @NonNull final String text, @Nullable final String detail,
             @Nullable final String iconName, final boolean isExclusive) {
+        super();
         this.answerValue = answerValue;
         this.text = text;
         this.detail = detail;
@@ -110,6 +88,7 @@ public class ChoiceBase<E> extends ObjectHelper implements Choice<E> {
     }
 
     public ChoiceBase(@NonNull final E answerValue) {
+        super();
         this.answerValue = answerValue;
         this.text = answerValue.toString();
         this.detail = null;
@@ -153,6 +132,12 @@ public class ChoiceBase<E> extends ObjectHelper implements Choice<E> {
     }
 
     @Override
+    protected HashCodeHelper hashCodeHelper() {
+        return super.hashCodeHelper()
+                .addFields(this.answerValue, this.text, this.detail, this.iconName, this.isExclusive);
+    }
+
+    @Override
     protected ToStringHelper toStringHelper() {
         return super.toStringHelper()
                 .add("answerValue", this.getAnswerValue())
@@ -173,8 +158,6 @@ public class ChoiceBase<E> extends ObjectHelper implements Choice<E> {
     }
 
     // region Deserialization
-
-
     /**
      * Given a Type corresponding to some Choice<T> returns a TypeToken corresponding to
      * ChoiceBase<T>.
