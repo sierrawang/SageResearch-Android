@@ -47,7 +47,7 @@ import dagger.Provides;
 import dagger.multibindings.IntoMap;
 import javax.inject.Singleton;
 
-import static org.sagebionetworks.research.domain.inject.GsonModule.createPassthroughDeserializer;
+import static org.sagebionetworks.research.domain.inject.GsonModule.createPassThroughDeserializer;
 
 @Module(includes = {GsonModule.class})
 public abstract class TaskModule {
@@ -58,8 +58,8 @@ public abstract class TaskModule {
     @Provides
     @IntoMap
     @ClassKey(TaskInfo.class)
-    static JsonDeserializer provideFormUIStepDeserializer() {
-        return createPassthroughDeserializer(TaskInfoBase.class);
+    static JsonDeserializer<?> provideFormUIStepDeserializer() {
+        return createPassThroughDeserializer(TaskInfoBase.class);
     }
 
     @Singleton
@@ -68,10 +68,13 @@ public abstract class TaskModule {
         return new OrderedStepNavigator.Factory();
     }
 
+    /**
+     * @return The json Deserializer for a task.
+     */
     @Provides
     @IntoMap
     @ClassKey(Task.class)
-    static JsonDeserializer provideTaskDeserializer() {
-        return createPassthroughDeserializer(TaskBase.class);
+    static JsonDeserializer<?> provideTaskDeserializer() {
+        return createPassThroughDeserializer(TaskBase.class);
     }
 }

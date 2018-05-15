@@ -34,13 +34,14 @@ package org.sagebionetworks.research.domain.step;
 
 import com.google.gson.Gson;
 
-import org.sagebionetworks.research.domain.inject.StepModule;
 import org.sagebionetworks.research.domain.inject.GsonModule;
+import org.sagebionetworks.research.domain.inject.InputFieldsModule;
+import org.sagebionetworks.research.domain.inject.StepModule;
 
 import dagger.Component;
 import javax.inject.Singleton;
 
-@Component(modules = {StepModule.class, GsonModule.class})
+@Component(modules = {StepModule.class, InputFieldsModule.class, GsonModule.class})
 @Singleton
 public interface StepTestComponent {
     Gson gson();

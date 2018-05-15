@@ -32,6 +32,7 @@
 
 package org.sagebionetworks.research.domain.form;
 
+import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 
 import org.sagebionetworks.research.domain.result.Result;
@@ -44,19 +45,29 @@ public interface Choice<E> {
     /**
      * @return the answer for this choice.
      */
-    @Nullable
+    @NonNull
     E getAnswerValue();
 
     /**
      * @return the text to display for this choice.
      */
-    @Nullable
+    @NonNull
     String getText();
+
+    /**
+     * @return the text to display as the detail for this choice.
+     */
+    @Nullable
+    String getDetail();
+
+    @Nullable
+    String getIconName();
 
     /**
      * @return true if this choice is mutually exclusive (e.g. "none of the above"), false otherwise
      */
     boolean isExclusive();
+
 
     /**
      * Return true if the given result is equal to this choice.

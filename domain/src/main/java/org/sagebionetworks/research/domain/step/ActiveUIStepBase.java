@@ -37,8 +37,8 @@ import android.support.annotation.Nullable;
 
 import com.google.common.base.MoreObjects.ToStringHelper;
 import com.google.common.base.Objects;
-import com.google.common.collect.ImmutableMap;
 
+import org.sagebionetworks.research.domain.interfaces.HashCodeHelper;
 import org.sagebionetworks.research.domain.step.ui.ActiveUIStep;
 import org.sagebionetworks.research.domain.step.ui.UIAction;
 
@@ -87,50 +87,19 @@ public class ActiveUIStepBase extends UIStepBase implements ActiveUIStep {
     }
 
     @Override
-    public int hashCode() {
-        return super.hashCode() + 3 * Objects.hashCode(this.duration, this.backgroundAudioRequired);
+    protected HashCodeHelper hashCodeHelper() {
+        return super.hashCodeHelper()
+                .addFields(backgroundAudioRequired, duration);
     }
 
-    @Override
-    public boolean equals(final Object o) {
-        if (this == o) {
-            return true;
-        }
-        if (o == null || getClass() != o.getClass()) {
-            return false;
-        }
-        if (!super.equals(o)) {
-            return false;
-        }
-        return equalsHelper(o);
-    }
-
-    @Override
-    public String toString() {
-        return toStringHelper()
-                .toString();
-    }
-
-    /**
-     * Override equalsHelepr to also check the equality of Duration and isBackgroundAudioRequired.
-     *
-     * @param o
-     *         The object to check for equality with this.
-     * @return True if this is equal to other, false otherwise.
-     */
     @Override
     protected boolean equalsHelper(Object o) {
         ActiveUIStepBase activeStep = (ActiveUIStepBase) o;
         return super.equalsHelper(o) &&
                 Objects.equal(this.getDuration(), activeStep.getDuration()) &&
-                this.isBackgroundAudioRequired() == activeStep.isBackgroundAudioRequired();
+                Objects.equal(this.isBackgroundAudioRequired(), activeStep.isBackgroundAudioRequired());
     }
 
-    /**
-     * Override toStringHelper to add the duration and isBackgroundAudioRequired fields to the ToStringHelper.
-     *
-     * @return The ToStringHelper that can create a String representation of this.
-     */
     @Override
     protected ToStringHelper toStringHelper() {
         return super.toStringHelper()

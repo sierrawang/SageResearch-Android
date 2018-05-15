@@ -35,10 +35,7 @@ package org.sagebionetworks.research.domain.step.gson;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 
-import com.google.gson.Gson;
-
 import org.junit.*;
-import org.sagebionetworks.research.domain.inject.GsonModule;
 import org.sagebionetworks.research.domain.step.DaggerStepTestComponent;
 import org.sagebionetworks.research.domain.step.Step;
 import org.sagebionetworks.research.domain.step.StepTestComponent;
@@ -48,12 +45,11 @@ import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.Reader;
 import java.net.URL;
-import java.net.URLClassLoader;
 
 import static junit.framework.Assert.assertNotNull;
 
 public class IndividualStepGsonTest {
-    private StepTestComponent stepTestComponent;
+    protected StepTestComponent stepTestComponent;
 
     @Before
     public void setup() {

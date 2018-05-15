@@ -30,17 +30,47 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.sagebionetworks.research.domain.form;
+package org.sagebionetworks.research.domain.interfaces;
 
-import android.support.annotation.StringDef;
-import java.lang.annotation.Retention;
-import java.lang.annotation.RetentionPolicy;
+import com.google.common.base.Objects;
 
-@Retention(RetentionPolicy.SOURCE)
-@StringDef({InputDataType.BOOLEAN, InputDataType.DATE, InputDataType.DATE_COMPONENTS})
-public @interface InputDataType {
-    String BOOLEAN = "boolean";
-    String DATE = "date";
-    String DATE_COMPONENTS = "dateComponents";
-    // TODO: populate remaining types
+import java.util.Arrays;
+import java.util.HashSet;
+import java.util.Set;
+
+/**
+ * A class to help with the creation of a hashCode without having to worry about doing any
+ * math. User's simply add all the fields they want to be hashed and then call hash().
+ */
+public class HashCodeHelper {
+    // This set represents the fields of the object that the HashCodeHelper is producing the hash code for.
+    private Set<Object> fields;
+
+    /**
+     * Creates a new HashCodeHelper with no fields.
+     */
+    public HashCodeHelper() {
+        this.fields = new HashSet<>();
+    }
+
+    /**
+     * Adds all the given fields to the fields that this HashCodeHelper is hashing.
+     * @param objects The objects to add as fields to this HashCodeHelper.
+     * @return This HashCodeHelper.
+     */
+    public HashCodeHelper addFields(Object... objects) {
+        this.fields.addAll(Arrays.asList(objects));
+        return this;
+    }
+
+    /**
+     * The hashCode for this hashCodeHelper.
+     * @return The hashCode for this hashCodeHelper.
+     */
+    public int hash() {
+        // We convert the set to an array to ensure the hashCode method is getting the
+        // correct form.
+        return Objects.hashCode(this.fields.toArray());
+    }
+
 }

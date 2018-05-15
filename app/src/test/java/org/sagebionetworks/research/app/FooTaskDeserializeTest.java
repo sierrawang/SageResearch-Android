@@ -60,7 +60,7 @@ public class FooTaskDeserializeTest extends JsonDeserializationTestBase {
 
         List<Step> steps = task.getSteps();
 
-        assertEquals(10, steps.size());
+        assertEquals(7, steps.size());
 
         // TODO: test Step subclasses once implemented and assert remaining fields
         {
@@ -91,24 +91,8 @@ public class FooTaskDeserializeTest extends JsonDeserializationTestBase {
             assertEquals("selectMultiple", step4.getIdentifier());
         }
         {
-            assertThat(steps.get(4), instanceOf(FormUIStep.class));
-            FormUIStep step5 = (FormUIStep) steps.get(4);
-            assertEquals("step4", step5.getIdentifier());
-            assertEquals(4, step5.getInputFields().size());
-        }
-        {
-            assertThat(steps.get(5), instanceOf(FormUIStep.class));
-            FormUIStep step6 = (FormUIStep) steps.get(5);
-            assertEquals("step5", step6.getIdentifier());
-            assertEquals(4, step6.getInputFields().size());
-        }
-        {
-            Step step7 = steps.get(6);
-            assertEquals("year", step7.getIdentifier());
-        }
-        {
-            assertThat(steps.get(7), instanceOf(InstructionStep.class));
-            InstructionStep step8 = (InstructionStep) steps.get(7);
+            assertThat(steps.get(4), instanceOf(InstructionStep.class));
+            InstructionStep step8 = (InstructionStep) steps.get(4);
             assertEquals("step2", step8.getIdentifier());
             assertEquals(
                     ImmutableMap.builder()
@@ -119,12 +103,12 @@ public class FooTaskDeserializeTest extends JsonDeserializationTestBase {
                     step8.getActions());
         }
         {
-            Step step9 = steps.get(8);
+            Step step9 = steps.get(5);
             assertEquals("countdownStep", step9.getIdentifier());
         }
         {
-            assertThat(steps.get(9), instanceOf(ActiveUIStep.class));
-            ActiveUIStep step10 = (ActiveUIStep) steps.get(9);
+            assertThat(steps.get(6), instanceOf(ActiveUIStep.class));
+            ActiveUIStep step10 = (ActiveUIStep) steps.get(6);
             assertEquals("movingStep", step10.getIdentifier());
             assertEquals(Double.valueOf(20.0), step10.getDuration());
         }

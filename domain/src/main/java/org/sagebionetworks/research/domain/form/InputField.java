@@ -37,6 +37,7 @@ import android.support.annotation.Nullable;
 
 import com.google.common.collect.Range;
 
+import org.sagebionetworks.research.domain.form.DataTypes.InputDataType;
 import org.sagebionetworks.research.domain.form.TextField.TextFieldOptions;
 
 import java.util.List;
@@ -46,10 +47,12 @@ import java.util.List;
  * the UI should be displayed.
  */
 public interface InputField {
+    final String KEY_TYPE = "dataType";
+
     /**
      * @return identifier that is unique among form items within the step
      */
-    @NonNull
+    @Nullable
     String getIdentifier();
 
     /**
@@ -80,8 +83,7 @@ public interface InputField {
      * @return data type for this input field. The data type can have an associated ui hint
      */
     @NonNull
-    @InputDataType
-    String getFormDataType();
+    InputDataType getFormDataType();
 
     /**
      * @return UI hint for how the study would prefer that the input field is displayed to the user

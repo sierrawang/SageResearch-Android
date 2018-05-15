@@ -33,6 +33,7 @@
 package org.sagebionetworks.research.app.inject;
 
 import org.sagebionetworks.research.app.InstructionStep;
+import org.sagebionetworks.research.domain.inject.InputFieldsModule;
 import org.sagebionetworks.research.domain.inject.StepModule;
 import org.sagebionetworks.research.domain.inject.StepModule.StepClassKey;
 
@@ -43,17 +44,16 @@ import dagger.multibindings.IntoMap;
 /**
  * Add app-specific steps.
  */
-@Module(includes = {StepModule.class})
+@Module(includes = {InputFieldsModule.class, StepModule.class})
 public class AppStepModule {
     /**
-     * Specifies an implementing class for a step type.
-     *
-     * @return json type key for InstructionStep.class
+     * Returns ClassInfo for InstructionStep.class.
+     * @return ClassInfo for InstructionStep.class.
      */
     @Provides
     @IntoMap
     @StepClassKey(InstructionStep.class)
-    static String provideInstructionStepType() {
+    static String provideInstructionStepClassInfo() {
         return InstructionStep.TYPE_KEY;
     }
 }

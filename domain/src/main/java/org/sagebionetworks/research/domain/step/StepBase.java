@@ -32,59 +32,54 @@
 
 package org.sagebionetworks.research.domain.step;
 
-import static com.google.common.base.Preconditions.checkNotNull;
-
 import android.support.annotation.NonNull;
-import com.google.common.base.MoreObjects;
+
+import com.google.common.base.MoreObjects.ToStringHelper;
 import com.google.common.base.Objects;
 
+import org.sagebionetworks.research.domain.interfaces.HashCodeHelper;
+import org.sagebionetworks.research.domain.interfaces.ObjectHelper;
 
-public class StepBase implements Step {
+import static com.google.common.base.Preconditions.checkNotNull;
+
+
+public abstract class StepBase extends ObjectHelper implements Step {
+    public static final String TYPE_KEY = "base";
     @NonNull
     private final String identifier;
 
-    @NonNull
-    private final String type;
-
-    public StepBase(@NonNull String identifier, @NonNull String type) {
+    public StepBase(@NonNull String identifier) {
+        super();
         this.identifier = checkNotNull(identifier);
-        this.type = checkNotNull(type);
     }
 
     @Override
     @NonNull
     public String getIdentifier() {
-        return identifier;
+        return this.identifier;
     }
 
     @NonNull
     @Override
     public String getType() {
-        return type;
+        return TYPE_KEY;
     }
 
     @Override
-    public boolean equals(Object o) {
-        if (this == o) {
-            return true;
-        }
-        if (o == null || getClass() != o.getClass()) {
-            return false;
-        }
+    protected boolean equalsHelper(Object o) {
         StepBase stepBase = (StepBase) o;
-        return Objects.equal(identifier, stepBase.identifier) &&
-                Objects.equal(type, stepBase.type);
+        return Objects.equal(this.getIdentifier(), stepBase.getIdentifier());
     }
 
     @Override
-    public int hashCode() {
-        return Objects.hashCode(identifier);
+    protected ToStringHelper toStringHelper() {
+        return super.toStringHelper()
+                .add("identifier", identifier);
     }
 
     @Override
-    public String toString() {
-        return MoreObjects.toStringHelper(this)
-            .add("identifier", identifier)
-            .toString();
+    protected HashCodeHelper hashCodeHelper() {
+        return super.hashCodeHelper()
+                .addFields(this.identifier);
     }
 }

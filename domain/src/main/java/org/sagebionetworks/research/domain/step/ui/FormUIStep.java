@@ -42,6 +42,9 @@ import java.util.List;
  * Properties used in creating a form input.
  */
 public interface FormUIStep extends UIStep {
+    /**
+     * @return The list of InputFields for this form step.
+     */
     @NonNull
     List<InputField> getInputFields();
 }

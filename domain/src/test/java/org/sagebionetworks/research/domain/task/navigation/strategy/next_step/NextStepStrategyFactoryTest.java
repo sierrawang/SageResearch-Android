@@ -35,14 +35,11 @@ package org.sagebionetworks.research.domain.task.navigation.strategy.next_step;
 import org.junit.*;
 import org.sagebionetworks.research.domain.result.TaskResult;
 import org.sagebionetworks.research.domain.step.Step;
-import org.sagebionetworks.research.domain.step.StepBase;
+import org.sagebionetworks.research.domain.step.UIStepBase;
 import org.sagebionetworks.research.domain.task.navigation.strategy.StepNavigationStrategy.NextStepStrategy;
-import org.sagebionetworks.research.domain.task.navigation.strategy.next_step.NextStepStrategyFactory;
 
 import static org.junit.Assert.*;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 
 public class NextStepStrategyFactoryTest {
 
@@ -61,7 +58,7 @@ public class NextStepStrategyFactoryTest {
         NextStepStrategy nextStepStrategy = mock(NextStepStrategy.class);
         when(nextStepStrategy.getNextStepIdentifier(taskResult)).thenReturn(nextIdentifier);
 
-        Step step = new StepBase("identifier", "step");
+        Step step = new UIStepBase("identifier", null, null, null, null, null);
 
         NextStepStrategy nextStepStrategyResult = nextStepStrategyFactory.create(step, nextStepStrategy);
 
@@ -71,7 +68,7 @@ public class NextStepStrategyFactoryTest {
     }
     @Test
     public void createWithNextStepIdentifier() {
-        Step step = new StepBase("identifier", "step");
+        Step step = new UIStepBase("identifier", null, null, null, null, null);
         String nextIdentifier = "nextIdentifier";
 
         NextStepStrategy nextStepStrategy = nextStepStrategyFactory.create(step, nextIdentifier);

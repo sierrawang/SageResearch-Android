@@ -35,25 +35,34 @@ package org.sagebionetworks.research.domain.form;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 
+import com.google.common.base.MoreObjects.ToStringHelper;
+import com.google.common.base.Objects;
 import com.google.common.collect.Range;
+import com.google.gson.annotations.SerializedName;
 
+import org.sagebionetworks.research.domain.form.DataTypes.InputDataType;
 import org.sagebionetworks.research.domain.form.TextField.TextFieldOptions;
+import org.sagebionetworks.research.domain.interfaces.HashCodeHelper;
+import org.sagebionetworks.research.domain.interfaces.ObjectHelper;
 
 import java.util.List;
 
-public class InputFieldBase implements InputField {
-    @NonNull
+public class InputFieldBase extends ObjectHelper implements InputField {
+    @Nullable
     private final String identifier;
     @Nullable
     private final String prompt;
     @Nullable
     private final String promptDetail;
     @Nullable
+    @SerializedName("placeholder")
     private final String placeholderText;
+    @SerializedName("optional")
     private final boolean isOptional;
+    @SerializedName("dataType")
     @NonNull
-    @InputDataType
-    private final String formDataType;
+    private final InputDataType formDataType;
+    @SerializedName("uiHint")
     @Nullable
     @InputUIHint
     private final String formUIHint;
@@ -64,12 +73,30 @@ public class InputFieldBase implements InputField {
     @Nullable
     private final List<SurveyRule> surveyRules;
 
-    public InputFieldBase(@NonNull final String identifier, @Nullable final String prompt,
+    /**
+     * Default initializer for gson.
+     */
+    public InputFieldBase() {
+        super();
+        this.identifier = null;
+        this.prompt = null;
+        this.promptDetail = null;
+        this.placeholderText = null;
+        this.isOptional = false;
+        this.formDataType = null;
+        this.formUIHint = null;
+        this.textFieldOptions = null;
+        this.range = null;
+        this.surveyRules = null;
+    }
+
+    public InputFieldBase(@Nullable final String identifier, @Nullable final String prompt,
             @Nullable final String promptDetail,
-            @Nullable final String placeholderText, final boolean isOptional, @NonNull final String formDataType,
+            @Nullable final String placeholderText, final boolean isOptional, @NonNull final InputDataType formDataType,
             @Nullable final String formUIHint,
             @Nullable final TextFieldOptions textFieldOptions, @Nullable final Range range,
             @Nullable final List<SurveyRule> surveyRules) {
+        super();
         this.identifier = identifier;
         this.prompt = prompt;
         this.promptDetail = promptDetail;
@@ -82,7 +109,7 @@ public class InputFieldBase implements InputField {
         this.surveyRules = surveyRules;
     }
 
-    @NonNull
+    @Nullable
     @Override
     public String getIdentifier() {
         return this.identifier;
@@ -112,9 +139,8 @@ public class InputFieldBase implements InputField {
     }
 
     @NonNull
-    @InputDataType
     @Override
-    public String getFormDataType() {
+    public InputDataType getFormDataType() {
         return this.formDataType;
     }
 
@@ -141,5 +167,47 @@ public class InputFieldBase implements InputField {
     @Override
     public List<SurveyRule> getSurveyRules() {
         return this.surveyRules;
+    }
+
+    @Override
+    public String toString() {
+        return this.toStringHelper().toString();
+    }
+
+    @Override
+    protected HashCodeHelper hashCodeHelper() {
+        return super.hashCodeHelper()
+                .addFields(this.identifier, this.prompt, this.promptDetail, this.placeholderText, this.isOptional,
+                        this.formDataType, this.formUIHint, this.textFieldOptions, this.range, this.surveyRules);
+    }
+
+    @Override
+    protected ToStringHelper toStringHelper() {
+        return super.toStringHelper()
+                .add("identifier", identifier)
+                .add("prompt", prompt)
+                .add("promptDetail", promptDetail)
+                .add("placeholder", placeholderText)
+                .add("optional", isOptional)
+                .add("dataType", formDataType)
+                .add("uiHint", formUIHint)
+                .add("textFieldOptions", textFieldOptions)
+                .add("range", range)
+                .add("surveyRules", surveyRules);
+    }
+
+    @Override
+    protected boolean equalsHelper(Object o) {
+        InputFieldBase inputField = (InputFieldBase) o;
+        return Objects.equal(this.getIdentifier(), inputField.getIdentifier()) &&
+                Objects.equal(this.getPrompt(), inputField.getPrompt()) &&
+                Objects.equal(this.getPromptDetail(), inputField.getPromptDetail()) &&
+                Objects.equal(this.getPlaceholderText(), inputField.getPlaceholderText()) &&
+                Objects.equal(this.isOptional(), inputField.isOptional()) &&
+                Objects.equal(this.getFormDataType(), inputField.getFormDataType()) &&
+                Objects.equal(this.getFormUIHint(), inputField.getFormUIHint()) &&
+                Objects.equal(this.getTextFieldOptions(), inputField.getTextFieldOptions()) &&
+                Objects.equal(this.getRange(), inputField.getRange()) &&
+                Objects.equal(this.getSurveyRules(), inputField.getSurveyRules());
     }
 }

@@ -39,6 +39,7 @@ import com.google.common.base.MoreObjects.ToStringHelper;
 import com.google.common.base.Objects;
 
 import org.sagebionetworks.research.domain.form.InputField;
+import org.sagebionetworks.research.domain.interfaces.HashCodeHelper;
 import org.sagebionetworks.research.domain.step.ui.FormUIStep;
 import org.sagebionetworks.research.domain.step.ui.UIAction;
 
@@ -79,17 +80,11 @@ public class FormUIStepBase extends UIStepBase implements FormUIStep {
     }
 
     @Override
-    public int hashCode() {
-        return super.hashCode() + 3 * Objects.hashCode(this.inputFields);
+    protected HashCodeHelper hashCodeHelper() {
+        return super.hashCodeHelper()
+                .addFields(this.inputFields);
     }
 
-    /**
-     * Override equalsHelper to also compare the input fields.
-     *
-     * @param o
-     *         The object to check for equality with this.
-     * @return True if this is equal to o, false otherwise.
-     */
     @Override
     protected boolean equalsHelper(Object o) {
         FormUIStepBase formStep = (FormUIStepBase) o;
@@ -97,11 +92,6 @@ public class FormUIStepBase extends UIStepBase implements FormUIStep {
                 Objects.equal(this.getInputFields(), formStep.getInputFields());
     }
 
-    /**
-     * Override toStringHelper to also add the input fields.
-     *
-     * @return The ToStringHelper that can produce the toString for this.
-     */
     @Override
     protected ToStringHelper toStringHelper() {
         return super.toStringHelper()

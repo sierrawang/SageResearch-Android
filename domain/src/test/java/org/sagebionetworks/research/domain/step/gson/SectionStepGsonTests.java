@@ -68,5 +68,4 @@ public class SectionStepGsonTests extends IndividualStepGsonTest {
        Step substep2 = steps.get(1);
        assertTrue(substep2 instanceof ActiveUIStep);
    }
-
 }

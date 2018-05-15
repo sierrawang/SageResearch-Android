@@ -35,9 +35,13 @@ package org.sagebionetworks.research.domain.form;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 
+import com.google.common.base.MoreObjects.ToStringHelper;
+import com.google.common.base.Objects;
 import com.google.common.collect.Range;
 
+import org.sagebionetworks.research.domain.form.DataTypes.InputDataType;
 import org.sagebionetworks.research.domain.form.TextField.TextFieldOptions;
+import org.sagebionetworks.research.domain.interfaces.HashCodeHelper;
 
 import java.util.List;
 
@@ -52,11 +56,20 @@ public class ChoiceInputField<E> extends InputFieldBase implements ChoiceOptions
     @Nullable
     private final Choice<E> defaultAnswer;
 
-    public ChoiceInputField(@NonNull final String identifier,
+    /**
+     * Default intializer for gson.
+     */
+    public ChoiceInputField() {
+        super();
+        this.choices = null;
+        this.defaultAnswer = null;
+    }
+
+    public ChoiceInputField(@Nullable final String identifier,
             @Nullable final String prompt,
             @Nullable final String promptDetail,
             @Nullable final String placeholderText, final boolean isOptional,
-            @NonNull final String formDataType,
+            @NonNull final InputDataType formDataType,
             @Nullable final String formUIHint,
             @Nullable final TextFieldOptions textFieldOptions,
             @Nullable final Range range,
@@ -82,5 +95,26 @@ public class ChoiceInputField<E> extends InputFieldBase implements ChoiceOptions
     @Nullable
     public Choice<E> getDefaultAnswer() {
         return this.defaultAnswer;
+    }
+
+    @Override
+    protected HashCodeHelper hashCodeHelper() {
+        return super.hashCodeHelper()
+                .addFields(this.choices, this.defaultAnswer);
+    }
+
+    @Override
+    protected ToStringHelper toStringHelper() {
+        return super.toStringHelper()
+                .add("choices", choices)
+                .add("defaultAnswer", defaultAnswer);
+    }
+
+    @Override
+    protected boolean equalsHelper(Object o) {
+        ChoiceInputField<?> inputField = (ChoiceInputField<?>) o;
+        return super.equalsHelper(o) &&
+                Objects.equal(this.getChoices(), inputField.getChoices()) &&
+                Objects.equal(this.getDefaultAnswer(), inputField.getDefaultAnswer());
     }
 }

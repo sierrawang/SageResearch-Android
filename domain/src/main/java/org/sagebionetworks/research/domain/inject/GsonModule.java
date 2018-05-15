@@ -39,6 +39,7 @@ import com.google.gson.JsonDeserializationContext;
 import com.google.gson.JsonDeserializer;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonParseException;
+import com.google.gson.TypeAdapter;
 import com.google.gson.TypeAdapterFactory;
 
 import org.aaronhe.threetengson.ThreeTenGsonAdapter;
@@ -49,6 +50,7 @@ import org.slf4j.LoggerFactory;
 
 import java.lang.reflect.Type;
 import java.util.Map;
+import java.util.Map.Entry;
 import java.util.Set;
 
 import dagger.MapKey;
@@ -60,6 +62,9 @@ import javax.inject.Singleton;
 
 @Module
 public abstract class GsonModule {
+    /**
+     * Annotation marker for registering a custom deserializer for a class.
+     */
     @MapKey
     public @interface ClassKey {
         Class<?> value();
@@ -78,11 +83,12 @@ public abstract class GsonModule {
      *         type targeted for deserialization
      * @return deserializer which defers/delegates/redirects to subtype
      */
-    public static <T> JsonDeserializer<T> createPassthroughDeserializer(final Class<? extends T> subtype) {
+    public static <T> JsonDeserializer<T> createPassThroughDeserializer(final Class<T> subtype) {
+        // In the event that getting the subtype isn't a JsonDeserializer, or instantiating the subtype fails or returns null
+        // we fall through to returning a default deserializer
         return new JsonDeserializer<T>() {
             @Override
-            public T deserialize(final JsonElement json, final Type typeOfT,
-                    final JsonDeserializationContext context)
+            public T deserialize(final JsonElement json, final Type typeOfT, final JsonDeserializationContext context)
                     throws JsonParseException {
                 return context.deserialize(json, subtype);
             }
@@ -90,10 +96,10 @@ public abstract class GsonModule {
     }
 
     @Multibinds
-    abstract Map<Class<?>, JsonDeserializer> jsonDeserializerMap();
+    abstract Map<Class<?>, JsonDeserializer<?>> provideJsonDeserializerMap();
 
     @Multibinds
-    abstract Set<JsonDeserializer> provideJsonDeserializers();
+    abstract Set<TypeAdapter> provideJsonDeserializers();
 
     @Multibinds
     abstract Set<RuntimeTypeAdapterFactory> provideRuntimeTypeAdapterFactories();
@@ -106,12 +112,12 @@ public abstract class GsonModule {
 
     @Provides
     @Singleton
-    static Gson provideGson(Map<Class<?>, JsonDeserializer> jsonDeserializerMap,
+    static Gson provideGson(Map<Class<?>, JsonDeserializer<?>> jsonDeserializerMap,
             Set<TypeAdapterFactory> typeAdapterFactories,
             Set<RuntimeTypeAdapterFactory> runtimeTypeAdapterFactories) {
         GsonBuilder builder = new GsonBuilder();
 
-        for (Map.Entry<Class<?>, JsonDeserializer> entry : jsonDeserializerMap.entrySet()) {
+        for (Entry<Class<?>, JsonDeserializer<?>> entry : jsonDeserializerMap.entrySet()) {
             LOGGER.debug("Registering JsonDeserializer for: {}", entry.getKey());
             builder.registerTypeAdapter(entry.getKey(), entry.getValue());
         }

@@ -1,0 +1,16 @@
+{
+  "identifier": "step3",
+  "type": "form",
+  "title": "Step 3",
+  "inputFields" : [
+    {
+      "dataType": "multipleChoice",
+      "choices": [
+        "alpha",
+        "beta",
+        "charlie",
+        "delta"
+      ]
+    }
+  ]
+}
