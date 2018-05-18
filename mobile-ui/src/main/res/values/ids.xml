@@ -50,4 +50,20 @@
     <id name="rs2_step_container"/>
     <id name="rs2_current_step" />
     <id name="rs2_step_id" />
+
+    <!-- Id's for UIStepViewBinding -->
+    <id name="navigationHeaderView"/>
+    <id name="navigationFooterView"/>
+    <id name="navigationBodyView"/>
+    <id name="titleLabel"/>
+    <id name="textLabel"/>
+    <id name="detailLabel"/>
+    <id name="footnoteLabel"/>
+    <id name="progressLabel"/>
+    <id name="progressBar"/>
+    <id name="cancelButton"/>
+    <id name="nextButton"/>
+    <id name="backButton"/>
+    <id name="skipButton"/>
+
 </resources>
