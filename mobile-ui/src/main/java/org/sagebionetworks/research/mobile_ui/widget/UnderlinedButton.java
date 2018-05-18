@@ -30,29 +30,55 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.sagebionetworks.research.mobile_ui.show_step.view;
+package org.sagebionetworks.research.mobile_ui.widget;
 
-import android.support.annotation.NonNull;
+import android.content.Context;
+import android.content.res.TypedArray;
+import android.graphics.Canvas;
+import android.graphics.Paint;
+import android.support.v7.widget.AppCompatButton;
+import android.support.v7.widget.AppCompatTextView;
+import android.text.Spannable;
+import android.text.SpannableString;
+import android.text.SpannableStringBuilder;
+import android.text.style.UnderlineSpan;
+import android.util.AttributeSet;
 
 import org.sagebionetworks.research.domain.mobile_ui.R;
-import org.sagebionetworks.research.mobile_ui.widget.ActionButton;
-import org.sagebionetworks.research.presentation.ActionType;
 
-public class ShowActiveUIStepFragment extends ShowStepFragmentBase {
-    @Override
-    protected int getLayoutId() {
-        return R.layout.mpower2_overview_step;
+public class UnderlinedButton extends AppCompatTextView {
+    private final UnderlineSpan underlineSpan = new UnderlineSpan();
+    private SpannableStringBuilder textToDisplay = new SpannableStringBuilder();
+
+    public UnderlinedButton(final Context context) {
+        super(context);
+        this.commonInit();
     }
 
-    @Override
-    protected void handleActionButtonClick(@NonNull final ActionButton ab) {
-        int actionButtonId = ab.getId();
+    public UnderlinedButton(final Context context, final AttributeSet attrs) {
+        super(context, attrs);
+        this.commonInit();
+    }
 
-        String actionType = null;
-        if (actionButtonId == R.id.footer_action_forward) {
-            actionType = ActionType.FORWARD;
-        }
+    public UnderlinedButton(final Context context, final AttributeSet attrs, final int defStyleAttr) {
+        super(context, attrs, defStyleAttr);
+        this.commonInit();
+    }
 
-        showStepViewModel.handleAction(actionType);
+    private void commonInit() {
+        this.setBackgroundResource(R.color.transparent);
+        this.setPaintFlags(this.getPaintFlags() | Paint.UNDERLINE_TEXT_FLAG);
+    }
+
+    /**
+     * Override onDraw to underline the text.
+     * @param canvas The canvas to draw this widget on.
+     */
+    public void onDraw(Canvas canvas) {
+        this.textToDisplay.clear();
+        this.textToDisplay.append(this.getText());
+        this.textToDisplay.setSpan(underlineSpan, 0, this.textToDisplay.length(), 0);
+        this.setText(this.textToDisplay);
+        super.onDraw(canvas);
     }
 }

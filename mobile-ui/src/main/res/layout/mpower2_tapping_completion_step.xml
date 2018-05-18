@@ -33,48 +33,29 @@
 
 <android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-    <ScrollView
-        android:id="@+id/scrollView"
-        android:layout_width="0dp"
-        android:layout_height="0dp"
-        android:fadeScrollbars="false"
-        app:layout_constraintBottom_toTopOf="@+id/genericNavigationFooterView"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="1.0"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent">
-
-        <android.support.constraint.ConstraintLayout
-            android:id="@+id/contentView"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="vertical">
-
-            <org.sagebionetworks.research.mobile_ui.step_views.InstructionStepHeaderView
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_marginBottom="20dp"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent" />
-        </android.support.constraint.ConstraintLayout>
-    </ScrollView>
-
     <org.sagebionetworks.research.mobile_ui.step_views.GenericNavigationFooterView
-        android:id="@+id/genericNavigationFooterView"
+        android:id="@+id/genericNavigationFooterView4"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         app:isBackHidden="true"
         app:isReminderHidden="true"
+        app:isShadowHidden="true"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/scrollView"
         app:primaryButtonColor="@color/butterscotch500"
         app:primaryButtonTextColor="@color/appTextDark" />
+
+    <org.sagebionetworks.research.mobile_ui.step_views.TappingCompletionStepHeaderView
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        app:layout_constraintBottom_toTopOf="@+id/genericNavigationFooterView4"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
 
 </android.support.constraint.ConstraintLayout>

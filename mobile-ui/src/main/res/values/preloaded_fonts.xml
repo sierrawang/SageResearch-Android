@@ -32,12 +32,10 @@
   -->
 
 <resources>
-    <declare-styleable name="GenericNavigationFooterView">
-        <attr name="isShadowHidden" format="boolean"/>
-        <attr name="isBackHidden" format="boolean"/>
-        <attr name="isReminderHidden" format="boolean"/>
-        <attr name="primaryButtonColor" format="reference"/>
-        <attr name="secondaryButtonColor" format="reference"/>
-        <attr name="primaryButtonTextColor" format="reference"/>
-    </declare-styleable>
+    <array name="preloaded_fonts" translatable="false">
+        <item>@font/lato</item>
+        <item>@font/lato_black</item>
+        <item>@font/lato_bold</item>
+        <item>@font/lato_light</item>
+    </array>
 </resources>

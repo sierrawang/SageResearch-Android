@@ -30,29 +30,31 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.sagebionetworks.research.mobile_ui.show_step.view;
+package org.sagebionetworks.research.mobile_ui.step_views;
 
-import android.support.annotation.NonNull;
+import android.content.Context;
+import android.support.constraint.ConstraintLayout;
+import android.util.AttributeSet;
 
 import org.sagebionetworks.research.domain.mobile_ui.R;
-import org.sagebionetworks.research.mobile_ui.widget.ActionButton;
-import org.sagebionetworks.research.presentation.ActionType;
 
-public class ShowActiveUIStepFragment extends ShowStepFragmentBase {
-    @Override
-    protected int getLayoutId() {
-        return R.layout.mpower2_overview_step;
+public class OverviewStepHeaderView extends ConstraintLayout {
+    public OverviewStepHeaderView(final Context context) {
+        super(context);
+        this.commonInit();
     }
 
-    @Override
-    protected void handleActionButtonClick(@NonNull final ActionButton ab) {
-        int actionButtonId = ab.getId();
+    public OverviewStepHeaderView(final Context context, final AttributeSet attrs) {
+        super(context, attrs);
+        this.commonInit();
+    }
 
-        String actionType = null;
-        if (actionButtonId == R.id.footer_action_forward) {
-            actionType = ActionType.FORWARD;
-        }
+    public OverviewStepHeaderView(final Context context, final AttributeSet attrs, final int defStyleAttr) {
+        super(context, attrs, defStyleAttr);
+        this.commonInit();
+    }
 
-        showStepViewModel.handleAction(actionType);
+    private void commonInit() {
+        inflate(this.getContext(), R.layout.mpower2_overview_header_view, this);
     }
 }

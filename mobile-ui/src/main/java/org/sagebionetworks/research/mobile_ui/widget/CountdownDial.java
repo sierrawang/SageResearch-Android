@@ -30,29 +30,33 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.sagebionetworks.research.mobile_ui.show_step.view;
+package org.sagebionetworks.research.mobile_ui.widget;
 
-import android.support.annotation.NonNull;
+import android.content.Context;
+import android.graphics.drawable.Drawable;
+import android.util.AttributeSet;
+import android.widget.ProgressBar;
 
 import org.sagebionetworks.research.domain.mobile_ui.R;
-import org.sagebionetworks.research.mobile_ui.widget.ActionButton;
-import org.sagebionetworks.research.presentation.ActionType;
 
-public class ShowActiveUIStepFragment extends ShowStepFragmentBase {
-    @Override
-    protected int getLayoutId() {
-        return R.layout.mpower2_overview_step;
+public class CountdownDial extends ProgressBar {
+    public CountdownDial(final Context context) {
+        super(context, null, android.R.style.Widget_ProgressBar_Horizontal);
+        this.commonInit();
     }
 
-    @Override
-    protected void handleActionButtonClick(@NonNull final ActionButton ab) {
-        int actionButtonId = ab.getId();
+    public CountdownDial(final Context context, final AttributeSet attrs) {
+        super(context, attrs, android.R.style.Widget_ProgressBar_Horizontal);
+        this.commonInit();
+    }
 
-        String actionType = null;
-        if (actionButtonId == R.id.footer_action_forward) {
-            actionType = ActionType.FORWARD;
-        }
+    public CountdownDial(final Context context, final AttributeSet attrs, final int defStyleAttr) {
+        super(context, attrs, android.R.style.Widget_ProgressBar_Horizontal);
+        this.commonInit();
+    }
 
-        showStepViewModel.handleAction(actionType);
+    private void commonInit() {
+        // Todo: Set the correct progress drawable.
+        this.setBackgroundResource(R.drawable.countdown_dial_background);
     }
 }

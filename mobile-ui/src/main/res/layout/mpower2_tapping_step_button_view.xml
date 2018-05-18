@@ -36,45 +36,33 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-    <ScrollView
-        android:id="@+id/scrollView"
-        android:layout_width="0dp"
-        android:layout_height="0dp"
-        android:fadeScrollbars="false"
-        app:layout_constraintBottom_toTopOf="@+id/genericNavigationFooterView"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="1.0"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent">
-
-        <android.support.constraint.ConstraintLayout
-            android:id="@+id/contentView"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="vertical">
-
-            <org.sagebionetworks.research.mobile_ui.step_views.InstructionStepHeaderView
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_marginBottom="20dp"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent" />
-        </android.support.constraint.ConstraintLayout>
-    </ScrollView>
-
-    <org.sagebionetworks.research.mobile_ui.step_views.GenericNavigationFooterView
-        android:id="@+id/genericNavigationFooterView"
+    <org.sagebionetworks.research.mobile_ui.widget.TapButton
+        android:id="@+id/tapButton"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        app:isBackHidden="true"
-        app:isReminderHidden="true"
+        app:layout_constrainedHeight="true"
+        app:layout_constrainedWidth="true"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintDimensionRatio="H,1:1"
+        app:layout_constraintEnd_toStartOf="@+id/tapButton2"
+        app:layout_constraintHeight_max="120dp"
+        app:layout_constraintHeight_min="115dp"
+        app:layout_constraintHorizontal_bias="0.5"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/scrollView"
-        app:primaryButtonColor="@color/butterscotch500"
-        app:primaryButtonTextColor="@color/appTextDark" />
+        app:layout_constraintTop_toTopOf="parent" />
 
+    <org.sagebionetworks.research.mobile_ui.widget.TapButton
+        android:id="@+id/tapButton2"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        app:layout_constraintHeight_max="120dp"
+        app:layout_constraintHeight_min="100dp"
+        app:layout_constrainedWidth="true"
+        app:layout_constrainedHeight="true"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintDimensionRatio="H,1:1"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintStart_toEndOf="@+id/tapButton"
+        app:layout_constraintTop_toTopOf="parent" />
 </android.support.constraint.ConstraintLayout>

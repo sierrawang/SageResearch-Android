@@ -10,7 +10,28 @@
         </entry>
         <entry key="vectorWizard">
           <value>
-            <PersistentState />
+            <PersistentState>
+              <option name="children">
+                <map>
+                  <entry key="vectorAssetStep">
+                    <value>
+                      <PersistentState>
+                        <option name="values">
+                          <map>
+                            <entry key="assetSourceType" value="FILE" />
+                            <entry key="height" value="197" />
+                            <entry key="outputName" value="ic_finger_tapping_large_complete_on_color" />
+                            <entry key="overrideSize" value="true" />
+                            <entry key="sourceFile" value="C:\Users\rober\Downloads\Activities\Finger tapping-Large-Complete-On Color.svg" />
+                            <entry key="width" value="157" />
+                          </map>
+                        </option>
+                      </PersistentState>
+                    </value>
+                  </entry>
+                </map>
+              </option>
+            </PersistentState>
           </value>
         </entry>
       </map>

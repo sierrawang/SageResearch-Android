@@ -41,9 +41,9 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import org.sagebionetworks.research.domain.mobile_ui.R;
-import org.sagebionetworks.research.domain.step.Step;
-import org.sagebionetworks.research.domain.step.ui.ThemedUIStep;
-import org.sagebionetworks.research.domain.step.ui.UIStep;
+import org.sagebionetworks.research.domain.step.interfaces.Step;
+import org.sagebionetworks.research.domain.step.interfaces.ThemedUIStep;
+import org.sagebionetworks.research.domain.step.interfaces.UIStep;
 import org.sagebionetworks.research.domain.task.navigation.StepNavigator;
 
 

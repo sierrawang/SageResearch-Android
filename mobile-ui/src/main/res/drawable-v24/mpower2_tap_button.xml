@@ -31,13 +31,15 @@
   ~ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
   -->
 
-<resources>
-    <declare-styleable name="GenericNavigationFooterView">
-        <attr name="isShadowHidden" format="boolean"/>
-        <attr name="isBackHidden" format="boolean"/>
-        <attr name="isReminderHidden" format="boolean"/>
-        <attr name="primaryButtonColor" format="reference"/>
-        <attr name="secondaryButtonColor" format="reference"/>
-        <attr name="primaryButtonTextColor" format="reference"/>
-    </declare-styleable>
-</resources>
+<layer-list xmlns:android="http://schemas.android.com/apk/res/android">
+    <item android:id="@android:id/background">
+        <shape>
+            <stroke
+                android:width="5dp"
+                android:color="@color/appWhite"/>
+            <solid android:color="@color/butterscotch500"/>
+            <corners
+                android:radius="@dimen/tapButtonHeight"/>
+        </shape>
+    </item>
+</layer-list>

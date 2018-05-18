@@ -33,48 +33,64 @@
 
 <android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-    <ScrollView
-        android:id="@+id/scrollView"
+    <ImageView
+        android:id="@+id/imageView"
         android:layout_width="0dp"
         android:layout_height="0dp"
-        android:fadeScrollbars="false"
-        app:layout_constraintBottom_toTopOf="@+id/genericNavigationFooterView"
+        android:background="@drawable/completion_background_gradient"
+        android:scaleType="center"
+        app:layout_constraintBottom_toTopOf="@+id/textLabel"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="1.0"
+        app:layout_constraintHorizontal_bias="0.5"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent">
+        app:layout_constraintTop_toTopOf="parent"
+        app:srcCompat="@drawable/ic_tremor_large_complete_oncolor" />
 
-        <android.support.constraint.ConstraintLayout
-            android:id="@+id/contentView"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="vertical">
-
-            <org.sagebionetworks.research.mobile_ui.step_views.InstructionStepHeaderView
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_marginBottom="20dp"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent" />
-        </android.support.constraint.ConstraintLayout>
-    </ScrollView>
-
-    <org.sagebionetworks.research.mobile_ui.step_views.GenericNavigationFooterView
-        android:id="@+id/genericNavigationFooterView"
+    <TextView
+        android:id="@+id/textLabel"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        app:isBackHidden="true"
-        app:isReminderHidden="true"
+        android:layout_marginEnd="56dp"
+        android:layout_marginLeft="56dp"
+        android:layout_marginRight="56dp"
+        android:layout_marginStart="56dp"
+        android:layout_marginTop="44dp"
+        android:fontFamily="@font/lato"
+        android:gravity="center"
+        android:text="TextView"
+        android:textColor="@color/appTextDark"
+        android:textSize="30sp"
+        android:textStyle="bold"
+        app:layout_constraintBottom_toTopOf="@+id/textView"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/imageView"
+        tools:text="Great Job!" />
+
+    <TextView
+        android:id="@+id/textView"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="100dp"
+        android:layout_marginEnd="48dp"
+        android:layout_marginLeft="56dp"
+        android:layout_marginRight="56dp"
+        android:layout_marginStart="48dp"
+        android:layout_marginTop="24dp"
+        android:fontFamily="@font/lato"
+        android:gravity="center"
+        android:text="You just completed your 1st Walk and Balance activity."
+        android:textColor="@color/appTextDark"
+        android:textSize="24sp"
+        android:textStyle="bold"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.5"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/scrollView"
-        app:primaryButtonColor="@color/butterscotch500"
-        app:primaryButtonTextColor="@color/appTextDark" />
-
+        app:layout_constraintTop_toBottomOf="@+id/textLabel" />
 </android.support.constraint.ConstraintLayout>

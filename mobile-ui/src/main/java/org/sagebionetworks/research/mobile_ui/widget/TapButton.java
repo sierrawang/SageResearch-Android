@@ -30,29 +30,32 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.sagebionetworks.research.mobile_ui.show_step.view;
+package org.sagebionetworks.research.mobile_ui.widget;
 
-import android.support.annotation.NonNull;
+import android.content.Context;
+import android.support.v7.widget.AppCompatButton;
+import android.util.AttributeSet;
 
 import org.sagebionetworks.research.domain.mobile_ui.R;
-import org.sagebionetworks.research.mobile_ui.widget.ActionButton;
-import org.sagebionetworks.research.presentation.ActionType;
 
-public class ShowActiveUIStepFragment extends ShowStepFragmentBase {
-    @Override
-    protected int getLayoutId() {
-        return R.layout.mpower2_overview_step;
+public class TapButton extends AppCompatButton {
+    public TapButton(final Context context) {
+        super(context);
+        this.commonInit();
     }
 
-    @Override
-    protected void handleActionButtonClick(@NonNull final ActionButton ab) {
-        int actionButtonId = ab.getId();
+    public TapButton(final Context context, final AttributeSet attrs) {
+        super(context, attrs);
+        this.commonInit();
+    }
 
-        String actionType = null;
-        if (actionButtonId == R.id.footer_action_forward) {
-            actionType = ActionType.FORWARD;
-        }
+    public TapButton(final Context context, final AttributeSet attrs, final int defStyleAttr) {
+        super(context, attrs, defStyleAttr);
+        this.commonInit();
+    }
 
-        showStepViewModel.handleAction(actionType);
+    protected void commonInit() {
+        this.setBackgroundResource(R.drawable.mpower2_tap_button);
+        this.setText(R.string.tap_button_text);
     }
 }

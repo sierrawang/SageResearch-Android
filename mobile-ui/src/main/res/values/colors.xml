@@ -65,10 +65,11 @@
     <color name="progressBarBackground">#251454</color>
     <color name="progressBarForeground">#B2A5D1</color>
 
-    <color name="rsdCompletionGradientLeft">#63D49E</color>
+    <color name="rsdCompletionGradientLeft">#91EDC1</color>
     <color name="rsdCompletionGradientRight">#63D49E</color>
 
     <color name="colorPrimary">#3F51B5</color>
     <color name="colorPrimaryDark">#303F9F</color>
     <color name="colorAccent">#FF4081</color>
+    <color name="transparent">#00000000</color>
 </resources>

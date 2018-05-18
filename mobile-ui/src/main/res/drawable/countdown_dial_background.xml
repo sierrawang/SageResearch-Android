@@ -31,13 +31,19 @@
   ~ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
   -->
 
-<resources>
-    <declare-styleable name="GenericNavigationFooterView">
-        <attr name="isShadowHidden" format="boolean"/>
-        <attr name="isBackHidden" format="boolean"/>
-        <attr name="isReminderHidden" format="boolean"/>
-        <attr name="primaryButtonColor" format="reference"/>
-        <attr name="secondaryButtonColor" format="reference"/>
-        <attr name="primaryButtonTextColor" format="reference"/>
-    </declare-styleable>
-</resources>
+<layer-list xmlns:android="http://schemas.android.com/apk/res/android">
+    <item>
+        <shape android:shape="oval">
+            <solid android:color="@color/royal500"/>
+        </shape>
+    </item>
+    <item>
+        <shape
+            android:shape="ring"
+            android:innerRadiusRatio="@dimen/countdownDialInnerRadiusRatio"
+            android:thicknessRatio="@dimen/countdownDialThicknessRatio"
+            android:useLevel="false">
+            <solid android:color="@color/appWhite"/>
+        </shape>
+    </item>
+</layer-list>

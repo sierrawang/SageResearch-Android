@@ -31,13 +31,19 @@
   ~ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
   -->
 
-<layer-list xmlns:android="http://schemas.android.com/apk/res/android">
-    <item android:id="@android:id/background">
-        <shape>
-            <solid
-                android:color="@color/butterscotch500"/>
-                <corners
-                    android:radius="@dimen/nextButtonHeight"/>
-        </shape>
-    </item>
-</layer-list>
+<rotate xmlns:android="http://schemas.android.com/apk/res/android"
+    android:fromDegrees="-90"
+    android:toDegrees="-90">
+    <shape
+        android:shape="ring"
+        android:thicknessRatio="@dimen/countdownDialThicknessRatio"
+        android:innerRadiusRatio="@dimen/countdownDialInnerRadiusRatio"
+        android:useLevel="true">
+        <gradient
+            android:centerY=".5"
+            android:startColor="@color/progressBarForeground"
+            android:endColor="@color/progressBarForeground"
+            android:type="sweep"
+            android:useLevel="false"/>
+    </shape>
+</rotate>

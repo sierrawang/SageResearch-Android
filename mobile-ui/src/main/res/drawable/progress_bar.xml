@@ -31,8 +31,7 @@
   ~ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
   -->
 
-<layer-list xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:xsl="http://schemas.android.com/tools">
+<layer-list xmlns:android="http://schemas.android.com/apk/res/android">
     <!-- Define the background properties like color etc -->
     <item android:id="@android:id/background">
         <shape>

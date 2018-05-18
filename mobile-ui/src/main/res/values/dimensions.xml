@@ -35,4 +35,11 @@
     <dimen name="progressBarHeight">10dp</dimen>
     <dimen name="nextButtonHeight">52dp</dimen>
     <dimen name="scrollShadowHeight">5dp</dimen>
+    <!-- The next 2 dimensions ensure that the countdown dial always exactly fills it's containing view, provided
+    that the containing view is a square the countdown dial is originally 250px and the thickness is 10px.
+    This gives a ratio of 25:1, it's innerRadius is 115 which gives a ratio of 250:115 -->
+    <dimen name="countdownDialThicknessRatio">25</dimen>
+    <dimen name="countdownDialInnerRadiusRatio">2.1739</dimen>
+    <!-- This dimension is purposefully larger than the tap button will ever get -->
+    <dimen name="tapButtonHeight">1000dp</dimen>
 </resources>

@@ -33,48 +33,75 @@
 
 <android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    android:background="@color/royal600">
 
-    <ScrollView
-        android:id="@+id/scrollView"
+    <ImageView
+        android:id="@+id/imageView2"
         android:layout_width="0dp"
         android:layout_height="0dp"
-        android:fadeScrollbars="false"
-        app:layout_constraintBottom_toTopOf="@+id/genericNavigationFooterView"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="1.0"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent">
-
-        <android.support.constraint.ConstraintLayout
-            android:id="@+id/contentView"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="vertical">
-
-            <org.sagebionetworks.research.mobile_ui.step_views.InstructionStepHeaderView
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_marginBottom="20dp"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent" />
-        </android.support.constraint.ConstraintLayout>
-    </ScrollView>
-
-    <org.sagebionetworks.research.mobile_ui.step_views.GenericNavigationFooterView
-        android:id="@+id/genericNavigationFooterView"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        app:isBackHidden="true"
-        app:isReminderHidden="true"
+        android:alpha=".3"
+        android:scaleType="centerCrop"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/scrollView"
-        app:primaryButtonColor="@color/butterscotch500"
-        app:primaryButtonTextColor="@color/appTextDark" />
+        app:layout_constraintTop_toTopOf="parent"
+        app:srcCompat="@drawable/f_turning1" />
 
+    <org.sagebionetworks.research.mobile_ui.step_views.GenericNavigationFooterView
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:background="@android:color/transparent"
+        app:isBackHidden="true"
+        app:isShadowHidden="true"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:primaryButtonColor="@color/appWhite"
+        app:primaryButtonTextColor="@color/appTextDark"
+        app:secondaryButtonColor="@color/appWhite" />
+
+    <ImageButton
+        android:id="@+id/imageButton"
+        android:layout_width="30dp"
+        android:layout_height="0dp"
+        android:layout_marginLeft="20dp"
+        android:layout_marginTop="20dp"
+        android:background="@android:color/transparent"
+        android:scaleType="fitXY"
+        app:layout_constraintDimensionRatio="H,1:1"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:srcCompat="@drawable/cancel_button" />
+
+    <TextView
+        android:id="@+id/beginLabel"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:fontFamily="@font/lato"
+        android:text="Begin in..."
+        android:textColor="@color/appWhite"
+        android:textSize="24sp"
+        android:textStyle="bold"
+        app:layout_constraintBottom_toTopOf="@+id/countdownLabel"
+        app:layout_constraintEnd_toStartOf="@+id/imageView2"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintStart_toEndOf="@+id/imageView2" />
+
+    <TextView
+        android:id="@+id/countdownLabel"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:fontFamily="@font/lato_light"
+        android:gravity="center"
+        android:text="5"
+        android:textColor="@color/appWhite"
+        android:textSize="100sp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toStartOf="@+id/imageView2"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintStart_toEndOf="@+id/imageView2"
+        app:layout_constraintTop_toTopOf="parent" />
 </android.support.constraint.ConstraintLayout>

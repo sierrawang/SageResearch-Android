@@ -30,29 +30,37 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.sagebionetworks.research.mobile_ui.show_step.view;
+package org.sagebionetworks.research.mobile_ui.widget;
 
-import android.support.annotation.NonNull;
+import android.content.Context;
+import android.content.res.TypedArray;
+import android.graphics.PorterDuff.Mode;
+import android.util.AttributeSet;
+import android.support.v7.widget.AppCompatButton;
 
 import org.sagebionetworks.research.domain.mobile_ui.R;
-import org.sagebionetworks.research.mobile_ui.widget.ActionButton;
-import org.sagebionetworks.research.presentation.ActionType;
 
-public class ShowActiveUIStepFragment extends ShowStepFragmentBase {
-    @Override
-    protected int getLayoutId() {
-        return R.layout.mpower2_overview_step;
+public class RoundedButton extends AppCompatButton {
+    public RoundedButton(final Context context) {
+        super(context);
+        commonInit(null);
     }
 
-    @Override
-    protected void handleActionButtonClick(@NonNull final ActionButton ab) {
-        int actionButtonId = ab.getId();
+    public RoundedButton(final Context context, final AttributeSet attrs) {
+        super(context, attrs);
+        commonInit(attrs);
+    }
 
-        String actionType = null;
-        if (actionButtonId == R.id.footer_action_forward) {
-            actionType = ActionType.FORWARD;
-        }
+    public RoundedButton(final Context context, final AttributeSet attrs, final int defStyleAttr) {
+        super(context, attrs, defStyleAttr);
+        commonInit(attrs);
+    }
 
-        showStepViewModel.handleAction(actionType);
+    private void commonInit(final AttributeSet attrs) {
+        TypedArray a = this.getContext().obtainStyledAttributes(attrs, R.styleable.RoundedButton);
+        int colorRes = a.getInt(R.styleable.RoundedButton_backgroundColor, R.color.butterscotch500);
+        a.recycle();
+        this.setBackgroundResource(R.drawable.rounded_button);
+        this.getBackground().setColorFilter(colorRes, Mode.SRC_IN);
     }
 }

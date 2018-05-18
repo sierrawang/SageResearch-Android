@@ -33,62 +33,9 @@
 
 <android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/layout"
     android:layout_width="match_parent"
     android:layout_height="wrap_content">
-
-    <Button
-        android:id="@+id/footer_action_forward"
-        android:layout_width="0dp"
-        android:layout_height="@dimen/nextButtonHeight"
-        android:layout_marginBottom="12dp"
-        android:layout_marginEnd="28dp"
-        android:layout_marginLeft="28dp"
-        android:layout_marginRight="28dp"
-        android:layout_marginTop="20dp"
-        android:background="@drawable/next_button"
-        android:text="@string/rs2_navigation_action_forward"
-        app:layout_constraintBottom_toTopOf="@+id/footer_action_reminder"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.5"
-        app:layout_constraintStart_toEndOf="@+id/footer_action_backward"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_chainStyle="packed" />
-
-    <Button
-        android:id="@+id/footer_action_reminder"
-        android:layout_width="wrap_content"
-        android:layout_height="30dp"
-        android:layout_marginBottom="20dp"
-        android:layout_marginTop="20dp"
-        android:background="@android:color/transparent"
-        android:freezesText="false"
-        android:text="@string/rs2_remind_later"
-        android:textColor="@color/royal500"
-        android:visibility="visible"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.5"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/footer_action_forward" />
-
-    <Button
-        android:id="@+id/footer_action_backward"
-        android:layout_width="144dp"
-        android:layout_height="0dp"
-        android:layout_marginLeft="28dp"
-        android:layout_marginRight="28dp"
-        android:layout_marginStart="28dp"
-        android:width="0dp"
-        android:background="@drawable/next_button"
-        android:text="@string/rs2_navigation_action_backward"
-        app:layout_constraintBottom_toBottomOf="@+id/footer_action_forward"
-        app:layout_constraintEnd_toStartOf="@+id/footer_action_forward"
-        app:layout_constraintHorizontal_bias="0.5"
-        app:layout_constraintHorizontal_chainStyle="spread_inside"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="@+id/footer_action_forward" />
 
     <View
         android:id="@+id/footer_shadow"
@@ -98,5 +45,63 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
+
+    <org.sagebionetworks.research.mobile_ui.widget.RoundedButton
+        android:id="@+id/footer_action_forward"
+        android:layout_width="0dp"
+        android:layout_height="@dimen/nextButtonHeight"
+        android:layout_marginBottom="12dp"
+        android:layout_marginEnd="28dp"
+        android:layout_marginLeft="28dp"
+        android:layout_marginRight="28dp"
+        android:layout_marginStart="28dp"
+        android:layout_marginTop="12dp"
+        android:fontFamily="@font/lato"
+        android:text="@string/rs2_navigation_action_forward"
+        android:textAllCaps="false"
+        android:textSize="20sp"
+        android:textStyle="bold"
+        app:layout_constraintBottom_toTopOf="@+id/footer_action_reminder"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintStart_toEndOf="@+id/footer_action_backward"
+        app:layout_constraintTop_toBottomOf="@+id/footer_shadow" />
+
+    <org.sagebionetworks.research.mobile_ui.widget.RoundedButton
+        android:id="@+id/footer_action_backward"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:layout_marginEnd="28dp"
+        android:layout_marginLeft="28dp"
+        android:layout_marginRight="28dp"
+        android:layout_marginStart="28dp"
+        android:fontFamily="@font/lato"
+        android:text="@string/rs2_navigation_action_backward"
+        android:textAllCaps="false"
+        android:textSize="20sp"
+        android:textStyle="bold"
+        app:layout_constraintBottom_toBottomOf="@+id/footer_action_forward"
+        app:layout_constraintEnd_toStartOf="@+id/footer_action_forward"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/footer_action_forward" />
+
+    <org.sagebionetworks.research.mobile_ui.widget.UnderlinedButton
+        android:id="@+id/footer_action_reminder"
+        android:layout_width="wrap_content"
+        android:layout_height="44dp"
+        android:layout_marginBottom="12dp"
+        android:layout_marginTop="20dp"
+        android:fontFamily="@font/lato"
+        android:text="@string/rs2_navigation_action_lean_more"
+        android:textAllCaps="false"
+        android:textSize="20sp"
+        android:textStyle="bold"
+        app:fontFamily="@font/lato"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/footer_action_forward" />
 
 </android.support.constraint.ConstraintLayout>
