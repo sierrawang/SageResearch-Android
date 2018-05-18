@@ -72,30 +72,6 @@ public interface TaskRepository {
     @NonNull
     Maybe<TaskResult> getTaskResult(UUID taskRunUUID);
 
-    /**
-     * @param asset The name of the asset to get.
-     * @return An InputReader corresponding to the Task asset with the given name.
-     * @throws IOException If the asset of the given name cannot be opened.
-     */
-    @NonNull
-    InputStreamReader getJsonTaskAsset(String asset) throws IOException;
-
-    /**
-     * @param asset The name of the asset to get.
-     * @return An InputReader corresponding to the TaskInfo asset with the given name.
-     * @throws IOException If the asset of the given name cannot be opened.
-     */
-    @NonNull
-    InputStreamReader getJsonTaskInfoAsset(String asset) throws IOException;
-
-    /**
-     * @param asset The name of the asset to get.
-     * @return An InputReader corresponding to the Transformer asset with the given name.
-     * @throws IOException If the asset of the given name cannot be opened.
-     */
-    @NonNull
-    InputStreamReader getJsonTransformerAsset(String asset) throws IOException;
-
     @NonNull
     @CheckResult
     Completable setTaskResult(TaskResult taskResult);

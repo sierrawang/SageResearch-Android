@@ -131,24 +131,38 @@ public class ResourceTaskRepository implements TaskRepository {
         return new InputStreamReader(assetManager.open(assetPath));
     }
 
+    /**
+     * Returns and InputStreamReader corresponding to the given task asset.
+     * @param assetName The name of the asset to get.
+     * @return An InputStreamReader corresponding to the Task asset with the given name.
+     * @throws IOException If the asset of the given name cannot be opened.
+     */
     @NonNull
-    @Override
     public InputStreamReader getJsonTaskAsset(String assetName) throws IOException {
         String assetPath = "task/" + assetName + ".json";
         return this.getAsset(assetPath);
     }
 
-
+    /**
+     * Returns an InputStreamReader that corresponds to the given taskInfo asset.
+     * @param assetName The name of the asset to get.
+     * @return An InputStreamReader corresponding to the taskInfo asset with the given name.
+     * @throws IOException If the asset of the given name cannot be opened.
+     */
     @NonNull
-    @Override
     public InputStreamReader getJsonTaskInfoAsset(String assetName) throws IOException {
         String assetPath = "task/info/" + assetName + ".json";
         return this.getAsset(assetPath);
 
     }
 
+    /**
+     * Returns an InputStreamReader that corresponds to the given Transformer asset.
+     * @param assetName The name of the asset to get.
+     * @return An InputStreamReader corresponding to the Transformer asset with the given name.
+     * @throws IOException If the asset of the given name cannot be opened.
+     */
     @NonNull
-    @Override
     public InputStreamReader getJsonTransformerAsset(String assetName) throws IOException {
         String assetPath = "task/transformer/" + assetName;
         return this.getAsset(assetPath);
