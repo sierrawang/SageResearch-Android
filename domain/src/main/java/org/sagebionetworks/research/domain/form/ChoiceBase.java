@@ -185,6 +185,9 @@ public class ChoiceBase<E> extends ObjectHelper implements Choice<E> {
                     final JsonDeserializationContext context)
                     throws JsonParseException {
                 if (json.isJsonObject()) {
+                    // This behavior is a workaround for calling context.deserialize(json, ChoiceBase<T>). We
+                    // are writing this out long form to avoid the infinite recursion that occurs when a
+                    // JsonDeserializer<T> calls context.deserialize(json, T).
                     JsonObject object = json.getAsJsonObject();
                     Type innerType = getInnerType(typeOfT);
                     JsonElement valueElement = object.get("value");
