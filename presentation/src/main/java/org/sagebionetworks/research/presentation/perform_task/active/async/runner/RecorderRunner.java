@@ -35,7 +35,7 @@ package org.sagebionetworks.research.presentation.perform_task.active.async.runn
 import android.support.annotation.CallSuper;
 
 import org.sagebionetworks.research.domain.async.Recorder;
-import org.sagebionetworks.research.domain.step.Step;
+import org.sagebionetworks.research.domain.step.interfaces.Step;
 
 /**
  * Created by liujoshua on 10/11/2017.

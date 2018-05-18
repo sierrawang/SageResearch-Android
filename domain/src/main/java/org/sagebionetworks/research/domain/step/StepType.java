@@ -39,6 +39,7 @@ import java.lang.annotation.RetentionPolicy;
 
 @StringDef(value = {
         StepType.ACTIVE,
+        StepType.BASE,
         StepType.COMPLETION,
         StepType.COUNTDOWN,
         StepType.FORM,
@@ -50,11 +51,13 @@ import java.lang.annotation.RetentionPolicy;
         StepType.SECTION,
         StepType.SELECTION,
         StepType.TRANSFORM,
-        StepType.TASK_INFO
+        StepType.TASK_INFO,
+        StepType.UI
 })
 @Retention(RetentionPolicy.SOURCE)
 public @interface StepType {
     String ACTIVE = "active";
+    String BASE = "base";
     String COMPLETION = "completion";
     String COUNTDOWN = "countdown";
     String FORM = "form";
@@ -67,5 +70,6 @@ public @interface StepType {
     String SELECTION = "selection";
     String TRANSFORM = "transform";
     String TASK_INFO = "taskInfo";
+    String UI = "ui";
 }
 

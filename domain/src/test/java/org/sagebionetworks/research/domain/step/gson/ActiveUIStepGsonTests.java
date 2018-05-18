@@ -33,9 +33,9 @@
 package org.sagebionetworks.research.domain.step.gson;
 
 import org.junit.*;
-import org.sagebionetworks.research.domain.step.ActiveUIStepBase;
-import org.sagebionetworks.research.domain.step.Step;
-import org.sagebionetworks.research.domain.step.ui.ActiveUIStep;
+import org.sagebionetworks.research.domain.step.implementations.ActiveUIStepBase;
+import org.sagebionetworks.research.domain.step.interfaces.ActiveUIStep;
+import org.sagebionetworks.research.domain.step.interfaces.Step;
 import org.sagebionetworks.research.domain.step.ui.UIAction;
 
 import java.util.Collections;

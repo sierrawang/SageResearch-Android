@@ -34,7 +34,7 @@ package org.sagebionetworks.research.domain.form;
 
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
-import org.sagebionetworks.research.domain.result.Result;
+import org.sagebionetworks.research.domain.result.interfaces.Result;
 
 
 public interface FormItem {

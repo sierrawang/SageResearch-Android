@@ -37,7 +37,7 @@ import android.support.annotation.NonNull;
 import com.google.common.collect.ImmutableList;
 
 import org.sagebionetworks.research.domain.async.AsyncAction;
-import org.sagebionetworks.research.domain.step.Step;
+import org.sagebionetworks.research.domain.step.interfaces.Step;
 
 import java.util.List;
 

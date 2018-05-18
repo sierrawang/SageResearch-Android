@@ -32,8 +32,8 @@
 
 package org.sagebionetworks.research.domain.task.navigation.strategy
 
-import org.sagebionetworks.research.domain.result.TaskResult
-import org.sagebionetworks.research.domain.step.Step
+import org.sagebionetworks.research.domain.result.interfaces.TaskResult
+import org.sagebionetworks.research.domain.step.interfaces.Step
 
 /**
  * A conditional rule is appended to the navigable task to check a secondary source for

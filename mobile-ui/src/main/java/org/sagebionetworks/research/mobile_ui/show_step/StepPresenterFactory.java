@@ -32,7 +32,7 @@
 
 package org.sagebionetworks.research.mobile_ui.show_step;
 
-import org.sagebionetworks.research.domain.step.Step;
+import org.sagebionetworks.research.domain.step.interfaces.Step;
 import org.sagebionetworks.research.presentation.perform_task.PerformTaskViewModel;
 
 import javax.inject.Inject;

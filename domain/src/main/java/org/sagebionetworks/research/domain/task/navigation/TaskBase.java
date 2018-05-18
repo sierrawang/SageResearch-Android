@@ -40,7 +40,7 @@ import com.google.gson.Gson;
 import com.google.gson.TypeAdapter;
 
 import org.sagebionetworks.research.domain.async.AsyncAction;
-import org.sagebionetworks.research.domain.step.Step;
+import org.sagebionetworks.research.domain.step.interfaces.Step;
 import org.sagebionetworks.research.domain.task.Task;
 
 import java.util.Collections;

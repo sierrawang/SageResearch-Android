@@ -35,7 +35,7 @@ package org.sagebionetworks.research.presentation.show_step;
 import android.arch.lifecycle.LiveData;
 import android.arch.lifecycle.MutableLiveData;
 
-import org.sagebionetworks.research.domain.result.Result;
+import org.sagebionetworks.research.domain.result.interfaces.Result;
 import org.sagebionetworks.research.presentation.ActionType;
 import org.sagebionetworks.research.presentation.model.StepView;
 import org.sagebionetworks.research.presentation.perform_task.PerformTaskViewModel;

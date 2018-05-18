@@ -36,10 +36,11 @@ import static com.google.common.base.Preconditions.checkNotNull;
 
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+
+import org.sagebionetworks.research.domain.step.interfaces.Step;
 import org.sagebionetworks.research.domain.task.navigation.strategy.StepNavigationStrategy.BackStepStrategy;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.sagebionetworks.research.domain.step.Step;
 
 /**
  * Created by liujoshua on 10/13/2017.

@@ -33,9 +33,9 @@
 package org.sagebionetworks.research.domain.step.gson;
 
 import org.junit.*;
-import org.sagebionetworks.research.domain.step.Step;
-import org.sagebionetworks.research.domain.step.TransformerStep;
-import org.sagebionetworks.research.domain.step.TransformerStepBase;
+import org.sagebionetworks.research.domain.step.implementations.TransformerStepBase;
+import org.sagebionetworks.research.domain.step.interfaces.Step;
+import org.sagebionetworks.research.domain.step.interfaces.TransformerStep;
 
 import static org.junit.Assert.*;
 
