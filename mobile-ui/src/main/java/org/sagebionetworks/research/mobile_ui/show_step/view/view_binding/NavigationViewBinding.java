@@ -32,13 +32,12 @@
 
 package org.sagebionetworks.research.mobile_ui.show_step.view.view_binding;
 
-import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
-import org.sagebionetworks.research.domain.mobile_ui.R2;
+import org.sagebionetworks.research.domain.mobile_ui.R2.id;
 
 import butterknife.BindView;
 import javax.annotation.Nullable;
@@ -65,7 +64,7 @@ public class NavigationViewBinding {
      * or icon that is associated with the step.
      */
     @Nullable
-    @BindView(R2.id.imageView)
+    @BindView(id.imageView)
     public ImageView imageView;
 
     /**
@@ -73,7 +72,7 @@ public class NavigationViewBinding {
      * title consisting of a brief description of what the step represents.
      **/
     @Nullable
-    @BindView(R2.id.titleLabel)
+    @BindView(id.titleLabel)
     public TextView titleLabel;
 
     /**
@@ -81,7 +80,7 @@ public class NavigationViewBinding {
      * content for the step in medium size font.
      */
     @Nullable
-    @BindView(R2.id.textLabel)
+    @BindView(id.textLabel)
     public TextView textLabel;
 
     /**
@@ -89,7 +88,7 @@ public class NavigationViewBinding {
      * information related to the information displayed on the textLabel.
      */
     @Nullable
-    @BindView(R2.id.detailLabel)
+    @BindView(id.detailLabel)
     public TextView detailLabel;
 
     /**
@@ -97,7 +96,7 @@ public class NavigationViewBinding {
      * footnote of the step that is being displayed.
      */
     @Nullable
-    @BindView(R2.id.footnoteLabel)
+    @BindView(id.footnoteLabel)
     public TextView footnoteLabel;
 
     /**
@@ -105,7 +104,7 @@ public class NavigationViewBinding {
      * indicating how much progress the user has made into the current active task (i.e. "STEP 1 OF 6").
      */
     @Nullable
-    @BindView(R2.id.progressLabel)
+    @BindView(id.progressLabel)
     public TextView progressLabel;
 
     /**
@@ -114,7 +113,7 @@ public class NavigationViewBinding {
      * to the string displayed on the progressLabel.
      */
     @Nullable
-    @BindView(R2.id.progressBar)
+    @BindView(id.progressBar)
     public ProgressBar progressBar;
 
     /**
@@ -122,7 +121,7 @@ public class NavigationViewBinding {
      * active task when pressed
      */
     @Nullable
-    @BindView(R2.id.cancelButton)
+    @BindView(id.cancelButton)
     public Button cancelButton;
 
     /**
@@ -130,7 +129,7 @@ public class NavigationViewBinding {
      * step in the active task, or completes the task when pressed.
      */
     @Nullable
-    @BindView(R2.id.nextButton)
+    @BindView(id.nextButton)
     public Button nextButton;
 
     /**
@@ -138,7 +137,7 @@ public class NavigationViewBinding {
      * navigate to the previous step when pressed.
      */
     @Nullable
-    @BindView(R2.id.backButton)
+    @BindView(id.backButton)
     public Button backButton;
 
     /**
@@ -146,6 +145,6 @@ public class NavigationViewBinding {
      * step to be skipped when pressed.
      */
     @Nullable
-    @BindView(R2.id.skipButton)
+    @BindView(id.skipButton)
     public Button skipButton;
 }
