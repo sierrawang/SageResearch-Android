@@ -66,6 +66,14 @@
     <id name="backButton"/>
     <id name="skipButton"/>
 
+    <!-- Id's for OverviewStepViewBinding -->
+    <id name="leftIconImageView"/>
+    <id name="centerIconImageView"/>
+    <id name="rightIconImageView"/>
+    <id name="leftIconLabel"/>
+    <id name="centerIconLabel"/>
+    <id name="rightIconLabel"/>
+
     <!-- Id's for ActiveUIStepViewBinding -->
     <id name="countdownDial"/>
     <id name="countLabel"/>
