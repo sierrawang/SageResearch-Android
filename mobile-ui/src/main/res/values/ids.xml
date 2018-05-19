@@ -51,7 +51,7 @@
     <id name="rs2_current_step" />
     <id name="rs2_step_id" />
 
-    <!-- Id's for UIStepViewBinding -->
+    <!-- Id's for NavigationViewBinding -->
     <id name="navigationHeaderView"/>
     <id name="navigationFooterView"/>
     <id name="navigationBodyView"/>
