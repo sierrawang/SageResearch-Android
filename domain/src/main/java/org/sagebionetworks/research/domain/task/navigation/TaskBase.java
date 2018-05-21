@@ -70,4 +70,14 @@ public abstract class TaskBase implements Task {
                 .setDefaultSteps(ImmutableList.<Step>of())
                 .setDefaultAsyncActions(ImmutableList.<AsyncAction>of());
     }
+
+    @NonNull
+    @Override
+    public Task copyWithSteps(final List<Step> steps) {
+        return this.builder()
+                .setIdentifier(this.getIdentifier())
+                .setAsyncActions(this.getAsyncActions())
+                .setSteps(steps)
+                .build();
+    }
 }

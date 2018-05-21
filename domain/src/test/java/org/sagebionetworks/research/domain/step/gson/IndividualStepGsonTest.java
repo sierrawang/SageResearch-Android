@@ -48,7 +48,7 @@ import java.net.URL;
 
 import static junit.framework.Assert.assertNotNull;
 
-public class IndividualStepGsonTest {
+public abstract class IndividualStepGsonTest {
     protected StepTestComponent stepTestComponent;
 
     @Before

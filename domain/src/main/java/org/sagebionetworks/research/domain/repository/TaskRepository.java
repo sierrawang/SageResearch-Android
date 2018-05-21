@@ -36,11 +36,11 @@ import android.support.annotation.CheckResult;
 import android.support.annotation.NonNull;
 
 import org.sagebionetworks.research.domain.result.TaskResult;
-import org.sagebionetworks.research.domain.step.Step;
 import org.sagebionetworks.research.domain.task.Task;
 import org.sagebionetworks.research.domain.task.TaskInfo;
 
-import java.util.List;
+import java.io.IOException;
+import java.io.InputStreamReader;
 import java.util.UUID;
 
 import io.reactivex.Completable;
@@ -48,12 +48,27 @@ import io.reactivex.Maybe;
 import io.reactivex.Single;
 
 public interface TaskRepository {
+    /**
+     * Gets the task with the given task identifier.
+     * @param taskIdentifier The name of the task to get.
+     * @return The task with the given taskIdentifier.
+     */
     @NonNull
     Single<Task> getTask(String taskIdentifier);
 
+    /**
+     * Gets the task info with the given identifier.
+     * @param taskIdentifier The name of the task info to get.
+     * @return The task info with the given identifier.
+     */
     @NonNull
     Single<TaskInfo> getTaskInfo(String taskIdentifier);
 
+    /**
+     * Gets the task result with the given UUID.
+     * @param taskRunUUID The UUID of the result to get.
+     * @return the task result with the given UUID.
+     */
     @NonNull
     Maybe<TaskResult> getTaskResult(UUID taskRunUUID);
 

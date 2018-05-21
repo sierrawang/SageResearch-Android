@@ -37,12 +37,12 @@ import org.sagebionetworks.research.domain.step.ActiveUIStepBase;
 import org.sagebionetworks.research.domain.step.Step;
 import org.sagebionetworks.research.domain.step.ui.ActiveUIStep;
 import org.sagebionetworks.research.domain.step.ui.UIAction;
-import org.threeten.bp.Duration;
 
 import java.util.Collections;
 
 import static junit.framework.Assert.assertEquals;
 import static junit.framework.Assert.assertTrue;
+import static org.junit.Assert.*;
 
 public class ActiveUIStepGsonTests extends IndividualStepGsonTest {
     @Test
@@ -69,6 +69,7 @@ public class ActiveUIStepGsonTests extends IndividualStepGsonTest {
 
     private void commonTest(ActiveUIStep expected, String filename) {
         Step step = this.readJsonFile(filename);
+        assertNotNull(step);
         assertTrue(step instanceof ActiveUIStep);
         assertEquals(expected, step);
     }

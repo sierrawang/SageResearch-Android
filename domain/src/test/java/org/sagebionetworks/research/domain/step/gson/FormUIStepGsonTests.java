@@ -54,6 +54,7 @@ import java.util.List;
 
 import static junit.framework.Assert.assertEquals;
 import static junit.framework.Assert.assertTrue;
+import static org.junit.Assert.assertNotNull;
 
 public class FormUIStepGsonTests extends IndividualStepGsonTest {
 
@@ -141,6 +142,7 @@ public class FormUIStepGsonTests extends IndividualStepGsonTest {
 
     private void testCommon(FormUIStep expected, String filename) {
         Step step = this.readJsonFile(filename);
+        assertNotNull(step);
         assertTrue(step instanceof FormUIStep);
         assertEquals(expected, step);
     }

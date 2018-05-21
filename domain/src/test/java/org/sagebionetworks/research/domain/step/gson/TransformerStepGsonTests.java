@@ -30,63 +30,32 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.sagebionetworks.research.domain.step;
+package org.sagebionetworks.research.domain.step.gson;
 
-import android.support.annotation.NonNull;
+import org.junit.*;
+import org.sagebionetworks.research.domain.step.Step;
+import org.sagebionetworks.research.domain.step.TransformerStep;
+import org.sagebionetworks.research.domain.step.TransformerStepBase;
 
-import com.google.common.base.MoreObjects.ToStringHelper;
-import com.google.common.base.Objects;
-import com.google.common.collect.ImmutableList;
+import static org.junit.Assert.*;
 
-import org.sagebionetworks.research.domain.interfaces.HashCodeHelper;
-
-import java.util.List;
-
-public class SectionStepBase extends StepBase implements SectionStep {
-    public static final String TYPE_KEY = "section";
-
-    @NonNull
-    private final ImmutableList<Step> steps;
-
-    public SectionStepBase(@NonNull final String identifier, @NonNull final List<Step> steps) {
-        super(identifier);
-        this.steps = ImmutableList.copyOf(steps);
+public class TransformerStepGsonTests extends IndividualStepGsonTest {
+    @Test
+    public void testTransformer_1() {
+        TransformerStep expected = new TransformerStepBase("left", "TappingSectionStep.json");
+        testCommon(expected, "Transformer_1.json");
     }
 
-    @NonNull
-    @Override
-    public String getType() {
-        return TYPE_KEY;
+    @Test
+    public void testTransformer_2() {
+        TransformerStep expected = new TransformerStepBase("right", "TremorSectionStep.json");
+        testCommon(expected, "Transformer_2.json");
     }
 
-    @NonNull
-    @Override
-    public ImmutableList<Step> getSteps() {
-        return this.steps;
-    }
-
-    @NonNull
-    @Override
-    public SectionStepBase copyWithIdentifier(String identifier) {
-        return new SectionStepBase(identifier, steps);
-    }
-
-    @Override
-    protected HashCodeHelper hashCodeHelper() {
-        return super.hashCodeHelper()
-                .addFields(this.steps);
-    }
-
-    @Override
-    protected boolean equalsHelper(Object o) {
-        SectionStepBase sectionStep = (SectionStepBase) o;
-        return super.equalsHelper(o) &&
-                Objects.equal(this.getSteps(), sectionStep.getSteps());
-    }
-
-    @Override
-    protected ToStringHelper toStringHelper() {
-        return super.toStringHelper()
-                .add("steps", this.getSteps());
+    private void testCommon(TransformerStep expected, String filename) {
+        Step step = this.readJsonFile(filename);
+        assertNotNull(step);
+        assertTrue(step instanceof TransformerStep);
+        assertEquals(expected, step);
     }
 }
