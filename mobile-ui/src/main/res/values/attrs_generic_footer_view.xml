@@ -33,11 +33,5 @@
 
 <resources>
     <declare-styleable name="GenericNavigationFooterView">
-        <attr name="isShadowHidden" format="boolean"/>
-        <attr name="isBackHidden" format="boolean"/>
-        <attr name="isReminderHidden" format="boolean"/>
-        <attr name="primaryButtonColor" format="reference"/>
-        <attr name="secondaryButtonColor" format="reference"/>
-        <attr name="primaryButtonTextColor" format="reference"/>
     </declare-styleable>
 </resources>

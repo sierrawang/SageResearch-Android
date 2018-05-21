@@ -145,17 +145,17 @@ public class UIStepViewBinding {
         // If there are any duplicate children (e.g. both the header and footer contain an imageView) this
         // configuration is invalid.
         boolean result = true;
-        result &= atMost1NonNull(header.imageView, footer.imageView, body.imageView);
-        result &= atMost1NonNull(header.titleLabel, footer.titleLabel, body.titleLabel);
-        result &= atMost1NonNull(header.textLabel, footer.textLabel, body.textLabel);
-        result &= atMost1NonNull(header.detailLabel, footer.detailLabel, body.detailLabel);
-        result &= atMost1NonNull(header.footnoteLabel, footer.footnoteLabel, body.footnoteLabel);
-        result &= atMost1NonNull(header.progressLabel, footer.progressLabel, body.progressLabel);
-        result &= atMost1NonNull(header.progressBar, footer.progressBar, body.progressBar);
-        result &= atMost1NonNull(header.cancelButton, footer.cancelButton, body.cancelButton);
-        result &= atMost1NonNull(header.nextButton, footer.nextButton, body.nextButton);
-        result &= atMost1NonNull(header.backButton, footer.backButton, body.backButton);
-        result &= atMost1NonNull(header.skipButton, footer.skipButton, body.skipButton);
+        result &= atMostOneNonNull(header.imageView, footer.imageView, body.imageView);
+        result &= atMostOneNonNull(header.titleLabel, footer.titleLabel, body.titleLabel);
+        result &= atMostOneNonNull(header.textLabel, footer.textLabel, body.textLabel);
+        result &= atMostOneNonNull(header.detailLabel, footer.detailLabel, body.detailLabel);
+        result &= atMostOneNonNull(header.footnoteLabel, footer.footnoteLabel, body.footnoteLabel);
+        result &= atMostOneNonNull(header.progressLabel, footer.progressLabel, body.progressLabel);
+        result &= atMostOneNonNull(header.progressBar, footer.progressBar, body.progressBar);
+        result &= atMostOneNonNull(header.cancelButton, footer.cancelButton, body.cancelButton);
+        result &= atMostOneNonNull(header.nextButton, footer.nextButton, body.nextButton);
+        result &= atMostOneNonNull(header.backButton, footer.backButton, body.backButton);
+        result &= atMostOneNonNull(header.skipButton, footer.skipButton, body.skipButton);
         return result;
     }
 
@@ -164,7 +164,7 @@ public class UIStepViewBinding {
      * @param objects The objects to test.
      * @return true if at most one of the given objects is non-null.
      */
-    protected static boolean atMost1NonNull(Object... objects) {
+    protected static boolean atMostOneNonNull(Object... objects) {
         int nonNullCount = 0;
         for (int i = 0; i < objects.length; i++) {
             nonNullCount += objects[i] != null ? 1 : 0;

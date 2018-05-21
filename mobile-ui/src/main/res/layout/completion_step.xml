@@ -43,25 +43,20 @@
         android:id="@+id/completionStepHeaderView"
         android:layout_width="0dp"
         android:layout_height="0dp"
-        app:layout_constraintBottom_toTopOf="@+id/genericNavigationFooterView2"
+        app:layout_constraintBottom_toTopOf="@+id/navigationActionBar"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
-    <org.sagebionetworks.research.mobile_ui.step_views.GenericNavigationFooterView
-        android:id="@+id/genericNavigationFooterView2"
+    <org.sagebionetworks.research.mobile_ui.widget.NavigationActionBar
+        android:id="@+id/navigationActionBar"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:isScrollContainer="false"
-        app:isBackHidden="true"
-        app:isReminderHidden="true"
         app:isShadowHidden="true"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/completionStepHeaderView"
-        app:primaryButtonColor="@color/butterscotch500"
-        app:primaryButtonTextColor="@color/appTextDark"
-        app:secondaryButtonColor="@color/royal500" />
+        app:layout_constraintTop_toBottomOf="@+id/completionStepHeaderView" />
 
 </android.support.constraint.ConstraintLayout>

@@ -41,7 +41,7 @@
         android:layout_width="0dp"
         android:layout_height="0dp"
         android:fadeScrollbars="false"
-        app:layout_constraintBottom_toTopOf="@+id/genericNavigationFooterView"
+        app:layout_constraintBottom_toTopOf="@+id/navigationActionBar"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="1.0"
         app:layout_constraintStart_toStartOf="parent"
@@ -64,18 +64,13 @@
         </android.support.constraint.ConstraintLayout>
     </ScrollView>
 
-    <org.sagebionetworks.research.mobile_ui.step_views.GenericNavigationFooterView
-        android:id="@+id/genericNavigationFooterView"
+    <org.sagebionetworks.research.mobile_ui.widget.NavigationActionBar
+        android:id="@+id/navigationActionBar"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        app:isBackHidden="true"
-        app:isReminderHidden="false"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/scrollView"
-        app:primaryButtonColor="@color/butterscotch500"
-        app:primaryButtonTextColor="@color/appTextDark"
-        app:secondaryButtonColor="@color/royal500" />
+        app:layout_constraintTop_toBottomOf="@+id/scrollView" />
 
 </android.support.constraint.ConstraintLayout>

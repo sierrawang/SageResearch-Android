@@ -50,22 +50,18 @@
         app:layout_constraintTop_toTopOf="parent"
         app:srcCompat="@drawable/f_turning1" />
 
-    <org.sagebionetworks.research.mobile_ui.step_views.GenericNavigationFooterView
-        android:id="@+id/genericNavigationFooterView3"
+    <org.sagebionetworks.research.mobile_ui.widget.NavigationActionBar
+        android:id="@+id/navigationActionBar"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:visibility="invisible"
-        app:isBackHidden="true"
         app:isShadowHidden="true"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.0"
-        app:layout_constraintStart_toStartOf="parent"
-        app:primaryButtonColor="@color/appWhite"
-        app:primaryButtonTextColor="@color/appTextDark"
-        app:secondaryButtonColor="@color/appWhite">
+        app:layout_constraintStart_toStartOf="parent">
 
-    </org.sagebionetworks.research.mobile_ui.step_views.GenericNavigationFooterView>
+    </org.sagebionetworks.research.mobile_ui.widget.NavigationActionBar>
 
     <ProgressBar
         android:id="@+id/countdownDial"

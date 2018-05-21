@@ -33,120 +33,89 @@
 package org.sagebionetworks.research.mobile_ui.show_step.view;
 
 import android.arch.lifecycle.ViewModelProviders;
+import android.support.v4.app.Fragment;
 import android.content.Context;
 import android.os.Bundle;
-import android.support.annotation.LayoutRes;
 import android.support.annotation.NonNull;
-import android.support.annotation.VisibleForTesting;
-import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import org.sagebionetworks.research.domain.mobile_ui.R;
 import org.sagebionetworks.research.mobile_ui.perform_task.PerformTaskFragment;
-import org.sagebionetworks.research.mobile_ui.widget.ActionButton;
+import org.sagebionetworks.research.mobile_ui.show_step.view.view_binding.UIStepViewBinding;
 import org.sagebionetworks.research.presentation.model.StepView;
 import org.sagebionetworks.research.presentation.perform_task.PerformTaskViewModel;
 import org.sagebionetworks.research.presentation.show_step.ShowStepViewModel;
 import org.sagebionetworks.research.presentation.show_step.ShowStepViewModelFactory;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
-import butterknife.ButterKnife;
-import butterknife.Unbinder;
+
 import dagger.android.support.AndroidSupportInjection;
 import javax.inject.Inject;
 
 import static com.google.common.base.Preconditions.checkNotNull;
 
-public abstract class ShowStepFragmentBase<S extends StepView, VM extends ShowStepViewModel<S>> extends Fragment {
-    private static final Logger LOGGER = LoggerFactory.getLogger(ShowStepFragmentBase.class);
+public abstract class ShowUIStepFragmentBase<S extends StepView, VM extends ShowStepViewModel<S>> extends Fragment {
+    public static final String ARGUMENT_STEP_VIEW = "UI_STEP_VIEW";
 
-    private static final String ARGUMENT_STEP_VIEW = "STEP_VIEW";
-
+    private UIStepViewBinding binding;
     @Inject
-    protected PerformTaskFragment performTaskFragment;
-
-    protected PerformTaskViewModel performTaskViewModel;
-
-    protected VM showStepViewModel;
-
+    PerformTaskFragment performTaskFragment;
     @Inject
-    protected ShowStepViewModelFactory showStepViewModelFactory;
-
-    protected S stepView;
-
-    protected StepViewBinding stepViewBinding;
-
-    private Unbinder stepViewUnbinder;
-
+    ShowStepViewModelFactory showStepViewModelFactory;
+    private PerformTaskViewModel performTaskViewModel;
+    private S stepView;
+    private VM showStepViewModel;
 
     public static Bundle createArguments(@NonNull StepView stepView) {
         checkNotNull(stepView);
-
         Bundle args = new Bundle();
         args.putParcelable(ARGUMENT_STEP_VIEW, stepView);
         return args;
     }
 
+    public int getLayoutId() {
+        return R.layout.mpower2_instruction_step;
+    }
+
     @Override
     public void onAttach(Context context) {
         AndroidSupportInjection.inject(this);
-
         super.onAttach(context);
-
         // gets the PerformTaskViewModel instance of performTaskFragment
         performTaskViewModel = ViewModelProviders.of(performTaskFragment).get(PerformTaskViewModel.class);
-
     }
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
         S stepViewArg = null;
-        if (getArguments() != null) {
-            stepViewArg = getArguments().getParcelable(ARGUMENT_STEP_VIEW);
+        if (this.getArguments() != null) {
+            stepViewArg = this.getArguments().getParcelable(ARGUMENT_STEP_VIEW);
         }
-        //noinspection unchecked
-        showStepViewModel = (VM) ViewModelProviders
-                .of(this, showStepViewModelFactory.create(performTaskViewModel, stepViewArg))
-                .get(stepViewArg.getIdentifier(), showStepViewModelFactory.getViewModelClass(stepViewArg));
 
-        showStepViewModel.getStepView().observe(this, this::update);
+        // noinspection unchecked
+        this.showStepViewModel = (VM) ViewModelProviders.of(this,
+                this.showStepViewModelFactory.create(this.performTaskViewModel, stepViewArg))
+                .get(stepViewArg.getIdentifier(), this.showStepViewModelFactory.getViewModelClass(stepViewArg));
+
     }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
             Bundle savedInstanceState) {
-        // Inflate the layout for this fragment
-        View view = inflater.inflate(getLayoutId(), container, false);
-        stepViewBinding = new StepViewBinding();
-        stepViewUnbinder = ButterKnife.bind(stepViewBinding, view);
-
-        //stepViewBinding.navigationActionBar
-          //      .setActionButtonClickListener(this::handleActionButtonClick);
-
+        View view = inflater.inflate(this.getLayoutId(), container, false);
+        this.binding = new UIStepViewBinding(view);
         return view;
     }
 
     @Override
     public void onDestroyView() {
         super.onDestroyView();
-        stepViewUnbinder.unbind();
+        this.binding.unbind();
     }
 
-    @LayoutRes
-    protected abstract int getLayoutId();
-
-    protected abstract void handleActionButtonClick(@NonNull ActionButton ab);
-
-    @VisibleForTesting
-    protected void update(S stepView) {
-        LOGGER.debug("Update stepView: {}", stepView);
-
-        this.stepView = stepView;
-        stepViewBinding.title.setText(this.stepView.getTitle());
-        stepViewBinding.description.setText(this.stepView.getDetail());
+    public UIStepViewBinding getBinding() {
+        return this.binding;
     }
 }

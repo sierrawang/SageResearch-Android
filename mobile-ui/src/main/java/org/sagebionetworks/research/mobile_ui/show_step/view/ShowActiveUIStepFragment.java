@@ -49,7 +49,7 @@ public class ShowActiveUIStepFragment extends ShowStepFragmentBase {
         int actionButtonId = ab.getId();
 
         String actionType = null;
-        if (actionButtonId == R.id.footer_action_forward) {
+        if (actionButtonId == R.id.rs2_step_navigation_action_forward) {
             actionType = ActionType.FORWARD;
         }
 

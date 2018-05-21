@@ -82,5 +82,4 @@
     <!-- Id's for TappingStepViewBinding -->
     <id name="leftTapButton"/>
     <id name="rightTapButton"/>
-
 </resources>

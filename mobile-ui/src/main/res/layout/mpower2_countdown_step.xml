@@ -50,18 +50,15 @@
         app:layout_constraintTop_toTopOf="parent"
         app:srcCompat="@drawable/f_turning1" />
 
-    <org.sagebionetworks.research.mobile_ui.step_views.GenericNavigationFooterView
+    <org.sagebionetworks.research.mobile_ui.widget.NavigationActionBar
+        android:id="@+id/navigationActionBar"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:background="@android:color/transparent"
-        app:isBackHidden="true"
         app:isShadowHidden="true"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:primaryButtonColor="@color/appWhite"
-        app:primaryButtonTextColor="@color/appTextDark"
-        app:secondaryButtonColor="@color/appWhite" />
+        app:layout_constraintStart_toStartOf="parent" />
 
     <ImageButton
         android:id="@+id/imageButton"

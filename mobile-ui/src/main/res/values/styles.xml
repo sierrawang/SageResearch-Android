@@ -37,12 +37,16 @@
         <item name="colorPrimary">@color/colorPrimary</item>
         <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
         <item name="colorAccent">@color/colorAccent</item>
+        <item name="textColorDark">@color/appTextDark</item>
+        <item name="textColorLight">@color/appWhite</item>
     </style>
 
+    <!--
     <style name="Widget.ResearchStack.NavigationActionBar" parent="">
         <item name="positiveActionTitle">@string/rs2_navigation_action_forward</item>
         <item name="negativeActionTitle">@string/rs2_navigation_action_backward</item>
         <item name="positiveActionColor">@color/colorAccent</item>
         <item name="negativeActionColor">@color/colorAccent</item>
     </style>
+    -->
 </resources>

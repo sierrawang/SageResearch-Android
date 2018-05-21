@@ -37,23 +37,19 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-    <org.sagebionetworks.research.mobile_ui.step_views.GenericNavigationFooterView
-        android:id="@+id/genericNavigationFooterView4"
+    <org.sagebionetworks.research.mobile_ui.widget.NavigationActionBar
+        android:id="@+id/navigationActionBar"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        app:isBackHidden="true"
-        app:isReminderHidden="true"
         app:isShadowHidden="true"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:primaryButtonColor="@color/butterscotch500"
-        app:primaryButtonTextColor="@color/appTextDark" />
+        app:layout_constraintStart_toStartOf="parent" />
 
     <org.sagebionetworks.research.mobile_ui.step_views.TappingCompletionStepHeaderView
         android:layout_width="0dp"
         android:layout_height="0dp"
-        app:layout_constraintBottom_toTopOf="@+id/genericNavigationFooterView4"
+        app:layout_constraintBottom_toTopOf="@+id/navigationActionBar"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />

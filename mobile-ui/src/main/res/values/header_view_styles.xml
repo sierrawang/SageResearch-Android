@@ -31,12 +31,14 @@
   ~ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
   -->
 
-<layer-list xmlns:android="http://schemas.android.com/apk/res/android">
-    <item android:id="@android:id/background">
-        <shape>
-            <solid android:color="@color/butterscotch500"/>
-            <corners
-                android:radius="@dimen/nextButtonHeight"/>
-        </shape>
-    </item>
-</layer-list>
+<resources>
+    <!--
+    <style name="Widget.ResearchStack.HeaderView" parent="">
+        <item name="isTitleLabelCentered">true</item>
+        <item name="isTextLabelCentered">true</item>
+        <item name="hasProgressBar">true</item>
+        <item name="hasInfoButton">false</item>
+
+    </style>
+    -->
+</resources>
