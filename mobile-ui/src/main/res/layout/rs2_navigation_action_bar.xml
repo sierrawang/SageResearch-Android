@@ -42,18 +42,20 @@
         android:id="@+id/rs2_step_navigation_shadow_view"
         style="@style/Widget.ResearchStack.NavigationActionBar.Shadow"
         android:layout_width="0dp"
-        android:layout_height="@dimen/scrollShadowHeight"
+        android:layout_height="@dimen/rs2_step_navigation_shadow_height"
+        app:layout_constrainedHeight="false"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
-    <TextView
+    <org.sagebionetworks.research.mobile_ui.widget.ActionButton
         android:id="@+id/rs2_step_navigation_action_skip"
-        style="@style/Widget.ResearchStack.NavigationActionBar.Button.SecondaryButton.Reminder"
+        style="@style/Widget.ResearchStack.NavigationActionBar.Skip"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginBottom="12dp"
         android:layout_marginLeft="12dp"
+        android:layout_marginStart="12dp"
         android:layout_marginTop="20dp"
         android:textAllCaps="false"
         android:visibility="visible"
@@ -62,11 +64,10 @@
         app:layout_constraintHorizontal_bias="0.5"
         app:layout_constraintHorizontal_chainStyle="spread_inside"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/primaryButtonGroup"
-        android:layout_marginStart="12dp" />
+        app:layout_constraintTop_toBottomOf="@+id/rs2_step_navigation_primary_button_group" />
 
     <android.support.constraint.ConstraintLayout
-        android:id="@+id/primaryButtonGroup"
+        android:id="@+id/rs2_step_navigation_primary_button_group"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginBottom="12dp"
@@ -79,7 +80,7 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/rs2_step_navigation_shadow_view">
 
-        <Button
+        <org.sagebionetworks.research.mobile_ui.widget.ActionButton
             android:id="@+id/rs2_step_navigation_action_backward"
             style="@style/Widget.ResearchStack.NavigationActionBar.PrimaryButton.Backward"
             android:layout_width="0dp"
@@ -94,7 +95,7 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
 
-        <Button
+        <org.sagebionetworks.research.mobile_ui.widget.ActionButton
             android:id="@+id/rs2_step_navigation_action_forward"
             style="@style/Widget.ResearchStack.NavigationActionBar.PrimaryButton.Forward"
             android:layout_width="0dp"

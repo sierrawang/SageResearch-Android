@@ -35,11 +35,11 @@
     <item android:id="@android:id/background">
         <shape>
             <stroke
-                android:width="5dp"
+                android:width="@dimen/mpower2_tap_button_stroke_width"
                 android:color="@color/appWhite"/>
             <solid android:color="@color/butterscotch500"/>
             <corners
-                android:radius="@dimen/tapButtonHeight"/>
+                android:radius="@dimen/rs2_completely_rounded_corner_radius"/>
         </shape>
     </item>
 </layer-list>

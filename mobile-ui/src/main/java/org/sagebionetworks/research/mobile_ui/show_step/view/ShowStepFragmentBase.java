@@ -124,8 +124,8 @@ public abstract class ShowStepFragmentBase<S extends StepView, VM extends ShowSt
         stepViewBinding = new StepViewBinding();
         stepViewUnbinder = ButterKnife.bind(stepViewBinding, view);
 
-        //stepViewBinding.navigationActionBar
-          //      .setActionButtonClickListener(this::handleActionButtonClick);
+        stepViewBinding.navigationActionBar
+                .setActionButtonClickListener(this::handleActionButtonClick);
 
         return view;
     }

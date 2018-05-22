@@ -60,7 +60,7 @@ public class RoundedButton extends AppCompatButton {
         TypedArray a = this.getContext().obtainStyledAttributes(attrs, R.styleable.RoundedButton);
         int colorRes = a.getInt(R.styleable.RoundedButton_backgroundColor, R.color.butterscotch500);
         a.recycle();
-        this.setBackgroundResource(R.drawable.rounded_button);
+        this.setBackgroundResource(R.drawable.rs2_rounded_button);
         this.getBackground().setColorFilter(colorRes, Mode.SRC_IN);
     }
 }

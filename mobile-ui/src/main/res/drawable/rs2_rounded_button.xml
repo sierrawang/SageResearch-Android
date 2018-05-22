@@ -36,7 +36,7 @@
         <shape>
             <solid android:color="@color/butterscotch500"/>
             <corners
-                android:radius="@dimen/nextButtonHeight"/>
+                android:radius="@dimen/rs2_completely_rounded_corner_radius"/>
         </shape>
     </item>
 </layer-list>

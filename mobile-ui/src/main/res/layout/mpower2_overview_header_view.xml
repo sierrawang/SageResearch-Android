@@ -55,7 +55,7 @@
             app:layout_constraintHorizontal_chainStyle="spread"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
-            app:srcCompat="@drawable/rounded_button" />
+            app:srcCompat="@drawable/rs2_rounded_button" />
 
         <TextView
             android:id="@+id/leftIconLabel"
@@ -93,7 +93,7 @@
             app:layout_constraintHorizontal_chainStyle="spread"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
-            app:srcCompat="@drawable/rounded_button" />
+            app:srcCompat="@drawable/rs2_rounded_button" />
 
         <TextView
             android:id="@+id/centerIconLabel"
@@ -148,7 +148,7 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintVertical_bias="0.0"
-            app:srcCompat="@drawable/rounded_button" />
+            app:srcCompat="@drawable/rs2_rounded_button" />
 
     </android.support.constraint.ConstraintLayout>
 
