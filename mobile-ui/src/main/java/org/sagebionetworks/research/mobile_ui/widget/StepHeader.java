@@ -33,92 +33,152 @@
 package org.sagebionetworks.research.mobile_ui.widget;
 
 import android.content.Context;
+import android.content.res.TypedArray;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.constraint.ConstraintLayout;
 import android.util.AttributeSet;
-import android.widget.ImageButton;
+import android.view.Gravity;
+import android.view.View;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import org.sagebionetworks.research.domain.mobile_ui.R;
 import org.sagebionetworks.research.domain.mobile_ui.R2;
+import org.sagebionetworks.research.mobile_ui.widget.NavigationActionBar.ActionButtonClickListener;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.w3c.dom.Text;
 
 import butterknife.BindView;
+import butterknife.ButterKnife;
+import butterknife.Unbinder;
 
 public class StepHeader extends ConstraintLayout {
+    private static final Logger LOGGER = LoggerFactory.getLogger(StepHeader.class);
+
+    private enum TextGravityEnum {
+        LEFT(0), RIGHT(1), CENTER(2);
+        int id;
+
+        TextGravityEnum(int id) {
+            this.id = id;
+        }
+
+        static TextGravityEnum fromId(int id) {
+            for (TextGravityEnum value : values()) {
+                if (value.id == id) return value;
+            }
+            throw new IllegalArgumentException();
+        }
+    }
+
+    private boolean isInfoButtonHidden;
+    private boolean isProgressHidden;
+    private boolean isCancelButtonHidden;
+    private int textGravity;
+
     @BindView(R2.id.rs2_step_header_image_view)
     @NonNull
-    protected ImageView imageView;
+    ImageView imageView;
     @BindView(R2.id.rs2_step_header_cancel_button)
     @NonNull
-    protected ImageButton cancelButton;
+    ActionButton cancelButton;
+    @BindView(R2.id.rs2_step_header_info_button)
+    @NonNull
+    ActionButton infoButton;
     @BindView(R2.id.rs2_step_header_progress_label)
     @NonNull
-    protected TextView progressLabel;
+    TextView progressLabel;
     @BindView(R2.id.rs2_step_header_progress_bar)
     @NonNull
-    protected ProgressBar progressBar;
+    ProgressBar progressBar;
     @BindView(R2.id.rs2_step_header_title_label)
     @NonNull
-    protected TextView titleLabel;
+    TextView titleLabel;
     @BindView(R2.id.rs2_step_header_text_label)
     @NonNull
-    protected TextView textLabel;
+    TextView textLabel;
+
+    @NonNull
+    private Unbinder unbinder;
+    @Nullable
+    private ActionButtonClickListener actionButtonClickListener;
 
     public StepHeader(final Context context) {
         super(context);
-        this.commonInit(null, 0);
+        this.commonInit(null);
     }
 
     public StepHeader(final Context context, final AttributeSet attrs) {
         super(context, attrs);
-        this.commonInit(attrs, 0);
+        this.commonInit(attrs);
     }
 
     public StepHeader(final Context context, final AttributeSet attrs, final int defStyleAttr) {
         super(context, attrs, defStyleAttr);
-        this.commonInit(attrs, defStyleAttr);
+        this.commonInit(attrs);
     }
 
-    protected void commonInit(@Nullable final AttributeSet attrs, final int defStyleAttr) {
+    protected void commonInit(@Nullable final AttributeSet attrs) {
+        this.getAttributes(attrs);
         inflate(this.getContext(), R.layout.rs2_step_header, this);
-        this.getAttributes(attrs, defStyleAttr);
+        this.onFinishInflate();
     }
 
-    protected void getAttributes(@Nullable final AttributeSet attrs, final int defStyleAttr) {
-
+    public void setActionButtonClickListener(ActionButtonClickListener listener) {
+        this.actionButtonClickListener = listener;
     }
 
-    @NonNull
-    public ImageView getImageView() {
-        return this.imageView;
+    public void onActionButtonClick(@NonNull ActionButton actionButton) {
+        LOGGER.debug("Action button clicked, text: {}", actionButton.getText());
+
+        if (actionButtonClickListener != null) {
+            actionButtonClickListener.onClick(actionButton);
+        } else {
+            LOGGER.debug("Action button clicked with null listener: {}", actionButton.getText());
+        }
     }
 
-    @NonNull
-    public ImageButton getCancelButton() {
-        return this.cancelButton;
+    @Override
+    public void onFinishInflate() {
+        super.onFinishInflate();
+        this.unbinder = ButterKnife.bind(this);
+        this.layoutComponents();
     }
 
-    @NonNull
-    public TextView getProgressLabel() {
-        return this.progressLabel;
+    @Override
+    public void onDetachedFromWindow() {
+        super.onDetachedFromWindow();
+        this.unbinder.unbind();
     }
 
-    @NonNull
-    public ProgressBar getProgressBar() {
-        return this.progressBar;
+    protected void layoutComponents() {
+        if (this.isCancelButtonHidden) {
+            this.cancelButton.setVisibility(View.GONE);
+        }
+
+        if (this.isInfoButtonHidden) {
+            this.infoButton.setVisibility(View.GONE);
+        }
+
+        if (this.isProgressHidden) {
+            this.progressBar.setVisibility(View.GONE);
+            this.progressLabel.setVisibility(View.GONE);
+        }
+
+        this.titleLabel.setGravity(this.textGravity);
+        this.textLabel.setGravity(this.textGravity);
     }
 
-    @NonNull
-    public TextView getTitleLabel() {
-        return this.titleLabel;
+    protected void getAttributes(@Nullable final AttributeSet attrs) {
+        TypedArray a = this.getContext().obtainStyledAttributes(attrs, R.styleable.StepHeader);
+        this.isInfoButtonHidden = a.getBoolean(R.styleable.StepHeader_isInfoButtonHidden, false);
+        this.isProgressHidden = a.getBoolean(R.styleable.StepHeader_isProgressHidden, false);
+        this.isCancelButtonHidden = a.getBoolean(R.styleable.StepHeader_isCancelButtonHidden, false);
+        // The default behavior for the text gravity will be to have it be left aligned.
+        this.textGravity = a.getInt(R.styleable.StepHeader_textGravity, Gravity.START);
+        a.recycle();
     }
-
-    @NonNull
-    public TextView getTextLabel() {
-        return this.textLabel;
-    }
-
 }

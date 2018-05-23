@@ -1,4 +1,3 @@
-<?xml version="1.0" encoding="utf-8"?>
 <!--
   ~ BSD 3-Clause License
   ~
@@ -31,7 +30,15 @@
   ~ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
   -->
 
-<resources>
-    <declare-styleable name="GenericNavigationFooterView">
-    </declare-styleable>
-</resources>
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="24dp"
+    android:height="24dp"
+    android:viewportWidth="24"
+    android:viewportHeight="24">
+  <group>
+    <clip-path android:pathData="M0,0L24,0L24,24L0,24L0,0Z M 0,0"/>
+    <path
+        android:pathData="M12,0C5.3716,0 0,5.3716 0,12C0,18.6284 5.3716,24 12,24C18.6284,24 24,18.6284 24,12C24.0093,5.3716 18.6284,0 12,0ZM12.9868,18.7401L10.9666,18.7401L10.9666,10.3615L12.9868,10.3615L12.9868,18.7401ZM11.9814,8.3879C11.1063,8.3879 10.3708,7.6524 10.3708,6.7867C10.3708,5.8743 11.1063,5.1575 11.9814,5.1575C12.8844,5.1575 13.6385,5.8836 13.6385,6.7867C13.6385,7.6524 12.8844,8.3879 11.9814,8.3879Z"
+        android:fillColor="#FFFFFF"/>
+  </group>
+</vector>

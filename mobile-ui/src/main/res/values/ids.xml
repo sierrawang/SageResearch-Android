@@ -31,12 +31,23 @@
   -->
 
 <resources>
-    <id name="title" />
-    <id name="description" />
-
+    <!-- Navigation Action Bar -->
     <id name="rs2_step_navigation_action_forward" />
     <id name="rs2_step_navigation_action_backward" />
     <id name="rs2_step_navigation_action_skip" />
+    <id name="rs2_step_navigation_shadow"/>
+    <!-- Step Header -->
+    <id name="rs2_step_header_image_view"/>
+    <id name="rs2_step_header_cancel_button"/>
+    <id name="rs2_step_header_info_button"/>
+    <id name="rs2_step_header_progress_label"/>
+    <id name="rs2_step_header_progress_bar"/>
+    <id name="rs2_step_header_title_label"/>
+    <id name="rs2_step_header_text_label"/>
+
+    <id name="title" />
+    <id name="description" />
+
     <id name="rs2_step_navigation_action_cancel" />
     <id name="rs2_step_navigation_action_learn_more" />
     <id name="rs2_step_navigation_action_add_more" />

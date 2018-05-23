@@ -19,11 +19,9 @@
                         <option name="values">
                           <map>
                             <entry key="assetSourceType" value="FILE" />
-                            <entry key="height" value="197" />
-                            <entry key="outputName" value="ic_finger_tapping_large_complete_on_color" />
+                            <entry key="outputName" value="info_button" />
                             <entry key="overrideSize" value="true" />
-                            <entry key="sourceFile" value="C:\Users\rober\Downloads\Activities\Finger tapping-Large-Complete-On Color.svg" />
-                            <entry key="width" value="157" />
+                            <entry key="sourceFile" value="C:\Users\rober\Downloads\internship\other\SVG\Info-Small.svg" />
                           </map>
                         </option>
                       </PersistentState>
