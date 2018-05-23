@@ -37,8 +37,8 @@ import android.support.annotation.Nullable;
 
 import org.junit.*;
 import org.sagebionetworks.research.domain.step.DaggerStepTestComponent;
-import org.sagebionetworks.research.domain.step.Step;
 import org.sagebionetworks.research.domain.step.StepTestComponent;
+import org.sagebionetworks.research.domain.step.interfaces.Step;
 
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -70,7 +70,7 @@ public abstract class IndividualStepGsonTest {
     @NonNull
     protected Step readJsonFile(String filename) {
         ClassLoader loader = this.getClass().getClassLoader();
-        URL url = loader.getResource(filename);
+        URL url = loader.getResource("steps/" + filename);
         Step step = this.readJsonFileHelper(url);
         assertNotNull("Failed to read file " + filename, step);
         return step;

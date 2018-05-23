@@ -42,10 +42,11 @@ import android.support.annotation.VisibleForTesting;
 
 import org.sagebionetworks.research.domain.presentation.model.LoadableResource;
 import org.sagebionetworks.research.domain.repository.TaskRepository;
-import org.sagebionetworks.research.domain.result.Result;
-import org.sagebionetworks.research.domain.result.TaskResult;
-import org.sagebionetworks.research.domain.step.Step;
-import org.sagebionetworks.research.domain.step.ui.UIStep;
+import org.sagebionetworks.research.domain.result.implementations.TaskResultBase;
+import org.sagebionetworks.research.domain.result.interfaces.Result;
+import org.sagebionetworks.research.domain.result.interfaces.TaskResult;
+import org.sagebionetworks.research.domain.step.interfaces.Step;
+import org.sagebionetworks.research.domain.step.interfaces.UIStep;
 import org.sagebionetworks.research.domain.task.Task;
 import org.sagebionetworks.research.domain.task.TaskInfo;
 import org.sagebionetworks.research.domain.task.navigation.StepNavigator;
@@ -88,7 +89,7 @@ public class PerformTaskViewModel extends ViewModel {
     private final TaskRepository taskRepository;
 
     @Nullable
-    private TaskResult.Builder taskResultBuilder;
+    private TaskResult taskResult;
 
     private final MutableLiveData<TaskResult> taskResultLiveData;
 
@@ -121,23 +122,22 @@ public class PerformTaskViewModel extends ViewModel {
     }
 
     public void addAsyncResult(Result result) {
-        checkState(taskResultBuilder != null);
+        checkState(taskResult != null);
 
         if (LOGGER.isDebugEnabled()) {
             LOGGER.debug("addAsyncResult called with result: {}", result);
         }
-        taskResultBuilder.addAsyncResult(result);
-        taskResultLiveData.setValue(taskResultBuilder.build());
+
+        taskResultLiveData.setValue(taskResult.addAsyncResult(result));
     }
 
     public void addStepResult(Result result) {
-        checkState(taskResultBuilder != null);
+        checkState(taskResult != null);
 
         if (LOGGER.isDebugEnabled()) {
             LOGGER.debug("addStepResult called with result: {}", result);
         }
-        taskResultBuilder.addStepResult(result);
-        taskResultLiveData.setValue(taskResultBuilder.build());
+        taskResultLiveData.setValue(taskResult.addStepHistory(result));
     }
 
     @NonNull
@@ -166,7 +166,7 @@ public class PerformTaskViewModel extends ViewModel {
         Step currentStep = currentStepLiveData.getValue();
         checkState(currentStep != null);
 
-        Step backStep = stepNavigator.getPreviousStep(currentStepLiveData.getValue(), taskResultBuilder.build());
+        Step backStep = stepNavigator.getPreviousStep(currentStepLiveData.getValue(), taskResultLiveData.getValue());
 
         LOGGER.debug("Setting backStep: {}", backStep);
         currentStepLiveData.setValue(backStep);
@@ -191,7 +191,7 @@ public class PerformTaskViewModel extends ViewModel {
     public void goForward() {
         LOGGER.debug("goForward called");
 
-        Step forwardStep = stepNavigator.getNextStep(currentStepLiveData.getValue(), taskResultBuilder.build());
+        Step forwardStep = stepNavigator.getNextStep(currentStepLiveData.getValue(), taskResultLiveData.getValue());
 
         LOGGER.debug("Setting forwardStep: {}", forwardStep);
 
@@ -228,8 +228,7 @@ public class PerformTaskViewModel extends ViewModel {
     void handleTaskResultFound(TaskResult taskResult) {
         LOGGER.debug("Loaded taskResult: {}", taskResult);
 
-        taskResultBuilder = taskResult.toBuilder();
-        taskResultLiveData.setValue(taskResultBuilder.build());
+        taskResultLiveData.setValue(taskResult);
     }
 
     // TODO: Make this private and have Fragment call, instead of calling in constructor. This should make it easier to test
@@ -241,8 +240,7 @@ public class PerformTaskViewModel extends ViewModel {
                                 .doOnSuccess(this::handleTaskLoad)
                                 .toCompletable(),
                         taskRepository.getTaskResult(taskRunUuid)
-                                .toSingle(TaskResult.builder(taskView.getIdentifier(), taskRunUuid, Instant.now())
-                                        .build())
+                                .toSingle(new TaskResultBase(taskView.getIdentifier(), Instant.now(), taskRunUuid))
                                 .doOnSuccess(this::handleTaskResultFound)
                                 .toCompletable()
                 ).subscribe(this::taskInitSuccess, this::taskInitFail)
@@ -256,7 +254,7 @@ public class PerformTaskViewModel extends ViewModel {
 
     @VisibleForTesting
     void taskInitSuccess() {
-        checkState(taskResultBuilder != null, "taskResultBuilder must be set before taskInitSuccess is called");
+        checkState(taskResult != null, "taskResultBuilder must be set before taskInitSuccess is called");
 
         goForward();
     }

@@ -1,8 +1,8 @@
 package org.sagebionetworks.research.domain.navigation;
 
 import org.junit.*;
-import org.sagebionetworks.research.domain.result.TaskResult;
-import org.sagebionetworks.research.domain.step.Step;
+import org.sagebionetworks.research.domain.result.interfaces.TaskResult;
+import org.sagebionetworks.research.domain.step.interfaces.Step;
 import org.sagebionetworks.research.domain.task.navigation.TaskProgress;
 import org.sagebionetworks.research.domain.task.navigation.TreeNavigator;
 

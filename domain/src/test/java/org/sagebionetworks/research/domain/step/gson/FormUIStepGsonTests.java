@@ -35,14 +35,14 @@ package org.sagebionetworks.research.domain.step.gson;
 import com.google.gson.JsonParseException;
 
 import org.junit.*;
-import org.sagebionetworks.research.domain.form.Choice;
-import org.sagebionetworks.research.domain.form.ChoiceBase;
-import org.sagebionetworks.research.domain.form.ChoiceInputField;
 import org.sagebionetworks.research.domain.form.DataTypes.CollectionInputDataType;
-import org.sagebionetworks.research.domain.form.InputField;
-import org.sagebionetworks.research.domain.step.FormUIStepBase;
-import org.sagebionetworks.research.domain.step.Step;
-import org.sagebionetworks.research.domain.step.ui.FormUIStep;
+import org.sagebionetworks.research.domain.form.implementations.ChoiceBase;
+import org.sagebionetworks.research.domain.form.implementations.ChoiceInputField;
+import org.sagebionetworks.research.domain.form.interfaces.Choice;
+import org.sagebionetworks.research.domain.form.interfaces.InputField;
+import org.sagebionetworks.research.domain.step.implementations.FormUIStepBase;
+import org.sagebionetworks.research.domain.step.interfaces.FormUIStep;
+import org.sagebionetworks.research.domain.step.interfaces.Step;
 
 import java.io.File;
 import java.io.FileReader;
@@ -135,7 +135,7 @@ public class FormUIStepGsonTests extends IndividualStepGsonTest {
     @Test(expected = JsonParseException.class)
     public void testIncorrectChoiceType_StringIntoInteger() throws IOException {
         ClassLoader loader = this.getClass().getClassLoader();
-        URL url = loader.getResource("FormStringIntoInteger.json");
+        URL url = loader.getResource("steps/FormStringIntoInteger.json");
         Reader in = new FileReader(new File(url.getPath()));
         this.stepTestComponent.gson().fromJson(in, Step.class);
     }
@@ -146,5 +146,4 @@ public class FormUIStepGsonTests extends IndividualStepGsonTest {
         assertTrue(step instanceof FormUIStep);
         assertEquals(expected, step);
     }
-
 }

@@ -58,7 +58,7 @@ public abstract class TaskModule {
     @Provides
     @IntoMap
     @ClassKey(TaskInfo.class)
-    static JsonDeserializer<?> provideFormUIStepDeserializer() {
+    static JsonDeserializer<?> provideTaskInfoDeserializer() {
         return createPassThroughDeserializer(TaskInfoBase.class);
     }
 

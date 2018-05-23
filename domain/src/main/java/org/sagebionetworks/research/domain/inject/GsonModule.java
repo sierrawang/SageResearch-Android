@@ -39,6 +39,8 @@ import com.google.gson.JsonDeserializationContext;
 import com.google.gson.JsonDeserializer;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonParseException;
+import com.google.gson.JsonSerializationContext;
+import com.google.gson.JsonSerializer;
 import com.google.gson.TypeAdapter;
 import com.google.gson.TypeAdapterFactory;
 
@@ -84,8 +86,6 @@ public abstract class GsonModule {
      * @return deserializer which defers/delegates/redirects to subtype
      */
     public static <T> JsonDeserializer<T> createPassThroughDeserializer(final Class<T> subtype) {
-        // In the event that getting the subtype isn't a JsonDeserializer, or instantiating the subtype fails or returns null
-        // we fall through to returning a default deserializer
         return new JsonDeserializer<T>() {
             @Override
             public T deserialize(final JsonElement json, final Type typeOfT, final JsonDeserializationContext context)
@@ -95,8 +95,20 @@ public abstract class GsonModule {
         };
     }
 
+    public static <T> JsonSerializer<T> createPassThroughSerializer(final Class<T> subtype) {
+        return new JsonSerializer<T>() {
+            @Override
+            public JsonElement serialize(final T src, final Type typeOfSrc, final JsonSerializationContext context) {
+                return context.serialize(src, subtype);
+            }
+        };
+    }
+
     @Multibinds
     abstract Map<Class<?>, JsonDeserializer<?>> provideJsonDeserializerMap();
+
+    @Multibinds
+    abstract Map<Class<?>, JsonSerializer<?>> provideJsonSerializerMap();
 
     @Multibinds
     abstract Set<TypeAdapter> provideJsonDeserializers();
@@ -113,12 +125,17 @@ public abstract class GsonModule {
     @Provides
     @Singleton
     static Gson provideGson(Map<Class<?>, JsonDeserializer<?>> jsonDeserializerMap,
+            Map<Class<?>, JsonSerializer<?>> jsonSerializerMap,
             Set<TypeAdapterFactory> typeAdapterFactories,
             Set<RuntimeTypeAdapterFactory> runtimeTypeAdapterFactories) {
         GsonBuilder builder = new GsonBuilder();
 
         for (Entry<Class<?>, JsonDeserializer<?>> entry : jsonDeserializerMap.entrySet()) {
             LOGGER.debug("Registering JsonDeserializer for: {}", entry.getKey());
+            builder.registerTypeAdapter(entry.getKey(), entry.getValue());
+        }
+        for (Entry<Class<?>, JsonSerializer<?>> entry : jsonSerializerMap.entrySet()) {
+            LOGGER.debug("Registering JsonSerializer for: {}", entry.getKey());
             builder.registerTypeAdapter(entry.getKey(), entry.getValue());
         }
         for (TypeAdapterFactory typeAdapterFactory : typeAdapterFactories) {

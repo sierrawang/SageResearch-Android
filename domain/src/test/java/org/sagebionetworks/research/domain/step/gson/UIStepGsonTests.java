@@ -35,10 +35,10 @@ package org.sagebionetworks.research.domain.step.gson;
 import com.google.common.collect.ImmutableMap;
 
 import org.junit.*;
-import org.sagebionetworks.research.domain.step.Step;
+import org.sagebionetworks.research.domain.step.interfaces.Step;
+import org.sagebionetworks.research.domain.step.interfaces.UIStep;
 import org.sagebionetworks.research.domain.step.ui.ConcreteUIAction;
 import org.sagebionetworks.research.domain.step.ui.UIAction;
-import org.sagebionetworks.research.domain.step.ui.UIStep;
 
 import static org.junit.Assert.*;
 import static org.mockito.Mockito.*;

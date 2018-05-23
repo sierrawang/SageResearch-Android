@@ -39,8 +39,6 @@ import android.support.annotation.Nullable;
 
 import com.google.common.collect.ImmutableSet;
 
-import org.sagebionetworks.research.domain.step.Step;
-
 import java.lang.annotation.Retention;
 
 import static java.lang.annotation.RetentionPolicy.SOURCE;

@@ -36,7 +36,7 @@ import android.support.annotation.Nullable;
 
 import com.google.common.base.Function;
 
-import org.sagebionetworks.research.domain.step.Step;
+import org.sagebionetworks.research.domain.step.interfaces.Step;
 import org.sagebionetworks.research.presentation.model.BaseStepView;
 import org.sagebionetworks.research.presentation.model.StepView;
 import org.sagebionetworks.research.presentation.model.StepView.NavDirection;

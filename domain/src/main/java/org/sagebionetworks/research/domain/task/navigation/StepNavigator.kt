@@ -32,8 +32,8 @@
 
 package org.sagebionetworks.research.domain.task.navigation
 
-import org.sagebionetworks.research.domain.result.TaskResult
-import org.sagebionetworks.research.domain.step.Step
+import org.sagebionetworks.research.domain.result.interfaces.TaskResult
+import org.sagebionetworks.research.domain.step.interfaces.Step
 
 /**
  * RSDStepNavigator` is the model object used by the `RSDTaskController` to determine the order of

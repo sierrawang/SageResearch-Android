@@ -36,7 +36,7 @@ import android.support.annotation.CallSuper;
 import android.support.annotation.NonNull;
 
 import org.sagebionetworks.research.domain.async.AsyncAction;
-import org.sagebionetworks.research.domain.step.Step;
+import org.sagebionetworks.research.domain.step.interfaces.Step;
 import org.sagebionetworks.research.presentation.perform_task.active.async.StepChangeListener;
 
 import static com.google.common.base.Preconditions.checkNotNull;

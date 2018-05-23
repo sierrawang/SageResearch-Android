@@ -21,7 +21,6 @@ import com.google.gson.Gson;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParseException;
-import com.google.gson.JsonPrimitive;
 import com.google.gson.TypeAdapter;
 import com.google.gson.TypeAdapterFactory;
 import com.google.gson.internal.Streams;
@@ -250,9 +249,17 @@ public final class RuntimeTypeAdapterFactory<T> implements TypeAdapterFactory {
 
             @Override public void write(JsonWriter out, R value) throws IOException {
                 Class<?> srcType = value.getClass();
-                // default to using the first label. This may not always be correct, We are currently
-                // not expecting to ever write json however.
-                String label = subtypeToLabel.get(srcType).iterator().next();
+                // Because we have allowed multiple labels to map to the same type, if multiple labels are
+                // registered getting the label for a given type is ambiguous. As a result in these cases it
+                // is up to the class to store it's own type field.
+                String label = null;
+                if (subtypeToLabel.containsKey(srcType)) {
+                    Set<String> labels = subtypeToLabel.get(srcType);
+                    if (labels.size() == 1) {
+                        label = labels.iterator().next();
+                    }
+                }
+
                 @SuppressWarnings("unchecked") // registration requires that subtype extends T
                     TypeAdapter<R> delegate = (TypeAdapter<R>) subtypeToDelegate.get(srcType);
                 if (delegate == null) {
@@ -263,15 +270,17 @@ public final class RuntimeTypeAdapterFactory<T> implements TypeAdapterFactory {
                         + "; did you forget to register a subtype?");
                 }
                 JsonObject jsonObject = delegate.toJsonTree(value).getAsJsonObject();
-                if (jsonObject.has(typeFieldName)) {
-                    throw new JsonParseException("cannot serialize " + srcType.getName()
-                        + " because it already defines a field named " + typeFieldName);
-                }
                 JsonObject clone = new JsonObject();
-                clone.add(typeFieldName, new JsonPrimitive(label));
                 for (Map.Entry<String, JsonElement> e : jsonObject.entrySet()) {
                     clone.add(e.getKey(), e.getValue());
                 }
+
+                if (label != null) {
+                    // If we found a label earlier we add it to the clone.
+                    clone.remove(typeFieldName);
+                    clone.addProperty(typeFieldName, label);
+                }
+
                 Streams.write(clone, out);
             }
         }.nullSafe();

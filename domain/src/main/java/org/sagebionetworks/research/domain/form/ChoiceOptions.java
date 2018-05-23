@@ -32,6 +32,8 @@
 
 package org.sagebionetworks.research.domain.form;
 
+import org.sagebionetworks.research.domain.form.interfaces.Choice;
+
 import java.util.List;
 
 public interface ChoiceOptions<E> {
