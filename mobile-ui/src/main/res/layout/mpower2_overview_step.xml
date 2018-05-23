@@ -53,7 +53,8 @@
             android:layout_height="wrap_content"
             android:orientation="vertical">
 
-            <org.sagebionetworks.research.mobile_ui.step_views.OverviewStepHeaderView
+            <org.sagebionetworks.research.mobile_ui.widget.StepHeader
+                style="@style/Widget.ResearchStack.StepHeader.Overview"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="20dp"

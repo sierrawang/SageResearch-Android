@@ -39,8 +39,9 @@
     android:layout_margin="0dp"
     android:padding="0dp">
 
-    <org.sagebionetworks.research.mobile_ui.step_views.CompletionStepHeaderView
+    <org.sagebionetworks.research.mobile_ui.widget.StepHeader
         android:id="@+id/completionStepHeaderView"
+        style="@style/Widget.ResearchStack.StepHeader.Completion"
         android:layout_width="0dp"
         android:layout_height="0dp"
         app:layout_constraintBottom_toTopOf="@+id/navigationActionBar"

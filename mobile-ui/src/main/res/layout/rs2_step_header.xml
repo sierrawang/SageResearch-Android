@@ -47,7 +47,7 @@
 
     <ImageView
         android:id="@+id/rs2_step_header_image_view"
-        style="@style/Widget.ResearchStack.StepHeader.InfoButton"
+        style="@style/Widget.ResearchStack.StepHeader.ImageView"
         android:layout_width="0dp"
         android:layout_height="0dp"
         android:layout_margin="0dp"
