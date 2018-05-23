@@ -41,8 +41,6 @@ import com.google.common.collect.ImmutableSet;
 import com.google.gson.Gson;
 import com.google.gson.TypeAdapter;
 
-import org.sagebionetworks.research.domain.step.Step;
-
 import java.util.Collections;
 import java.util.Set;
 

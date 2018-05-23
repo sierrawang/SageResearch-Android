@@ -40,11 +40,11 @@ import com.google.common.collect.ImmutableList;
 import com.google.gson.Gson;
 
 import org.sagebionetworks.research.domain.repository.TaskRepository;
-import org.sagebionetworks.research.domain.result.TaskResult;
-import org.sagebionetworks.research.domain.step.SectionStep;
-import org.sagebionetworks.research.domain.step.SectionStepBase;
-import org.sagebionetworks.research.domain.step.Step;
-import org.sagebionetworks.research.domain.step.TransformerStep;
+import org.sagebionetworks.research.domain.result.interfaces.TaskResult;
+import org.sagebionetworks.research.domain.step.implementations.SectionStepBase;
+import org.sagebionetworks.research.domain.step.interfaces.SectionStep;
+import org.sagebionetworks.research.domain.step.interfaces.Step;
+import org.sagebionetworks.research.domain.step.interfaces.TransformerStep;
 import org.sagebionetworks.research.domain.task.Task;
 import org.sagebionetworks.research.domain.task.TaskInfo;
 import org.slf4j.Logger;
@@ -183,7 +183,6 @@ public class ResourceTaskRepository implements TaskRepository {
     }
 
     @NonNull
-    @Override
     public Completable setTaskResult(final TaskResult taskResult) {
         return Completable.error(new UnsupportedOperationException("Not implemented"));
     }

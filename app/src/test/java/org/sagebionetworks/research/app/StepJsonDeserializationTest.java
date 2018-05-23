@@ -33,8 +33,8 @@
 package org.sagebionetworks.research.app;
 
 import org.junit.*;
-import org.sagebionetworks.research.domain.step.Step;
-import org.sagebionetworks.research.domain.step.ui.ActiveUIStep;
+import org.sagebionetworks.research.domain.step.interfaces.ActiveUIStep;
+import org.sagebionetworks.research.domain.step.interfaces.Step;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

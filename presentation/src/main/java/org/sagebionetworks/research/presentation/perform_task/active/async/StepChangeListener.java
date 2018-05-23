@@ -34,7 +34,7 @@ package org.sagebionetworks.research.presentation.perform_task.active.async;
 
 import android.support.annotation.NonNull;
 
-import org.sagebionetworks.research.domain.step.Step;
+import org.sagebionetworks.research.domain.step.interfaces.Step;
 
 /**
  * Created by liujoshua on 10/11/2017.

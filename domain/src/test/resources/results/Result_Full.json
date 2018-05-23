@@ -1,0 +1,8 @@
+{
+  "type":"base",
+  "data": {
+    "identifier": "result",
+    "startTime": "1970-01-01T00:00:20Z",
+    "endTime": "1970-01-01T00:00:30Z"
+  }
+}

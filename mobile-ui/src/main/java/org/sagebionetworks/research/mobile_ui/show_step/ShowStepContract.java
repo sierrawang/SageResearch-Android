@@ -35,7 +35,7 @@ package org.sagebionetworks.research.mobile_ui.show_step;
 import android.support.annotation.Keep;
 import android.support.annotation.Nullable;
 
-import org.sagebionetworks.research.domain.result.Result;
+import org.sagebionetworks.research.domain.result.interfaces.Result;
 import org.sagebionetworks.research.domain.step.ui.UIActionType;
 import org.sagebionetworks.research.mobile_ui.BasePresenter;
 import org.sagebionetworks.research.mobile_ui.BaseView;

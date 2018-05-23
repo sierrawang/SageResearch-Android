@@ -37,16 +37,15 @@ import com.google.common.reflect.TypeToken;
 import com.google.gson.JsonDeserializer;
 
 import org.sagebionetworks.research.domain.RuntimeTypeAdapterFactory;
-import org.sagebionetworks.research.domain.form.Choice;
-import org.sagebionetworks.research.domain.form.ChoiceBase;
-import org.sagebionetworks.research.domain.form.ChoiceInputField;
-import org.sagebionetworks.research.domain.form.DataTypes.BaseInputDataType;
 import org.sagebionetworks.research.domain.form.DataTypes.BaseInputDataType.BaseType;
 import org.sagebionetworks.research.domain.form.DataTypes.CollectionInputDataType;
 import org.sagebionetworks.research.domain.form.DataTypes.CollectionInputDataType.CollectionType;
 import org.sagebionetworks.research.domain.form.DataTypes.InputDataType;
-import org.sagebionetworks.research.domain.form.InputField;
-import org.sagebionetworks.research.domain.form.InputFieldBase;
+import org.sagebionetworks.research.domain.form.implementations.ChoiceBase;
+import org.sagebionetworks.research.domain.form.implementations.ChoiceInputField;
+import org.sagebionetworks.research.domain.form.implementations.InputFieldBase;
+import org.sagebionetworks.research.domain.form.interfaces.Choice;
+import org.sagebionetworks.research.domain.form.interfaces.InputField;
 import org.sagebionetworks.research.domain.inject.GsonModule.ClassKey;
 import org.sagebionetworks.research.domain.step.ui.ConcreteUIAction;
 import org.sagebionetworks.research.domain.step.ui.UIAction;
@@ -75,15 +74,28 @@ public class InputFieldsModule {
     @Provides
     @IntoMap
     @ClassKey(InputDataType.class)
-    static JsonDeserializer<?> provideInputDataTypeClassInfo() {
+    static JsonDeserializer<?> provideInputDataTypeDeserializer() {
         return InputDataType.getJsonDeserializer();
     }
 
     @Provides
     @IntoMap
     @ClassKey(UIAction.class)
-    static JsonDeserializer<?> providedUIActionClassInfo() {
+    static JsonDeserializer<?> providedUIActionDeserializer() {
         return createPassThroughDeserializer(ConcreteUIAction.class);
+    }
+
+    @Provides
+    @IntoMap
+    @ClassKey(BaseType.class)
+    static Map<String, Class<?>> provideBaseTypeClassMap() {
+        Map<String, Class<?>> classMap = new HashMap<>();
+        classMap.put(BaseType.BOOLEAN, Boolean.class);
+        classMap.put(BaseType.STRING, String.class);
+        classMap.put(BaseType.INTEGER, Integer.class);
+        classMap.put(BaseType.DECIMAL, Double.class);
+        classMap.put(BaseType.DURATION, Double.class);
+        return classMap;
     }
 
     /**
@@ -91,16 +103,17 @@ public class InputFieldsModule {
      */
     @Provides
     @IntoSet
-    static RuntimeTypeAdapterFactory provideType() {
+    static RuntimeTypeAdapterFactory provideType(Map<Class<?>, Map<String, Class<?>>> classMap) {
         RuntimeTypeAdapterFactory<InputField> typeAdapterFactory = RuntimeTypeAdapterFactory.of(InputField.class,
                 InputField.KEY_TYPE);
+        Map<String, Class<?>> baseClassMap = classMap.get(BaseType.class);
         Map<String, Type> choiceInputFieldTypes = new HashMap<>();
         for (String collectionType : CollectionType.ALL) {
             // A collection type with no base type corresponds to a raw ChoiceInputField.
             choiceInputFieldTypes.put(collectionType, ChoiceInputField.class);
             for (String baseType : BaseType.ALL) {
                 // We either use the registered class for the base type, or just use a raw ChoiceInputField.
-                Type type = BaseInputDataType.CLASSES.get(baseType);
+                Type type = baseClassMap.get(baseType);
                 if (type != null) {
                     type = createChoiceInputFieldTypeToken(TypeToken.of(type)).getType();
                 } else {

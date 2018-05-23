@@ -32,7 +32,7 @@
 
 package org.sagebionetworks.research.domain.step.ui.action;
 
-import org.sagebionetworks.research.domain.step.Step;
+import org.sagebionetworks.research.domain.step.interfaces.Step;
 
 import java.util.Optional;
 

@@ -35,8 +35,8 @@ package org.sagebionetworks.research.domain.form.DataTypes;
 import android.support.annotation.StringDef;
 
 import com.google.common.base.Objects;
-import com.google.common.collect.ImmutableMap;
-import com.google.common.collect.ImmutableMap.Builder;
+
+import org.sagebionetworks.research.domain.interfaces.HashCodeHelper;
 
 import org.sagebionetworks.research.domain.interfaces.HashCodeHelper;
 
@@ -51,22 +51,7 @@ public class BaseInputDataType extends InputDataType {
     private final String baseType;
 
     /**
-     * This map is used to map BaseType values to the Java classes that represent them.
-     * Any value left out of the map will be deserialized in the default way, which may
-     * not be correct.
-     */
-    public static final ImmutableMap<String, Class> CLASSES;
-    static {
-        ImmutableMap.Builder<String, Class> builder = new Builder<>();
-        builder.put(BaseType.BOOLEAN, Boolean.class);
-        builder.put(BaseType.DECIMAL, Double.class);
-        builder.put(BaseType.INTEGER, Integer.class);
-        builder.put(BaseType.STRING, String.class);
-        CLASSES = builder.build();
-    }
-
-    /**
-     * Default initilizer for gson.
+     * Default initializer for gson.
      */
     public BaseInputDataType() {
         super();

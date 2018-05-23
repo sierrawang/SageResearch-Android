@@ -33,10 +33,10 @@
 package org.sagebionetworks.research.domain.step.gson;
 
 import org.junit.*;
-import org.sagebionetworks.research.domain.step.SectionStep;
-import org.sagebionetworks.research.domain.step.Step;
-import org.sagebionetworks.research.domain.step.ui.ActiveUIStep;
-import org.sagebionetworks.research.domain.step.ui.UIStep;
+import org.sagebionetworks.research.domain.step.interfaces.ActiveUIStep;
+import org.sagebionetworks.research.domain.step.interfaces.SectionStep;
+import org.sagebionetworks.research.domain.step.interfaces.Step;
+import org.sagebionetworks.research.domain.step.interfaces.UIStep;
 
 import java.util.List;
 

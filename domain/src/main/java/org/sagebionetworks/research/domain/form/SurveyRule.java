@@ -36,7 +36,7 @@ import android.support.annotation.Nullable;
 
 import com.google.common.collect.ImmutableSet;
 
-import org.sagebionetworks.research.domain.result.Result;
+import org.sagebionetworks.research.domain.result.interfaces.Result;
 
 public interface SurveyRule {
     /**

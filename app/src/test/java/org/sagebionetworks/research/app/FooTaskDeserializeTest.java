@@ -36,10 +36,10 @@ package org.sagebionetworks.research.app;
 import com.google.common.collect.ImmutableMap;
 
 import org.junit.*;
-import org.sagebionetworks.research.domain.step.Step;
-import org.sagebionetworks.research.domain.step.ui.ActiveUIStep;
+import org.sagebionetworks.research.domain.step.interfaces.ActiveUIStep;
+import org.sagebionetworks.research.domain.step.interfaces.FormUIStep;
+import org.sagebionetworks.research.domain.step.interfaces.Step;
 import org.sagebionetworks.research.domain.step.ui.ConcreteUIAction;
-import org.sagebionetworks.research.domain.step.ui.FormUIStep;
 import org.sagebionetworks.research.domain.task.Task;
 
 import java.io.IOException;

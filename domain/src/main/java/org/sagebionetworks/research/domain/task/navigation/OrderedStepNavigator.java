@@ -39,8 +39,8 @@ import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.ImmutableMap.Builder;
 
-import org.sagebionetworks.research.domain.result.TaskResult;
-import org.sagebionetworks.research.domain.step.Step;
+import org.sagebionetworks.research.domain.result.interfaces.TaskResult;
+import org.sagebionetworks.research.domain.step.interfaces.Step;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

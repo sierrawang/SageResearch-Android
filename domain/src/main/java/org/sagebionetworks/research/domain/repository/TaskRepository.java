@@ -35,12 +35,10 @@ package org.sagebionetworks.research.domain.repository;
 import android.support.annotation.CheckResult;
 import android.support.annotation.NonNull;
 
-import org.sagebionetworks.research.domain.result.TaskResult;
+import org.sagebionetworks.research.domain.result.interfaces.TaskResult;
 import org.sagebionetworks.research.domain.task.Task;
 import org.sagebionetworks.research.domain.task.TaskInfo;
 
-import java.io.IOException;
-import java.io.InputStreamReader;
 import java.util.UUID;
 
 import io.reactivex.Completable;

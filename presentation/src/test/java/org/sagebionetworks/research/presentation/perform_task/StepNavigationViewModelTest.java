@@ -38,8 +38,8 @@ import android.arch.lifecycle.Observer;
 
 import org.junit.*;
 import org.mockito.*;
-import org.sagebionetworks.research.domain.result.TaskResult;
-import org.sagebionetworks.research.domain.step.Step;
+import org.sagebionetworks.research.domain.result.interfaces.TaskResult;
+import org.sagebionetworks.research.domain.step.interfaces.Step;
 import org.sagebionetworks.research.domain.task.navigation.StepNavigator;
 
 import static org.mockito.Mockito.*;
@@ -52,8 +52,6 @@ public class StepNavigationViewModelTest {
 
     @Mock
     private StepNavigator stepNavigator;
-
-    private TaskResult.Builder taskResultBuilder;
 
     private MutableLiveData<TaskResult> taskResultMutableLiveData;
 

@@ -37,16 +37,11 @@ import android.support.annotation.StringDef;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 
-@StringDef({
-    ResultType.BASE,
-    ResultType.ANSWER,
-    ResultType.COLLECTION,
-    ResultType.MEDICATION,
-    ResultType.SELECTION,
-    ResultType.TASK,
-    ResultType.FILE,
-    ResultType.ERROR
-})
+/**
+ * This interface defines the different type of results, used for polymorphic deserialization with gson.
+ */
+@StringDef({ResultType.BASE, ResultType.ANSWER, ResultType.COLLECTION, ResultType.MEDICATION, ResultType.SELECTION,
+        ResultType.TASK, ResultType.FILE, ResultType.ERROR})
 @Retention(RetentionPolicy.SOURCE)
 public @interface ResultType {
     String BASE = "base";

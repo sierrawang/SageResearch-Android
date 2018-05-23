@@ -32,7 +32,7 @@
 
 package org.sagebionetworks.research.domain.task.navigation.strategy
 
-import org.sagebionetworks.research.domain.result.TaskResult
+import org.sagebionetworks.research.domain.result.interfaces.TaskResult
 
 /**
  * Navigation rules that can be implemented by a step, which will be used by the conditional step navigator.

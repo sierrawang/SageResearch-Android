@@ -34,8 +34,8 @@ package org.sagebionetworks.research.mobile_ui.show_step;
 
 import android.support.annotation.Nullable;
 
-import org.sagebionetworks.research.domain.result.Result;
-import org.sagebionetworks.research.domain.result.TaskResult;
+import org.sagebionetworks.research.domain.result.interfaces.Result;
+import org.sagebionetworks.research.domain.result.interfaces.TaskResult;
 import org.sagebionetworks.research.domain.task.navigation.strategy.StepNavigationStrategy;
 import org.sagebionetworks.research.mobile_ui.show_step.ShowStepContract.View;
 import org.sagebionetworks.research.presentation.perform_task.PerformTaskViewModel;

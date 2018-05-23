@@ -8,11 +8,10 @@ import com.google.common.collect.ImmutableSet;
 
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-import org.sagebionetworks.research.domain.result.Result;
-import org.sagebionetworks.research.domain.result.TaskResult;
-import org.sagebionetworks.research.domain.step.SectionStep;
-import org.sagebionetworks.research.domain.step.Step;
-import org.sagebionetworks.research.domain.task.Task;
+import org.sagebionetworks.research.domain.result.interfaces.Result;
+import org.sagebionetworks.research.domain.result.interfaces.TaskResult;
+import org.sagebionetworks.research.domain.step.interfaces.SectionStep;
+import org.sagebionetworks.research.domain.step.interfaces.Step;
 
 import java.util.ArrayList;
 import java.util.HashSet;

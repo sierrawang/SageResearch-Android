@@ -32,27 +32,23 @@
 
 package org.sagebionetworks.research.domain.inject;
 
-import com.google.common.reflect.TypeToken;
-import com.google.gson.JsonDeserializationContext;
 import com.google.gson.JsonDeserializer;
-import com.google.gson.JsonElement;
-import com.google.gson.JsonParseException;
 
 import org.sagebionetworks.research.domain.RuntimeTypeAdapterFactory;
 import org.sagebionetworks.research.domain.inject.GsonModule.ClassKey;
-import org.sagebionetworks.research.domain.step.ActiveUIStepBase;
-import org.sagebionetworks.research.domain.step.FormUIStepBase;
-import org.sagebionetworks.research.domain.step.SectionStep;
-import org.sagebionetworks.research.domain.step.SectionStepBase;
-import org.sagebionetworks.research.domain.step.Step;
-import org.sagebionetworks.research.domain.step.TransformerStep;
-import org.sagebionetworks.research.domain.step.TransformerStepBase;
-import org.sagebionetworks.research.domain.step.UIStepBase;
-import org.sagebionetworks.research.domain.step.ui.ActiveUIStep;
-import org.sagebionetworks.research.domain.step.ui.FormUIStep;
-import org.sagebionetworks.research.domain.step.ui.UIStep;
+import org.sagebionetworks.research.domain.step.implementations.ActiveUIStepBase;
+import org.sagebionetworks.research.domain.step.implementations.FormUIStepBase;
+import org.sagebionetworks.research.domain.step.implementations.SectionStepBase;
+import org.sagebionetworks.research.domain.step.implementations.TransformerStepBase;
+import org.sagebionetworks.research.domain.step.implementations.UIStepBase;
+import org.sagebionetworks.research.domain.step.interfaces.ActiveUIStep;
+import org.sagebionetworks.research.domain.step.interfaces.FormUIStep;
+import org.sagebionetworks.research.domain.step.interfaces.SectionStep;
+import org.sagebionetworks.research.domain.step.interfaces.Step;
+import org.sagebionetworks.research.domain.step.interfaces.TransformerStep;
+import org.sagebionetworks.research.domain.step.interfaces.UIStep;
 
-import java.lang.reflect.Type;
+
 import java.util.Map;
 import java.util.Map.Entry;
 

@@ -34,7 +34,7 @@ package org.sagebionetworks.research.domain.presentation.show_step;
 
 import android.arch.lifecycle.LiveData;
 import org.sagebionetworks.research.domain.step.StepAction;
-import org.sagebionetworks.research.domain.step.Step;
+import org.sagebionetworks.research.domain.step.interfaces.Step;
 
 import java.util.Set;
 
