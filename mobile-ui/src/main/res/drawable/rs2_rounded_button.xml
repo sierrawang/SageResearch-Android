@@ -1,3 +1,4 @@
+<?xml version="1.0" encoding="utf-8"?>
 <!--
   ~ BSD 3-Clause License
   ~
@@ -30,21 +31,12 @@
   ~ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
   -->
 
-<resources>
-    <!-- Base application theme. -->
-    <style name="AppTheme" parent="Theme.AppCompat.Light.DarkActionBar">
-        <!-- Customize your theme here. -->
-        <item name="colorPrimary">@color/colorPrimary</item>
-        <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
-        <item name="colorAccent">@color/colorAccent</item>
-    </style>
-
-    <!--
-    <style name="Widget.ResearchStack.NavigationActionBar" parent="">
-        <item name="positiveActionTitle">@string/rs2_navigation_action_forward</item>
-        <item name="negativeActionTitle">@string/rs2_navigation_action_backward</item>
-        <item name="positiveActionColor">@color/colorAccent</item>
-        <item name="negativeActionColor">@color/colorAccent</item>
-    </style>
-    -->
-</resources>
+<layer-list xmlns:android="http://schemas.android.com/apk/res/android">
+    <item android:id="@android:id/background">
+        <shape>
+            <solid android:color="@color/butterscotch500"/>
+            <corners
+                android:radius="@dimen/rs2_completely_rounded_corner_radius"/>
+        </shape>
+    </item>
+</layer-list>

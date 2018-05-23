@@ -32,15 +32,15 @@
   -->
 
 <resources>
-    <declare-styleable name="CustomActionButton">
-
-    </declare-styleable>
-
     <declare-styleable name="ResearchStack">
         <attr name="navigationActionBar" format="reference"/>
     </declare-styleable>
+
     <declare-styleable name="CustomTheme">
         <attr name="customActionButtonStyle" format="reference"/>
     </declare-styleable>
 
+    <declare-styleable name="genericFooterView">
+        <attr name="instructionStepFooterView" format="reference"/>
+    </declare-styleable>
 </resources>
