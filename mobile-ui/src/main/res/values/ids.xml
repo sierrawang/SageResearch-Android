@@ -37,13 +37,12 @@
     <id name="rs2_step_navigation_action_skip" />
     <id name="rs2_step_navigation_shadow"/>
     <!-- Step Header -->
-    <id name="rs2_step_header_image_view"/>
     <id name="rs2_step_header_cancel_button"/>
     <id name="rs2_step_header_info_button"/>
     <id name="rs2_step_header_progress_label"/>
     <id name="rs2_step_header_progress_bar"/>
-    <id name="rs2_step_header_title_label"/>
-    <id name="rs2_step_header_text_label"/>
+    <id name="rs2_step_header_progress_bar_floating"/>
+    <id name="rs2_step_header_action_button_group"/>
 
     <id name="title" />
     <id name="description" />

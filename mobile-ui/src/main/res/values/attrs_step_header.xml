@@ -35,7 +35,8 @@
     <declare-styleable name="StepHeader">
         <attr name="isCancelButtonHidden" format="boolean"/>
         <attr name="isInfoButtonHidden" format="boolean"/>
-        <attr name="isProgressHidden" format="boolean"/>
-        <attr name="textGravity" format="integer"/>
+        <attr name="isProgressBarHidden" format="boolean"/>
+        <attr name="isProgressLabelHidden" format="boolean"/>
+        <attr name="usesFloatingProgressBar" format="boolean"/>
     </declare-styleable>
 </resources>

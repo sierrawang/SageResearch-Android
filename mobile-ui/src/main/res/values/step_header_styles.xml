@@ -44,6 +44,11 @@
         <item name="android:progressDrawable">@drawable/progress_bar</item>
     </style>
 
+    <style name="Widget.ResearchStack.StepHeader.ProgressBar.Floating"
+        parent="Widget.AppCompat.ProgressBar.Horizontal">
+        <item name="android:progressDrawable">@drawable/progress_bar_floating</item>
+    </style>
+
     <style name="Widget.ResearchStack.StepHeader.ImageView" parent="">
         <item name="android:scaleType">fitXY</item>
     </style>
@@ -59,31 +64,5 @@
         <item name="android:textSize">18sp</item>
         <item name="android:fontFamily">@font/lato</item>
         <item name="android:textColor">@color/appTextDark</item>
-    </style>
-
-    <style name="Widget.ResearchStack.StepHeader" parent="">
-        <item name="isProgressHidden">false</item>
-        <item name="isCancelButtonHidden">false</item>
-        <item name="isInfoButtonHidden">false</item>
-        <item name="textGravity">@integer/gravity_start</item>
-    </style>
-
-    <style name="Widget.ResearchStack.StepHeader.Instruction"
-        parent="Widget.ResearchStack.StepHeader">
-        <item name="isInfoButtonHidden">true</item>
-    </style>
-
-    <style name="Widget.ResearchStack.StepHeader.Completion"
-        parent="Widget.ResearchStack.StepHeader">
-        <item name="isCancelButtonHidden">true</item>
-        <item name="isInfoButtonHidden">true</item>
-        <item name="isProgressHidden">true</item>
-        <item name="textGravity">@integer/gravity_center</item>
-    </style>
-
-    <style name="Widget.ResearchStack.StepHeader.Overview"
-        parent="Widget.ResearchStack.StepHeader">
-        <item name="isProgressHidden">true</item>
-        <item name="textGravity">@integer/gravity_center</item>
     </style>
 </resources>

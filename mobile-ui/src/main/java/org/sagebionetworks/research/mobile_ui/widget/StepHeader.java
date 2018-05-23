@@ -46,6 +46,7 @@ import android.widget.TextView;
 
 import org.sagebionetworks.research.domain.mobile_ui.R;
 import org.sagebionetworks.research.domain.mobile_ui.R2;
+import org.sagebionetworks.research.domain.mobile_ui.R2.id;
 import org.sagebionetworks.research.mobile_ui.widget.NavigationActionBar.ActionButtonClickListener;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -57,31 +58,12 @@ import butterknife.Unbinder;
 
 public class StepHeader extends ConstraintLayout {
     private static final Logger LOGGER = LoggerFactory.getLogger(StepHeader.class);
-
-    private enum TextGravityEnum {
-        LEFT(0), RIGHT(1), CENTER(2);
-        int id;
-
-        TextGravityEnum(int id) {
-            this.id = id;
-        }
-
-        static TextGravityEnum fromId(int id) {
-            for (TextGravityEnum value : values()) {
-                if (value.id == id) return value;
-            }
-            throw new IllegalArgumentException();
-        }
-    }
-
     private boolean isInfoButtonHidden;
-    private boolean isProgressHidden;
+    private boolean isProgressLabelHidden;
+    private boolean isProgressBarHidden;
     private boolean isCancelButtonHidden;
-    private int textGravity;
+    private boolean usesFloatingProgressBar;
 
-    @BindView(R2.id.rs2_step_header_image_view)
-    @NonNull
-    ImageView imageView;
     @BindView(R2.id.rs2_step_header_cancel_button)
     @NonNull
     ActionButton cancelButton;
@@ -94,12 +76,12 @@ public class StepHeader extends ConstraintLayout {
     @BindView(R2.id.rs2_step_header_progress_bar)
     @NonNull
     ProgressBar progressBar;
-    @BindView(R2.id.rs2_step_header_title_label)
+    @BindView(R2.id.rs2_step_header_progress_bar_floating)
     @NonNull
-    TextView titleLabel;
-    @BindView(R2.id.rs2_step_header_text_label)
+    ProgressBar progressBarFloating;
+    @BindView(R2.id.rs2_step_header_action_button_group)
     @NonNull
-    TextView textLabel;
+    ConstraintLayout actionButtonGroup;
 
     @NonNull
     private Unbinder unbinder;
@@ -163,22 +145,36 @@ public class StepHeader extends ConstraintLayout {
             this.infoButton.setVisibility(View.GONE);
         }
 
-        if (this.isProgressHidden) {
+        // We hide both progress bars whenever isProgressBarHidden is true.
+        if (this.isProgressBarHidden) {
             this.progressBar.setVisibility(View.GONE);
+            this.progressBarFloating.setVisibility(View.GONE);
+        }
+
+        if (this.isProgressLabelHidden) {
             this.progressLabel.setVisibility(View.GONE);
         }
 
-        this.titleLabel.setGravity(this.textGravity);
-        this.textLabel.setGravity(this.textGravity);
+        // If we are using the floating progress bar we hide both non-floating progress views, otherwise
+        // if we also aren't using the cancel and info buttons we hide the entire action button group.
+        if (this.usesFloatingProgressBar) {
+            this.progressBar.setVisibility(View.GONE);
+            this.progressLabel.setVisibility(View.GONE);
+        } else {
+            this.progressBarFloating.setVisibility(View.GONE);
+            if (this.isCancelButtonHidden && this.isInfoButtonHidden) {
+                this.actionButtonGroup.setVisibility(View.GONE);
+            }
+        }
     }
 
     protected void getAttributes(@Nullable final AttributeSet attrs) {
         TypedArray a = this.getContext().obtainStyledAttributes(attrs, R.styleable.StepHeader);
         this.isInfoButtonHidden = a.getBoolean(R.styleable.StepHeader_isInfoButtonHidden, false);
-        this.isProgressHidden = a.getBoolean(R.styleable.StepHeader_isProgressHidden, false);
+        this.isProgressBarHidden = a.getBoolean(R.styleable.StepHeader_isProgressBarHidden, false);
+        this.isProgressLabelHidden = a.getBoolean(R.styleable.StepHeader_isProgressLabelHidden, false);
         this.isCancelButtonHidden = a.getBoolean(R.styleable.StepHeader_isCancelButtonHidden, false);
-        // The default behavior for the text gravity will be to have it be left aligned.
-        this.textGravity = a.getInt(R.styleable.StepHeader_textGravity, Gravity.START);
+        this.usesFloatingProgressBar = a.getBoolean(R.styleable.StepHeader_usesFloatingProgressBar, false);
         a.recycle();
     }
 }
