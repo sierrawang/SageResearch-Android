@@ -41,9 +41,11 @@
     <org.sagebionetworks.research.mobile_ui.widget.NavigationActionBar
         android:id="@+id/navigationActionBar"
         style="@style/Widget.ResearchStack.NavigationActionBar.Instruction"
-        android:layout_width="411dp"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
-        tools:layout_editor_absoluteY="521dp" />
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent" />
 
     <ScrollView
         android:id="@+id/scrollView"
