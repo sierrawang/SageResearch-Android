@@ -33,6 +33,7 @@
 
 <android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
@@ -51,37 +52,77 @@
             android:id="@+id/contentView"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="vertical">
+            android:layout_marginBottom="0dp"
+            android:orientation="vertical"
+            android:paddingBottom="20dp">
+
+            <ImageView
+                android:id="@+id/imageView"
+                android:layout_width="0dp"
+                android:layout_height="0dp"
+                android:scaleType="fitXY"
+                app:layout_constraintDimensionRatio="H,3280:3620"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHorizontal_bias="0.0"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                app:srcCompat="@drawable/f_walking1" />
 
             <org.sagebionetworks.research.mobile_ui.widget.StepHeader
-                android:id="@+id/stepHeader"
+                style="@style/Widget.ResearchStack.StepHeader.Overview"
+                android:layout_width="0dp"
+                android:layout_height="0dp"
+                app:layout_constraintBottom_toBottomOf="@id/imageView"
+                app:layout_constraintEnd_toEndOf="@id/imageView"
+                app:layout_constraintStart_toStartOf="@id/imageView"
+                app:layout_constraintTop_toTopOf="@id/imageView" />
+
+            <include
+                android:id="@+id/stepBody"
+                layout="@layout/rs2_step_body"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:layout_marginBottom="20dp"
-                app:layout_constraintBottom_toBottomOf="parent"
+                android:layout_marginTop="20dp"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent">
-            </org.sagebionetworks.research.mobile_ui.widget.StepHeader>
+                app:layout_constraintTop_toBottomOf="@id/imageView" />
+
             <TextView
-                android:layout_width="100dp"
-                android:layout_height="100dp"
-                android:text="Hello world"
-                app:layout_constraintStart_toStartOf="parent"
+                android:id="@+id/overallIconDescriptionLabel"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="28dp"
+                android:layout_marginRight="28dp"
+                android:layout_marginTop="20dp"
+                android:gravity="center"
+                android:text="This is what you'll need"
                 app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/stepHeader"
-                app:layout_constraintHorizontal_bias=".5"/>
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/stepBody" />
+
+            <include
+                android:id="@+id/iconView"
+                layout="@layout/mpower2_icon_view"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="28dp"
+                android:layout_marginRight="28dp"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/overallIconDescriptionLabel" />
+
         </android.support.constraint.ConstraintLayout>
     </ScrollView>
 
     <org.sagebionetworks.research.mobile_ui.widget.NavigationActionBar
         android:id="@+id/navigationActionBar"
+        style="@style/Widget.ResearchStack.NavigationActionBar.Overview"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/scrollView" />
+
 
 </android.support.constraint.ConstraintLayout>

@@ -86,9 +86,6 @@
         parent="Widget.ResearchStack.NavigationActionBar">
         <item name="isBackwardHidden">true</item>
         <item name="isSkipAllowed">false</item>
-        <item name="primaryActionColor">@color/appWhite</item>
-        <item name="skipActionColor">@color/appWhite</item>
-        <item name="android:background">@color/transparent</item>
     </style>
 
     <style name="Widget.ResearchStack.NavigationActionBar.Completion"

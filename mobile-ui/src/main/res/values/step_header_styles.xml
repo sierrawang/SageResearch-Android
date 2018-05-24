@@ -53,16 +53,22 @@
         <item name="android:scaleType">fitXY</item>
     </style>
 
-    <style name="Widget.ResearchStack.StepHeader.TitleLabel" parent="">
-        <item name="android:textSize">24sp</item>
-        <item name="android:fontFamily">@font/lato</item>
-        <item name="android:textStyle">bold</item>
-        <item name="android:textColor">@color/appTextDark</item>
+    <style name="Widget.ResearchStack.StepHeader" parent="">
+        <item name="isCancelButtonHidden">false</item>
+        <item name="isInfoButtonHidden">false</item>
+        <item name="isProgressBarHidden">false</item>
+        <item name="isProgressLabelHidden">false</item>
+        <item name="usesFloatingProgressBar">false</item>
     </style>
 
-    <style name="Widget.ResearchStack.StepHeader.TextLabel" parent="">
-        <item name="android:textSize">18sp</item>
-        <item name="android:fontFamily">@font/lato</item>
-        <item name="android:textColor">@color/appTextDark</item>
+    <style name="Widget.ResearchStack.StepHeader.Instruction"
+        parent="Widget.ResearchStack.StepHeader">
+        <item name="isInfoButtonHidden">true</item>
+    </style>
+
+    <style name="Widget.ResearchStack.StepHeader.Overview"
+        parent="Widget.ResearchStack.StepHeader">
+        <item name="isProgressBarHidden">true</item>
+        <item name="isProgressLabelHidden">true</item>
     </style>
 </resources>

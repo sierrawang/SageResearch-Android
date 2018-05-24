@@ -42,38 +42,41 @@
     <ImageView
         android:id="@+id/imageView"
         android:layout_width="0dp"
-        android:layout_height="wrap_content"
+        android:layout_height="0dp"
         android:background="@drawable/completion_background_gradient"
         android:scaleType="center"
+        app:layout_constrainedHeight="true"
+        app:layout_constraintBottom_toTopOf="@+id/include"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHeight_max="350dp"
-        app:layout_constraintHeight_min="250dp"
+        app:layout_constraintHorizontal_bias="0.5"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:srcCompat="@drawable/ic_tremor_large_complete_oncolor"
-        app:layout_constrainedHeight="true" />
+        app:layout_constraintVertical_chainStyle="spread_inside"
+        app:srcCompat="@drawable/ic_tremor_large_complete_oncolor" />
 
     <include
+        android:id="@+id/include"
         layout="@layout/rs2_step_body"
         android:layout_width="0dp"
-        android:layout_height="0dp"
+        android:layout_height="wrap_content"
         android:layout_marginBottom="20dp"
         android:layout_marginTop="20dp"
-        app:layout_constraintBottom_toTopOf="@id/navigationActionBar"
+        app:layout_constraintBottom_toTopOf="@+id/navigationActionBar"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintHorizontal_bias="0.5"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/imageView" />
+        app:layout_constraintTop_toBottomOf="@+id/imageView" />
 
     <org.sagebionetworks.research.mobile_ui.widget.NavigationActionBar
         android:id="@+id/navigationActionBar"
+        style="@style/Widget.ResearchStack.NavigationActionBar.Completion"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:isScrollContainer="false"
         app:isShadowHidden="true"
+        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintBottom_toBottomOf="parent"/>
+        app:layout_constraintStart_toStartOf="parent" />
 
 
 </android.support.constraint.ConstraintLayout>
