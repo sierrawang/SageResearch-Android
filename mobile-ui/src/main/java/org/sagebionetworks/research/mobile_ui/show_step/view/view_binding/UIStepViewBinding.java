@@ -40,6 +40,8 @@ import android.widget.TextView;
 
 import org.sagebionetworks.research.domain.mobile_ui.R2.id;
 import org.sagebionetworks.research.mobile_ui.widget.NavigationActionBar;
+import org.sagebionetworks.research.mobile_ui.widget.NavigationActionBar.ActionButtonClickListener;
+import org.sagebionetworks.research.mobile_ui.widget.StepHeader;
 
 import butterknife.BindView;
 import javax.annotation.Nullable;
@@ -47,7 +49,7 @@ import javax.annotation.Nullable;
 /**
  *  A UIStepViewBinding stores the various views that a step view may contain. Supported Views are:
  *      NOTE: the format for these is ID : TYPE - DESCRIPTION.
- *      - stepHeader : View - The header view for this view.
+ *      - stepHeader : StepHeader - The header view for this view.
  *      - stepBody : View - The body view for this view, usually has the majority of the content.
  *      - naigationActionBar : NavigationActionBar - Contains navigation action buttons (forward, backward, skip).
  *      - imageView : ImageView - The view to display an images for the step on.
@@ -70,7 +72,7 @@ public class UIStepViewBinding {
      */
     @Nullable
     @BindView(id.stepHeader)
-    public View stepHeader;
+    public StepHeader stepHeader;
 
     /**
      * Views can optionally have a body view. This view generally contains the main content for the step such as
@@ -175,4 +177,19 @@ public class UIStepViewBinding {
     @Nullable
     @BindView(id.skipButton)
     public Button skipButton;
+
+    /**
+     * Sets the ActionButtonClickListener to the given listener on all of the components that can handle a
+     * listener. Subclasses which add more ActionButtons should override this method.
+     * @param actionButtonClickListenenr The new listener to use for all of the components that can handle one.
+     */
+    public void setActionButtonClickListener(ActionButtonClickListener actionButtonClickListenenr) {
+        if (this.navigationActionBar != null) {
+            this.navigationActionBar.setActionButtonClickListener(actionButtonClickListenenr);
+        }
+
+        if (this.stepHeader != null) {
+            this.stepHeader.setActionButtonClickListener(actionButtonClickListenenr);
+        }
+    }
 }

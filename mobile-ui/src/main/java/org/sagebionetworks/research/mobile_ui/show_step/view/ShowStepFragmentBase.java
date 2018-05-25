@@ -60,8 +60,13 @@ import javax.inject.Inject;
 
 import static com.google.common.base.Preconditions.checkNotNull;
 
-public abstract class ShowStepFragmentBase
-        <S extends StepView, VM extends ShowStepViewModel<S>> extends Fragment {
+/**
+ * A ShowStepFragmentBase implements the functionality common to showing all step fragments in terms of
+ * four other unknown operations (instantiateBinding, getLayoutID, handleActionButtonClick, and update).
+ * @param <S> The type of StepView that this fragment uses.
+ * @param <VM> The type of StepViewModel that this fragment uses.
+ */
+public abstract class ShowStepFragmentBase<S extends StepView, VM extends ShowStepViewModel<S>> extends Fragment {
     private static final Logger LOGGER = LoggerFactory.getLogger(ShowStepFragmentBase.class);
     private static final String ARGUMENT_STEP_VIEW = "STEP_VIEW";
 
@@ -107,7 +112,7 @@ public abstract class ShowStepFragmentBase
 
         S stepViewArg = null;
         if (getArguments() != null) {
-            stepViewArg = getArguments().getParcelable(ARGUMENT_STEP_VIEW);
+            stepViewArg = this.getArguments().getParcelable(ARGUMENT_STEP_VIEW);
         }
 
         //noinspection unchecked
@@ -121,19 +126,17 @@ public abstract class ShowStepFragmentBase
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
             Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        View view = inflater.inflate(getLayoutId(), container, false);
+        View view = inflater.inflate(this.getLayoutId(), container, false);
         this.stepViewBinding = this.instantiateBinding();
         this.stepViewUnbinder = ButterKnife.bind(this.stepViewBinding, view);
-        this.stepViewBinding.navigationActionBar
-                .setActionButtonClickListener(this::handleActionButtonClick);
-
+        this.stepViewBinding.setActionButtonClickListener(this::handleActionButtonClick);
         return view;
     }
 
     @Override
     public void onDestroyView() {
         super.onDestroyView();
-        stepViewUnbinder.unbind();
+        this.stepViewUnbinder.unbind();
     }
 
     /**
