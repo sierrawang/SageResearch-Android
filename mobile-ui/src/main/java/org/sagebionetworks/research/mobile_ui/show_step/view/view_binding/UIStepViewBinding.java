@@ -32,6 +32,7 @@
 
 package org.sagebionetworks.research.mobile_ui.show_step.view.view_binding;
 
+import android.support.annotation.VisibleForTesting;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
@@ -42,6 +43,7 @@ import org.sagebionetworks.research.domain.mobile_ui.R2.id;
 import org.sagebionetworks.research.mobile_ui.widget.NavigationActionBar;
 import org.sagebionetworks.research.mobile_ui.widget.NavigationActionBar.ActionButtonClickListener;
 import org.sagebionetworks.research.mobile_ui.widget.StepHeader;
+import org.sagebionetworks.research.presentation.model.StepView;
 
 import butterknife.BindView;
 import javax.annotation.Nullable;
@@ -65,7 +67,7 @@ import javax.annotation.Nullable;
  *      - skipButton : Button - The button which causes the task to skip the current step when pressed. (Note: this
  *          button is different then the next button because no result will be created for the current step)
  */
-public class UIStepViewBinding {
+public class UIStepViewBinding implements StepViewBinding {
     /**
      * Views can optionally have a header view. This view generally contains the progress bar, and the cancel and =
      * info action buttons.
@@ -178,18 +180,38 @@ public class UIStepViewBinding {
     @BindView(id.skipButton)
     public Button skipButton;
 
-    /**
-     * Sets the ActionButtonClickListener to the given listener on all of the components that can handle a
-     * listener. Subclasses which add more ActionButtons should override this method.
-     * @param actionButtonClickListenenr The new listener to use for all of the components that can handle one.
-     */
-    public void setActionButtonClickListener(ActionButtonClickListener actionButtonClickListenenr) {
+    @Override
+    public void setActionButtonClickListener(ActionButtonClickListener actionButtonClickListener) {
         if (this.navigationActionBar != null) {
-            this.navigationActionBar.setActionButtonClickListener(actionButtonClickListenenr);
+            this.navigationActionBar.setActionButtonClickListener(actionButtonClickListener);
         }
 
         if (this.stepHeader != null) {
-            this.stepHeader.setActionButtonClickListener(actionButtonClickListenenr);
+            this.stepHeader.setActionButtonClickListener(actionButtonClickListener);
+        }
+    }
+
+    @VisibleForTesting
+    @Override
+    public void update(StepView stepView) {
+        if (this.titleLabel != null) {
+            // TODO rkolmos 05/25/2018 do the correct thing here once the correct type of StepView is implemented
+        }
+
+        if (this.textLabel != null) {
+            // TODO rkolmos 05/25/2018 do the correct thing here once the correct type of StepView is implemented
+        }
+
+        if (this.detailLabel != null) {
+            // TODO rkolmos 05/25/2018 do the correct thing here once the correct type of StepView is implemented
+        }
+
+        if (this.footnoteLabel != null) {
+            // TODO rkolmos 05/25/2018 do the correct thing here once the correct type of StepView is implemented
+        }
+
+        if (this.imageView != null) {
+            // TODO rkolmos 05/25/2018 do the correct thing here once the correct type of StepView is implemented
         }
     }
 }

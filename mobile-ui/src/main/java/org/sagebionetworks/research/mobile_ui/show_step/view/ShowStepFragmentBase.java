@@ -37,15 +37,20 @@ import android.content.Context;
 import android.os.Bundle;
 import android.support.annotation.LayoutRes;
 import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.support.annotation.VisibleForTesting;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import org.sagebionetworks.research.domain.mobile_ui.R;
+import org.sagebionetworks.research.domain.step.interfaces.UIStep;
 import org.sagebionetworks.research.mobile_ui.perform_task.PerformTaskFragment;
+import org.sagebionetworks.research.mobile_ui.show_step.view.view_binding.StepViewBinding;
 import org.sagebionetworks.research.mobile_ui.show_step.view.view_binding.UIStepViewBinding;
 import org.sagebionetworks.research.mobile_ui.widget.ActionButton;
+import org.sagebionetworks.research.presentation.ActionType;
 import org.sagebionetworks.research.presentation.model.StepView;
 import org.sagebionetworks.research.presentation.perform_task.PerformTaskViewModel;
 import org.sagebionetworks.research.presentation.show_step.ShowStepViewModel;
@@ -62,11 +67,13 @@ import static com.google.common.base.Preconditions.checkNotNull;
 
 /**
  * A ShowStepFragmentBase implements the functionality common to showing all step fragments in terms of
- * four other unknown operations (instantiateBinding, getLayoutID, handleActionButtonClick, and update).
+ * 2 other unknown operations (instantiateBinding, getLayoutID).
  * @param <S> The type of StepView that this fragment uses.
  * @param <VM> The type of StepViewModel that this fragment uses.
  */
-public abstract class ShowStepFragmentBase<S extends StepView, VM extends ShowStepViewModel<S>> extends Fragment {
+public abstract class ShowStepFragmentBase
+        <S extends StepView, VM extends ShowStepViewModel<S>, SB extends StepViewBinding>
+        extends Fragment {
     private static final Logger LOGGER = LoggerFactory.getLogger(ShowStepFragmentBase.class);
     private static final String ARGUMENT_STEP_VIEW = "STEP_VIEW";
 
@@ -78,7 +85,7 @@ public abstract class ShowStepFragmentBase<S extends StepView, VM extends ShowSt
     protected PerformTaskViewModel performTaskViewModel;
     protected VM showStepViewModel;
     protected S stepView;
-    protected UIStepViewBinding stepViewBinding;
+    protected SB stepViewBinding;
 
     private Unbinder stepViewUnbinder;
 
@@ -119,7 +126,7 @@ public abstract class ShowStepFragmentBase<S extends StepView, VM extends ShowSt
         this.showStepViewModel = (VM) ViewModelProviders
                 .of(this, this.showStepViewModelFactory.create(this.performTaskViewModel, stepViewArg))
                 .get(stepViewArg.getIdentifier(), this.showStepViewModelFactory.getViewModelClass(stepViewArg));
-        this.showStepViewModel.getStepView().observe(this, this::update);
+        this.showStepViewModel.getStepView().observe(this, this.stepViewBinding::update);
     }
 
     @Override
@@ -140,12 +147,54 @@ public abstract class ShowStepFragmentBase<S extends StepView, VM extends ShowSt
     }
 
     /**
-     * Instantiates and returns and instance of the correct type of UIStepViewBinding for this fragment.
+     * Called whenever one of this fragment's ActionButton's is clicked. Subclasses should override to correctly
+     * handle their ActionButtons.
+     * @param actionButton the ActionButton that was clicked by the user.
+     */
+    protected void handleActionButtonClick(@NonNull ActionButton actionButton) {
+        @ActionType String actionType = this.getActionTypeFromActionButton(actionButton);
+        this.showStepViewModel.handleAction(actionType);
+    }
+
+    /**
+     * Returns the ActionType corresponding to the given ActionButton or null if the ActionType cannot be found.
+     * Default mapping of button id to ActionType is:
+     *      rs2_step_navigation_action_forward -> ActionType.Forward
+     *      rs2_step_navigation_action_backward -> ActionType.Backward
+     *      rs2_step_navigation_action_skip -> ActionType.Skip
+     *      rs2_step_header_cancel_button -> ActionType.CANCEL
+     *      rs2_step_header_info_button -> ActionType.INFO
+     * @param actionButton The ActionButton to get the ActionType for.
+     * @return the Actiontype corresponding to the given ActionButton or null if the ActionType cannot be found.
+     */
+    @Nullable
+    @ActionType
+    protected String getActionTypeFromActionButton(@NonNull ActionButton actionButton) {
+        int actionButtonId = actionButton.getId();
+
+        if (R.id.rs2_step_navigation_action_forward == actionButtonId) {
+            return ActionType.FORWARD;
+        } else if (R.id.rs2_step_navigation_action_backward == actionButtonId) {
+            return ActionType.BACKWARD;
+        } else if (R.id.rs2_step_navigation_action_skip == actionButtonId) {
+            return ActionType.SKIP;
+        } else if (R.id.rs2_step_header_cancel_button == actionButtonId) {
+            return ActionType.CANCEL;
+        } else if (R.id.rs2_step_header_info_button == actionButtonId) {
+            return ActionType.INFO;
+        }
+
+        return null;
+    }
+
+    /**
+     * Instantiates and returns and instance of the correct type of StepViewBinding for this fragment.
      * Note: If a subclass needs to add any fields to the binding it should override this method to return a
      * different binding.
-     * @return An instance of the correct type of UIStepViewBinding for this fragment.
+     * @return An instance of the correct type of StepViewBinding for this fragment.
      */
-    protected abstract UIStepViewBinding instantiateBinding();
+    @NonNull
+    protected abstract SB instantiateBinding();
 
     /**
      * Returns the layout resource that corresponds to the layout for this fragment.
@@ -153,19 +202,4 @@ public abstract class ShowStepFragmentBase<S extends StepView, VM extends ShowSt
      */
     @LayoutRes
     protected abstract int getLayoutId();
-
-    /**
-     * Called whenever one of this fragment's ActionButton's is clicked. Subclasses should override to correctly
-     * handle their ActionButtons.
-     * @param actionButton the ActionButton that was clicked by the user.
-     */
-    protected abstract void handleActionButtonClick(@NonNull ActionButton actionButton);
-
-    /**
-     * Updates the components of this fragment with the data from the given StepView. Subclasses should override to
-     * correctly update all of their components.
-     * @param stepView The StepView to get the data for the update from.
-     */
-    @VisibleForTesting
-    protected abstract void update(S stepView);
 }

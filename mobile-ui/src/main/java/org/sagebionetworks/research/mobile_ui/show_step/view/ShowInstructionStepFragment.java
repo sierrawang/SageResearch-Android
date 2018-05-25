@@ -30,22 +30,26 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.sagebionetworks.research.presentation;
+package org.sagebionetworks.research.mobile_ui.show_step.view;
 
-import android.support.annotation.StringDef;
+import android.support.annotation.NonNull;
 
-import java.lang.annotation.Retention;
-import java.lang.annotation.RetentionPolicy;
+import org.sagebionetworks.research.domain.mobile_ui.R;
+import org.sagebionetworks.research.mobile_ui.show_step.view.view_binding.UIStepViewBinding;
+import org.sagebionetworks.research.presentation.model.StepView;
+import org.sagebionetworks.research.presentation.show_step.ShowGenericStepViewModel;
 
-/**
- * This interface defines the various types of actions that are possible to have.
- */
-@Retention(RetentionPolicy.SOURCE)
-@StringDef({ActionType.BACKWARD, ActionType.CANCEL, ActionType.FORWARD, ActionType.INFO, ActionType.SKIP})
-public @interface ActionType {
-    String BACKWARD = "back";
-    String CANCEL = "cancel";
-    String FORWARD = "next";
-    String INFO = "info";
-    String SKIP = "skip";
+// TODO rkolmos 05/25/2018 Make this class use the specific types of StepView, ViewModel for an instruction step.
+public class ShowInstructionStepFragment extends ShowStepFragmentBase
+        <StepView, ShowGenericStepViewModel, UIStepViewBinding> {
+    @NonNull
+    @Override
+    protected UIStepViewBinding instantiateBinding() {
+        return new UIStepViewBinding();
+    }
+
+    @Override
+    protected int getLayoutId() {
+        return R.layout.mpower2_instruction_step;
+    }
 }

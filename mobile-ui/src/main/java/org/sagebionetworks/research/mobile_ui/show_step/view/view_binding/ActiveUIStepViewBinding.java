@@ -30,22 +30,46 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.sagebionetworks.research.presentation;
+package org.sagebionetworks.research.mobile_ui.show_step.view.view_binding;
 
-import android.support.annotation.StringDef;
+import android.support.annotation.Nullable;
+import android.widget.ProgressBar;
+import android.widget.TextView;
 
-import java.lang.annotation.Retention;
-import java.lang.annotation.RetentionPolicy;
+import org.sagebionetworks.research.domain.mobile_ui.R2.id;
+
+import butterknife.BindView;
 
 /**
- * This interface defines the various types of actions that are possible to have.
+ * An ActiveUIStepViewBinding is a view binding that has everything a UIStepViewBinding and the following optional
+ * bindings
+ *      countdownDial : ProgressBar - The countdown dial which indicates to the user how long they should perform the
+ *          active task for.
+ *      countdownLabel : TextView - The label to display the text corresponding to the countdownDial's progress on.
+ *      unitLabel : TextView - The label to display the unit that the countdown is occurring in on.
  */
-@Retention(RetentionPolicy.SOURCE)
-@StringDef({ActionType.BACKWARD, ActionType.CANCEL, ActionType.FORWARD, ActionType.INFO, ActionType.SKIP})
-public @interface ActionType {
-    String BACKWARD = "back";
-    String CANCEL = "cancel";
-    String FORWARD = "next";
-    String INFO = "info";
-    String SKIP = "skip";
+public class ActiveUIStepViewBinding extends UIStepViewBinding {
+    /**
+     * The binding can optionally contain a progress bar which displays a visual representation of the progress
+     * toward finishing the active step.
+     */
+    @BindView(id.countdownDial)
+    @Nullable
+    public ProgressBar countdownDial;
+
+    /**
+     * The binding can optionally have a TextView which displays a text representation of the progress toward
+     * finishing the active step.
+     */
+    @BindView(id.countdownLabel)
+    @Nullable
+    public TextView countdownLabel;
+
+    /**
+     * The binding can optionally have a TextView which displays the unit that the countdown is occurring in.
+     */
+    @BindView(id.unitLabel)
+    public TextView unitLabel;
+
+    // TODO rkolmos 05/25/2018 override update to do the correct thing once the corresponding subclass of StepView is created
 }
