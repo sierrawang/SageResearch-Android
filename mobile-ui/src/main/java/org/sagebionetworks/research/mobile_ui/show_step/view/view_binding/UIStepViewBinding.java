@@ -53,7 +53,7 @@ import javax.annotation.Nullable;
  *      NOTE: the format for these is ID : TYPE - DESCRIPTION.
  *      - stepHeader : StepHeader - The header view for this view.
  *      - stepBody : View - The body view for this view, usually has the majority of the content.
- *      - naigationActionBar : NavigationActionBar - Contains navigation action buttons (forward, backward, skip).
+ *      - navigationActionBar : NavigationActionBar - Contains navigation action buttons (forward, backward, skip).
  *      - imageView : ImageView - The view to display an images for the step on.
  *      - titleLabel : TextView - The view to display the title of the step on.
  *      - textLabel : TextView - The view to display the text of the step on.

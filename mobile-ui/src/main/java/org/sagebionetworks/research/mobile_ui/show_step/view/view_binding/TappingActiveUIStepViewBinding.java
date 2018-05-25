@@ -30,25 +30,33 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.sagebionetworks.research.presentation;
+package org.sagebionetworks.research.mobile_ui.show_step.view.view_binding;
 
-import android.support.annotation.StringDef;
+import android.support.annotation.NonNull;
 
-import java.lang.annotation.Retention;
-import java.lang.annotation.RetentionPolicy;
+import org.sagebionetworks.research.domain.mobile_ui.R2.id;
+import org.sagebionetworks.research.mobile_ui.widget.ActionButton;
+
+import butterknife.BindView;
 
 /**
- * This interface defines the various types of actions that are possible to have.
+ * A TappingActiveUIStepViewBinding is a special type of ActiveUIStepViewBinding which has the following extra
+ * non-optional fields
+ *      leftTapButton : ActionButton - The left button that the user taps to perform the task.
+ *      rightTapButton : ActionButton - The right button that the user taps to perform the task.
  */
-@Retention(RetentionPolicy.SOURCE)
-@StringDef({ActionType.BACKWARD, ActionType.CANCEL, ActionType.FORWARD, ActionType.INFO, ActionType.LEFT_TAP,
-        ActionType.RIGHT_TAP, ActionType.SKIP})
-public @interface ActionType {
-    String BACKWARD = "back";
-    String CANCEL = "cancel";
-    String FORWARD = "next";
-    String INFO = "info";
-    String LEFT_TAP = "leftTap";
-    String RIGHT_TAP = "rightTap";
-    String SKIP = "skip";
+public class TappingActiveUIStepViewBinding extends ActiveUIStepViewBinding {
+    /**
+     * This non-optional ActionButton represents the left button that the user taps to perform the task.
+     */
+    @BindView(id.leftTapButton)
+    @NonNull
+    public ActionButton leftTapButton;
+
+    /**
+     * This non-optional ActionButton represents the right button that hte user taps to perform the task.
+     */
+    @BindView(id.rightTapButton)
+    @NonNull
+    public ActionButton rightTapButton;
 }
