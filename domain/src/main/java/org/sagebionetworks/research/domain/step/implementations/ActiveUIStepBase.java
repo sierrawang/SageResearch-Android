@@ -66,8 +66,8 @@ public class ActiveUIStepBase extends UIStepBase implements ActiveUIStep {
     public ActiveUIStepBase(@NonNull final String identifier, @NonNull final Map<String, UIAction> actions,
             @Nullable final String title, @Nullable final String text,
             @Nullable final String detail, @Nullable final String footnote,
-            @Nullable final Double duration, final boolean backgroundAudioRequired,
-            @Nullable final ColorTheme colorTheme, @Nullable final ImageTheme imageTheme) {
+            @Nullable final ColorTheme colorTheme, @Nullable final ImageTheme imageTheme,
+            @Nullable final Double duration, final boolean backgroundAudioRequired) {
         super(identifier, actions, title, text, detail, footnote, colorTheme, imageTheme);
         this.duration = duration;
         this.backgroundAudioRequired = backgroundAudioRequired;

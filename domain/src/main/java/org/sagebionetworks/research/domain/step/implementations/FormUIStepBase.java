@@ -64,8 +64,8 @@ public class FormUIStepBase extends UIStepBase implements FormUIStep {
 
     public FormUIStepBase(@NonNull final String identifier, @NonNull Map<String, UIAction> actions,
             @Nullable final String title, @Nullable final String text, @Nullable final String detail,
-            @Nullable final String footnote, @NonNull final List<InputField> inputFields,
-            @Nullable final ColorTheme colorTheme, @Nullable final ImageTheme imageTheme) {
+            @Nullable final String footnote, @Nullable final ColorTheme colorTheme,
+            @Nullable final ImageTheme imageTheme, @NonNull final List<InputField> inputFields) {
         super(identifier, actions, title, text, detail, footnote, colorTheme, imageTheme);
         this.inputFields = inputFields;
     }
