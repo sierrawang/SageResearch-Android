@@ -58,4 +58,6 @@ public class TappingStepButtonView extends ConstraintLayout {
     protected void commonInit() {
         inflate(this.getContext(), R.layout.mpower2_tapping_step_button_view, this);
     }
+
+    // TODO rkolmos 05/29/2018 potentially add tapping step data recording functionality to this view.
 }

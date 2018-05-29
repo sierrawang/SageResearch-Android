@@ -31,31 +31,28 @@
   -->
 
 <resources>
-    <!-- Navigation Action Bar -->
+    <!-- Action Buttons -->
     <id name="rs2_step_navigation_action_forward" />
     <id name="rs2_step_navigation_action_backward" />
     <id name="rs2_step_navigation_action_skip" />
+    <id name="rs2_step_navigation_action_cancel"/>
+    <id name="rs2_step_navigation_action_learn_more" />
+    <id name="rs2_step_navigation_action_add_more" />
+    <id name="rs2_step_navigation_action_info"/>
+
+    <!-- Navigation Action Bar -->
     <id name="rs2_step_navigation_shadow"/>
+    <id name="rs2_step_navigation_primary_button_group"/>
+
     <!-- Step Header -->
-    <id name="rs2_step_header_cancel_button"/>
-    <id name="rs2_step_header_info_button"/>
     <id name="rs2_step_header_progress_label"/>
     <id name="rs2_step_header_progress_bar"/>
     <id name="rs2_step_header_progress_bar_floating"/>
     <id name="rs2_step_header_action_button_group"/>
 
-    <id name="title" />
-    <id name="description" />
-
-    <id name="rs2_step_navigation_action_cancel" />
-    <id name="rs2_step_navigation_action_learn_more" />
-    <id name="rs2_step_navigation_action_add_more" />
-
-    <id name="footer_action_forward"/>
-    <id name="footer_action_backward"/>
-    <id name="footer_action_reminder"/>
-
+    <!-- Standard Step Components -->
     <id name="rs2_step_navigation_action_bar"/>
+    <id name="rs2_step_header"/>
 
     <id name="rs2_step_container"/>
     <id name="rs2_current_step" />
@@ -92,4 +89,8 @@
     <!-- Id's for TappingStepViewBinding -->
     <id name="leftTapButton"/>
     <id name="rightTapButton"/>
+
+    <!-- TODO Remove these when possible -->
+    <id name="title"/>
+    <id name="description"/>
 </resources>
