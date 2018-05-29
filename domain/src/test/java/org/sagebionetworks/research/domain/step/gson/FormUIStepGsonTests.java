@@ -74,7 +74,7 @@ public class FormUIStepGsonTests extends IndividualStepGsonTest {
                 null, null, null, expectedChoices, null));
         FormUIStep expected = new FormUIStepBase("handSelection", null,
                 "Which hands are you capable of doing this task with?",
-                null, null, null, expectedInputFields);
+                null, null, null, expectedInputFields, null, null);
         testCommon(expected, "FormStepString.json");
     }
 
@@ -90,7 +90,7 @@ public class FormUIStepGsonTests extends IndividualStepGsonTest {
                 false, new CollectionInputDataType("multipleChoice", null), null,
                 null, null, null, expectedChocies, null));
         FormUIStep expected = new FormUIStepBase("step3", null, "Step 3", null, null, null,
-                expectedInputFields);
+                expectedInputFields, null, null);
         testCommon(expected, "FormStepStringShorthand.json");
     }
 
@@ -106,7 +106,7 @@ public class FormUIStepGsonTests extends IndividualStepGsonTest {
                 new CollectionInputDataType("multipleChoice", "integer"), "list",
                 null, null, null, expectedChoices, null));
         FormUIStep expected = new FormUIStepBase("selectMultiple", null, "Multiple Choice",
-                "Select as many as you want", null, null, expectedInputFields);
+                "Select as many as you want", null, null, expectedInputFields, null, null);
         testCommon(expected, "FormStepInteger.json");
     }
 
@@ -128,7 +128,7 @@ public class FormUIStepGsonTests extends IndividualStepGsonTest {
                 false, new CollectionInputDataType("singleChoice", "integer"), "picker",
                 null, null, null, expectedChoices, null));
         FormUIStep expected = new FormUIStepBase("imageList", null,"Single Choice with Images",
-                "Select a single option", null, null, expectedInputFields);
+                "Select a single option", null, null, expectedInputFields, null, null);
         testCommon(expected, "FormIcons.json");
     }
 

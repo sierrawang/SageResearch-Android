@@ -41,12 +41,14 @@ import com.google.common.collect.ImmutableMap;
 
 import org.sagebionetworks.research.domain.interfaces.HashCodeHelper;
 import org.sagebionetworks.research.domain.step.StepType;
+import org.sagebionetworks.research.domain.step.interfaces.ThemedUIStep;
 import org.sagebionetworks.research.domain.step.ui.UIAction;
-import org.sagebionetworks.research.domain.step.interfaces.UIStep;
+import org.sagebionetworks.research.domain.step.ui.theme.ColorTheme;
+import org.sagebionetworks.research.domain.step.ui.theme.ImageTheme;
 
 import java.util.Map;
 
-public class UIStepBase extends StepBase implements UIStep {
+public class UIStepBase extends StepBase implements ThemedUIStep {
     public static final String TYPE_KEY = StepType.UI;
 
     @NonNull
@@ -64,6 +66,12 @@ public class UIStepBase extends StepBase implements UIStep {
     @Nullable
     private final String title;
 
+    @Nullable
+    private final ColorTheme colorTheme;
+
+    @Nullable
+    private final ImageTheme imageTheme;
+
     // Gson initialize defaults
     UIStepBase() {
         super("");
@@ -72,12 +80,18 @@ public class UIStepBase extends StepBase implements UIStep {
         footnote = null;
         text = null;
         title = null;
+        colorTheme = null;
+        imageTheme = null;
     }
 
     public UIStepBase(@NonNull final String identifier, @Nullable final Map<String, UIAction> actions,
             @Nullable final String title, @Nullable final String text,
-            @Nullable final String detail, @Nullable final String footnote) {
+            @Nullable final String detail, @Nullable final String footnote,
+            @Nullable final ColorTheme colorTheme,
+            @Nullable final ImageTheme imageTheme) {
         super(identifier);
+        this.colorTheme = colorTheme;
+        this.imageTheme = imageTheme;
         if (actions == null) {
             this.actions = ImmutableMap.of();
         } else {
@@ -125,10 +139,23 @@ public class UIStepBase extends StepBase implements UIStep {
         return TYPE_KEY;
     }
 
+    @Nullable
+    @Override
+    public ColorTheme getColorTheme() {
+        return null;
+    }
+
+    @Nullable
+    @Override
+    public ImageTheme getImageTheme() {
+        return null;
+    }
+
     @Override
     protected HashCodeHelper hashCodeHelper() {
         return super.hashCodeHelper()
-                .addFields(this.actions, this.detail, this.footnote, this.text, this.title);
+                .addFields(this.actions, this.detail, this.footnote, this.text, this.title,
+                        this.colorTheme, this.imageTheme);
     }
 
     @Override
@@ -139,7 +166,9 @@ public class UIStepBase extends StepBase implements UIStep {
                 Objects.equal(this.getTitle(), uiStep.getTitle()) &&
                 Objects.equal(this.getText(), uiStep.getText()) &&
                 Objects.equal(this.getDetail(), uiStep.getDetail()) &&
-                Objects.equal(this.getFootnote(), uiStep.getFootnote());
+                Objects.equal(this.getFootnote(), uiStep.getFootnote()) &&
+                Objects.equal(this.getColorTheme(), uiStep.getColorTheme()) &&
+                Objects.equal(this.getImageTheme(), uiStep.getImageTheme());
     }
 
     @Override
@@ -151,6 +180,8 @@ public class UIStepBase extends StepBase implements UIStep {
                 .add("title", this.getTitle())
                 .add("text", this.getText())
                 .add("detail", this.getDetail())
-                .add("footnote", this.getFootnote());
+                .add("footnote", this.getFootnote())
+                .add("colorTheme", this.getColorTheme())
+                .add("imageTheme", this.getImageTheme());
     }
 }

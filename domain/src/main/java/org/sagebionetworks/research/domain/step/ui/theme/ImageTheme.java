@@ -44,7 +44,7 @@ public abstract class ImageTheme {
 
         public abstract Builder setColorPlacement(ColorPlacement colorPlacement);
 
-        public abstract Builder setImageResource(int imageResource);
+        public abstract Builder setImageResourceName(String imageResourceName);
     }
 
     public static Builder builder() {
@@ -57,7 +57,7 @@ public abstract class ImageTheme {
     @Nullable
     public abstract ColorPlacement getColorPlacement();
 
-    public abstract int getImageResource();
+    public abstract String getImageResourceName();
 
     public abstract Builder toBuilder();
 }
