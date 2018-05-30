@@ -30,34 +30,32 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.sagebionetworks.research.domain.step.ui.theme;
+package org.sagebionetworks.research.mobile_ui.widget;
 
-import android.support.annotation.Nullable;
+import android.content.Context;
+import android.support.v7.widget.AppCompatButton;
+import android.util.AttributeSet;
 
-import com.google.auto.value.AutoValue;
+import org.sagebionetworks.research.domain.mobile_ui.R;
 
-@AutoValue
-public abstract class ImageTheme {
-    @AutoValue.Builder
-    public static abstract class Builder {
-        public abstract ImageTheme builder();
-
-        public abstract Builder setColorPlacement(ColorPlacement colorPlacement);
-
-        public abstract Builder setImageResource(int imageResource);
+public class TapButton extends AppCompatButton {
+    public TapButton(final Context context) {
+        super(context);
+        this.commonInit();
     }
 
-    public static Builder builder() {
-        return new AutoValue_ImageTheme.Builder();
+    public TapButton(final Context context, final AttributeSet attrs) {
+        super(context, attrs);
+        this.commonInit();
     }
 
-    /**
-     * @return preferred placement of the image. Default placement is `iconBefore` if undefined.
-     */
-    @Nullable
-    public abstract ColorPlacement getColorPlacement();
+    public TapButton(final Context context, final AttributeSet attrs, final int defStyleAttr) {
+        super(context, attrs, defStyleAttr);
+        this.commonInit();
+    }
 
-    public abstract int getImageResource();
-
-    public abstract Builder toBuilder();
+    protected void commonInit() {
+        this.setBackgroundResource(R.drawable.mpower2_tap_button);
+        this.setText(R.string.tap_button_text);
+    }
 }

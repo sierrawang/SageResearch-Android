@@ -39,6 +39,21 @@
         <item name="colorAccent">@color/colorAccent</item>
     </style>
 
+    <style name="Widget.ResearchStack.TextView.Overview.OverallIconDescriptionLabel" parent="">
+        <item name="android:textSize">18sp</item>
+        <item name="android:fontFamily">@font/lato</item>
+        <item name="android:textStyle">bold</item>
+        <item name="android:gravity">center</item>
+        <item name="android:textColor">@color/appTextDark</item>
+    </style>
+
+    <style name="Widget.ResearchStack.TextView.Overview.IconLabel" parent="">
+        <item name="android:textSize">14sp</item>
+        <item name="android:fontFamily">@font/lato</item>
+        <item name="android:textStyle">bold</item>
+        <item name="android:gravity">center</item>
+        <item name="android:textColor">@color/appTextDark</item>
+    </style>
     <!--
     <style name="Widget.ResearchStack.NavigationActionBar" parent="">
         <item name="positiveActionTitle">@string/rs2_navigation_action_forward</item>

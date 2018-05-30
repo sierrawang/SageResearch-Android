@@ -30,41 +30,61 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.sagebionetworks.research.presentation.model;
+package org.sagebionetworks.research.mobile_ui.show_step.view.view_binding;
 
-import android.os.Parcelable;
-import android.support.annotation.IntDef;
 import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
+import android.view.View;
+import android.widget.ImageView;
+import android.widget.TextView;
 
-import com.google.common.collect.ImmutableSet;
+import org.sagebionetworks.research.domain.mobile_ui.R2.id;
 
-import java.lang.annotation.Retention;
+import java.util.List;
 
-import static java.lang.annotation.RetentionPolicy.SOURCE;
+import butterknife.BindView;
+import butterknife.BindViews;
 
-/**
- * Map a {@link Step} to a {@link StepView} when data is moving from the Domain layer to this layer.
- */
-public interface StepView extends Parcelable {
-    @Retention(SOURCE)
-    @IntDef({NavDirection.SHIFT_LEFT, NavDirection.SHIFT_RIGHT})
-    @interface NavDirection {
-        int SHIFT_LEFT = 1;
-        int SHIFT_RIGHT = -1;
+public class OverviewStepViewBinding extends UIStepViewBinding {
+    @NonNull
+    @BindViews({id.leftIconImageView, id.centerIconImageView, id.rightIconImageView})
+    protected List<ImageView> iconImageViews;
+
+    @NonNull
+    @BindViews({id.leftIconLabel, id.centerIconLabel, id.rightIconLabel})
+    protected List<TextView> iconLabels;
+
+    @NonNull
+    @BindView(id.iconDescriptionLabel)
+    protected TextView iconDescriptionLabel;
+
+    public OverviewStepViewBinding(final View view) {
+        super(view);
     }
 
+    /**
+     * Returns the list of image views that serve to display the icons for this binding.
+     * @return the list of image views that serve to display the icons for this binding.
+     */
     @NonNull
-    String getIdentifier();
+    public List<ImageView> getIconImageViews(){
+        return this.iconImageViews;
+    }
 
-    @Nullable
-    String getDetail();
-
-    @NavDirection int getNavDirection();
-
+    /**
+     * Returns the list of icon labels that serve to display the descriptions of the icons for this binding.
+     * @return the list of icon labels that serve to display the descriptions of the icons for this binding.
+     */
     @NonNull
-    ImmutableSet<StepActionView> getStepActionViews();
+    public List<TextView> getIconLabels() {
+        return this.iconLabels;
+    }
 
-    @Nullable
-    String getTitle();
+    /**
+     * Returns the label that serves to display the overall description of all of the icons for this binding.
+     * @return the label that serves to display the overall description of all of the icons for this binding.
+     */
+    @NonNull
+    public TextView getIconDescriptionLabel() {
+        return this.iconDescriptionLabel;
+    }
 }

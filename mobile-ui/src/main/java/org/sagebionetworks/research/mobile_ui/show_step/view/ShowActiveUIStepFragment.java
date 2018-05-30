@@ -30,34 +30,29 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.sagebionetworks.research.domain.step.ui.theme;
+package org.sagebionetworks.research.mobile_ui.show_step.view;
 
-import android.support.annotation.Nullable;
+import android.support.annotation.NonNull;
 
-import com.google.auto.value.AutoValue;
+import org.sagebionetworks.research.domain.mobile_ui.R;
+import org.sagebionetworks.research.mobile_ui.widget.ActionButton;
+import org.sagebionetworks.research.presentation.ActionType;
 
-@AutoValue
-public abstract class ImageTheme {
-    @AutoValue.Builder
-    public static abstract class Builder {
-        public abstract ImageTheme builder();
-
-        public abstract Builder setColorPlacement(ColorPlacement colorPlacement);
-
-        public abstract Builder setImageResource(int imageResource);
+public class ShowActiveUIStepFragment extends ShowStepFragmentBase {
+    @Override
+    protected int getLayoutId() {
+        return R.layout.mpower2_overview_step;
     }
 
-    public static Builder builder() {
-        return new AutoValue_ImageTheme.Builder();
+    @Override
+    protected void handleActionButtonClick(@NonNull final ActionButton ab) {
+        int actionButtonId = ab.getId();
+
+        String actionType = null;
+        if (actionButtonId == R.id.rs2_step_navigation_action_forward) {
+            actionType = ActionType.FORWARD;
+        }
+
+        showStepViewModel.handleAction(actionType);
     }
-
-    /**
-     * @return preferred placement of the image. Default placement is `iconBefore` if undefined.
-     */
-    @Nullable
-    public abstract ColorPlacement getColorPlacement();
-
-    public abstract int getImageResource();
-
-    public abstract Builder toBuilder();
 }

@@ -53,6 +53,8 @@ public class StepNavigationViewModelTest {
     @Mock
     private StepNavigator stepNavigator;
 
+    private TaskResult taskResultBuilder;
+
     private MutableLiveData<TaskResult> taskResultMutableLiveData;
 
     @Test

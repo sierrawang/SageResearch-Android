@@ -1,4 +1,5 @@
-<?xml version="1.0" encoding="utf-8"?><!--
+<?xml version="1.0" encoding="utf-8"?>
+<!--
   ~ BSD 3-Clause License
   ~
   ~ Copyright 2018  Sage Bionetworks. All rights reserved.
@@ -32,27 +33,36 @@
 
 <android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-    <TextView
-        android:id="@id/title"
-        android:layout_width="wrap_content"
+    <org.sagebionetworks.research.mobile_ui.widget.TapButton
+        android:id="@+id/leftTapButton"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:text="title" />
+        app:layout_constrainedHeight="true"
+        app:layout_constrainedWidth="true"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintDimensionRatio="H,1:1"
+        app:layout_constraintEnd_toStartOf="@+id/rightTapButton"
+        app:layout_constraintHeight_max="120dp"
+        app:layout_constraintHeight_min="115dp"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
 
-    <TextView
-        android:id="@id/description"
-        android:layout_width="wrap_content"
+    <org.sagebionetworks.research.mobile_ui.widget.TapButton
+        android:id="@+id/rightTapButton"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
-        app:layout_constraintTop_toBottomOf="@id/title"
-        android:text="description" />
-
-    <org.sagebionetworks.research.mobile_ui.widget.NavigationActionBar
-        android:id="@id/rs2_step_navigation_action_bar"
-        android:layout_width="fill_parent"
-        android:layout_height="0dp"
-        android:layout_marginBottom="16dp"
-        app:layout_constraintBottom_toBottomOf="parent" />
+        app:layout_constraintHeight_max="120dp"
+        app:layout_constraintHeight_min="100dp"
+        app:layout_constrainedWidth="true"
+        app:layout_constrainedHeight="true"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintDimensionRatio="H,1:1"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintStart_toEndOf="@+id/leftTapButton"
+        app:layout_constraintTop_toTopOf="parent" />
 </android.support.constraint.ConstraintLayout>

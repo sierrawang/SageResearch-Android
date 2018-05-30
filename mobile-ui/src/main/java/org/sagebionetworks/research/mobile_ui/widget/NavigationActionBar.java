@@ -41,8 +41,6 @@ import android.support.annotation.Nullable;
 import android.support.constraint.ConstraintLayout;
 import android.util.AttributeSet;
 import android.view.View;
-import android.widget.Button;
-import android.widget.TextView;
 
 import org.sagebionetworks.research.domain.mobile_ui.R;
 import org.sagebionetworks.research.domain.mobile_ui.R2;
@@ -50,7 +48,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import butterknife.BindView;
-import butterknife.BindViews;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 import butterknife.Optional;
@@ -97,7 +94,7 @@ public class NavigationActionBar extends ConstraintLayout {
     @NonNull
     ActionButton skipButton;
 
-    @BindView(R2.id.rs2_step_navigation_shadow_view)
+    @BindView(R2.id.rs2_step_navigation_shadow)
     @NonNull
     View shadowView;
 
@@ -115,17 +112,17 @@ public class NavigationActionBar extends ConstraintLayout {
 
     public NavigationActionBar(Context context) {
         this(context, null);
-        init(null, 0);
+        commonInit(null, 0);
     }
 
     public NavigationActionBar(Context context, @Nullable AttributeSet attrs) {
         super(context, attrs, 0);
-        init(attrs, 0);
+        commonInit(attrs, 0);
     }
 
     public NavigationActionBar(Context context, @Nullable AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
-        init(attrs, defStyleAttr);
+        commonInit(attrs, defStyleAttr);
     }
 
     /**
@@ -172,7 +169,7 @@ public class NavigationActionBar extends ConstraintLayout {
      * @param attrs The attributed set to construct this object with or null if no such set was provided.
      * @param defStyleAttr The defStyleAttr provided.
      */
-    protected void init(@Nullable AttributeSet attrs, int defStyleAttr) {
+    protected void commonInit(@Nullable AttributeSet attrs, int defStyleAttr) {
         this.getAttributes(attrs, defStyleAttr);
         inflate(this.getContext(), R.layout.rs2_navigation_action_bar, this);
         // This call is necessary due to onFinishInflate not being called with manual inflation.

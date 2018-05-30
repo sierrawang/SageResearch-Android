@@ -30,34 +30,44 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.sagebionetworks.research.domain.step.ui.theme;
+package org.sagebionetworks.research.mobile_ui.show_step.view.view_binding;
 
-import android.support.annotation.Nullable;
+import android.support.annotation.NonNull;
+import android.view.View;
+import android.widget.Button;
 
-import com.google.auto.value.AutoValue;
+import org.sagebionetworks.research.domain.mobile_ui.R2.id;
 
-@AutoValue
-public abstract class ImageTheme {
-    @AutoValue.Builder
-    public static abstract class Builder {
-        public abstract ImageTheme builder();
+import butterknife.BindView;
 
-        public abstract Builder setColorPlacement(ColorPlacement colorPlacement);
+public class TappingStepViewBinding extends ActiveUIStepViewBinding {
+    // The TapButtons are deliberately not optional.
+    @NonNull
+    @BindView(id.leftTapButton)
+    protected Button leftTapButton;
+    @NonNull
+    @BindView(id.rightTapButton)
+    protected Button rightTapButton;
 
-        public abstract Builder setImageResource(int imageResource);
-    }
-
-    public static Builder builder() {
-        return new AutoValue_ImageTheme.Builder();
+    public TappingStepViewBinding(final View view) {
+        super(view);
     }
 
     /**
-     * @return preferred placement of the image. Default placement is `iconBefore` if undefined.
+     * Returns the left tap button from this binding.
+     * @return the left tap button from this binding.
      */
-    @Nullable
-    public abstract ColorPlacement getColorPlacement();
+    @NonNull
+    public Button getLeftTapButton() {
+        return this.leftTapButton;
+    }
 
-    public abstract int getImageResource();
-
-    public abstract Builder toBuilder();
+    /**
+     * Returns the right tap button from this binding.
+     * @return the right tap button from this binding.
+     */
+    @NonNull
+    public Button getRightTapButton() {
+        return this.rightTapButton;
+    }
 }
