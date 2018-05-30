@@ -30,49 +30,19 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.sagebionetworks.research.presentation.model;
+package org.sagebionetworks.research.presentation.mapper;
 
-import android.os.Parcelable;
-import android.support.annotation.Nullable;
+import android.support.annotation.DrawableRes;
 
-import com.google.auto.value.AutoValue;
+import org.sagebionetworks.research.presentation.inject.DrawableModule;
 
-import org.sagebionetworks.research.domain.step.ui.theme.ColorPlacement;
-import org.sagebionetworks.research.domain.step.ui.theme.ImageTheme;
+import java.util.Map;
 
-@AutoValue
-public abstract class ImageThemeView implements Parcelable {
-    @AutoValue.Builder
-    public abstract static class Builder {
-        public abstract ImageThemeView build();
+import dagger.Component;
+import javax.inject.Singleton;
 
-        public abstract Builder setColorPlacement(@Nullable
-
-        @ColorPlacement String colorPlacement);
-
-        public abstract Builder setImageResourceId(int imageResourceId);
-    }
-
-    /**
-     * Creates an ImageThemeView from an ImageTheme.
-     * @param imageTheme The image theme to create this imageThemeView from.
-     * @return an ImageThemeView created from the given ImageTheme.
-     */
-    public static ImageThemeView fromImageTheme(@Nullable ImageTheme imageTheme) {
-        return ImageThemeView.builder()
-                .setColorPlacement(imageTheme.getColorPlacement())
-                // TODO: rkolmos 05/29/2018 resolve the resource to get the image id here.
-                .setImageResourceId(0)
-                .build();
-    }
-
-    public static Builder builder() {
-        return new AutoValue_ImageThemeView.Builder();
-    }
-
-    @Nullable
-    @ColorPlacement
-    public abstract String getColorPlacement();
-
-    public abstract int getImageResourceId();
+@Component(modules = {DrawableModule.class})
+@Singleton
+public interface DrawableComponent {
+    Map<String, Integer>  drawableMap();
 }

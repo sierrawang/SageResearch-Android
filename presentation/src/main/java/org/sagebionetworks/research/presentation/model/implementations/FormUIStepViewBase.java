@@ -52,6 +52,7 @@ public class FormUIStepViewBase extends UIStepViewBase implements FormUIStepView
     private final List<InputFieldView> inputFields;
 
     public FormUIStepViewBase(@NonNull final String identifier,
+            @NavDirection final int navDirection,
             @NonNull final ImmutableMap<String, UIActionView> actions,
             @Nullable final DisplayString title,
             @Nullable final DisplayString text,
@@ -60,7 +61,7 @@ public class FormUIStepViewBase extends UIStepViewBase implements FormUIStepView
             @Nullable final ColorThemeView colorTheme,
             @Nullable final ImageThemeView imageTheme,
             final List<InputFieldView> inputFields) {
-        super(identifier, actions, title, text, detail, footnote, colorTheme, imageTheme);
+        super(identifier, navDirection, actions, title, text, detail, footnote, colorTheme, imageTheme);
         this.inputFields = inputFields;
     }
 

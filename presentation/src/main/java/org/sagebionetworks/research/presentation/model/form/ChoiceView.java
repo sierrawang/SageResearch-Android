@@ -47,18 +47,18 @@ public abstract class ChoiceView<E extends Parcelable> implements Parcelable {
     public abstract static class Builder<E extends Parcelable> {
         public abstract ChoiceView<E> build();
 
-        public abstract Builder<E> setText(@Nullable final String text);
+        public abstract Builder<E> setAnswerValue(@NonNull final E answerValue);
 
-        public abstract Builder<E> setDetail(@Nullable final String detail);
+        public abstract Builder<E> setText(@Nullable final DisplayString text);
+
+        public abstract Builder<E> setDetail(@Nullable final DisplayString detail);
 
         public abstract Builder<E> setIconResId(final int resId);
 
         public abstract Builder<E> setExclusive(final boolean isExclusive);
     }
 
-    public static Builder builder() {
-        return new AutoValue_ChoiceView.Builder();
-    }
+    public abstract Builder<E> toBuilder();
 
     @NonNull
     public abstract E getAnswerValue();

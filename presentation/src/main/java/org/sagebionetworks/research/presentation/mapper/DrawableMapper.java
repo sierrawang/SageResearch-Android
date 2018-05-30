@@ -32,29 +32,13 @@
 
 package org.sagebionetworks.research.presentation.mapper;
 
-import android.support.annotation.NonNull;
+import android.support.annotation.DrawableRes;
 
-import org.sagebionetworks.research.presentation.DisplayString;
+public class DrawableMapper {
+    private static final DrawableComponent drawableComponent = DaggerDrawableComponent.builder().build();
 
-/**
- * A ResourceMapper takes the information found in the domain layer and turns it into the information that
- * the presentation layer needs, (e.g. String -> DisplayString).
- */
-public interface ResourceMapper {
-    /**
-     * Returns the DisplayString corresponding to attempting to find the resource for the given string.
-     * @param string The string to return the display string for.
-     * @param packageName the name of the package to find the resource in.
-     * @return the DisplayString ocrresponding to attempting to find the resource for the given string.
-     */
-    @NonNull
-    DisplayString getDisplayString(@NonNull final String string, @NonNull final String packageName);
-
-    /**
-     * Returns the image resource id corresponding to the given resource name.
-     * @param resourceName The name of the resource to get the id of.
-     * @param packageName the name of the package to find the resource in.
-     * @return the image resource id corresponding to the given resource name.
-     */
-    int getImageResourceId(@NonNull final String resourceName, @NonNull final String packageName);
+    @DrawableRes
+    public static Integer getDrawableFromName(String name) {
+        return drawableComponent.drawableMap().get(name);
+    }
 }

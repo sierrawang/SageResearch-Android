@@ -30,35 +30,29 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.sagebionetworks.research.presentation.mapper;
+package org.sagebionetworks.research.presentation.inject;
 
-import android.content.res.Resources;
-import android.support.annotation.NonNull;
+import android.support.annotation.DrawableRes;
 
-import org.sagebionetworks.research.presentation.DisplayString;
+import org.sagebionetworks.research.domain.presentation.R;
 
-public class ResourceMapperBase implements ResourceMapper {
-    public static final ResourceMapperBase SHARED = new ResourceMapperBase();
+import dagger.MapKey;
+import dagger.Module;
+import dagger.Provides;
+import dagger.multibindings.IntoMap;
 
-    /**
-     * Returns the DisplayString obtained by attempting to find the given string as a resource identifier, and then if
-     * that fails setting the override string to the provided string.
-     * @param string The string to return the display string for.
-     * @param packageName the name of the package to find the resource in.
-     * @return
-     */
-    @Override
-    public DisplayString getDisplayString(@NonNull final String string, @NonNull final String packageName) {
-        int resId = Resources.getSystem().getIdentifier(string, "string", packageName);
-        if (resId == 0) {
-            return new DisplayString(resId, string);
-        } else {
-            return new DisplayString(resId, null);
-        }
+@Module
+public abstract class DrawableModule {
+    @MapKey
+    public @interface ResourceNameKey {
+        String value();
     }
 
-    @Override
-    public int getImageResourceId(@NonNull final String resourceName, @NonNull final String packageName) {
-        return 0;
+    @Provides
+    @IntoMap
+    @DrawableRes
+    @ResourceNameKey("cancel")
+    static Integer provideCancelResource() {
+        return null;
     }
 }

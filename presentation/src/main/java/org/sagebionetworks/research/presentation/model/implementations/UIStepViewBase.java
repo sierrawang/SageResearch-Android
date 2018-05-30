@@ -38,10 +38,8 @@ import android.support.annotation.Nullable;
 
 import com.google.common.collect.ImmutableMap;
 
-import org.sagebionetworks.research.domain.presentation.R;
 import org.sagebionetworks.research.domain.step.interfaces.ThemedUIStep;
 import org.sagebionetworks.research.presentation.DisplayString;
-import org.sagebionetworks.research.presentation.mapper.ResourceMapperBase;
 import org.sagebionetworks.research.presentation.model.ColorThemeView;
 import org.sagebionetworks.research.presentation.model.ImageThemeView;
 import org.sagebionetworks.research.presentation.model.UIActionView;
@@ -50,6 +48,8 @@ import org.sagebionetworks.research.presentation.model.interfaces.UIStepView;
 public class UIStepViewBase implements UIStepView {
     @NonNull
     private final String identifier;
+    @NavDirection
+    private final int navDirection;
     @NonNull
     private final ImmutableMap<String, UIActionView> actions;
     @Nullable
@@ -82,12 +82,15 @@ public class UIStepViewBase implements UIStepView {
 
         ColorThemeView colorTheme = ColorThemeView.fromColorTheme(step.getColorTheme());
         ImageThemeView imageTheme = ImageThemeView.fromImageTheme(step.getImageTheme());
-        return new UIStepViewBase(identifier, actions, title, text, detail, footnote, colorTheme, imageTheme);
+        // TODO: rkolmos 05/30/2018 for now the nav direction is always left.
+        return new UIStepViewBase(identifier, NavDirection.SHIFT_LEFT, actions, title, text, detail, footnote,
+                colorTheme, imageTheme);
     }
 
     /**
      * Constructor for creating a UIStepViewBase from the given information.
      * @param identifier The unique identifier the UIStepViewBase should have.
+     * @param navDirection
      * @param actions The custom UI actions for the UIStepViewBase.
      * @param title The title the UIStepViewBase should have, fully localized.
      * @param text The text the UIStepViewBase should have, fully localized.
@@ -97,11 +100,13 @@ public class UIStepViewBase implements UIStepView {
      * @param imageTheme The imageTheme the UIStepViewBase should use, with resources fully resolved.
      */
     public UIStepViewBase(@NonNull final String identifier,
-            @NonNull final ImmutableMap<String, UIActionView> actions, @Nullable final DisplayString title,
+            final int navDirection, @NonNull final ImmutableMap<String, UIActionView> actions,
+            @Nullable final DisplayString title,
             @Nullable final DisplayString text, @Nullable final DisplayString detail,
             @Nullable final DisplayString footnote, @Nullable final ColorThemeView colorTheme,
             @Nullable final ImageThemeView imageTheme) {
         this.identifier = identifier;
+        this.navDirection = navDirection;
         this.actions = actions;
         this.title = title;
         this.text = text;
@@ -116,6 +121,12 @@ public class UIStepViewBase implements UIStepView {
     @Override
     public String getIdentifier() {
         return this.identifier;
+    }
+
+
+    @Override
+    public int getNavDirection() {
+        return navDirection;
     }
 
     @Nullable
@@ -168,6 +179,7 @@ public class UIStepViewBase implements UIStepView {
     @Override
     public void writeToParcel(Parcel dest, int flags) {
         dest.writeString(this.identifier);
+        dest.writeInt(this.navDirection);
         dest.writeSerializable(this.actions);
         dest.writeParcelable(this.title, flags);
         dest.writeParcelable(this.text, flags);
@@ -179,6 +191,7 @@ public class UIStepViewBase implements UIStepView {
 
     protected UIStepViewBase(Parcel in) {
         this.identifier = in.readString();
+        this.navDirection = in.readInt();
         this.actions = (ImmutableMap<String, UIActionView>) in.readSerializable();
         this.title = in.readParcelable(DisplayString.class.getClassLoader());
         this.text = in.readParcelable(DisplayString.class.getClassLoader());
@@ -188,4 +201,15 @@ public class UIStepViewBase implements UIStepView {
         this.imageTheme = in.readParcelable(ImageThemeView.class.getClassLoader());
     }
 
+    public static final Creator<UIStepViewBase> CREATOR = new Creator<UIStepViewBase>() {
+        @Override
+        public UIStepViewBase createFromParcel(Parcel source) {
+            return new UIStepViewBase(source);
+        }
+
+        @Override
+        public UIStepViewBase[] newArray(int size) {
+            return new UIStepViewBase[size];
+        }
+    };
 }

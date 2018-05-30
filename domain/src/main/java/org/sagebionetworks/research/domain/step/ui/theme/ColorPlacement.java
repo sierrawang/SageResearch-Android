@@ -32,6 +32,11 @@
 
 package org.sagebionetworks.research.domain.step.ui.theme;
 
-public enum ColorPlacement {
-    HEADER, BODY, FOOTER;
+import android.support.annotation.StringDef;
+
+@StringDef({ColorPlacement.HEADER, ColorPlacement.BODY, ColorPlacement.FOOTER})
+public @interface ColorPlacement {
+    String HEADER = "header";
+    String BODY = "body";
+    String FOOTER = "footer";
 }

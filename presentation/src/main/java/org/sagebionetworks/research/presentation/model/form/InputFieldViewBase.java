@@ -63,6 +63,7 @@ public class InputFieldViewBase implements InputFieldView, Parcelable {
     @NonNull
     private final InputDataType formDataType;
     @Nullable
+    @InputUIHint
     private final String uiHint;
     @Nullable
     private final TextFieldOptions textFieldOptions;

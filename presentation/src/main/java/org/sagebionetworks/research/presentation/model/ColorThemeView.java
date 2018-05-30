@@ -45,13 +45,14 @@ import org.sagebionetworks.research.domain.step.ui.theme.ColorTheme;
 
 import java.util.Map;
 
+// TODO rkolmos 05/30/2018 uncomment lines when ImmutableMap parcelable adapter is written.
 @AutoValue
 public abstract class ColorThemeView implements Parcelable {
     @AutoValue.Builder
-    public static abstract class Builder {
+    public abstract static class Builder {
         public abstract ColorThemeView build();
 
-        public abstract Builder setColorStyles(@NonNull Map<ColorPlacement, ColorStyle> colorStyles);
+        // public abstract Builder setColorStyles(@NonNull ImmutableMap<String, String> colorStyles);
 
         public abstract Builder setLightStyle(boolean isLightStyle);
     }
@@ -60,15 +61,16 @@ public abstract class ColorThemeView implements Parcelable {
         return new AutoValue_ColorThemeView.Builder();
     }
 
-    public abstract ImmutableMap<ColorPlacement, ColorStyle> getColorStyles();
 
-    public abstract boolean isLightStyle();
+    // public abstract ImmutableMap<String, String> getColorStyles();
 
-    public abstract ColorTheme.Builder toBuilder();
+    public abstract boolean lightStyle();
+
+    public abstract Builder toBuilder();
 
     public static ColorThemeView fromColorTheme(@Nullable ColorTheme colorTheme) {
         return ColorThemeView.builder()
-                .setColorStyles(colorTheme.getColorStyles())
+                // .setColorStyles(colorTheme.getColorStyles())
                 .setLightStyle(colorTheme.isLightStyle())
                 .build();
     }

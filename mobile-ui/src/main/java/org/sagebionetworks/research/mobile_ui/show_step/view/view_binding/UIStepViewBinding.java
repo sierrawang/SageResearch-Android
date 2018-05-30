@@ -43,6 +43,7 @@ import org.sagebionetworks.research.domain.mobile_ui.R2.id;
 import org.sagebionetworks.research.mobile_ui.widget.NavigationActionBar;
 import org.sagebionetworks.research.mobile_ui.widget.NavigationActionBar.ActionButtonClickListener;
 import org.sagebionetworks.research.mobile_ui.widget.StepHeader;
+import org.sagebionetworks.research.presentation.DisplayString;
 import org.sagebionetworks.research.presentation.model.interfaces.StepView;
 import org.sagebionetworks.research.presentation.model.interfaces.UIStepView;
 
@@ -195,26 +196,25 @@ public class UIStepViewBinding implements StepViewBinding<UIStepView> {
     @VisibleForTesting
     @Override
     public void update(UIStepView stepView) {
-        if (this.titleLabel != null) {
-            this.titleLabel.setText(stepView.getTitle());
-        }
-
-        if (this.textLabel != null) {
-            this.textLabel.setText(stepView.getText());
-        }
-
-        if (this.detailLabel != null) {
-            this.detailLabel.setText(stepView.getDetail());
-        }
-
-        if (this.footnoteLabel != null) {
-            this.footnoteLabel.setText(stepView.getFootnote());
-        }
+        updateTextView(this.titleLabel, stepView.getTitle());
+        updateTextView(this.textLabel, stepView.getText());
+        updateTextView(this.detailLabel, stepView.getDetail());
+        updateTextView(this.footnoteLabel, stepView.getFootnote());
 
         if (this.imageView != null) {
             this.imageView.setImageResource(stepView.getImageTheme().getImageResourceId());
         }
 
         // TODO rkolmos 05/29/2018 implement color theme update
+    }
+
+    protected static void updateTextView(TextView view, DisplayString displayString) {
+        if (view != null) {
+            if (displayString.displayString != null) {
+                view.setText(displayString.displayString);
+            } else {
+                view.setText(displayString.defaultDisplayStringRes);
+            }
+        }
     }
 }
