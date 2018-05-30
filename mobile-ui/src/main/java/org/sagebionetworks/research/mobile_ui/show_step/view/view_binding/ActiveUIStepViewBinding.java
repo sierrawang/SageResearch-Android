@@ -30,34 +30,58 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.sagebionetworks.research.domain.step.ui.theme;
+package org.sagebionetworks.research.mobile_ui.show_step.view.view_binding;
 
-import android.support.annotation.Nullable;
+import android.support.annotation.NonNull;
+import android.view.View;
+import android.widget.ProgressBar;
+import android.widget.TextView;
 
-import com.google.auto.value.AutoValue;
+import org.sagebionetworks.research.domain.mobile_ui.R2.id;
 
-@AutoValue
-public abstract class ImageTheme {
-    @AutoValue.Builder
-    public static abstract class Builder {
-        public abstract ImageTheme builder();
+import butterknife.BindView;
 
-        public abstract Builder setColorPlacement(ColorPlacement colorPlacement);
+public class ActiveUIStepViewBinding extends UIStepViewBinding {
+    // The countdownDial, progressLabel, and unitLabel are deliberately not optional.
+    @NonNull
+    @BindView(id.countdownDial)
+    protected ProgressBar countdownDial;
+    @NonNull
+    @BindView(id.countLabel)
+    protected TextView countLabel;
+    @NonNull
+    @BindView(id.unitLabel)
+    protected TextView unitLabel;
 
-        public abstract Builder setImageResource(int imageResource);
-    }
-
-    public static Builder builder() {
-        return new AutoValue_ImageTheme.Builder();
+    public ActiveUIStepViewBinding(final View view) {
+        super(view);
     }
 
     /**
-     * @return preferred placement of the image. Default placement is `iconBefore` if undefined.
+     * Returns the progress bar that functions as the countdownDial for this view.
+     * @return the progress bar that functions as the countdownDial for this view.
      */
-    @Nullable
-    public abstract ColorPlacement getColorPlacement();
+    @NonNull
+    public ProgressBar getCountdownDial() {
+        return this.countdownDial;
+    }
 
-    public abstract int getImageResource();
+    /**
+     * Returns the text view that functions as the count label for this view.
+     * @return the text view that functions as the count label for this view.
+     */
+    @NonNull
+    public TextView getCountLabel() {
+        return this.countLabel;
+    }
 
-    public abstract Builder toBuilder();
+    /**
+     * Returns the text view that functions as the unit label for this view.
+     * @return the text view that functions as the unit label for this view.
+     */
+    @NonNull
+    public TextView getUnitLabel() {
+        return this.unitLabel;
+    }
 }
+

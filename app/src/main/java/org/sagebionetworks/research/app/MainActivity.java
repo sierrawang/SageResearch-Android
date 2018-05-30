@@ -67,7 +67,7 @@ public class MainActivity extends AppCompatActivity {
         // TODO: show list of available tasks
         if (performTaskFragment == null) {
             compositeDisposable.add(
-                    taskRepository.getTaskInfo("foo")
+                    taskRepository.getTaskInfo("instructionStepTest")
                             .map(taskInfo -> TaskView.builder()
                                     .setIdentifier(taskInfo.getIdentifier())
                                     .build())

@@ -30,34 +30,28 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.sagebionetworks.research.domain.step.ui.theme;
+package org.sagebionetworks.research.mobile_ui.widget;
 
-import android.support.annotation.Nullable;
+import android.view.animation.Animation;
+import android.view.animation.Transformation;
+import android.widget.ProgressBar;
 
-import com.google.auto.value.AutoValue;
+public class ProgressBarAnimation extends Animation {
+    private ProgressBar progressBar;
+    private float from;
+    private float  to;
 
-@AutoValue
-public abstract class ImageTheme {
-    @AutoValue.Builder
-    public static abstract class Builder {
-        public abstract ImageTheme builder();
-
-        public abstract Builder setColorPlacement(ColorPlacement colorPlacement);
-
-        public abstract Builder setImageResource(int imageResource);
+    public ProgressBarAnimation(ProgressBar progressBar, float from, float to) {
+        super();
+        this.progressBar = progressBar;
+        this.from = from;
+        this.to = to;
     }
 
-    public static Builder builder() {
-        return new AutoValue_ImageTheme.Builder();
+    @Override
+    protected void applyTransformation(float interpolatedTime, Transformation t) {
+        super.applyTransformation(interpolatedTime, t);
+        float value = from + (to - from) * interpolatedTime;
+        progressBar.setProgress((int) value);
     }
-
-    /**
-     * @return preferred placement of the image. Default placement is `iconBefore` if undefined.
-     */
-    @Nullable
-    public abstract ColorPlacement getColorPlacement();
-
-    public abstract int getImageResource();
-
-    public abstract Builder toBuilder();
 }

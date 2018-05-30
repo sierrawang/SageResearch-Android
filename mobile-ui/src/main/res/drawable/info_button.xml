@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?><!--
+<!--
   ~ BSD 3-Clause License
   ~
   ~ Copyright 2018  Sage Bionetworks. All rights reserved.
@@ -30,29 +30,15 @@
   ~ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
   -->
 
-<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent">
-
-    <TextView
-        android:id="@id/title"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="title" />
-
-    <TextView
-        android:id="@id/description"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        app:layout_constraintTop_toBottomOf="@id/title"
-        android:text="description" />
-
-    <org.sagebionetworks.research.mobile_ui.widget.NavigationActionBar
-        android:id="@id/rs2_step_navigation_action_bar"
-        android:layout_width="fill_parent"
-        android:layout_height="33dp"
-        android:layout_marginBottom="16dp"
-        app:layout_constraintBottom_toBottomOf="parent" />
-</android.support.constraint.ConstraintLayout>
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="24dp"
+    android:height="24dp"
+    android:viewportWidth="24"
+    android:viewportHeight="24">
+  <group>
+    <clip-path android:pathData="M0,0L24,0L24,24L0,24L0,0Z M 0,0"/>
+    <path
+        android:pathData="M12,0C5.3716,0 0,5.3716 0,12C0,18.6284 5.3716,24 12,24C18.6284,24 24,18.6284 24,12C24.0093,5.3716 18.6284,0 12,0ZM12.9868,18.7401L10.9666,18.7401L10.9666,10.3615L12.9868,10.3615L12.9868,18.7401ZM11.9814,8.3879C11.1063,8.3879 10.3708,7.6524 10.3708,6.7867C10.3708,5.8743 11.1063,5.1575 11.9814,5.1575C12.8844,5.1575 13.6385,5.8836 13.6385,6.7867C13.6385,7.6524 12.8844,8.3879 11.9814,8.3879Z"
+        android:fillColor="#FFFFFF"/>
+  </group>
+</vector>

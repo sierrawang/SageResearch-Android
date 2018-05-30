@@ -30,34 +30,34 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.sagebionetworks.research.domain.step.ui.theme;
+package org.sagebionetworks.research.mobile_ui.step_views;
 
-import android.support.annotation.Nullable;
+import android.content.Context;
+import android.support.constraint.ConstraintLayout;
+import android.util.AttributeSet;
 
-import com.google.auto.value.AutoValue;
+import org.sagebionetworks.research.domain.mobile_ui.R;
 
-@AutoValue
-public abstract class ImageTheme {
-    @AutoValue.Builder
-    public static abstract class Builder {
-        public abstract ImageTheme builder();
+public class TappingStepButtonView extends ConstraintLayout {
 
-        public abstract Builder setColorPlacement(ColorPlacement colorPlacement);
-
-        public abstract Builder setImageResource(int imageResource);
+    public TappingStepButtonView(final Context context) {
+        super(context);
+        this.commonInit();
     }
 
-    public static Builder builder() {
-        return new AutoValue_ImageTheme.Builder();
+    public TappingStepButtonView(final Context context, final AttributeSet attrs) {
+        super(context, attrs);
+        this.commonInit();
     }
 
-    /**
-     * @return preferred placement of the image. Default placement is `iconBefore` if undefined.
-     */
-    @Nullable
-    public abstract ColorPlacement getColorPlacement();
+    public TappingStepButtonView(final Context context, final AttributeSet attrs, final int defStyleAttr) {
+        super(context, attrs, defStyleAttr);
+        this.commonInit();
+    }
 
-    public abstract int getImageResource();
+    protected void commonInit() {
+        inflate(this.getContext(), R.layout.mpower2_tapping_step_button_view, this);
+    }
 
-    public abstract Builder toBuilder();
+    // TODO rkolmos 05/29/2018 potentially add tapping step data recording functionality to this view.
 }

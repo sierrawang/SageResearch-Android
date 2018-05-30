@@ -183,6 +183,7 @@ public class ResourceTaskRepository implements TaskRepository {
     }
 
     @NonNull
+    @Override
     public Completable setTaskResult(final TaskResult taskResult) {
         return Completable.error(new UnsupportedOperationException("Not implemented"));
     }
