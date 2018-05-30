@@ -178,9 +178,9 @@ public abstract class ShowStepFragmentBase
             return ActionType.BACKWARD;
         } else if (R.id.rs2_step_navigation_action_skip == actionButtonId) {
             return ActionType.SKIP;
-        } else if (R.id.rs2_step_header_cancel_button == actionButtonId) {
+        } else if (R.id.rs2_step_navigation_action_cancel == actionButtonId) {
             return ActionType.CANCEL;
-        } else if (R.id.rs2_step_header_info_button == actionButtonId) {
+        } else if (R.id.rs2_step_navigation_action_info == actionButtonId) {
             return ActionType.INFO;
         }
 
