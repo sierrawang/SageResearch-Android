@@ -228,6 +228,8 @@ public class PerformTaskViewModel extends ViewModel {
     void handleTaskResultFound(TaskResult taskResult) {
         LOGGER.debug("Loaded taskResult: {}", taskResult);
 
+        this.taskResult = taskResult;
+
         taskResultLiveData.setValue(taskResult);
     }
 

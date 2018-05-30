@@ -30,5 +30,42 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-include ':app', ':domain', ':presentation', ':mobile-ui', ':data', ':mpower'
+package org.sagebionetworks.research.mpower.inject;
 
+import android.app.Activity;
+import android.content.Context;
+
+import com.google.gson.TypeAdapterFactory;
+
+import org.sagebionetworks.research.data.inject.DataModule;
+import org.sagebionetworks.research.mpower.MPowerApplication;
+import org.sagebionetworks.research.mpower.MainActivity;
+
+import dagger.Binds;
+import dagger.Module;
+import dagger.Provides;
+import dagger.android.ActivityKey;
+import dagger.android.AndroidInjectionModule;
+import dagger.android.AndroidInjector;
+import dagger.multibindings.IntoMap;
+import dagger.multibindings.IntoSet;
+
+@Module(includes = {AndroidInjectionModule.class, AppTaskModule.class, DataModule.class},
+        subcomponents = {MainActivitySubcomponent.class})
+public abstract class MPowerApplicationModule {
+    @Binds
+    public abstract Context provideApplicationContext(MPowerApplication app);
+
+    @Binds
+    @IntoMap
+    @ActivityKey(MainActivity.class)
+    abstract AndroidInjector.Factory<? extends Activity> bindYourActivityInjectorFactory(
+            MainActivitySubcomponent.Builder builder);
+
+
+    @Provides
+    @IntoSet
+    static TypeAdapterFactory provideAutoValueTypeAdapter() {
+        return MPowerAutoValueTypeAdapterFactory.create();
+    }
+}
