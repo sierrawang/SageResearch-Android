@@ -74,12 +74,10 @@ public class UIStepViewBase implements UIStepView {
         String identifier = step.getIdentifier();
         // TODO: rkolmos 05/29/2018 potentially change actions.
         ImmutableMap<String, UIActionView> actions = UIActionView.getActionsFrom(step.getActions());
-        // TODO: rkolmos 05/29/2018 Localize Strings.
-        DisplayString title = new DisplayString(0, step.getTitle());
-        DisplayString text = new DisplayString(0, step.getText());
-        DisplayString detail = new DisplayString(0, step.getDetail());
-        DisplayString footnote = new DisplayString(0, step.getFootnote());
-
+        DisplayString title = new DisplayString(null, step.getTitle());
+        DisplayString text = new DisplayString(null, step.getText());
+        DisplayString detail = new DisplayString(null, step.getDetail());
+        DisplayString footnote = new DisplayString(null, step.getFootnote());
         ColorThemeView colorTheme = ColorThemeView.fromColorTheme(step.getColorTheme());
         ImageThemeView imageTheme = ImageThemeView.fromImageTheme(step.getImageTheme());
         // TODO: rkolmos 05/30/2018 for now the nav direction is always left.

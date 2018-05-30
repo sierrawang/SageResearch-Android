@@ -34,33 +34,22 @@ package org.sagebionetworks.research.presentation;
 
 import android.os.Parcel;
 import android.os.Parcelable;
+import android.support.annotation.DrawableRes;
 import android.support.annotation.Nullable;
-import android.support.annotation.StringRes;
 
-public class DisplayString implements Parcelable {
-    // resource id for string to display
-    @StringRes
+public class DisplayDrawable implements Parcelable {
+    @DrawableRes
     @Nullable
-    public final Integer defaultDisplayStringRes;
+    public final Integer defaultDrawableRes;
 
-    // string to display, overrides defaultDisplayStringRes
+    @DrawableRes
     @Nullable
-    public final String displayString;
+    public final Integer drawableRes;
 
-    public DisplayString(@StringRes final Integer defaultDisplayStringRes, @Nullable final String displayString) {
-        this.defaultDisplayStringRes = defaultDisplayStringRes;
-        this.displayString = displayString;
-    }
 
-    protected DisplayString(Parcel in) {
-        defaultDisplayStringRes = in.readInt();
-        displayString = in.readString();
-    }
-
-    @Override
-    public void writeToParcel(Parcel dest, int flags) {
-        dest.writeInt(defaultDisplayStringRes);
-        dest.writeString(displayString);
+    public DisplayDrawable(@Nullable final Integer defaultDrawableRes, @Nullable final Integer drawableRes) {
+        this.defaultDrawableRes = defaultDrawableRes;
+        this.drawableRes = drawableRes;
     }
 
     @Override
@@ -68,15 +57,26 @@ public class DisplayString implements Parcelable {
         return 0;
     }
 
-    public static final Creator<DisplayString> CREATOR = new Creator<DisplayString>() {
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        dest.writeValue(this.drawableRes);
+        dest.writeValue(this.defaultDrawableRes);
+    }
+
+    protected DisplayDrawable(Parcel in) {
+        this.drawableRes = (Integer) in.readValue(Integer.class.getClassLoader());
+        this.defaultDrawableRes = (Integer) in.readValue(Integer.class.getClassLoader());
+    }
+
+    public static final Creator<DisplayDrawable> CREATOR = new Creator<DisplayDrawable>() {
         @Override
-        public DisplayString createFromParcel(Parcel in) {
-            return new DisplayString(in);
+        public DisplayDrawable createFromParcel(Parcel source) {
+            return new DisplayDrawable(source);
         }
 
         @Override
-        public DisplayString[] newArray(int size) {
-            return new DisplayString[size];
+        public DisplayDrawable[] newArray(int size) {
+            return new DisplayDrawable[size];
         }
     };
 }

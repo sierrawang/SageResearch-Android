@@ -33,12 +33,16 @@
 package org.sagebionetworks.research.presentation.model;
 
 import android.os.Parcelable;
+import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 
 import com.google.auto.value.AutoValue;
 
 import org.sagebionetworks.research.domain.step.ui.theme.ColorPlacement;
 import org.sagebionetworks.research.domain.step.ui.theme.ImageTheme;
+import org.sagebionetworks.research.presentation.DisplayDrawable;
+import org.sagebionetworks.research.presentation.DisplayString;
+import org.sagebionetworks.research.presentation.mapper.DrawableMapper;
 
 @AutoValue
 public abstract class ImageThemeView implements Parcelable {
@@ -50,7 +54,7 @@ public abstract class ImageThemeView implements Parcelable {
 
         @ColorPlacement String colorPlacement);
 
-        public abstract Builder setImageResourceId(int imageResourceId);
+        public abstract Builder setImageResource(@NonNull DisplayDrawable imageResource);
     }
 
     /**
@@ -59,10 +63,12 @@ public abstract class ImageThemeView implements Parcelable {
      * @return an ImageThemeView created from the given ImageTheme.
      */
     public static ImageThemeView fromImageTheme(@Nullable ImageTheme imageTheme) {
+        String imageName = imageTheme.getImageResourceName();
         return ImageThemeView.builder()
                 .setColorPlacement(imageTheme.getColorPlacement())
-                // TODO: rkolmos 05/29/2018 resolve the resource to get the image id here.
-                .setImageResourceId(0)
+                // There is no default image for the one displayed on the step's image view.
+                .setImageResource(new DisplayDrawable(null,
+                        DrawableMapper.getDrawableFromName(imageName)))
                 .build();
     }
 
@@ -74,5 +80,6 @@ public abstract class ImageThemeView implements Parcelable {
     @ColorPlacement
     public abstract String getColorPlacement();
 
-    public abstract int getImageResourceId();
+    @NonNull
+    public abstract DisplayDrawable getImageResource();
 }
