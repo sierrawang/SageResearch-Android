@@ -39,7 +39,7 @@ import android.support.annotation.Nullable;
  * which defines how long the user should perform the task for. ActiveUISteps also have spoken instructions
  * that can be read to the user.
  */
-public interface ActiveUIStep extends UIStep {
+public interface ActiveUIStep extends ThemedUIStep {
     /**
      * The duration of time in seconds to run the step. If null, then this value is ignored.
      *
