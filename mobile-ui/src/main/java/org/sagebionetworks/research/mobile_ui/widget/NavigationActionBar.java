@@ -94,7 +94,7 @@ public class NavigationActionBar extends ConstraintLayout {
     @NonNull
     ActionButton skipButton;
 
-    @BindView(R2.id.rs2_step_navigation_shadow_view)
+    @BindView(R2.id.rs2_step_navigation_shadow)
     @NonNull
     View shadowView;
 

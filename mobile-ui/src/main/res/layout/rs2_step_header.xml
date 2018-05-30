@@ -46,7 +46,7 @@
     android:paddingTop="0dp">
 
     <TextView
-        android:id="@+id/rs2_step_header_progress_label"
+        android:id="@id/rs2_step_header_progress_label"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginBottom="4dp"
@@ -85,7 +85,7 @@
         app:layout_constraintVertical_chainStyle="spread_inside">
 
         <org.sagebionetworks.research.mobile_ui.widget.ActionButton
-            android:id="@+id/rs2_step_header_cancel_button"
+            android:id="@+id/rs2_step_navigation_action_cancel"
             style="@style/Widget.ResearchStack.StepHeader.CancelButton"
             android:layout_width="30dp"
             android:layout_height="0dp"
@@ -112,13 +112,13 @@
             android:layout_marginTop="30dp"
             android:max="6"
             android:progress="2"
-            app:layout_constraintEnd_toStartOf="@+id/rs2_step_header_info_button"
+            app:layout_constraintEnd_toStartOf="@id/rs2_step_navigation_action_info"
             app:layout_constraintHorizontal_bias=".5"
-            app:layout_constraintStart_toEndOf="@+id/rs2_step_header_cancel_button"
+            app:layout_constraintStart_toEndOf="@+id/rs2_step_navigation_action_cancel"
             app:layout_constraintTop_toTopOf="parent" />
 
         <org.sagebionetworks.research.mobile_ui.widget.ActionButton
-            android:id="@+id/rs2_step_header_info_button"
+            android:id="@+id/rs2_step_navigation_action_info"
             style="@style/Widget.ResearchStack.StepHeader.InfoButton"
             android:layout_width="30dp"
             android:layout_height="0dp"

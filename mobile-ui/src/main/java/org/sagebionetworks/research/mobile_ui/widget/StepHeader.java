@@ -64,10 +64,10 @@ public class StepHeader extends ConstraintLayout {
     private boolean isCancelButtonHidden;
     private boolean usesFloatingProgressBar;
 
-    @BindView(R2.id.rs2_step_header_cancel_button)
+    @BindView(id.rs2_step_navigation_action_cancel)
     @NonNull
     ActionButton cancelButton;
-    @BindView(R2.id.rs2_step_header_info_button)
+    @BindView(id.rs2_step_navigation_action_info)
     @NonNull
     ActionButton infoButton;
     @BindView(R2.id.rs2_step_header_progress_label)
