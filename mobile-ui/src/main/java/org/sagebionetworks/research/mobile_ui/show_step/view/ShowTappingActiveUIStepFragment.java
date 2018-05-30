@@ -38,7 +38,7 @@ import org.sagebionetworks.research.domain.mobile_ui.R;
 import org.sagebionetworks.research.mobile_ui.show_step.view.view_binding.TappingActiveUIStepViewBinding;
 import org.sagebionetworks.research.mobile_ui.widget.ActionButton;
 import org.sagebionetworks.research.presentation.ActionType;
-import org.sagebionetworks.research.presentation.model.StepView;
+import org.sagebionetworks.research.presentation.model.interfaces.StepView;
 import org.sagebionetworks.research.presentation.show_step.ShowGenericStepViewModel;
 
 public class ShowTappingActiveUIStepFragment extends ShowStepFragmentBase

@@ -30,37 +30,46 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.sagebionetworks.research.mobile_ui.widget;
+package org.sagebionetworks.research.presentation.model;
 
-import android.content.Context;
-import android.content.res.TypedArray;
-import android.graphics.PorterDuff.Mode;
-import android.util.AttributeSet;
-import android.support.v7.widget.AppCompatButton;
+import android.os.Parcelable;
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 
-import org.sagebionetworks.research.domain.mobile_ui.R;
+import com.google.auto.value.AutoValue;
+import com.google.common.collect.ImmutableMap;
 
-public class RoundedButton extends AppCompatButton {
-    public RoundedButton(final Context context) {
-        super(context);
-        commonInit(null);
+import org.sagebionetworks.research.domain.step.ui.theme.ColorPlacement;
+import org.sagebionetworks.research.domain.step.ui.theme.ColorStyle;
+import org.sagebionetworks.research.domain.step.ui.theme.ColorTheme;
+
+import java.util.Map;
+
+@AutoValue
+public abstract class ColorThemeView implements Parcelable {
+    @AutoValue.Builder
+    public static abstract class Builder {
+        public abstract ColorThemeView build();
+
+        public abstract Builder setColorStyles(@NonNull Map<ColorPlacement, ColorStyle> colorStyles);
+
+        public abstract Builder setLightStyle(boolean isLightStyle);
     }
 
-    public RoundedButton(final Context context, final AttributeSet attrs) {
-        super(context, attrs);
-        commonInit(attrs);
+    public static Builder builder() {
+        return new AutoValue_ColorThemeView.Builder();
     }
 
-    public RoundedButton(final Context context, final AttributeSet attrs, final int defStyleAttr) {
-        super(context, attrs, defStyleAttr);
-        commonInit(attrs);
-    }
+    public abstract ImmutableMap<ColorPlacement, ColorStyle> getColorStyles();
 
-    private void commonInit(final AttributeSet attrs) {
-        TypedArray a = this.getContext().obtainStyledAttributes(attrs, R.styleable.RoundedButton);
-        int colorRes = a.getInt(R.styleable.RoundedButton_backgroundColor, R.color.butterscotch500);
-        a.recycle();
-        this.setBackgroundResource(R.drawable.rs2_rounded_button);
-        this.getBackground().setColorFilter(colorRes, Mode.SRC_IN);
+    public abstract boolean isLightStyle();
+
+    public abstract ColorTheme.Builder toBuilder();
+
+    public static ColorThemeView fromColorTheme(@Nullable ColorTheme colorTheme) {
+        return ColorThemeView.builder()
+                .setColorStyles(colorTheme.getColorStyles())
+                .setLightStyle(colorTheme.isLightStyle())
+                .build();
     }
 }

@@ -41,7 +41,7 @@ import org.sagebionetworks.research.mobile_ui.show_step.view.view_binding.StepVi
 import org.sagebionetworks.research.mobile_ui.show_step.view.view_binding.UIStepViewBinding;
 import org.sagebionetworks.research.mobile_ui.widget.ActionButton;
 import org.sagebionetworks.research.presentation.ActionType;
-import org.sagebionetworks.research.presentation.model.StepView;
+import org.sagebionetworks.research.presentation.model.interfaces.StepView;
 import org.sagebionetworks.research.presentation.show_step.ShowGenericStepViewModel;
 
 import static com.google.common.base.Preconditions.checkNotNull;

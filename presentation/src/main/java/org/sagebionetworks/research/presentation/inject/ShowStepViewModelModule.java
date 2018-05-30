@@ -32,7 +32,7 @@
 
 package org.sagebionetworks.research.presentation.inject;
 
-import org.sagebionetworks.research.presentation.model.StepView;
+import org.sagebionetworks.research.presentation.model.interfaces.StepView;
 import org.sagebionetworks.research.presentation.show_step.AbstractShowStepViewModelFactory;
 import org.sagebionetworks.research.presentation.show_step.ShowGenericStepViewModelFactory;
 import org.sagebionetworks.research.presentation.show_step.ShowStepViewModelFactory;

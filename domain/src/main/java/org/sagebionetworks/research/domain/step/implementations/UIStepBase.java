@@ -142,13 +142,13 @@ public class UIStepBase extends StepBase implements ThemedUIStep {
     @Nullable
     @Override
     public ColorTheme getColorTheme() {
-        return null;
+        return this.colorTheme;
     }
 
     @Nullable
     @Override
     public ImageTheme getImageTheme() {
-        return null;
+        return this.imageTheme;
     }
 
     @Override

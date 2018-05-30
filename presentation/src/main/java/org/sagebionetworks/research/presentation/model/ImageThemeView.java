@@ -30,55 +30,46 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.sagebionetworks.research.mobile_ui.widget;
+package org.sagebionetworks.research.presentation.model;
 
-import android.content.Context;
-import android.content.res.TypedArray;
-import android.graphics.Canvas;
-import android.graphics.Paint;
-import android.support.v7.widget.AppCompatButton;
-import android.support.v7.widget.AppCompatTextView;
-import android.text.Spannable;
-import android.text.SpannableString;
-import android.text.SpannableStringBuilder;
-import android.text.style.UnderlineSpan;
-import android.util.AttributeSet;
+import android.os.Parcelable;
+import android.support.annotation.Nullable;
 
-import org.sagebionetworks.research.domain.mobile_ui.R;
+import com.google.auto.value.AutoValue;
 
-public class UnderlinedButton extends AppCompatTextView {
-    private final UnderlineSpan underlineSpan = new UnderlineSpan();
-    private SpannableStringBuilder textToDisplay = new SpannableStringBuilder();
+import org.sagebionetworks.research.domain.step.ui.theme.ColorPlacement;
+import org.sagebionetworks.research.domain.step.ui.theme.ImageTheme;
 
-    public UnderlinedButton(final Context context) {
-        super(context);
-        this.commonInit();
-    }
+@AutoValue
+public abstract class ImageThemeView implements Parcelable {
+    @AutoValue.Builder
+    public abstract static class Builder {
+        public abstract ImageThemeView build();
 
-    public UnderlinedButton(final Context context, final AttributeSet attrs) {
-        super(context, attrs);
-        this.commonInit();
-    }
+        public abstract Builder setColorPlacement(@Nullable  ColorPlacement colorPlacement);
 
-    public UnderlinedButton(final Context context, final AttributeSet attrs, final int defStyleAttr) {
-        super(context, attrs, defStyleAttr);
-        this.commonInit();
-    }
-
-    private void commonInit() {
-        this.setBackgroundResource(R.color.transparent);
-        this.setPaintFlags(this.getPaintFlags() | Paint.UNDERLINE_TEXT_FLAG);
+        public abstract Builder setImageResourceId(int imageResourceId);
     }
 
     /**
-     * Override onDraw to underline the text.
-     * @param canvas The canvas to draw this widget on.
+     * Creates an ImageThemeView from an ImageTheme.
+     * @param imageTheme The image theme to create this imageThemeView from.
+     * @return an ImageThemeView created from the given ImageTheme.
      */
-    public void onDraw(Canvas canvas) {
-        this.textToDisplay.clear();
-        this.textToDisplay.append(this.getText());
-        this.textToDisplay.setSpan(underlineSpan, 0, this.textToDisplay.length(), 0);
-        this.setText(this.textToDisplay);
-        super.onDraw(canvas);
+    public static ImageThemeView fromImageTheme(@Nullable ImageTheme imageTheme) {
+        return ImageThemeView.builder()
+                .setColorPlacement(imageTheme.getColorPlacement())
+                // TODO: rkolmos 05/29/2018 resolve the resource to get the image id here.
+                .setImageResourceId(0)
+                .build();
     }
+
+    public static Builder builder() {
+        return new AutoValue_ImageThemeView.Builder();
+    }
+
+    @Nullable
+    public abstract ColorPlacement getColorPlacement();
+
+    public abstract int getImageResourceId();
 }

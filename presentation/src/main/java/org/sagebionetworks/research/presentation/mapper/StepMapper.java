@@ -38,8 +38,8 @@ import com.google.common.base.Function;
 
 import org.sagebionetworks.research.domain.step.interfaces.Step;
 import org.sagebionetworks.research.presentation.model.BaseStepView;
-import org.sagebionetworks.research.presentation.model.StepView;
-import org.sagebionetworks.research.presentation.model.StepView.NavDirection;
+import org.sagebionetworks.research.presentation.model.interfaces.StepView;
+import org.sagebionetworks.research.presentation.model.interfaces.StepView.NavDirection;
 
 import javax.inject.Inject;
 

@@ -36,7 +36,7 @@ import android.arch.lifecycle.ViewModel;
 import android.arch.lifecycle.ViewModelProvider;
 import android.support.annotation.NonNull;
 
-import org.sagebionetworks.research.presentation.model.StepView;
+import org.sagebionetworks.research.presentation.model.interfaces.StepView;
 import org.sagebionetworks.research.presentation.perform_task.PerformTaskViewModel;
 
 import java.util.Map;

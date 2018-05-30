@@ -32,7 +32,7 @@
 
 package org.sagebionetworks.research.presentation.show_step;
 
-import org.sagebionetworks.research.presentation.model.StepView;
+import org.sagebionetworks.research.presentation.model.interfaces.StepView;
 import org.sagebionetworks.research.presentation.perform_task.PerformTaskViewModel;
 
 public interface AbstractShowStepViewModelFactory<VM extends ShowStepViewModel<S>, S extends StepView> {

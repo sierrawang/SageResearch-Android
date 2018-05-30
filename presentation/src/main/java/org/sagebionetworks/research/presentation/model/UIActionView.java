@@ -30,23 +30,23 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.sagebionetworks.research.mobile_ui.show_step.view;
+package org.sagebionetworks.research.presentation.model;
 
-import org.sagebionetworks.research.domain.mobile_ui.R;
-import org.sagebionetworks.research.mobile_ui.show_step.view.view_binding.ActiveUIStepViewBinding;
-import org.sagebionetworks.research.presentation.model.interfaces.StepView;
-import org.sagebionetworks.research.presentation.show_step.ShowGenericStepViewModel;
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 
-// TODO rkolmos 05/25/2018 Make this class use the specific types of StepView, ViewModel for an ActiveUIStep step.
-public class ShowActiveUIStepFragment extends ShowStepFragmentBase
-        <StepView, ShowGenericStepViewModel, ActiveUIStepViewBinding> {
-    @Override
-    protected ActiveUIStepViewBinding instantiateBinding() {
-        return new ActiveUIStepViewBinding();
-    }
+import com.google.common.collect.ImmutableMap;
 
-    @Override
-    protected int getLayoutId() {
-        return R.layout.mpower2_active_step;
+import org.sagebionetworks.research.domain.step.ui.UIAction;
+
+public interface UIActionView {
+    int getButtonIcon();
+
+    @Nullable
+    String getButtonTitle();
+
+    @NonNull
+    static ImmutableMap<String, UIActionView> getActionsFrom(@NonNull ImmutableMap<String, UIAction> actions) {
+        return null;
     }
 }

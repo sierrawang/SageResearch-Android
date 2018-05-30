@@ -36,7 +36,7 @@ import android.support.annotation.NonNull;
 
 import org.sagebionetworks.research.domain.mobile_ui.R;
 import org.sagebionetworks.research.mobile_ui.show_step.view.view_binding.UIStepViewBinding;
-import org.sagebionetworks.research.presentation.model.StepView;
+import org.sagebionetworks.research.presentation.model.interfaces.StepView;
 import org.sagebionetworks.research.presentation.show_step.ShowGenericStepViewModel;
 
 // TODO rkolmos 05/25/2018 Make this class use the specific types of StepView, ViewModel for an instruction step.

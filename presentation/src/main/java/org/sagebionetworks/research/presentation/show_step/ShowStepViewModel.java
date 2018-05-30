@@ -35,7 +35,7 @@ package org.sagebionetworks.research.presentation.show_step;
 import android.arch.lifecycle.LiveData;
 import android.arch.lifecycle.ViewModel;
 
-import org.sagebionetworks.research.presentation.model.StepView;
+import org.sagebionetworks.research.presentation.model.interfaces.StepView;
 
 public abstract class ShowStepViewModel<T extends StepView> extends ViewModel {
     public abstract LiveData<T> getStepView();

@@ -192,25 +192,6 @@ public class ResultModule {
     }
     // endregion
 
-    @Provides
-    @IntoMap
-    @ClassKey(Instant.class)
-    static JsonDeserializer<?> provideInstantDeserializer() {
-        return new JsonDeserializer<Instant>() {
-            @Override
-            public Instant deserialize(final JsonElement json, final Type typeOfT,
-                    final JsonDeserializationContext context)
-                    throws JsonParseException {
-                if (json.isJsonPrimitive() && json.getAsJsonPrimitive().isString()) {
-                    String str = json.getAsString();
-                    return Instant.parse(str);
-                }
-
-                throw new JsonParseException("Instants should be represented as their toString representation");
-            }
-        };
-    }
-
     /**
      * @return The RuntimeTypeAdapterFactor for Result.class
      */

@@ -30,33 +30,36 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.sagebionetworks.research.mobile_ui.widget;
+package org.sagebionetworks.research.presentation.model.interfaces;
 
-import android.content.Context;
-import android.graphics.drawable.Drawable;
-import android.util.AttributeSet;
-import android.widget.ProgressBar;
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 
-import org.sagebionetworks.research.domain.mobile_ui.R;
+import com.google.common.collect.ImmutableMap;
 
-public class CountdownDial extends ProgressBar {
-    public CountdownDial(final Context context) {
-        super(context, null, android.R.style.Widget_ProgressBar_Horizontal);
-        this.commonInit();
-    }
+import org.sagebionetworks.research.presentation.model.ColorThemeView;
+import org.sagebionetworks.research.presentation.model.ImageThemeView;
+import org.sagebionetworks.research.presentation.model.UIActionView;
 
-    public CountdownDial(final Context context, final AttributeSet attrs) {
-        super(context, attrs, android.R.style.Widget_ProgressBar_Horizontal);
-        this.commonInit();
-    }
+public interface UIStepView extends StepView {
+    @Nullable
+    String getTitle();
 
-    public CountdownDial(final Context context, final AttributeSet attrs, final int defStyleAttr) {
-        super(context, attrs, android.R.style.Widget_ProgressBar_Horizontal);
-        this.commonInit();
-    }
+    @Nullable
+    String getText();
 
-    private void commonInit() {
-        // Todo: Set the correct progress drawable.
-        this.setBackgroundResource(R.drawable.countdown_dial_background);
-    }
+    @Nullable
+    String getDetail();
+
+    @Nullable
+    String getFootnote();
+
+    @NonNull
+    ImmutableMap<String, UIActionView> getActions();
+
+    @Nullable
+    ColorThemeView getColorTheme();
+
+    @Nullable
+    ImageThemeView getImageTheme();
 }

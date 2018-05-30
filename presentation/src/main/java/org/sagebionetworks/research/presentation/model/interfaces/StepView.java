@@ -30,14 +30,11 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.sagebionetworks.research.presentation.model;
+package org.sagebionetworks.research.presentation.model.interfaces;
 
 import android.os.Parcelable;
 import android.support.annotation.IntDef;
 import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
-
-import com.google.common.collect.ImmutableSet;
 
 import java.lang.annotation.Retention;
 
@@ -56,15 +53,4 @@ public interface StepView extends Parcelable {
 
     @NonNull
     String getIdentifier();
-
-    @Nullable
-    String getDetail();
-
-    @NavDirection int getNavDirection();
-
-    @NonNull
-    ImmutableSet<StepActionView> getStepActionViews();
-
-    @Nullable
-    String getTitle();
 }
