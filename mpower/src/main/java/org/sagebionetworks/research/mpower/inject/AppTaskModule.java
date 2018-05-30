@@ -30,5 +30,13 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-include ':app', ':domain', ':presentation', ':mobile-ui', ':data', ':mpower'
+package org.sagebionetworks.research.mpower.inject;
 
+import org.sagebionetworks.research.mobile_ui.inject.PerformTaskModule;
+
+import dagger.Module;
+
+@Module(includes = {PerformTaskModule.class, AppStepModule.class})
+public class AppTaskModule {
+
+}

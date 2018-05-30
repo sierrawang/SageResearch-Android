@@ -30,69 +30,72 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.sagebionetworks.research.domain.result.data;
+package org.sagebionetworks.research.mpower.step;
 
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 
 import com.google.auto.value.AutoValue;
+import com.google.common.collect.ImmutableMap;
 import com.google.gson.Gson;
 import com.google.gson.TypeAdapter;
 
-import org.sagebionetworks.research.domain.Schema;
-import org.sagebionetworks.research.domain.result.interfaces.Result;
+import org.sagebionetworks.research.domain.step.StepType;
+import org.sagebionetworks.research.domain.step.interfaces.ActiveUIStep;
+import org.sagebionetworks.research.domain.step.ui.UIAction;
 
-import java.util.List;
-import java.util.UUID;
+import java.util.Map;
 
-/**
- * A TaskResultData stores the state unique to a task result.
- */
 @AutoValue
-public abstract class TaskResultData {
+public abstract class InstructionStep implements ActiveUIStep {
     @AutoValue.Builder
     public abstract static class Builder {
-        public abstract TaskResultData build();
+        @NonNull
+        public abstract InstructionStep build();
 
-        public abstract Builder setUUID(UUID taskUUID);
+        @NonNull
+        public abstract Builder setActions(@NonNull Map<String, UIAction> actions);
 
-        public abstract Builder setSchema(Schema schema);
+        @NonNull
+        public abstract Builder setDetail(@Nullable String detail);
 
-        public abstract Builder setStepHistory(List<Result> stepHistory);
+        @NonNull
+        public abstract Builder setFootnote(@Nullable String footnote);
 
-        public abstract Builder setAsyncResults(List<Result> asyncResults);
+        @NonNull
+        public abstract Builder setIdentifier(@NonNull String identifier);
+
+        @NonNull
+        public abstract Builder setText(@Nullable String text);
+
+        @NonNull
+        public abstract Builder setTitle(@Nullable String title);
+
+        @NonNull
+        public abstract Builder setDuration(@Nullable Double duration);
+
+        @NonNull
+        public abstract Builder setBackgroundAudioRequired(boolean isBackgroundAudioRequired);
     }
 
-    public static TaskResultData create(@NonNull final UUID taskUUID, @Nullable final Schema schema,
-            @NonNull final List<Result> stepHistory, @NonNull final List<Result> asyncResults) {
-        return TaskResultData.builder()
-                .setUUID(taskUUID)
-                .setSchema(schema)
-                .setStepHistory(stepHistory)
-                .setAsyncResults(asyncResults)
-                .build();
-    }
+    public static final String TYPE_KEY = "instruction";
 
-    public static TaskResultData create(@NonNull final TaskResultData data, @NonNull final List<Result> stepHistory) {
-        return TaskResultData.create(data.getUUID(), data.getSchema(), stepHistory, data.getAsyncResults());
-    }
-
-    public static TypeAdapter<TaskResultData> typeAdapter(Gson gson) {
-        return new AutoValue_TaskResultData.GsonTypeAdapter(gson);
-    }
-
+    @NonNull
     public static Builder builder() {
-        return new AutoValue_TaskResultData.Builder();
+        return new AutoValue_InstructionStep.Builder();
     }
 
+    public static TypeAdapter<InstructionStep> typeAdapter(Gson gson) {
+        return new AutoValue_InstructionStep.GsonTypeAdapter(gson)
+                .setDefaultActions(ImmutableMap.of());
+    }
+
+    @NonNull
+    @Override
+    public final String getType() {
+        return StepType.INSTRUCTION;
+    }
+
+    @NonNull
     public abstract Builder toBuilder();
-
-    public abstract UUID getUUID();
-
-    @Nullable
-    public abstract Schema getSchema();
-
-    public abstract List<Result> getStepHistory();
-
-    public abstract List<Result> getAsyncResults();
 }
