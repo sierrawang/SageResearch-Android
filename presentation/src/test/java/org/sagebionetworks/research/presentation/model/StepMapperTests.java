@@ -30,22 +30,37 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.sagebionetworks.research.domain.step.interfaces;
+package org.sagebionetworks.research.presentation.model;
 
-import android.support.annotation.NonNull;
+import org.junit.*;
+import org.sagebionetworks.research.domain.step.interfaces.ActiveUIStep;
+import org.sagebionetworks.research.presentation.mapper.StepMapper;
+import org.sagebionetworks.research.presentation.model.implementations.ActiveUIStepViewBase;
+import org.sagebionetworks.research.presentation.model.interfaces.ActiveUIStepView;
+import org.sagebionetworks.research.presentation.model.interfaces.StepView;
+import org.sagebionetworks.research.presentation.model.interfaces.UIStepView;
 
-import org.sagebionetworks.research.domain.form.interfaces.InputField;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
 
-import java.util.List;
+public class StepMapperTests {
+    private static StepMapper stepMapper = new StepMapper();
 
-/**
- * A FormUIStep is a step which asks the user questions. This is useful for surveys or prompting the user during a
- * task.
- */
-public interface FormUIStep extends ThemedUIStep {
-    /**
-     * @return The list of InputFields for this form step.
-     */
-    @NonNull
-    List<InputField> getInputFields();
+    @Test
+    public void testMap_UIStep() {
+        StepView result = stepMapper.apply(UIStepViewTests.MOCK_UI_STEP);
+        assertNotNull(result);
+        assertTrue(result instanceof UIStepView);
+        // We leave it up to UIStepViewTests to make sure that the UIStepView here is correct. For here the fact that
+        // the correct type is returned is sufficient.
+    }
+
+    @Test
+    public void testMap_ActiveStep() {
+        StepView result = stepMapper.apply(ActiveUIStepViewTests.MOCK_ACTIVE_UI_STEP);
+        assertNotNull(result);
+        assertTrue(result instanceof ActiveUIStepView);
+        // We leave it up to ActiveUIStepViewTests to make sure that the ActiveUIStepView here is correct. For here the fact that
+        // the correct type is returned is sufficient.
+    }
 }

@@ -38,12 +38,16 @@ import android.support.annotation.Nullable;
 
 import com.google.common.collect.ImmutableMap;
 
+import org.sagebionetworks.research.domain.form.interfaces.InputField;
+import org.sagebionetworks.research.domain.step.interfaces.FormUIStep;
 import org.sagebionetworks.research.presentation.DisplayString;
 import org.sagebionetworks.research.presentation.model.ColorThemeView;
 import org.sagebionetworks.research.presentation.model.ImageThemeView;
 import org.sagebionetworks.research.presentation.model.UIActionView;
 import org.sagebionetworks.research.presentation.model.form.InputFieldView;
+import org.sagebionetworks.research.presentation.model.form.InputFieldViewBase;
 import org.sagebionetworks.research.presentation.model.interfaces.FormUIStepView;
+import org.sagebionetworks.research.presentation.model.interfaces.UIStepView;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -63,6 +67,18 @@ public class FormUIStepViewBase extends UIStepViewBase implements FormUIStepView
             final List<InputFieldView> inputFields) {
         super(identifier, navDirection, actions, title, text, detail, footnote, colorTheme, imageTheme);
         this.inputFields = inputFields;
+    }
+
+    public static FormUIStepViewBase fromFormUIStep(FormUIStep formUIStep) {
+        UIStepViewBase uiStepView = UIStepViewBase.fromUIStep(formUIStep);
+        List<InputFieldView> inputFields = new ArrayList<>();
+        for (InputField field : formUIStep.getInputFields()) {
+            inputFields.add(InputFieldViewBase.fromInputField(field));
+        }
+
+        return new FormUIStepViewBase(uiStepView.getIdentifier(), uiStepView.getNavDirection(),
+                uiStepView.getActions(), uiStepView.getTitle(), uiStepView.getText(), uiStepView.getDetail(),
+                uiStepView.getFootnote(), uiStepView.getColorTheme(), uiStepView.getImageTheme(), inputFields);
     }
 
     @Override

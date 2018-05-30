@@ -36,8 +36,16 @@ import android.support.annotation.Nullable;
 
 import com.google.common.base.Function;
 
+import org.sagebionetworks.research.domain.step.StepType;
+import org.sagebionetworks.research.domain.step.interfaces.ActiveUIStep;
+import org.sagebionetworks.research.domain.step.interfaces.FormUIStep;
 import org.sagebionetworks.research.domain.step.interfaces.Step;
+import org.sagebionetworks.research.domain.step.interfaces.ThemedUIStep;
 import org.sagebionetworks.research.presentation.model.BaseStepView;
+import org.sagebionetworks.research.presentation.model.implementations.ActiveUIStepViewBase;
+import org.sagebionetworks.research.presentation.model.implementations.FormUIStepViewBase;
+import org.sagebionetworks.research.presentation.model.implementations.UIStepViewBase;
+import org.sagebionetworks.research.presentation.model.interfaces.FormUIStepView;
 import org.sagebionetworks.research.presentation.model.interfaces.StepView;
 import org.sagebionetworks.research.presentation.model.interfaces.StepView.NavDirection;
 
@@ -54,9 +62,19 @@ public class StepMapper implements Function<Step, StepView> {
         if (input == null) {
             return null;
         }
-        return BaseStepView.builder()
-                .setIdentifier(input.getIdentifier())
-                .setNavDirection(NavDirection.SHIFT_LEFT)
-                .build();
+
+        switch (input.getType()) {
+            case StepType.UI:
+                return UIStepViewBase.fromUIStep((ThemedUIStep)input);
+            case StepType.ACTIVE:
+                return ActiveUIStepViewBase.fromActiveUIStep((ActiveUIStep)input);
+            case StepType.FORM:
+                return FormUIStepViewBase.fromFormUIStep((FormUIStep)input);
+            default:
+                return BaseStepView.builder()
+                        .setIdentifier(input.getIdentifier())
+                        .setNavDirection(NavDirection.SHIFT_LEFT)
+                        .build();
+        }
     }
 }

@@ -44,5 +44,5 @@ import javax.inject.Singleton;
 @Component(modules = {DrawableModule.class})
 @Singleton
 public interface DrawableComponent {
-    Map<String, Integer>  drawableMap();
+    Map<String, Integer> drawableMap();
 }

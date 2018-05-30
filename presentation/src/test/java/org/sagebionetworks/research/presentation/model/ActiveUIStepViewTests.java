@@ -32,22 +32,18 @@
 
 package org.sagebionetworks.research.presentation.model;
 
-import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
-
 import com.google.common.collect.ImmutableMap;
 
 import org.junit.*;
 import org.sagebionetworks.research.domain.step.StepType;
-import org.sagebionetworks.research.domain.step.interfaces.ThemedUIStep;
+import org.sagebionetworks.research.domain.step.interfaces.ActiveUIStep;
 import org.sagebionetworks.research.domain.step.ui.UIAction;
 import org.sagebionetworks.research.domain.step.ui.theme.ColorPlacement;
 import org.sagebionetworks.research.domain.step.ui.theme.ColorTheme;
 import org.sagebionetworks.research.domain.step.ui.theme.ImageTheme;
 import org.sagebionetworks.research.presentation.DisplayString;
-import org.sagebionetworks.research.presentation.model.implementations.UIStepViewBase;
-
-import java.util.Map;
+import org.sagebionetworks.research.presentation.model.implementations.ActiveUIStepViewBase;
+import org.threeten.bp.Duration;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
@@ -56,23 +52,20 @@ import static org.junit.Assert.assertTrue;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
-public class UIStepViewTests {
-    public static final ThemedUIStep MOCK_UI_STEP;
+public class ActiveUIStepViewTests {
+    public static final ActiveUIStep MOCK_ACTIVE_UI_STEP;
     static {
-        ImageTheme imageTheme = mockImageTheme(ColorPlacement.HEADER, null);
-        ColorTheme colorTheme = mockColorTheme(null, true);
-        MOCK_UI_STEP = mockThemedUIStep("identifier", ImmutableMap.of(), "title", "text",
-                "detail", "footnote", colorTheme, imageTheme);
+        ImageTheme imageTheme = UIStepViewTests.mockImageTheme(ColorPlacement.HEADER, null);
+        ColorTheme colorTheme = UIStepViewTests.mockColorTheme(null, true);
+        MOCK_ACTIVE_UI_STEP = mockActiveUIStep("identifier", ImmutableMap.of(), "title", "text",
+                "detail", "footnote", colorTheme, imageTheme, 5.0, true);
     }
 
-    protected static ThemedUIStep mockThemedUIStep(@NonNull final String identifier,
-            @Nullable final ImmutableMap<String, UIAction> actions,
-            @Nullable final String title, @Nullable final String text,
-            @Nullable final String detail, @Nullable final String footnote,
-            @Nullable final ColorTheme colorTheme,
-            @Nullable final ImageTheme imageTheme) {
-        ThemedUIStep step = mock(ThemedUIStep.class);
-        when(step.getType()).thenReturn(StepType.UI);
+    public static ActiveUIStep mockActiveUIStep(String identifier, ImmutableMap<String, UIAction> actions,
+            String title, String text, String detail, String footnote, ColorTheme colorTheme, ImageTheme imageTheme,
+            Double duration, boolean isBackgroundAudioRequired) {
+        ActiveUIStep step = mock(ActiveUIStep.class);
+        when(step.getType()).thenReturn(StepType.ACTIVE);
         when(step.getIdentifier()).thenReturn(identifier);
         when(step.getActions()).thenReturn(actions);
         when(step.getTitle()).thenReturn(title);
@@ -81,26 +74,14 @@ public class UIStepViewTests {
         when(step.getFootnote()).thenReturn(footnote);
         when(step.getColorTheme()).thenReturn(colorTheme);
         when(step.getImageTheme()).thenReturn(imageTheme);
+        when(step.getDuration()).thenReturn(duration);
+        when(step.isBackgroundAudioRequired()).thenReturn(isBackgroundAudioRequired);
         return step;
     }
 
-    public static ImageTheme mockImageTheme(@ColorPlacement String colorPlacement, String imageResourceName) {
-        ImageTheme theme = mock(ImageTheme.class);
-        when(theme.getColorPlacement()).thenReturn(colorPlacement);
-        when(theme.getImageResourceName()).thenReturn(imageResourceName);
-        return theme;
-    }
-
-    public static ColorTheme mockColorTheme(ImmutableMap<String, String> colorStyles, boolean isLightStyle) {
-        ColorTheme theme = mock(ColorTheme.class);
-        when(theme.isLightStyle()).thenReturn(isLightStyle);
-        when(theme.getColorStyles()).thenReturn(colorStyles);
-        return theme;
-    }
-
     @Test
-    public void testFromTUIStep() {
-        UIStepViewBase result = UIStepViewBase.fromUIStep(MOCK_UI_STEP);
+    public void testFromActiveUIStep() {
+        ActiveUIStepViewBase result = ActiveUIStepViewBase.fromActiveUIStep(MOCK_ACTIVE_UI_STEP);
         assertNotNull(result);
         assertEquals("identifier", result.getIdentifier());
         assertEquals(new DisplayString(null, "title"), result.getTitle());
@@ -115,5 +96,7 @@ public class UIStepViewTests {
         assertNotNull(imageThemeView.getColorPlacement());
         assertEquals(ColorPlacement.HEADER, imageThemeView.getColorPlacement());
         assertNull(imageThemeView.getImageResource().drawableRes);
+        assertEquals(Duration.ofMillis(5000), result.getDuration());
+        assertTrue(result.isBackgroundAudioRequired());
     }
 }
