@@ -89,6 +89,7 @@ public abstract class TaskResultData {
 
     public abstract UUID getUUID();
 
+    @Nullable
     public abstract Schema getSchema();
 
     public abstract List<Result> getStepHistory();
