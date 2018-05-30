@@ -37,6 +37,9 @@ import android.os.Parcelable;
 import android.support.annotation.Nullable;
 import android.support.annotation.StringRes;
 
+import com.google.common.base.Objects;
+
+
 public class DisplayString implements Parcelable {
     // resource id for string to display
     @StringRes
@@ -55,6 +58,24 @@ public class DisplayString implements Parcelable {
     protected DisplayString(Parcel in) {
         defaultDisplayStringRes = in.readInt();
         displayString = in.readString();
+    }
+
+    @Override
+    public boolean equals(final Object o) {
+        if (this == o) {
+            return true;
+        }
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
+        final DisplayString that = (DisplayString) o;
+        return Objects.equal(defaultDisplayStringRes, that.defaultDisplayStringRes) &&
+                Objects.equal(displayString, that.displayString);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hashCode(defaultDisplayStringRes, displayString);
     }
 
     @Override

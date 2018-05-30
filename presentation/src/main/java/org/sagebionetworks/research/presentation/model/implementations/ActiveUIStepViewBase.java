@@ -44,7 +44,6 @@ import org.sagebionetworks.research.presentation.model.ColorThemeView;
 import org.sagebionetworks.research.presentation.model.ImageThemeView;
 import org.sagebionetworks.research.presentation.model.UIActionView;
 import org.sagebionetworks.research.presentation.model.interfaces.ActiveUIStepView;
-import org.sagebionetworks.research.presentation.model.interfaces.UIStepView;
 import org.threeten.bp.Duration;
 
 public class ActiveUIStepViewBase extends UIStepViewBase implements ActiveUIStepView {

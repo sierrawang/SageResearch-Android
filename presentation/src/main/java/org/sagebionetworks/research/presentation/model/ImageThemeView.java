@@ -50,9 +50,7 @@ public abstract class ImageThemeView implements Parcelable {
     public abstract static class Builder {
         public abstract ImageThemeView build();
 
-        public abstract Builder setColorPlacement(@Nullable
-
-        @ColorPlacement String colorPlacement);
+        public abstract Builder setColorPlacement(@Nullable @ColorPlacement String colorPlacement);
 
         public abstract Builder setImageResource(@NonNull DisplayDrawable imageResource);
     }

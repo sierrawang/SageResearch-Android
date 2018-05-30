@@ -43,6 +43,7 @@ import org.sagebionetworks.research.domain.mobile_ui.R2.id;
 import org.sagebionetworks.research.mobile_ui.widget.NavigationActionBar;
 import org.sagebionetworks.research.mobile_ui.widget.NavigationActionBar.ActionButtonClickListener;
 import org.sagebionetworks.research.mobile_ui.widget.StepHeader;
+import org.sagebionetworks.research.presentation.DisplayDrawable;
 import org.sagebionetworks.research.presentation.DisplayString;
 import org.sagebionetworks.research.presentation.model.interfaces.StepView;
 import org.sagebionetworks.research.presentation.model.interfaces.UIStepView;
@@ -202,7 +203,14 @@ public class UIStepViewBinding implements StepViewBinding<UIStepView> {
         updateTextView(this.footnoteLabel, stepView.getFootnote());
 
         if (this.imageView != null) {
-            this.imageView.setImageResource(stepView.getImageTheme().getImageResourceId());
+            DisplayDrawable drawable = stepView.getImageTheme().getImageResource();
+            Integer imageResourceId = drawable.drawableRes != null ? drawable.drawableRes :
+                    drawable.defaultDrawableRes;
+            if (imageResourceId != null) {
+                this.imageView.setImageResource(imageResourceId);
+            } else {
+                System.err.println("DisplayDrawable has null drawableRes and null defaultDrawableRes");
+            }
         }
 
         // TODO rkolmos 05/29/2018 implement color theme update

@@ -35,7 +35,7 @@ package org.sagebionetworks.research.presentation.show_step;
 import android.arch.lifecycle.LiveData;
 import android.arch.lifecycle.LiveDataReactiveStreams;
 
-import org.sagebionetworks.research.presentation.model.ActiveUIStepView;
+import org.sagebionetworks.research.presentation.model.interfaces.ActiveUIStepView;
 
 import java.util.concurrent.TimeUnit;
 
