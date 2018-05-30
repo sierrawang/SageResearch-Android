@@ -30,52 +30,35 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.sagebionetworks.research.domain.form.TextField;
+package org.sagebionetworks.research.presentation.mapper;
 
-import android.os.Parcelable;
+import android.content.res.Resources;
+import android.support.annotation.NonNull;
 
-import com.google.auto.value.AutoValue;
+import org.sagebionetworks.research.presentation.DisplayString;
 
-/**
- * A TextFieldOptions is an object which stores information about a text field's settings such
- * as the maximum number of characters it can display and whether or not it is a secure text field.
- */
-@AutoValue
-public abstract class TextFieldOptions implements Parcelable {
-   @AutoValue.Builder
-   public static abstract class Builder {
-       public abstract TextFieldOptions build();
+public class ResourceMapperBase implements ResourceMapper {
+    public static final ResourceMapperBase SHARED = new ResourceMapperBase();
 
-       public abstract Builder setInvalidMessage(final String invalidMessage);
-
-       public abstract Builder setMaximumLength(final int maximumLength);
-
-       public abstract Builder setSecureTextEntry(final boolean isSecureTextEntry);
-
-       public abstract Builder setTextValidator(final TextValidator textValidator);
+    /**
+     * Returns the DisplayString obtained by attempting to find the given string as a resource identifier, and then if
+     * that fails setting the override string to the provided string.
+     * @param string The string to return the display string for.
+     * @param packageName the name of the package to find the resource in.
+     * @return
+     */
+    @Override
+    public DisplayString getDisplayString(@NonNull final String string, @NonNull final String packageName) {
+        int resId = Resources.getSystem().getIdentifier(string, "string", packageName);
+        if (resId == 0) {
+            return new DisplayString(resId, string);
+        } else {
+            return new DisplayString(resId, null);
+        }
     }
 
-    public Builder builder() {
-       return new AutoValue_TextFieldOptions.Builder();
+    @Override
+    public int getImageResourceId(@NonNull final String resourceName, @NonNull final String packageName) {
+        return 0;
     }
-
-    /**
-     * @return The message to display if the user's input is invalid.
-     */
-    public abstract String getInvalidMessage();
-
-    /**
-     * @return The maximum number of characters this text field is allowed to contain.
-     */
-    public abstract int getMaximumLength();
-
-    /**
-     * @return true if this should be a secure text entry (e.g. a password field), false otherwise
-     */
-    public abstract boolean isSecureTextEntry();
-
-    /**
-     * @return The text validator that corresponds to the text field.
-     */
-    public abstract TextValidator getTextValidator();
 }

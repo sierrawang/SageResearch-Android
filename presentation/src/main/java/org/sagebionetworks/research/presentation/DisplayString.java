@@ -32,10 +32,12 @@
 
 package org.sagebionetworks.research.presentation;
 
+import android.os.Parcel;
+import android.os.Parcelable;
 import android.support.annotation.Nullable;
 import android.support.annotation.StringRes;
 
-public class DisplayString {
+public class DisplayString implements Parcelable {
     // resource id for string to display
     @StringRes
     public final int defaultDisplayStringRes;
@@ -48,4 +50,32 @@ public class DisplayString {
         this.defaultDisplayStringRes = defaultDisplayStringRes;
         this.displayString = displayString;
     }
+
+    protected DisplayString(Parcel in) {
+        defaultDisplayStringRes = in.readInt();
+        displayString = in.readString();
+    }
+
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        dest.writeInt(defaultDisplayStringRes);
+        dest.writeString(displayString);
+    }
+
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    public static final Creator<DisplayString> CREATOR = new Creator<DisplayString>() {
+        @Override
+        public DisplayString createFromParcel(Parcel in) {
+            return new DisplayString(in);
+        }
+
+        @Override
+        public DisplayString[] newArray(int size) {
+            return new DisplayString[size];
+        }
+    };
 }

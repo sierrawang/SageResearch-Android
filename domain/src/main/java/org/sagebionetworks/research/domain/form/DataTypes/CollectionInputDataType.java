@@ -33,6 +33,7 @@
 package org.sagebionetworks.research.domain.form.DataTypes;
 
 
+import android.os.Parcel;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.annotation.StringDef;
@@ -122,4 +123,31 @@ public class CollectionInputDataType extends InputDataType {
                 Objects.equal(this.getBaseType(), collectionType.getBaseType());
     }
 
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        dest.writeString(this.collectionType);
+        dest.writeString(this.baseType);
+    }
+
+    protected CollectionInputDataType(Parcel in) {
+        this.collectionType = in.readString();
+        this.baseType = in.readString();
+    }
+
+    public static final Creator<CollectionInputDataType> CREATOR = new Creator<CollectionInputDataType>() {
+        @Override
+        public CollectionInputDataType createFromParcel(Parcel source) {
+            return new CollectionInputDataType(source);
+        }
+
+        @Override
+        public CollectionInputDataType[] newArray(int size) {
+            return new CollectionInputDataType[size];
+        }
+    };
 }

@@ -30,52 +30,31 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.sagebionetworks.research.domain.form.TextField;
+package org.sagebionetworks.research.presentation.mapper;
 
-import android.os.Parcelable;
+import android.support.annotation.NonNull;
 
-import com.google.auto.value.AutoValue;
+import org.sagebionetworks.research.presentation.DisplayString;
 
 /**
- * A TextFieldOptions is an object which stores information about a text field's settings such
- * as the maximum number of characters it can display and whether or not it is a secure text field.
+ * A ResourceMapper takes the information found in the domain layer and turns it into the information that
+ * the presentation layer needs, (e.g. String -> DisplayString).
  */
-@AutoValue
-public abstract class TextFieldOptions implements Parcelable {
-   @AutoValue.Builder
-   public static abstract class Builder {
-       public abstract TextFieldOptions build();
-
-       public abstract Builder setInvalidMessage(final String invalidMessage);
-
-       public abstract Builder setMaximumLength(final int maximumLength);
-
-       public abstract Builder setSecureTextEntry(final boolean isSecureTextEntry);
-
-       public abstract Builder setTextValidator(final TextValidator textValidator);
-    }
-
-    public Builder builder() {
-       return new AutoValue_TextFieldOptions.Builder();
-    }
+public interface ResourceMapper {
+    /**
+     * Returns the DisplayString corresponding to attempting to find the resource for the given string.
+     * @param string The string to return the display string for.
+     * @param packageName the name of the package to find the resource in.
+     * @return the DisplayString ocrresponding to attempting to find the resource for the given string.
+     */
+    @NonNull
+    DisplayString getDisplayString(@NonNull final String string, @NonNull final String packageName);
 
     /**
-     * @return The message to display if the user's input is invalid.
+     * Returns the image resource id corresponding to the given resource name.
+     * @param resourceName The name of the resource to get the id of.
+     * @param packageName the name of the package to find the resource in.
+     * @return the image resource id corresponding to the given resource name.
      */
-    public abstract String getInvalidMessage();
-
-    /**
-     * @return The maximum number of characters this text field is allowed to contain.
-     */
-    public abstract int getMaximumLength();
-
-    /**
-     * @return true if this should be a secure text entry (e.g. a password field), false otherwise
-     */
-    public abstract boolean isSecureTextEntry();
-
-    /**
-     * @return The text validator that corresponds to the text field.
-     */
-    public abstract TextValidator getTextValidator();
+    int getImageResourceId(@NonNull final String resourceName, @NonNull final String packageName);
 }

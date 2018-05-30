@@ -30,52 +30,44 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.sagebionetworks.research.domain.form.TextField;
+package org.sagebionetworks.research.presentation.model.form;
 
+import android.os.Parcel;
 import android.os.Parcelable;
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 
 import com.google.auto.value.AutoValue;
 
-/**
- * A TextFieldOptions is an object which stores information about a text field's settings such
- * as the maximum number of characters it can display and whether or not it is a secure text field.
- */
+import org.sagebionetworks.research.presentation.DisplayString;
+
 @AutoValue
-public abstract class TextFieldOptions implements Parcelable {
-   @AutoValue.Builder
-   public static abstract class Builder {
-       public abstract TextFieldOptions build();
+public abstract class ChoiceView<E extends Parcelable> implements Parcelable {
+    @AutoValue.Builder
+    public abstract static class Builder<E extends Parcelable> {
+        public abstract ChoiceView<E> build();
 
-       public abstract Builder setInvalidMessage(final String invalidMessage);
+        public abstract Builder<E> setText(@Nullable final String text);
 
-       public abstract Builder setMaximumLength(final int maximumLength);
+        public abstract Builder<E> setDetail(@Nullable final String detail);
 
-       public abstract Builder setSecureTextEntry(final boolean isSecureTextEntry);
+        public abstract Builder<E> setIconResId(final int resId);
 
-       public abstract Builder setTextValidator(final TextValidator textValidator);
+        public abstract Builder<E> setExclusive(final boolean isExclusive);
     }
 
-    public Builder builder() {
-       return new AutoValue_TextFieldOptions.Builder();
+    public static Builder builder() {
+        return new AutoValue_ChoiceView.Builder();
     }
 
-    /**
-     * @return The message to display if the user's input is invalid.
-     */
-    public abstract String getInvalidMessage();
+    @NonNull
+    public abstract E getAnswerValue();
+    @Nullable
+    public abstract DisplayString getText();
+    @Nullable
+    public abstract DisplayString getDetail();
 
-    /**
-     * @return The maximum number of characters this text field is allowed to contain.
-     */
-    public abstract int getMaximumLength();
+    public abstract int getIconResId();
 
-    /**
-     * @return true if this should be a secure text entry (e.g. a password field), false otherwise
-     */
-    public abstract boolean isSecureTextEntry();
-
-    /**
-     * @return The text validator that corresponds to the text field.
-     */
-    public abstract TextValidator getTextValidator();
+    public abstract boolean isExclusive();
 }

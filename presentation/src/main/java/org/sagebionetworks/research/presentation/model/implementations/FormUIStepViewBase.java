@@ -30,8 +30,9 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.sagebionetworks.research.presentation.model.interfaces;
+package org.sagebionetworks.research.presentation.model.implementations;
 
+import android.os.Parcel;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 
@@ -41,26 +42,60 @@ import org.sagebionetworks.research.presentation.DisplayString;
 import org.sagebionetworks.research.presentation.model.ColorThemeView;
 import org.sagebionetworks.research.presentation.model.ImageThemeView;
 import org.sagebionetworks.research.presentation.model.UIActionView;
+import org.sagebionetworks.research.presentation.model.form.InputFieldView;
+import org.sagebionetworks.research.presentation.model.interfaces.FormUIStepView;
 
-public interface UIStepView extends StepView {
-    @Nullable
-    DisplayString getTitle();
+import java.util.ArrayList;
+import java.util.List;
 
-    @Nullable
-    DisplayString getText();
+public class FormUIStepViewBase extends UIStepViewBase implements FormUIStepView {
+    private final List<InputFieldView> inputFields;
 
-    @Nullable
-    DisplayString getDetail();
+    public FormUIStepViewBase(@NonNull final String identifier,
+            @NonNull final ImmutableMap<String, UIActionView> actions,
+            @Nullable final DisplayString title,
+            @Nullable final DisplayString text,
+            @Nullable final DisplayString detail,
+            @Nullable final DisplayString footnote,
+            @Nullable final ColorThemeView colorTheme,
+            @Nullable final ImageThemeView imageTheme,
+            final List<InputFieldView> inputFields) {
+        super(identifier, actions, title, text, detail, footnote, colorTheme, imageTheme);
+        this.inputFields = inputFields;
+    }
 
-    @Nullable
-    DisplayString getFootnote();
+    @Override
+    public int describeContents() {
+        return 0;
+    }
 
     @NonNull
-    ImmutableMap<String, UIActionView> getActions();
+    @Override
+    public List<InputFieldView> getInputFields() {
+        return inputFields;
+    }
 
-    @Nullable
-    ColorThemeView getColorTheme();
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        super.writeToParcel(dest, flags);
+        dest.writeList(this.inputFields);
+    }
 
-    @Nullable
-    ImageThemeView getImageTheme();
+    protected FormUIStepViewBase(Parcel in) {
+        super(in);
+        this.inputFields = new ArrayList<InputFieldView>();
+        in.readList(this.inputFields, InputFieldView.class.getClassLoader());
+    }
+
+    public static final Creator<FormUIStepViewBase> CREATOR = new Creator<FormUIStepViewBase>() {
+        @Override
+        public FormUIStepViewBase createFromParcel(Parcel source) {
+            return new FormUIStepViewBase(source);
+        }
+
+        @Override
+        public FormUIStepViewBase[] newArray(int size) {
+            return new FormUIStepViewBase[size];
+        }
+    };
 }

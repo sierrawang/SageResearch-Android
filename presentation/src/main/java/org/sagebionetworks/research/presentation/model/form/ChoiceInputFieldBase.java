@@ -30,37 +30,51 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.sagebionetworks.research.presentation.model.interfaces;
+package org.sagebionetworks.research.presentation.model.form;
 
+import android.os.Parcel;
+import android.os.Parcelable;
 import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
 
-import com.google.common.collect.ImmutableMap;
+import com.google.common.collect.Range;
 
+import org.sagebionetworks.research.domain.form.DataTypes.InputDataType;
+import org.sagebionetworks.research.domain.form.TextField.TextFieldOptions;
+import org.sagebionetworks.research.domain.form.interfaces.SurveyRule;
 import org.sagebionetworks.research.presentation.DisplayString;
-import org.sagebionetworks.research.presentation.model.ColorThemeView;
-import org.sagebionetworks.research.presentation.model.ImageThemeView;
-import org.sagebionetworks.research.presentation.model.UIActionView;
 
-public interface UIStepView extends StepView {
-    @Nullable
-    DisplayString getTitle();
+import java.util.List;
 
-    @Nullable
-    DisplayString getText();
+public class ChoiceInputFieldBase<E extends Parcelable> extends InputFieldViewBase {
+    private final List<ChoiceView<E>> choices;
 
-    @Nullable
-    DisplayString getDetail();
+    private final ChoiceView<E> defaultAnswer;
 
-    @Nullable
-    DisplayString getFootnote();
+    public ChoiceInputFieldBase(final String identifier,
+            final DisplayString prompt, final DisplayString promptDetail,
+            final DisplayString placeholderText, final boolean isOptional,
+            @NonNull final InputDataType formDataType, final String uiHint,
+            final TextFieldOptions textFieldOptions, final Range range,
+            final List<SurveyRule> surveyRules,
+            final List<ChoiceView<E>> choices, final ChoiceView<E> defaultAnswer) {
+        super(identifier, prompt, promptDetail, placeholderText, isOptional, formDataType, uiHint, textFieldOptions,
+                range, surveyRules);
+        this.choices = choices;
+        this.defaultAnswer = defaultAnswer;
+    }
 
-    @NonNull
-    ImmutableMap<String, UIActionView> getActions();
+    public ChoiceInputFieldBase(final Parcel in,
+            final List<ChoiceView<E>> choices, final ChoiceView<E> defaultAnswer) {
+        super(in);
+        this.choices = choices;
+        this.defaultAnswer = defaultAnswer;
+    }
 
-    @Nullable
-    ColorThemeView getColorTheme();
+    public List<ChoiceView<E>> getChoices() {
+        return choices;
+    }
 
-    @Nullable
-    ImageThemeView getImageTheme();
+    public ChoiceView<E> getDefaultAnswer() {
+        return defaultAnswer;
+    }
 }

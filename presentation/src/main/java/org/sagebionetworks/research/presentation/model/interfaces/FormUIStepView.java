@@ -30,52 +30,16 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.sagebionetworks.research.domain.form.TextField;
+package org.sagebionetworks.research.presentation.model.interfaces;
 
-import android.os.Parcelable;
+import android.support.annotation.NonNull;
 
-import com.google.auto.value.AutoValue;
+import org.sagebionetworks.research.domain.form.interfaces.InputField;
+import org.sagebionetworks.research.presentation.model.form.InputFieldView;
 
-/**
- * A TextFieldOptions is an object which stores information about a text field's settings such
- * as the maximum number of characters it can display and whether or not it is a secure text field.
- */
-@AutoValue
-public abstract class TextFieldOptions implements Parcelable {
-   @AutoValue.Builder
-   public static abstract class Builder {
-       public abstract TextFieldOptions build();
+import java.util.List;
 
-       public abstract Builder setInvalidMessage(final String invalidMessage);
-
-       public abstract Builder setMaximumLength(final int maximumLength);
-
-       public abstract Builder setSecureTextEntry(final boolean isSecureTextEntry);
-
-       public abstract Builder setTextValidator(final TextValidator textValidator);
-    }
-
-    public Builder builder() {
-       return new AutoValue_TextFieldOptions.Builder();
-    }
-
-    /**
-     * @return The message to display if the user's input is invalid.
-     */
-    public abstract String getInvalidMessage();
-
-    /**
-     * @return The maximum number of characters this text field is allowed to contain.
-     */
-    public abstract int getMaximumLength();
-
-    /**
-     * @return true if this should be a secure text entry (e.g. a password field), false otherwise
-     */
-    public abstract boolean isSecureTextEntry();
-
-    /**
-     * @return The text validator that corresponds to the text field.
-     */
-    public abstract TextValidator getTextValidator();
+public interface FormUIStepView extends UIStepView {
+    @NonNull
+    List<InputFieldView> getInputFields();
 }
