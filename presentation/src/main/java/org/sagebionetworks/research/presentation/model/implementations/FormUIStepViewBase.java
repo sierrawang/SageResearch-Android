@@ -40,6 +40,7 @@ import com.google.common.collect.ImmutableMap;
 
 import org.sagebionetworks.research.domain.form.interfaces.InputField;
 import org.sagebionetworks.research.domain.step.interfaces.FormUIStep;
+import org.sagebionetworks.research.domain.step.interfaces.Step;
 import org.sagebionetworks.research.presentation.DisplayString;
 import org.sagebionetworks.research.presentation.model.ColorThemeView;
 import org.sagebionetworks.research.presentation.model.ImageThemeView;
@@ -69,7 +70,12 @@ public class FormUIStepViewBase extends UIStepViewBase implements FormUIStepView
         this.inputFields = inputFields;
     }
 
-    public static FormUIStepViewBase fromFormUIStep(FormUIStep formUIStep) {
+    public static FormUIStepViewBase fromFormUIStep(Step step) {
+        if (!(step instanceof FormUIStep)) {
+            throw new IllegalArgumentException("Provided step: " + step + " is not a FormUIStep.");
+        }
+
+        FormUIStep formUIStep = (FormUIStep)step;
         UIStepViewBase uiStepView = UIStepViewBase.fromUIStep(formUIStep);
         List<InputFieldView> inputFields = new ArrayList<>();
         for (InputField field : formUIStep.getInputFields()) {

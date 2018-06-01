@@ -43,6 +43,8 @@ import com.google.gson.TypeAdapter;
 import org.sagebionetworks.research.domain.step.StepType;
 import org.sagebionetworks.research.domain.step.interfaces.ActiveUIStep;
 import org.sagebionetworks.research.domain.step.ui.UIAction;
+import org.sagebionetworks.research.domain.step.ui.theme.ColorTheme;
+import org.sagebionetworks.research.domain.step.ui.theme.ImageTheme;
 
 import java.util.Map;
 
@@ -70,6 +72,12 @@ public abstract class InstructionStep implements ActiveUIStep {
 
         @NonNull
         public abstract Builder setTitle(@Nullable String title);
+
+        @NonNull
+        public abstract Builder setImageTheme(@Nullable ImageTheme imageTheme);
+
+        @NonNull
+        public abstract Builder setColorTheme(@Nullable ColorTheme colorTheme);
 
         @NonNull
         public abstract Builder setDuration(@Nullable Double duration);

@@ -30,30 +30,70 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.sagebionetworks.research.presentation.mapper;
+package org.sagebionetworks.research.presentation.inject;
 
-import com.google.common.base.Function;
+import android.support.annotation.Nullable;
 
+import org.sagebionetworks.research.domain.step.StepType;
 import org.sagebionetworks.research.domain.step.interfaces.Step;
-import org.sagebionetworks.research.presentation.inject.StepViewModule;
-import org.sagebionetworks.research.presentation.inject.StepViewModule.StepViewFactory;
+import org.sagebionetworks.research.presentation.model.implementations.ActiveUIStepViewBase;
+import org.sagebionetworks.research.presentation.model.implementations.FormUIStepViewBase;
+import org.sagebionetworks.research.presentation.model.implementations.UIStepViewBase;
 import org.sagebionetworks.research.presentation.model.interfaces.StepView;
 
+import java.util.Map;
 
-import dagger.Component;
-import javax.inject.Singleton;
+import dagger.MapKey;
+import dagger.Module;
+import dagger.Provides;
+import dagger.multibindings.IntoMap;
 
-public class StepMapper implements Function<Step, StepView> {
-    private static StepViewFactory FACTORY = DaggerStepMapper_StepMapperComponent.builder().build().getStepViewFactory();
-
-    @Component(modules = {StepViewModule.class})
-    @Singleton
-    public interface StepMapperComponent {
-        StepViewFactory getStepViewFactory();
+@Module
+public class StepViewModule {
+    // We use the return value of the getType() method on the step as the key which maps to a function that turns
+    // the step into a step view.
+    @MapKey
+    public @interface StepTypeKey {
+        String value();
     }
 
-    @Override
-    public StepView apply(final Step step) {
-        return FACTORY.apply(step);
+
+    public interface StepViewFactory {
+        @Nullable
+        StepView apply(Step step);
+    }
+
+    @Provides
+    @IntoMap
+    @StepTypeKey(StepType.UI)
+    static StepViewFactory providedUIstepFactory() {
+        return UIStepViewBase::fromUIStep;
+    }
+
+    @Provides
+    @IntoMap
+    @StepTypeKey(StepType.ACTIVE)
+    static StepViewFactory provideActiveUIStepFactory() {
+        return ActiveUIStepViewBase::fromActiveUIStep;
+    }
+
+    @Provides
+    @IntoMap
+    @StepTypeKey(StepType.FORM)
+    static StepViewFactory provideFormUIStepFactory() {
+        return FormUIStepViewBase::fromFormUIStep;
+    }
+
+    @Provides
+    static StepViewFactory provideStepViewFactoy(final Map<String, StepViewFactory> stepToFunctionMap) {
+        return (final Step step) ->
+        {
+            String type = step.getType();
+            if (stepToFunctionMap.containsKey(type)) {
+                return stepToFunctionMap.get(type).apply(step);
+            } else {
+                return null;
+            }
+        };
     }
 }

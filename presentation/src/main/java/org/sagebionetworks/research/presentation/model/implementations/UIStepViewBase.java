@@ -38,6 +38,7 @@ import android.support.annotation.Nullable;
 
 import com.google.common.collect.ImmutableMap;
 
+import org.sagebionetworks.research.domain.step.interfaces.Step;
 import org.sagebionetworks.research.domain.step.interfaces.ThemedUIStep;
 import org.sagebionetworks.research.presentation.DisplayString;
 import org.sagebionetworks.research.presentation.model.ColorThemeView;
@@ -70,16 +71,21 @@ public class UIStepViewBase implements UIStepView {
      * @param step The UIStep to create the UIStepViewBase from.
      * @return A UIStepViewBase created from the given ThemedUIStep.
      */
-    public static UIStepViewBase fromUIStep(ThemedUIStep step) {
-        String identifier = step.getIdentifier();
+    public static UIStepViewBase fromUIStep(Step step) {
+        if (!(step instanceof ThemedUIStep)) {
+            throw new IllegalArgumentException("Provided step: " + step + " is not a ThemedUIStep");
+        }
+
+        ThemedUIStep uiStep = (ThemedUIStep)step;
+        String identifier = uiStep.getIdentifier();
         // TODO: rkolmos 05/29/2018 potentially change actions.
-        ImmutableMap<String, UIActionView> actions = UIActionView.getActionsFrom(step.getActions());
-        DisplayString title = new DisplayString(null, step.getTitle());
-        DisplayString text = new DisplayString(null, step.getText());
-        DisplayString detail = new DisplayString(null, step.getDetail());
-        DisplayString footnote = new DisplayString(null, step.getFootnote());
-        ColorThemeView colorTheme = ColorThemeView.fromColorTheme(step.getColorTheme());
-        ImageThemeView imageTheme = ImageThemeView.fromImageTheme(step.getImageTheme());
+        ImmutableMap<String, UIActionView> actions = UIActionView.getActionsFrom(uiStep.getActions());
+        DisplayString title = new DisplayString(null, uiStep.getTitle());
+        DisplayString text = new DisplayString(null, uiStep.getText());
+        DisplayString detail = new DisplayString(null, uiStep.getDetail());
+        DisplayString footnote = new DisplayString(null, uiStep.getFootnote());
+        ColorThemeView colorTheme = ColorThemeView.fromColorTheme(uiStep.getColorTheme());
+        ImageThemeView imageTheme = ImageThemeView.fromImageTheme(uiStep.getImageTheme());
         // TODO: rkolmos 05/30/2018 for now the nav direction is always left.
         return new UIStepViewBase(identifier, NavDirection.SHIFT_LEFT, actions, title, text, detail, footnote,
                 colorTheme, imageTheme);

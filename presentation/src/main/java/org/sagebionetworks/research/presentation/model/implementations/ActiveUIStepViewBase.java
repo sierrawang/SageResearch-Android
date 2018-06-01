@@ -39,6 +39,7 @@ import android.support.annotation.Nullable;
 import com.google.common.collect.ImmutableMap;
 
 import org.sagebionetworks.research.domain.step.interfaces.ActiveUIStep;
+import org.sagebionetworks.research.domain.step.interfaces.Step;
 import org.sagebionetworks.research.presentation.DisplayString;
 import org.sagebionetworks.research.presentation.model.ColorThemeView;
 import org.sagebionetworks.research.presentation.model.ImageThemeView;
@@ -65,7 +66,12 @@ public class ActiveUIStepViewBase extends UIStepViewBase implements ActiveUIStep
         this.isBackgroundAudioRequired = isBackgroundAudioRequired;
     }
 
-    public static ActiveUIStepViewBase fromActiveUIStep(@NonNull ActiveUIStep activeUIStep) {
+    public static ActiveUIStepViewBase fromActiveUIStep(@NonNull Step step) {
+        if (!(step instanceof ActiveUIStep)) {
+            throw new IllegalArgumentException("Provided step: " + step + " is not an ActiveUIStep.");
+        }
+
+        ActiveUIStep activeUIStep = (ActiveUIStep)step;
         UIStepViewBase uiStepView = UIStepViewBase.fromUIStep(activeUIStep);
         // The duration from the ActiveUIStep is a Double in seconds, we convert this to a long of milliseconds and
         // round off any extra precision.
