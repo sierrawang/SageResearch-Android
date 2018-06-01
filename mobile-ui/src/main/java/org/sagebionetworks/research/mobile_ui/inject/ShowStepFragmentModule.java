@@ -30,16 +30,17 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.sagebionetworks.research.presentation.inject;
+package org.sagebionetworks.research.mobile_ui.inject;
 
-import android.support.annotation.Nullable;
+import android.support.annotation.NonNull;
 
-import org.sagebionetworks.research.domain.step.StepType;
-import org.sagebionetworks.research.domain.step.interfaces.Step;
-import org.sagebionetworks.research.presentation.model.implementations.ActiveUIStepViewBase;
-import org.sagebionetworks.research.presentation.model.implementations.FormUIStepViewBase;
-import org.sagebionetworks.research.presentation.model.implementations.UIStepViewBase;
+import org.sagebionetworks.research.mobile_ui.show_step.view.ShowActiveUIStepFragment;
+import org.sagebionetworks.research.mobile_ui.show_step.view.ShowStepFragment;
+import org.sagebionetworks.research.mobile_ui.show_step.view.ShowStepFragmentBase;
+import org.sagebionetworks.research.mobile_ui.show_step.view.ShowUIStepFragment;
+import org.sagebionetworks.research.presentation.model.interfaces.ActiveUIStepView;
 import org.sagebionetworks.research.presentation.model.interfaces.StepView;
+import org.sagebionetworks.research.presentation.model.interfaces.UIStepView;
 
 import java.util.Map;
 
@@ -49,51 +50,51 @@ import dagger.Provides;
 import dagger.multibindings.IntoMap;
 
 @Module
-public class StepViewModule {
-    // We use the return value of the getType() method on the step as the key which maps to a function that turns
-    // the step into a step view.
+public class ShowStepFragmentModule {
     @MapKey
-    public @interface StepTypeKey {
-        String value();
+    public @interface StepViewKey {
+        Class<? extends StepView> value();
     }
 
-
-    public interface StepViewFactory {
-        @Nullable
-        StepView apply(Step step);
-    }
-
-    @Provides
-    @IntoMap
-    @StepTypeKey(StepType.UI)
-    static StepViewFactory provideUIStepFactory() {
-        return UIStepViewBase::fromUIStep;
+    public interface ShowStepFragmentFactory {
+        @NonNull
+        ShowStepFragmentBase create(@NonNull StepView stepView);
     }
 
     @Provides
     @IntoMap
-    @StepTypeKey(StepType.ACTIVE)
-    static StepViewFactory provideActiveUIStepFactory() {
-        return ActiveUIStepViewBase::fromActiveUIStep;
+    @StepViewKey(UIStepView.class)
+    static ShowStepFragmentFactory provideShowUIStepFragmentFactory() {
+        return ShowUIStepFragment::newInstance;
     }
 
     @Provides
     @IntoMap
-    @StepTypeKey(StepType.FORM)
-    static StepViewFactory provideFormUIStepFactory() {
-        return FormUIStepViewBase::fromFormUIStep;
+    @StepViewKey(ActiveUIStepView.class)
+    static ShowStepFragmentFactory provideShowActivEUIStepFragmentFactory() {
+        return ShowActiveUIStepFragment::newInstance;
     }
 
+
     @Provides
-    static StepViewFactory provideStepViewFactory(final Map<String, StepViewFactory> stepToFunctionMap) {
-        return (final Step step) ->
+    static ShowStepFragmentFactory provideShowStepFragmentFactory(
+            final Map<Class<? extends StepView>, ShowStepFragmentFactory> showStepFragmentFactoryMap) {
+        return (@NonNull StepView stepView) ->
         {
-            String type = step.getType();
-            if (stepToFunctionMap.containsKey(type)) {
-                return stepToFunctionMap.get(type).apply(step);
-            } else {
-                return null;
+            if (showStepFragmentFactoryMap.containsKey(stepView.getClass())) {
+                return showStepFragmentFactoryMap.get(stepView.getClass()).create(stepView);
             }
+
+            // If we don't have a factory we default to the most general ShowStepFragment.
+            return ShowStepFragment.newInstance(stepView);
         };
+    }
+
+    /**
+     * Class key used when one desires to override the layout for a given ShowStepFragment.
+     */
+    @MapKey
+    public @interface ShowStepFragmentKey {
+        Class<? extends ShowStepFragmentBase> value();
     }
 }

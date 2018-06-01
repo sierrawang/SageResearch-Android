@@ -30,70 +30,45 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.sagebionetworks.research.presentation.inject;
+package org.sagebionetworks.research.mpower.step_view;
 
+import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 
-import org.sagebionetworks.research.domain.step.StepType;
+import com.google.common.collect.ImmutableMap;
+
 import org.sagebionetworks.research.domain.step.interfaces.Step;
-import org.sagebionetworks.research.presentation.model.implementations.ActiveUIStepViewBase;
-import org.sagebionetworks.research.presentation.model.implementations.FormUIStepViewBase;
+import org.sagebionetworks.research.mpower.step.OverviewStep;
+import org.sagebionetworks.research.presentation.DisplayString;
+import org.sagebionetworks.research.presentation.model.ColorThemeView;
+import org.sagebionetworks.research.presentation.model.ImageThemeView;
+import org.sagebionetworks.research.presentation.model.UIActionView;
 import org.sagebionetworks.research.presentation.model.implementations.UIStepViewBase;
-import org.sagebionetworks.research.presentation.model.interfaces.StepView;
+import org.sagebionetworks.research.presentation.model.interfaces.UIStepView;
 
-import java.util.Map;
+public class OverviewStepView extends UIStepViewBase {
+    // TODO: rkolmos 06/01/2018 add icons and other functionality to OverviewStepView.
 
-import dagger.MapKey;
-import dagger.Module;
-import dagger.Provides;
-import dagger.multibindings.IntoMap;
-
-@Module
-public class StepViewModule {
-    // We use the return value of the getType() method on the step as the key which maps to a function that turns
-    // the step into a step view.
-    @MapKey
-    public @interface StepTypeKey {
-        String value();
+    public OverviewStepView(@NonNull final String identifier, final int navDirection,
+            @NonNull final ImmutableMap<String, UIActionView> actions,
+            @Nullable final DisplayString title,
+            @Nullable final DisplayString text,
+            @Nullable final DisplayString detail,
+            @Nullable final DisplayString footnote,
+            @Nullable final ColorThemeView colorTheme,
+            @Nullable final ImageThemeView imageTheme) {
+        super(identifier, navDirection, actions, title, text, detail, footnote, colorTheme, imageTheme);
     }
 
+    @NonNull
+    public static OverviewStepView fromOverviewStep(@NonNull Step step) {
+        if (!(step instanceof OverviewStep)) {
+            throw new IllegalArgumentException("Provided step: " + step + " is not an OverviewStep");
+        }
 
-    public interface StepViewFactory {
-        @Nullable
-        StepView apply(Step step);
-    }
-
-    @Provides
-    @IntoMap
-    @StepTypeKey(StepType.UI)
-    static StepViewFactory provideUIStepFactory() {
-        return UIStepViewBase::fromUIStep;
-    }
-
-    @Provides
-    @IntoMap
-    @StepTypeKey(StepType.ACTIVE)
-    static StepViewFactory provideActiveUIStepFactory() {
-        return ActiveUIStepViewBase::fromActiveUIStep;
-    }
-
-    @Provides
-    @IntoMap
-    @StepTypeKey(StepType.FORM)
-    static StepViewFactory provideFormUIStepFactory() {
-        return FormUIStepViewBase::fromFormUIStep;
-    }
-
-    @Provides
-    static StepViewFactory provideStepViewFactory(final Map<String, StepViewFactory> stepToFunctionMap) {
-        return (final Step step) ->
-        {
-            String type = step.getType();
-            if (stepToFunctionMap.containsKey(type)) {
-                return stepToFunctionMap.get(type).apply(step);
-            } else {
-                return null;
-            }
-        };
+        UIStepView uiStepView = UIStepViewBase.fromUIStep(step);
+        return new OverviewStepView(uiStepView.getIdentifier(), uiStepView.getNavDirection(), uiStepView.getActions(),
+                uiStepView.getTitle(), uiStepView.getText(), uiStepView.getDetail(), uiStepView.getFootnote(),
+                uiStepView.getColorTheme(), uiStepView.getImageTheme());
     }
 }

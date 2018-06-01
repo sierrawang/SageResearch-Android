@@ -30,34 +30,33 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.sagebionetworks.research.mpower.step_views;
+package org.sagebionetworks.research.mobile_ui.show_step.view;
 
-import android.content.Context;
-import android.support.constraint.ConstraintLayout;
-import android.util.AttributeSet;
+import android.os.Bundle;
+import android.support.annotation.NonNull;
 
-import org.sagebionetworks.research.mpower.R;
+import org.sagebionetworks.research.mobile_ui.show_step.view.view_binding.UIStepViewBinding;
+import org.sagebionetworks.research.presentation.model.interfaces.StepView;
+import org.sagebionetworks.research.presentation.model.interfaces.UIStepView;
+import org.sagebionetworks.research.presentation.show_step.show_step_view_models.ShowUIStepViewModel;
 
-public class TappingStepButtonView extends ConstraintLayout {
+public class ShowUIStepFragment extends
+        ShowStepFragmentBase<UIStepView, ShowUIStepViewModel<UIStepView>, UIStepViewBinding> {
+    @NonNull
+    public static ShowUIStepFragment newInstance(@NonNull StepView stepView) {
+        if (!(stepView instanceof UIStepView)) {
+            throw new IllegalArgumentException("Step view: " + stepView + " is not a UIStepView.");
+        }
 
-    public TappingStepButtonView(final Context context) {
-        super(context);
-        this.commonInit();
+        ShowUIStepFragment fragment = new ShowUIStepFragment();
+        Bundle arguments = ShowStepFragmentBase.createArguments(stepView);
+        fragment.setArguments(arguments);
+        return fragment;
     }
 
-    public TappingStepButtonView(final Context context, final AttributeSet attrs) {
-        super(context, attrs);
-        this.commonInit();
+    @NonNull
+    @Override
+    protected UIStepViewBinding instantiateBinding() {
+        return new UIStepViewBinding();
     }
-
-    public TappingStepButtonView(final Context context, final AttributeSet attrs, final int defStyleAttr) {
-        super(context, attrs, defStyleAttr);
-        this.commonInit();
-    }
-
-    protected void commonInit() {
-        inflate(this.getContext(), R.layout.mpower2_tapping_step_button_view, this);
-    }
-
-    // TODO rkolmos 05/29/2018 potentially add tapping step data recording functionality to this view.
 }

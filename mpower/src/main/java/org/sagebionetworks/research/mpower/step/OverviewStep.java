@@ -30,34 +30,36 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.sagebionetworks.research.mobile_ui.show_step.view;
+package org.sagebionetworks.research.mpower.step;
 
-import android.os.Bundle;
 import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 
-import org.sagebionetworks.research.domain.mobile_ui.R;
-import org.sagebionetworks.research.mobile_ui.show_step.view.view_binding.ActiveUIStepViewBinding;
-import org.sagebionetworks.research.presentation.model.interfaces.ActiveUIStepView;
-import org.sagebionetworks.research.presentation.model.interfaces.StepView;
-import org.sagebionetworks.research.presentation.show_step.ShowGenericStepViewModel;
-import org.sagebionetworks.research.presentation.show_step.show_step_view_models.ShowActiveUIStepViewModel;
+import com.google.common.collect.ImmutableMap;
 
-public class ShowActiveUIStepFragment extends
-        ShowStepFragmentBase<ActiveUIStepView, ShowActiveUIStepViewModel<ActiveUIStepView>, ActiveUIStepViewBinding> {
-    @NonNull
-    public static ShowActiveUIStepFragment newInstance(@NonNull StepView stepView) {
-        if (!(stepView instanceof ActiveUIStepView)) {
-            throw new IllegalArgumentException("Step view: " + stepView + " is not an ActiveUIStepView.");
-        }
+import org.sagebionetworks.research.domain.step.StepType;
+import org.sagebionetworks.research.domain.step.implementations.UIStepBase;
+import org.sagebionetworks.research.domain.step.ui.UIAction;
+import org.sagebionetworks.research.domain.step.ui.theme.ColorTheme;
+import org.sagebionetworks.research.domain.step.ui.theme.ImageTheme;
+import org.sagebionetworks.research.presentation.DisplayString;
+import org.sagebionetworks.research.presentation.model.ColorThemeView;
+import org.sagebionetworks.research.presentation.model.ImageThemeView;
+import org.sagebionetworks.research.presentation.model.UIActionView;
 
-        ShowActiveUIStepFragment fragment = new ShowActiveUIStepFragment();
-        Bundle arguments = ShowStepFragmentBase.createArguments(stepView);
-        fragment.setArguments(arguments);
-        return fragment;
-    }
+import java.util.Map;
 
-    @Override
-    protected ActiveUIStepViewBinding instantiateBinding() {
-        return new ActiveUIStepViewBinding();
+public class OverviewStep extends UIStepBase {
+    public static final String TYPE_KEY = StepType.OVERVIEW;
+
+    // TODO: rkolmos 06/01/2018 add icons and other functionality to overview step.
+
+    public OverviewStep(@NonNull final String identifier,
+            @Nullable final Map<String, UIAction> actions,
+            @Nullable final String title, @Nullable final String text, @Nullable final String detail,
+            @Nullable final String footnote,
+            @Nullable final ColorTheme colorTheme,
+            @Nullable final ImageTheme imageTheme) {
+        super(identifier, actions, title, text, detail, footnote, colorTheme, imageTheme);
     }
 }

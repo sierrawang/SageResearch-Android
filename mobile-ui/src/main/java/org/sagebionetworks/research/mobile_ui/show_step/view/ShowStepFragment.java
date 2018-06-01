@@ -52,12 +52,11 @@ import static com.google.common.base.Preconditions.checkNotNull;
 public class ShowStepFragment extends ShowStepFragmentBase<StepView, ShowGenericStepViewModel, StepViewBinding> {
     private static final String ARGUMENT_STEP_VIEW = "STEP_VIEW";
 
+    @NonNull
     public static ShowStepFragment newInstance(@NonNull StepView stepView) {
-        checkNotNull(stepView);
-
         ShowStepFragment fragment = new ShowStepFragment();
-        Bundle args = ShowStepFragmentBase.createArguments(stepView);
-        fragment.setArguments(args);
+        Bundle arguments = ShowStepFragmentBase.createArguments(stepView);
+        fragment.setArguments(arguments);
         return fragment;
     }
 
@@ -68,12 +67,6 @@ public class ShowStepFragment extends ShowStepFragmentBase<StepView, ShowGeneric
     @Override
     protected UIStepViewBinding instantiateBinding() {
         return new UIStepViewBinding();
-    }
-
-    @Override
-    @LayoutRes
-    protected int getLayoutId() {
-        return R.layout.rs2_generic_step;
     }
 
     @Override

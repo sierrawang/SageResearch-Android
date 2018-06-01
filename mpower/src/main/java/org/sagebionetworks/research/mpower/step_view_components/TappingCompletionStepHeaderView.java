@@ -30,7 +30,7 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.sagebionetworks.research.mpower.step_views;
+package org.sagebionetworks.research.mpower.step_view_components;
 
 import android.content.Context;
 import android.support.constraint.ConstraintLayout;

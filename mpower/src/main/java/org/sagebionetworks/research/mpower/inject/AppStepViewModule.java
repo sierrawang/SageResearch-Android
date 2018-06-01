@@ -30,34 +30,35 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.sagebionetworks.research.mobile_ui.show_step.view;
+package org.sagebionetworks.research.mpower.inject;
 
-import android.os.Bundle;
-import android.support.annotation.NonNull;
+import org.sagebionetworks.research.domain.step.StepType;
+import org.sagebionetworks.research.mpower.step_view.InstructionStepView;
+import org.sagebionetworks.research.mpower.step_view.OverviewStepView;
+import org.sagebionetworks.research.presentation.inject.StepViewModule;
+import org.sagebionetworks.research.presentation.inject.StepViewModule.StepTypeKey;
+import org.sagebionetworks.research.presentation.inject.StepViewModule.StepViewFactory;
 
-import org.sagebionetworks.research.domain.mobile_ui.R;
-import org.sagebionetworks.research.mobile_ui.show_step.view.view_binding.ActiveUIStepViewBinding;
-import org.sagebionetworks.research.presentation.model.interfaces.ActiveUIStepView;
-import org.sagebionetworks.research.presentation.model.interfaces.StepView;
-import org.sagebionetworks.research.presentation.show_step.ShowGenericStepViewModel;
-import org.sagebionetworks.research.presentation.show_step.show_step_view_models.ShowActiveUIStepViewModel;
+import dagger.Module;
+import dagger.Provides;
+import dagger.multibindings.IntoMap;
 
-public class ShowActiveUIStepFragment extends
-        ShowStepFragmentBase<ActiveUIStepView, ShowActiveUIStepViewModel<ActiveUIStepView>, ActiveUIStepViewBinding> {
-    @NonNull
-    public static ShowActiveUIStepFragment newInstance(@NonNull StepView stepView) {
-        if (!(stepView instanceof ActiveUIStepView)) {
-            throw new IllegalArgumentException("Step view: " + stepView + " is not an ActiveUIStepView.");
-        }
-
-        ShowActiveUIStepFragment fragment = new ShowActiveUIStepFragment();
-        Bundle arguments = ShowStepFragmentBase.createArguments(stepView);
-        fragment.setArguments(arguments);
-        return fragment;
+/**
+ * Add app-specific steps.
+ */
+@Module(includes = {StepViewModule.class})
+public class AppStepViewModule {
+    @Provides
+    @IntoMap
+    @StepTypeKey(StepType.INSTRUCTION)
+    static StepViewFactory provideInstructionStepViewFactory() {
+        return InstructionStepView::fromInstructionStep;
     }
 
-    @Override
-    protected ActiveUIStepViewBinding instantiateBinding() {
-        return new ActiveUIStepViewBinding();
+    @Provides
+    @IntoMap
+    @StepTypeKey(StepType.OVERVIEW)
+    static StepViewFactory provideOverviewStepViewFactory() {
+        return OverviewStepView::fromOverviewStep;
     }
 }

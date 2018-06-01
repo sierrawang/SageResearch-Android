@@ -62,6 +62,8 @@ import javax.inject.Inject;
 
 import static com.google.common.base.Preconditions.checkNotNull;
 
+import java.util.Map;
+
 /**
  * A ShowStepFragmentBase implements the functionality common to showing all step fragments in terms of
  * 2 other unknown operations (instantiateBinding, getLayoutID).
@@ -75,6 +77,8 @@ public abstract class ShowStepFragmentBase
     private static final String ARGUMENT_STEP_VIEW = "STEP_VIEW";
 
     @Inject
+    protected static Map<Class<? extends ShowStepFragmentBase>, Integer> RESOURCE_MAP;
+    @Inject
     protected PerformTaskFragment performTaskFragment;
     @Inject
     protected ShowStepViewModelFactory showStepViewModelFactory;
@@ -85,6 +89,10 @@ public abstract class ShowStepFragmentBase
     protected SB stepViewBinding;
 
     private Unbinder stepViewUnbinder;
+
+    public ShowStepFragmentBase() {
+
+    }
 
     /**
      * Creates a Bundle containing the given StepView.
@@ -185,6 +193,21 @@ public abstract class ShowStepFragmentBase
     }
 
     /**
+     * Returns the layout resource that corresponds to the layout for this fragment. If the layout id for this step
+     * fragment isn't set in the ShowStepFragmentModule then R.layout.rs2_generic_step is the default value.
+     * @return the layout resource that corresponds to the layout for this fragment.
+     */
+    @LayoutRes
+    protected int getLayoutId()  {
+        Integer resId = RESOURCE_MAP.get(this.getClass());
+        if (resId != null) {
+            return resId;
+        } else {
+            return R.layout.rs2_generic_step;
+        }
+    }
+
+    /**
      * Instantiates and returns and instance of the correct type of StepViewBinding for this fragment.
      * Note: If a subclass needs to add any fields to the binding it should override this method to return a
      * different binding.
@@ -192,11 +215,4 @@ public abstract class ShowStepFragmentBase
      */
     @NonNull
     protected abstract SB instantiateBinding();
-
-    /**
-     * Returns the layout resource that corresponds to the layout for this fragment.
-     * @return the layout resource that corresponds to the layout for this fragment.
-     */
-    @LayoutRes
-    protected abstract int getLayoutId();
 }
