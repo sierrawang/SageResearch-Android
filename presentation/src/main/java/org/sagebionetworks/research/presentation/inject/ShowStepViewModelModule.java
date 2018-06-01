@@ -46,7 +46,6 @@ import dagger.multibindings.IntoMap;
 
 @Module
 public abstract class ShowStepViewModelModule {
-
     @MapKey
     public @interface StepViewClassKey {
         Class<? extends StepView> value();

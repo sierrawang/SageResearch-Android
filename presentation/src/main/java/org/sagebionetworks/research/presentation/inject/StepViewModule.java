@@ -85,7 +85,7 @@ public class StepViewModule {
     }
 
     @Provides
-    static StepViewFactory provideStepViewFactoy(final Map<String, StepViewFactory> stepToFunctionMap) {
+    static StepViewFactory provideStepViewFactory(final Map<String, StepViewFactory> stepToFunctionMap) {
         return (final Step step) ->
         {
             String type = step.getType();
