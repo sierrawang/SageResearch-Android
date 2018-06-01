@@ -32,20 +32,24 @@
 
 package org.sagebionetworks.research.mobile_ui.show_step.view;
 
-import android.widget.TextView;
+import android.support.annotation.NonNull;
 
-import org.sagebionetworks.research.domain.mobile_ui.R2;
-import org.sagebionetworks.research.mobile_ui.widget.NavigationActionBar;
+import org.sagebionetworks.research.domain.mobile_ui.R;
+import org.sagebionetworks.research.mobile_ui.show_step.view.view_binding.UIStepViewBinding;
+import org.sagebionetworks.research.presentation.model.StepView;
+import org.sagebionetworks.research.presentation.show_step.ShowGenericStepViewModel;
 
-import butterknife.BindView;
+// TODO rkolmos 05/25/2018 Make this class use the specific types of StepView, ViewModel for an instruction step.
+public class ShowInstructionStepFragment extends ShowStepFragmentBase
+        <StepView, ShowGenericStepViewModel, UIStepViewBinding> {
+    @NonNull
+    @Override
+    protected UIStepViewBinding instantiateBinding() {
+        return new UIStepViewBinding();
+    }
 
-public class StepViewBinding {
-    @BindView(R2.id.description)
-    public TextView description;
-
-    @BindView(R2.id.rs2_step_navigation_action_bar)
-    public NavigationActionBar navigationActionBar;
-
-    @BindView(R2.id.title)
-    public TextView title;
+    @Override
+    protected int getLayoutId() {
+        return R.layout.mpower2_instruction_step;
+    }
 }

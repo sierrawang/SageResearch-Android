@@ -59,9 +59,9 @@
     <id name="rs2_step_id" />
 
     <!-- Id's for NavigationViewBinding -->
-    <id name="navigationHeaderView"/>
-    <id name="navigationFooterView"/>
-    <id name="navigationBodyView"/>
+    <id name="stepHeader"/>
+    <id name="stepBody"/>
+    <id name="stepFooter"/>
     <id name="titleLabel"/>
     <id name="textLabel"/>
     <id name="detailLabel"/>

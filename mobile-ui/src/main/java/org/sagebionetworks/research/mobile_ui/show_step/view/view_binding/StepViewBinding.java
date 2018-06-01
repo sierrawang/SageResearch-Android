@@ -30,25 +30,24 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.sagebionetworks.research.presentation;
+package org.sagebionetworks.research.mobile_ui.show_step.view.view_binding;
 
-import android.support.annotation.StringDef;
+import android.support.annotation.VisibleForTesting;
 
-import java.lang.annotation.Retention;
-import java.lang.annotation.RetentionPolicy;
+import org.sagebionetworks.research.mobile_ui.widget.NavigationActionBar.ActionButtonClickListener;
+import org.sagebionetworks.research.presentation.model.StepView;
 
-/**
- * This interface defines the various types of actions that are possible to have.
- */
-@Retention(RetentionPolicy.SOURCE)
-@StringDef({ActionType.BACKWARD, ActionType.CANCEL, ActionType.FORWARD, ActionType.INFO, ActionType.LEFT_TAP,
-        ActionType.RIGHT_TAP, ActionType.SKIP})
-public @interface ActionType {
-    String BACKWARD = "back";
-    String CANCEL = "cancel";
-    String FORWARD = "next";
-    String INFO = "info";
-    String LEFT_TAP = "leftTap";
-    String RIGHT_TAP = "rightTap";
-    String SKIP = "skip";
+public interface StepViewBinding {
+    /**
+     * Sets the ActionButtonClickListener to the given listener on all of the components that can handle a
+     * listener. Subclasses which add more ActionButtons should override this method.
+     * @param actionButtonClickListener The new listener to use for all of the components that can handle one.
+     */
+    void setActionButtonClickListener(ActionButtonClickListener actionButtonClickListener);
+
+    /**
+     * Updates the components of this binding, with the data from the given StepView.
+     * @param stepView The StepView to get the data from for the update.
+     */
+    void update(StepView stepView);
 }

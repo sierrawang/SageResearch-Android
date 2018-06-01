@@ -32,8 +32,7 @@
 
 package org.sagebionetworks.research.mobile_ui.show_step.view.view_binding;
 
-import android.support.annotation.NonNull;
-import android.view.View;
+import android.support.annotation.Nullable;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
@@ -41,47 +40,36 @@ import org.sagebionetworks.research.domain.mobile_ui.R2.id;
 
 import butterknife.BindView;
 
+/**
+ * An ActiveUIStepViewBinding is a view binding that has everything a UIStepViewBinding and the following optional
+ * bindings
+ *      countdownDial : ProgressBar - The countdown dial which indicates to the user how long they should perform the
+ *          active task for.
+ *      countdownLabel : TextView - The label to display the text corresponding to the countdownDial's progress on.
+ *      unitLabel : TextView - The label to display the unit that the countdown is occurring in on.
+ */
 public class ActiveUIStepViewBinding extends UIStepViewBinding {
-    // The countdownDial, progressLabel, and unitLabel are deliberately not optional.
-    @NonNull
+    /**
+     * The binding can optionally contain a progress bar which displays a visual representation of the progress
+     * toward finishing the active step.
+     */
     @BindView(id.countdownDial)
-    protected ProgressBar countdownDial;
-    @NonNull
-    @BindView(id.countLabel)
-    protected TextView countLabel;
-    @NonNull
+    @Nullable
+    public ProgressBar countdownDial;
+
+    /**
+     * The binding can optionally have a TextView which displays a text representation of the progress toward
+     * finishing the active step.
+     */
+    @BindView(id.countdownLabel)
+    @Nullable
+    public TextView countdownLabel;
+
+    /**
+     * The binding can optionally have a TextView which displays the unit that the countdown is occurring in.
+     */
     @BindView(id.unitLabel)
-    protected TextView unitLabel;
+    public TextView unitLabel;
 
-    public ActiveUIStepViewBinding(final View view) {
-        super(view);
-    }
-
-    /**
-     * Returns the progress bar that functions as the countdownDial for this view.
-     * @return the progress bar that functions as the countdownDial for this view.
-     */
-    @NonNull
-    public ProgressBar getCountdownDial() {
-        return this.countdownDial;
-    }
-
-    /**
-     * Returns the text view that functions as the count label for this view.
-     * @return the text view that functions as the count label for this view.
-     */
-    @NonNull
-    public TextView getCountLabel() {
-        return this.countLabel;
-    }
-
-    /**
-     * Returns the text view that functions as the unit label for this view.
-     * @return the text view that functions as the unit label for this view.
-     */
-    @NonNull
-    public TextView getUnitLabel() {
-        return this.unitLabel;
-    }
+    // TODO rkolmos 05/25/2018 override update to do the correct thing once the corresponding subclass of StepView is created
 }
-

@@ -32,59 +32,76 @@
 
 package org.sagebionetworks.research.mobile_ui.show_step.view.view_binding;
 
-import android.support.annotation.NonNull;
-import android.view.View;
+import android.support.annotation.Nullable;
 import android.widget.ImageView;
 import android.widget.TextView;
 
 import org.sagebionetworks.research.domain.mobile_ui.R2.id;
 
-import java.util.List;
-
 import butterknife.BindView;
-import butterknife.BindViews;
 
+/**
+ * An OverviewStepViewBinding is a binding that has everything a UIStepViewBinding has and the following optional
+ * fields
+ *      - overallIconDescriptionLabel : TextView - The label to display a description of what all the icons mean
+ *          (e.g. "This is what you'll need")
+ *      - leftIconImageView : ImageView - The view to display the left icon on.
+ *      - leftIconLabel : TextView - The label to display a description of the left icon on.
+ *      - centerIconImageView : ImageView - The view to display the center icon on.
+ *      - centerIconLabel : TextView - The label to display a description of the center icon on.
+ *      - rightIconImageView : ImageView - The view to display the right icon on.
+ *      - rightIconLabel : TextView - The label to display a description of the right icon on.
+ */
 public class OverviewStepViewBinding extends UIStepViewBinding {
-    @NonNull
-    @BindViews({id.leftIconImageView, id.centerIconImageView, id.rightIconImageView})
-    protected List<ImageView> iconImageViews;
-
-    @NonNull
-    @BindViews({id.leftIconLabel, id.centerIconLabel, id.rightIconLabel})
-    protected List<TextView> iconLabels;
-
-    @NonNull
-    @BindView(id.iconDescriptionLabel)
-    protected TextView iconDescriptionLabel;
-
-    public OverviewStepViewBinding(final View view) {
-        super(view);
-    }
+    /**
+     * The binding can optionally have a label which displays a description of the significance of the icons that
+     * are displayed on the overview step.
+     */
+    @BindView(id.overallIconDescriptionLabel)
+    @Nullable
+    public TextView overallIconDescriptionLabel;
 
     /**
-     * Returns the list of image views that serve to display the icons for this binding.
-     * @return the list of image views that serve to display the icons for this binding.
+     * The binding can optionally have an image view which displays the left icon.
      */
-    @NonNull
-    public List<ImageView> getIconImageViews(){
-        return this.iconImageViews;
-    }
+    @BindView(id.leftIconImageView)
+    @Nullable
+    public ImageView leftIconImageView;
 
     /**
-     * Returns the list of icon labels that serve to display the descriptions of the icons for this binding.
-     * @return the list of icon labels that serve to display the descriptions of the icons for this binding.
+     * The binding can optionally have a label which displays a description specific to just the left icon.
      */
-    @NonNull
-    public List<TextView> getIconLabels() {
-        return this.iconLabels;
-    }
+    @BindView(id.leftIconLabel)
+    @Nullable
+    public TextView leftIconLabel;
 
     /**
-     * Returns the label that serves to display the overall description of all of the icons for this binding.
-     * @return the label that serves to display the overall description of all of the icons for this binding.
+     * The binding can optionally have an image view which displays the center icon.
      */
-    @NonNull
-    public TextView getIconDescriptionLabel() {
-        return this.iconDescriptionLabel;
-    }
+    @BindView(id.centerIconImageView)
+    @Nullable
+    public ImageView centerIconImageView;
+
+    /**
+     * The binding can optionally have a label which displays a description specific to just the center icon.
+     */
+    @BindView(id.centerIconLabel)
+    @Nullable
+    public TextView centerIconLabel;
+
+    /**
+     * The binding can optionally have an image view which displays the right icon.
+     */
+    @BindView(id.rightIconImageView)
+    @Nullable
+    public ImageView rightIconImageView;
+
+    /**
+     * The binding can optionally have a label which displays a description specific to just the right icon.
+     */
+    @BindView(id.rightIconLabel)
+    @Nullable
+    public TextView rightIconLabel;
+
+    // TODO rkolmos 05/25/2018 override update to do the correct thing once the corresponding subclass of StepView is created
 }

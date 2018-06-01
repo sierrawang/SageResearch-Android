@@ -30,25 +30,43 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.sagebionetworks.research.presentation;
+package org.sagebionetworks.research.mobile_ui.show_step.view;
 
-import android.support.annotation.StringDef;
+import android.support.annotation.NonNull;
 
-import java.lang.annotation.Retention;
-import java.lang.annotation.RetentionPolicy;
+import org.sagebionetworks.research.domain.mobile_ui.R;
+import org.sagebionetworks.research.mobile_ui.show_step.view.view_binding.TappingActiveUIStepViewBinding;
+import org.sagebionetworks.research.mobile_ui.widget.ActionButton;
+import org.sagebionetworks.research.presentation.ActionType;
+import org.sagebionetworks.research.presentation.model.StepView;
+import org.sagebionetworks.research.presentation.show_step.ShowGenericStepViewModel;
 
-/**
- * This interface defines the various types of actions that are possible to have.
- */
-@Retention(RetentionPolicy.SOURCE)
-@StringDef({ActionType.BACKWARD, ActionType.CANCEL, ActionType.FORWARD, ActionType.INFO, ActionType.LEFT_TAP,
-        ActionType.RIGHT_TAP, ActionType.SKIP})
-public @interface ActionType {
-    String BACKWARD = "back";
-    String CANCEL = "cancel";
-    String FORWARD = "next";
-    String INFO = "info";
-    String LEFT_TAP = "leftTap";
-    String RIGHT_TAP = "rightTap";
-    String SKIP = "skip";
+public class ShowTappingActiveUIStepFragment extends ShowStepFragmentBase
+        <StepView, ShowGenericStepViewModel, TappingActiveUIStepViewBinding> {
+    @NonNull
+    @Override
+    protected TappingActiveUIStepViewBinding instantiateBinding() {
+        return new TappingActiveUIStepViewBinding();
+    }
+
+    @Override
+    protected int getLayoutId() {
+        return R.layout.mpower2_tapping_step;
+    }
+
+    @Override
+    @ActionType
+    protected String getActionTypeFromActionButton(@NonNull ActionButton actionButton) {
+        int actionButtonId = actionButton.getId();
+        String actionType = super.getActionTypeFromActionButton(actionButton);
+        if (actionType != null) {
+            return actionType;
+        } else if (R.id.leftTapButton == actionButtonId) {
+            return ActionType.LEFT_TAP;
+        } else if (R.id.rightTapButton == actionButtonId) {
+            return ActionType.RIGHT_TAP;
+        }
+
+        return null;
+    }
 }
