@@ -205,4 +205,15 @@ public class UIStepViewBase implements UIStepView {
         this.imageTheme = in.readParcelable(ImageThemeView.class.getClassLoader());
     }
 
+    public static final Creator<UIStepViewBase> CREATOR = new Creator<UIStepViewBase>() {
+        @Override
+        public UIStepViewBase createFromParcel(Parcel source) {
+            return new UIStepViewBase(source);
+        }
+
+        @Override
+        public UIStepViewBase[] newArray(int size) {
+            return new UIStepViewBase[size];
+        }
+    };
 }

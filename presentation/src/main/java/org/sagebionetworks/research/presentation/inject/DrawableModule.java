@@ -53,7 +53,7 @@ public abstract class DrawableModule {
     @DrawableRes
     @ResourceNameKey("cancel")
     static Integer provideCancelResource() {
-        return R.drawable.cancel_icon;
+        return R.drawable.rs2_cancel_icon;
     }
 
     @Provides
@@ -61,7 +61,7 @@ public abstract class DrawableModule {
     @DrawableRes
     @ResourceNameKey("back")
     static Integer provideBackResource() {
-        return R.drawable.back_icon;
+        return R.drawable.rs2_back_icon;
     }
 
     @Provides
@@ -69,6 +69,6 @@ public abstract class DrawableModule {
     @DrawableRes
     @ResourceNameKey("info")
     static Integer provideInfoResource() {
-        return R.drawable.info_icon;
+        return R.drawable.rs2_info_icon;
     }
 }
