@@ -32,31 +32,28 @@
 
 package org.sagebionetworks.research.presentation.mapper;
 
-import android.support.annotation.Nullable;
-
 import com.google.common.base.Function;
 
 import org.sagebionetworks.research.domain.step.interfaces.Step;
-import org.sagebionetworks.research.presentation.model.BaseStepView;
-import org.sagebionetworks.research.presentation.model.StepView;
-import org.sagebionetworks.research.presentation.model.StepView.NavDirection;
+import org.sagebionetworks.research.presentation.inject.StepViewModule;
+import org.sagebionetworks.research.presentation.inject.StepViewModule.StepViewFactory;
+import org.sagebionetworks.research.presentation.model.interfaces.StepView;
 
-import javax.inject.Inject;
+
+import dagger.Component;
+import javax.inject.Singleton;
 
 public class StepMapper implements Function<Step, StepView> {
-    @Inject
-    public StepMapper() {
+    private static StepViewFactory FACTORY = DaggerStepMapper_StepMapperComponent.builder().build().getStepViewFactory();
+
+    @Component(modules = {StepViewModule.class})
+    @Singleton
+    public interface StepMapperComponent {
+        StepViewFactory getStepViewFactory();
     }
 
     @Override
-    @Nullable
-    public StepView apply(@Nullable Step input) {
-        if (input == null) {
-            return null;
-        }
-        return BaseStepView.builder()
-                .setIdentifier(input.getIdentifier())
-                .setNavDirection(NavDirection.SHIFT_LEFT)
-                .build();
+    public StepView apply(final Step step) {
+        return FACTORY.apply(step);
     }
 }

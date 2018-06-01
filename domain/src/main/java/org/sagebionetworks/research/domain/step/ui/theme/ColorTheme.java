@@ -45,7 +45,7 @@ public abstract class ColorTheme {
     public static abstract class Builder {
         public abstract ColorTheme build();
 
-        public abstract Builder setColorStyles(@NonNull Map<ColorPlacement, ColorStyle> colorStyles);
+        public abstract Builder setColorStyles(@NonNull Map<String, String> colorStyles);
 
         public abstract Builder setLightStyle(boolean isLightStyle);
     }
@@ -54,7 +54,7 @@ public abstract class ColorTheme {
         return new AutoValue_ColorTheme.Builder();
     }
 
-    public abstract ImmutableMap<ColorPlacement, ColorStyle> getColorStyles();
+    public abstract ImmutableMap<String, String> getColorStyles();
 
     public abstract boolean isLightStyle();
 

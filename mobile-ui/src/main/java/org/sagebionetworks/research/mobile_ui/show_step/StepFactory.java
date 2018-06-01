@@ -35,7 +35,7 @@ package org.sagebionetworks.research.mobile_ui.show_step;
 
 import org.sagebionetworks.research.mobile_ui.mapper.StepMapper;
 import org.sagebionetworks.research.mobile_ui.model.StepViewModel;
-import org.sagebionetworks.research.presentation.model.StepView;
+import org.sagebionetworks.research.presentation.model.interfaces.StepView;
 
 import javax.inject.Inject;
 

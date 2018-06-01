@@ -49,6 +49,8 @@ android {
                 arguments = ['autovaluegson.mutableAdaptersWithDefaultSetters': 'true']
             }
         }
+
+        vectorDrawables.useSupportLibrary = true
     }
 
     buildTypes {

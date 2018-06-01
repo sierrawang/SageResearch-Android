@@ -43,6 +43,8 @@ import org.sagebionetworks.research.domain.interfaces.HashCodeHelper;
 import org.sagebionetworks.research.domain.step.StepType;
 import org.sagebionetworks.research.domain.step.interfaces.FormUIStep;
 import org.sagebionetworks.research.domain.step.ui.UIAction;
+import org.sagebionetworks.research.domain.step.ui.theme.ColorTheme;
+import org.sagebionetworks.research.domain.step.ui.theme.ImageTheme;
 
 import java.util.Collections;
 import java.util.List;
@@ -61,10 +63,10 @@ public class FormUIStepBase extends UIStepBase implements FormUIStep {
     private final List<InputField> inputFields;
 
     public FormUIStepBase(@NonNull final String identifier, @NonNull Map<String, UIAction> actions,
-            @Nullable final String title,
-            @Nullable final String text, @Nullable final String detail, @Nullable final String footnote,
-            @NonNull final List<InputField> inputFields) {
-        super(identifier, actions, title, text, detail, footnote);
+            @Nullable final String title, @Nullable final String text, @Nullable final String detail,
+            @Nullable final String footnote, @Nullable final ColorTheme colorTheme,
+            @Nullable final ImageTheme imageTheme, @NonNull final List<InputField> inputFields) {
+        super(identifier, actions, title, text, detail, footnote, colorTheme, imageTheme);
         this.inputFields = inputFields;
     }
 

@@ -32,6 +32,7 @@
 
 package org.sagebionetworks.research.domain.form.DataTypes;
 
+import android.os.Parcelable;
 import android.support.annotation.Nullable;
 
 import com.google.gson.JsonDeserializationContext;
@@ -45,7 +46,7 @@ import org.sagebionetworks.research.domain.interfaces.HashCodeHelper;
 
 import java.lang.reflect.Type;
 
-public abstract class InputDataType {
+public abstract class InputDataType implements Parcelable {
     protected final int hashCode;
 
     public InputDataType() {

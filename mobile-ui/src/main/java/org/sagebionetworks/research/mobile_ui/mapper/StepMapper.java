@@ -37,7 +37,7 @@ import android.support.annotation.NonNull;
 import org.sagebionetworks.research.mobile_ui.model.StepViewModel;
 import org.sagebionetworks.research.mobile_ui.perform_task.PerformTaskFragment;
 import org.sagebionetworks.research.mobile_ui.show_step.view.ShowStepFragment;
-import org.sagebionetworks.research.presentation.model.StepView;
+import org.sagebionetworks.research.presentation.model.interfaces.StepView;
 
 import javax.inject.Inject;
 

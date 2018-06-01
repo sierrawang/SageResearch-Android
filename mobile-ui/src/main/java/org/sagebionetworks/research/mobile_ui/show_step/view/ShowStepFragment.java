@@ -37,9 +37,11 @@ import android.support.annotation.LayoutRes;
 import android.support.annotation.NonNull;
 
 import org.sagebionetworks.research.domain.mobile_ui.R;
+import org.sagebionetworks.research.mobile_ui.show_step.view.view_binding.StepViewBinding;
+import org.sagebionetworks.research.mobile_ui.show_step.view.view_binding.UIStepViewBinding;
 import org.sagebionetworks.research.mobile_ui.widget.ActionButton;
 import org.sagebionetworks.research.presentation.ActionType;
-import org.sagebionetworks.research.presentation.model.StepView;
+import org.sagebionetworks.research.presentation.model.interfaces.StepView;
 import org.sagebionetworks.research.presentation.show_step.ShowGenericStepViewModel;
 
 import static com.google.common.base.Preconditions.checkNotNull;
@@ -47,7 +49,7 @@ import static com.google.common.base.Preconditions.checkNotNull;
 /**
  * Shows a simple step.
  */
-public class ShowStepFragment extends ShowStepFragmentBase<StepView, ShowGenericStepViewModel> {
+public class ShowStepFragment extends ShowStepFragmentBase<StepView, ShowGenericStepViewModel, StepViewBinding> {
     private static final String ARGUMENT_STEP_VIEW = "STEP_VIEW";
 
     public static ShowStepFragment newInstance(@NonNull StepView stepView) {
@@ -64,21 +66,27 @@ public class ShowStepFragment extends ShowStepFragmentBase<StepView, ShowGeneric
     }
 
     @Override
+    protected UIStepViewBinding instantiateBinding() {
+        return new UIStepViewBinding();
+    }
+
+    @Override
     @LayoutRes
     protected int getLayoutId() {
         return R.layout.rs2_generic_step;
     }
 
     @Override
-    protected void handleActionButtonClick(@NonNull ActionButton ab) {
-        int actionButtonId = ab.getId();
+    protected String getActionTypeFromActionButton(@NonNull final ActionButton actionButton) {
+        int actionButtonId = actionButton.getId();
 
         String actionType = null;
         if (R.id.rs2_step_navigation_action_forward == actionButtonId) {
-            actionType = ActionType.FORWARD;
+            return ActionType.FORWARD;
         } else if (R.id.rs2_step_navigation_action_backward == actionButtonId) {
-            actionType = ActionType.BACKWARD;
+            return ActionType.BACKWARD;
         }
-        showStepViewModel.handleAction(actionType);
+
+        return null;
     }
 }

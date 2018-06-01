@@ -37,9 +37,18 @@ import android.support.annotation.StringDef;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 
+/**
+ * This interface defines the various types of actions that are possible to have.
+ */
 @Retention(RetentionPolicy.SOURCE)
-@StringDef({ActionType.FORWARD})
+@StringDef({ActionType.BACKWARD, ActionType.CANCEL, ActionType.FORWARD, ActionType.INFO, ActionType.LEFT_TAP,
+        ActionType.RIGHT_TAP, ActionType.SKIP})
 public @interface ActionType {
-    String FORWARD = "next";
     String BACKWARD = "back";
+    String CANCEL = "cancel";
+    String FORWARD = "next";
+    String INFO = "info";
+    String LEFT_TAP = "leftTap";
+    String RIGHT_TAP = "rightTap";
+    String SKIP = "skip";
 }

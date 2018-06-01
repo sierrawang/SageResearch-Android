@@ -32,6 +32,8 @@
 
 package org.sagebionetworks.research.domain.form.TextField;
 
+import android.os.Parcelable;
+
 import com.google.auto.value.AutoValue;
 
 /**
@@ -39,7 +41,7 @@ import com.google.auto.value.AutoValue;
  * as the maximum number of characters it can display and whether or not it is a secure text field.
  */
 @AutoValue
-public abstract class TextFieldOptions {
+public abstract class TextFieldOptions implements Parcelable {
    @AutoValue.Builder
    public static abstract class Builder {
        public abstract TextFieldOptions build();

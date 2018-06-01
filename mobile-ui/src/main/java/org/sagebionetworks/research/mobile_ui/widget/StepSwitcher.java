@@ -41,7 +41,7 @@ import android.view.animation.DecelerateInterpolator;
 import android.widget.FrameLayout;
 
 import org.sagebionetworks.research.domain.mobile_ui.R;
-import org.sagebionetworks.research.presentation.model.StepView.NavDirection;
+import org.sagebionetworks.research.presentation.model.interfaces.StepView.NavDirection;
 
 /**
  * Base class for a {@link FrameLayout} container that will perform animations when switching between two steps. There

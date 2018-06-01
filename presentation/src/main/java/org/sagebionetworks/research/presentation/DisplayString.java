@@ -32,20 +32,72 @@
 
 package org.sagebionetworks.research.presentation;
 
+import android.os.Parcel;
+import android.os.Parcelable;
 import android.support.annotation.Nullable;
 import android.support.annotation.StringRes;
 
-public class DisplayString {
+import com.google.common.base.Objects;
+
+
+public class DisplayString implements Parcelable {
     // resource id for string to display
     @StringRes
-    public final int defaultDisplayStringRes;
+    @Nullable
+    public final Integer defaultDisplayStringRes;
 
     // string to display, overrides defaultDisplayStringRes
     @Nullable
     public final String displayString;
 
-    public DisplayString(@StringRes final int defaultDisplayStringRes, @Nullable final String displayString) {
+    public DisplayString(@StringRes final Integer defaultDisplayStringRes, @Nullable final String displayString) {
         this.defaultDisplayStringRes = defaultDisplayStringRes;
         this.displayString = displayString;
     }
+
+    protected DisplayString(Parcel in) {
+        defaultDisplayStringRes = in.readInt();
+        displayString = in.readString();
+    }
+
+    @Override
+    public boolean equals(final Object o) {
+        if (this == o) {
+            return true;
+        }
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
+        final DisplayString that = (DisplayString) o;
+        return Objects.equal(defaultDisplayStringRes, that.defaultDisplayStringRes) &&
+                Objects.equal(displayString, that.displayString);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hashCode(defaultDisplayStringRes, displayString);
+    }
+
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        dest.writeInt(defaultDisplayStringRes);
+        dest.writeString(displayString);
+    }
+
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    public static final Creator<DisplayString> CREATOR = new Creator<DisplayString>() {
+        @Override
+        public DisplayString createFromParcel(Parcel in) {
+            return new DisplayString(in);
+        }
+
+        @Override
+        public DisplayString[] newArray(int size) {
+            return new DisplayString[size];
+        }
+    };
 }

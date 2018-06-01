@@ -42,6 +42,8 @@ import org.sagebionetworks.research.domain.interfaces.HashCodeHelper;
 import org.sagebionetworks.research.domain.step.StepType;
 import org.sagebionetworks.research.domain.step.interfaces.ActiveUIStep;
 import org.sagebionetworks.research.domain.step.ui.UIAction;
+import org.sagebionetworks.research.domain.step.ui.theme.ColorTheme;
+import org.sagebionetworks.research.domain.step.ui.theme.ImageTheme;
 
 import java.util.Map;
 
@@ -64,8 +66,9 @@ public class ActiveUIStepBase extends UIStepBase implements ActiveUIStep {
     public ActiveUIStepBase(@NonNull final String identifier, @NonNull final Map<String, UIAction> actions,
             @Nullable final String title, @Nullable final String text,
             @Nullable final String detail, @Nullable final String footnote,
+            @Nullable final ColorTheme colorTheme, @Nullable final ImageTheme imageTheme,
             @Nullable final Double duration, final boolean backgroundAudioRequired) {
-        super(identifier, actions, title, text, detail, footnote);
+        super(identifier, actions, title, text, detail, footnote, colorTheme, imageTheme);
         this.duration = duration;
         this.backgroundAudioRequired = backgroundAudioRequired;
     }

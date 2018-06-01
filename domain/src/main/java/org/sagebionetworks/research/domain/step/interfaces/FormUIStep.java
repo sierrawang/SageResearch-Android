@@ -42,7 +42,7 @@ import java.util.List;
  * A FormUIStep is a step which asks the user questions. This is useful for surveys or prompting the user during a
  * task.
  */
-public interface FormUIStep extends UIStep {
+public interface FormUIStep extends ThemedUIStep {
     /**
      * @return The list of InputFields for this form step.
      */

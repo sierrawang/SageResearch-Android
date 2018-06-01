@@ -32,8 +32,11 @@
 
 package org.sagebionetworks.research.domain.step.ui.theme;
 
-public enum ColorStyle {
-    DARK_BACKGROUND,
-    LIGHT_BACKGROUND,
-    CUSTOM_BACKGROUND
+import android.support.annotation.StringDef;
+
+@StringDef({ColorStyle.LIGHT_BACKGROUND, ColorStyle.DARK_BACKGROUND, ColorStyle.CUSTOM_BACKGROUND})
+public @interface ColorStyle {
+    String DARK_BACKGROUND = "darkBackground";
+    String LIGHT_BACKGROUND = "lightBackground";
+    String CUSTOM_BACKGROUND = "customBackground";
 }

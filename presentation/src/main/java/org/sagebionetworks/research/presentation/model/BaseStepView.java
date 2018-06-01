@@ -41,6 +41,9 @@ import com.google.common.collect.ImmutableSet;
 import com.google.gson.Gson;
 import com.google.gson.TypeAdapter;
 
+import org.sagebionetworks.research.presentation.model.interfaces.StepView;
+import org.sagebionetworks.research.domain.step.interfaces.Step;
+
 import java.util.Collections;
 import java.util.Set;
 
@@ -77,6 +80,10 @@ public abstract class BaseStepView implements StepView, Parcelable {
     public abstract String getIdentifier();
 
     public abstract int getNavDirection();
+
+    public abstract String getDetail();
+
+    public abstract String getTitle();
 
     public abstract ImmutableSet<StepActionView> getStepActionViews();
 
