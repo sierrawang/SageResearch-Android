@@ -49,6 +49,5 @@ public interface StepViewBinding {
      * Updates the components of this binding, with the data from the given StepView.
      * @param stepView The StepView to get the data from for the update.
      */
-    @VisibleForTesting
     void update(StepView stepView);
 }
