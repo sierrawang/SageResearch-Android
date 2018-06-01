@@ -30,5 +30,30 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-include ':app', ':domain', ':presentation', ':mobile-ui', ':data', ':mpower'
+package org.sagebionetworks.research.mpower.inject;
 
+import org.sagebionetworks.research.domain.inject.InputFieldsModule;
+import org.sagebionetworks.research.domain.inject.StepModule;
+import org.sagebionetworks.research.domain.inject.StepModule.StepClassKey;
+import org.sagebionetworks.research.mpower.step.InstructionStep;
+
+import dagger.Module;
+import dagger.Provides;
+import dagger.multibindings.IntoMap;
+
+/**
+ * Add app-specific steps.
+ */
+@Module(includes = {InputFieldsModule.class, StepModule.class})
+public class AppStepModule {
+    /**
+     * Returns ClassInfo for InstructionStep.class.
+     * @return ClassInfo for InstructionStep.class.
+     */
+    @Provides
+    @IntoMap
+    @StepClassKey(InstructionStep.class)
+    static String provideInstructionStepClassInfo() {
+        return InstructionStep.TYPE_KEY;
+    }
+}

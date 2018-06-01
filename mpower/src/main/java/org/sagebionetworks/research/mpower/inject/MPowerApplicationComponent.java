@@ -30,5 +30,27 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-include ':app', ':domain', ':presentation', ':mobile-ui', ':data', ':mpower'
+package org.sagebionetworks.research.mpower.inject;
 
+
+import org.sagebionetworks.research.mpower.MPowerApplication;
+
+import javax.inject.Singleton;
+
+import dagger.BindsInstance;
+import dagger.Component;
+
+@Component(modules = {MPowerApplicationModule.class})
+@Singleton
+public abstract class MPowerApplicationComponent {
+    @Component.Builder
+    public interface Builder {
+
+        @BindsInstance
+        public Builder application(MPowerApplication application);
+
+        public MPowerApplicationComponent build();
+    }
+
+    public abstract MPowerApplication inject(MPowerApplication app);
+}

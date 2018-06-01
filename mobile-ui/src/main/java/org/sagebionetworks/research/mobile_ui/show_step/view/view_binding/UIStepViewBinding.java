@@ -194,7 +194,6 @@ public class UIStepViewBinding implements StepViewBinding<UIStepView> {
         }
     }
 
-    @VisibleForTesting
     @Override
     public void update(UIStepView stepView) {
         updateTextView(this.titleLabel, stepView.getTitle());

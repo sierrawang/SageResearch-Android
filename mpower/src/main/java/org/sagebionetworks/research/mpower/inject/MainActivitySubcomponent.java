@@ -30,5 +30,17 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-include ':app', ':domain', ':presentation', ':mobile-ui', ':data', ':mpower'
+package org.sagebionetworks.research.mpower.inject;
 
+
+import org.sagebionetworks.research.mpower.MainActivity;
+
+import dagger.Subcomponent;
+import dagger.android.AndroidInjector;
+
+@Subcomponent
+public interface MainActivitySubcomponent extends AndroidInjector<MainActivity> {
+    @Subcomponent.Builder
+    public abstract class Builder extends AndroidInjector.Builder<MainActivity> {
+    }
+}
