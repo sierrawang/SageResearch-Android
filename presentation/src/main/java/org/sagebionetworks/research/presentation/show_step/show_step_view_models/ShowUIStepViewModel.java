@@ -30,38 +30,58 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.sagebionetworks.research.presentation.show_step;
+package org.sagebionetworks.research.presentation.show_step.show_step_view_models;
 
 import android.arch.lifecycle.LiveData;
-import android.arch.lifecycle.LiveDataReactiveStreams;
+import android.arch.lifecycle.MutableLiveData;
 
-import org.sagebionetworks.research.presentation.model.interfaces.ActiveUIStepView;
+import org.sagebionetworks.research.domain.result.interfaces.Result;
+import org.sagebionetworks.research.presentation.ActionType;
+import org.sagebionetworks.research.presentation.model.interfaces.UIStepView;
+import org.sagebionetworks.research.presentation.perform_task.PerformTaskViewModel;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
-import java.util.concurrent.TimeUnit;
+public class ShowUIStepViewModel<S extends UIStepView> extends ShowStepViewModel<S> {
+    private static final Logger LOGGER = LoggerFactory.getLogger(ShowUIStepViewModel.class);
+    protected final PerformTaskViewModel performTaskViewModel;
+    protected final MutableLiveData<S> showStepViewModelMutableLiveData;
+    protected final S stepView;
 
-import io.reactivex.Observable;
-import io.reactivex.internal.operators.flowable.FlowableFromObservable;
+    public ShowUIStepViewModel(PerformTaskViewModel performTaskViewModel, S stepView) {
+        this.performTaskViewModel = performTaskViewModel;
+        this.stepView = stepView;
 
-public class ShowActiveUIStepViewModel<S extends ActiveUIStepView> extends ShowStepViewModel<S> {
-    public LiveData<Long> getCountdown() {
-        // TODO: implement real count
-        return LiveDataReactiveStreams.fromPublisher(
-                new FlowableFromObservable<>(
-                        Observable.<Long>intervalRange(10, 1, 1, 10, TimeUnit.SECONDS)
-                                .map(i -> 10 - i)));
-    }
-
-    public LiveData<String> getSpokenInstructions() {
-        return null;
+        showStepViewModelMutableLiveData = new MutableLiveData<>();
+        showStepViewModelMutableLiveData.setValue(stepView);
     }
 
     @Override
     public LiveData<S> getStepView() {
-        return null;
+        return showStepViewModelMutableLiveData;
     }
 
     @Override
     public void handleAction(final String actionType) {
+        LOGGER.debug("handleAction called with actionType: {}", actionType);
+        switch (actionType) {
+            case ActionType.FORWARD:
+                performTaskViewModel.goForward();
+                break;
+            case ActionType.BACKWARD:
+                performTaskViewModel.goBack();
+                break;
+            default:
+                throw new UnsupportedOperationException("Unsupported actionType: " + actionType);
+        }
+    }
 
+    protected void addStepResult(Result result) {
+        performTaskViewModel.addStepResult(result);
+    }
+
+    @Override
+    protected void onCleared() {
+        LOGGER.debug("onCleared called");
     }
 }

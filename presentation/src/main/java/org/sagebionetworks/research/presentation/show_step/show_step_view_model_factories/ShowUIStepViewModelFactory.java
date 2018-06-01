@@ -30,15 +30,23 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.sagebionetworks.research.presentation.show_step;
+package org.sagebionetworks.research.presentation.show_step.show_step_view_model_factories;
 
-import android.arch.lifecycle.LiveData;
-import android.arch.lifecycle.ViewModel;
+import org.sagebionetworks.research.presentation.model.interfaces.UIStepView;
+import org.sagebionetworks.research.presentation.perform_task.PerformTaskViewModel;
+import org.sagebionetworks.research.presentation.show_step.show_step_view_models.ShowStepViewModel;
+import org.sagebionetworks.research.presentation.show_step.show_step_view_models.ShowUIStepViewModel;
 
-import org.sagebionetworks.research.presentation.model.interfaces.StepView;
+public class ShowUIStepViewModelFactory implements
+        AbstractShowStepViewModelFactory<ShowUIStepViewModel<UIStepView>, UIStepView> {
+    @Override
+    public ShowUIStepViewModel<UIStepView> create(final PerformTaskViewModel performTaskViewModel,
+            final UIStepView stepView) {
+        return new ShowUIStepViewModel<>(performTaskViewModel, stepView);
+    }
 
-public abstract class ShowStepViewModel<T extends StepView> extends ViewModel {
-    public abstract LiveData<T> getStepView();
-
-    public abstract void handleAction(String actionType);
+    @Override
+    public Class<? extends ShowStepViewModel> getViewModelClass() {
+        return ShowUIStepViewModel.class;
+    }
 }

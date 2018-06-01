@@ -30,28 +30,38 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.sagebionetworks.research.presentation.show_step;
+package org.sagebionetworks.research.presentation.show_step.show_step_view_models;
 
-import org.sagebionetworks.research.presentation.model.interfaces.StepView;
+import android.arch.lifecycle.LiveData;
+import android.arch.lifecycle.LiveDataReactiveStreams;
+
+import org.sagebionetworks.research.presentation.model.interfaces.ActiveUIStepView;
 import org.sagebionetworks.research.presentation.perform_task.PerformTaskViewModel;
-import org.sagebionetworks.research.presentation.show_step.show_step_view_model_factories.AbstractShowStepViewModelFactory;
 
-import javax.inject.Inject;
+import java.util.concurrent.TimeUnit;
 
-public class ShowGenericStepViewModelFactory
-        implements AbstractShowStepViewModelFactory<ShowGenericStepViewModel, StepView> {
+import io.reactivex.Observable;
+import io.reactivex.internal.operators.flowable.FlowableFromObservable;
 
-    @Inject
-    public ShowGenericStepViewModelFactory() {
+public class ShowActiveUIStepViewModel<S extends ActiveUIStepView> extends ShowUIStepViewModel<S> {
+    public ShowActiveUIStepViewModel(final PerformTaskViewModel performTaskViewModel, final S stepView) {
+        super(performTaskViewModel, stepView);
+    }
+
+    public LiveData<Long> getCountdown() {
+        // TODO: implement real count
+        return LiveDataReactiveStreams.fromPublisher(
+                new FlowableFromObservable<>(
+                        Observable.<Long>intervalRange(10, 1, 1, 10, TimeUnit.SECONDS)
+                                .map(i -> 10 - i)));
+    }
+
+    public LiveData<String> getSpokenInstructions() {
+        return null;
     }
 
     @Override
-    public Class<ShowGenericStepViewModel> getViewModelClass() {
-        return ShowGenericStepViewModel.class;
-    }
-
-    @Override
-    public ShowGenericStepViewModel create(final PerformTaskViewModel performTaskViewModel, final StepView stepView) {
-        return new ShowGenericStepViewModel(performTaskViewModel, stepView);
+    public LiveData<S> getStepView() {
+        return null;
     }
 }

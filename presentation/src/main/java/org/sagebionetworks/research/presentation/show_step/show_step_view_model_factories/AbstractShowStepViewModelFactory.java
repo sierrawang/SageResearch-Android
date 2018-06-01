@@ -30,14 +30,14 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.sagebionetworks.research.presentation.show_step;
+package org.sagebionetworks.research.presentation.show_step.show_step_view_model_factories;
 
 import org.sagebionetworks.research.presentation.model.interfaces.StepView;
 import org.sagebionetworks.research.presentation.perform_task.PerformTaskViewModel;
+import org.sagebionetworks.research.presentation.show_step.show_step_view_models.ShowStepViewModel;
 
 public interface AbstractShowStepViewModelFactory<VM extends ShowStepViewModel<S>, S extends StepView> {
-
     VM create(PerformTaskViewModel performTaskViewModel, S stepView);
 
-    Class<VM> getViewModelClass();
+    Class<? extends ShowStepViewModel> getViewModelClass();
 }

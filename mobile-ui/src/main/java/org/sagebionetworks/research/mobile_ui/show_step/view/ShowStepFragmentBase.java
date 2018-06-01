@@ -50,8 +50,8 @@ import org.sagebionetworks.research.mobile_ui.widget.ActionButton;
 import org.sagebionetworks.research.presentation.ActionType;
 import org.sagebionetworks.research.presentation.model.interfaces.StepView;
 import org.sagebionetworks.research.presentation.perform_task.PerformTaskViewModel;
-import org.sagebionetworks.research.presentation.show_step.ShowStepViewModel;
-import org.sagebionetworks.research.presentation.show_step.ShowStepViewModelFactory;
+import org.sagebionetworks.research.presentation.show_step.show_step_view_models.ShowStepViewModel;
+import org.sagebionetworks.research.presentation.show_step.show_step_view_model_factories.ShowStepViewModelFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
