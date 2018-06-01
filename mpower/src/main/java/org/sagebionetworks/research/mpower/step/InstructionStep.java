@@ -32,6 +32,7 @@
 
 package org.sagebionetworks.research.mpower.step;
 
+import android.graphics.Color;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 
@@ -43,6 +44,8 @@ import com.google.gson.TypeAdapter;
 import org.sagebionetworks.research.domain.step.StepType;
 import org.sagebionetworks.research.domain.step.interfaces.ActiveUIStep;
 import org.sagebionetworks.research.domain.step.ui.UIAction;
+import org.sagebionetworks.research.domain.step.ui.theme.ColorTheme;
+import org.sagebionetworks.research.domain.step.ui.theme.ImageTheme;
 
 import java.util.Map;
 
@@ -64,6 +67,12 @@ public abstract class InstructionStep implements ActiveUIStep {
 
         @NonNull
         public abstract Builder setIdentifier(@NonNull String identifier);
+
+        @NonNull
+        public abstract Builder setColorTheme(@Nullable ColorTheme colorTheme);
+
+        @NonNull
+        public abstract Builder setImageTheme(@Nullable ImageTheme imageTheme);
 
         @NonNull
         public abstract Builder setText(@Nullable String text);
