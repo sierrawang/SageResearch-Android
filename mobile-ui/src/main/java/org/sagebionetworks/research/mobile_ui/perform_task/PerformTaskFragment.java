@@ -48,6 +48,7 @@ import android.view.ViewGroup;
 import org.sagebionetworks.research.domain.mobile_ui.R;
 import org.sagebionetworks.research.domain.result.implementations.TaskResultBase;
 import org.sagebionetworks.research.domain.result.interfaces.TaskResult;
+import org.sagebionetworks.research.mobile_ui.inject.ShowStepFragmentModule.ShowStepFragmentFactory;
 import org.sagebionetworks.research.mobile_ui.mapper.StepMapper;
 import org.sagebionetworks.research.mobile_ui.show_step.view.ShowStepFragment;
 import org.sagebionetworks.research.mobile_ui.show_step.view.ShowStepFragmentBase;
@@ -84,6 +85,9 @@ public class PerformTaskFragment extends Fragment implements HasSupportFragmentI
 
     @Inject
     DispatchingAndroidInjector<Fragment> fragmentDispatchingAndroidInjector;
+
+    @Inject
+    ShowStepFragmentFactory showStepFragmentFactory;
 
     @Inject
     PerformTaskViewModelFactory taskViewModelFactory;
@@ -185,11 +189,9 @@ public class PerformTaskFragment extends Fragment implements HasSupportFragmentI
             }
             return;
         }
-        StepMapper mapper = new StepMapper(this);
-        ShowStepFragment step = mapper.create(stepView);
 
+        ShowStepFragmentBase step = showStepFragmentFactory.create(stepView);
         currentStepFragment = step;
-
         FragmentTransaction transaction = getChildFragmentManager().beginTransaction();
 
         if (NavDirection.SHIFT_LEFT == stepView.getNavDirection()) {

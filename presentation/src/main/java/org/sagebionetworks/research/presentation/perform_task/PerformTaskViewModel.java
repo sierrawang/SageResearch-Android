@@ -51,6 +51,7 @@ import org.sagebionetworks.research.domain.task.Task;
 import org.sagebionetworks.research.domain.task.TaskInfo;
 import org.sagebionetworks.research.domain.task.navigation.StepNavigator;
 import org.sagebionetworks.research.domain.task.navigation.StepNavigatorFactory;
+import org.sagebionetworks.research.presentation.inject.StepViewModule.StepViewFactory;
 import org.sagebionetworks.research.presentation.mapper.TaskMapper;
 import org.sagebionetworks.research.presentation.model.BaseStepView;
 import org.sagebionetworks.research.presentation.model.interfaces.StepView;
@@ -67,6 +68,8 @@ import io.reactivex.disposables.CompositeDisposable;
 
 import static com.google.common.base.Preconditions.checkNotNull;
 import static com.google.common.base.Preconditions.checkState;
+
+import javax.inject.Inject;
 
 @MainThread
 public class PerformTaskViewModel extends ViewModel {
@@ -87,6 +90,9 @@ public class PerformTaskViewModel extends ViewModel {
     private final TaskMapper taskMapper;
 
     private final TaskRepository taskRepository;
+
+    @Inject
+    StepViewFactory stepViewFactory;
 
     @Nullable
     private TaskResult taskResult;
@@ -162,55 +168,27 @@ public class PerformTaskViewModel extends ViewModel {
 
     public void goBack() {
         LOGGER.debug("goBack called");
-
         Step currentStep = currentStepLiveData.getValue();
+        TaskResult taskResult = taskResultLiveData.getValue();
         checkState(currentStep != null);
-
-        Step backStep = stepNavigator.getPreviousStep(currentStepLiveData.getValue(), taskResultLiveData.getValue());
-
+        checkState(taskResult != null);
+        Step backStep = stepNavigator.getPreviousStep(currentStep, taskResult);
         LOGGER.debug("Setting backStep: {}", backStep);
         currentStepLiveData.setValue(backStep);
-
-        // TODO: Use Mapper/Factory for Step -> StepView
-        StepView stepView = null;
-        if (backStep != null) {
-            BaseStepView.Builder stepViewBuilder = BaseStepView.builder()
-                    .setIdentifier(backStep.getIdentifier())
-                    .setNavDirection(NavDirection.SHIFT_RIGHT);
-            if (backStep instanceof UIStep) {
-                UIStep uiStep = (UIStep) backStep;
-                stepViewBuilder.setTitle(uiStep.getTitle());
-                stepViewBuilder.setDetail(uiStep.getDetail());
-            }
-            stepView = stepViewBuilder.build();
-        }
-
+        StepView stepView = stepViewFactory.apply(backStep);
         stepViewLiveData.setValue(stepView);
     }
 
     public void goForward() {
         LOGGER.debug("goForward called");
-
-        Step forwardStep = stepNavigator.getNextStep(currentStepLiveData.getValue(), taskResultLiveData.getValue());
-
-        LOGGER.debug("Setting forwardStep: {}", forwardStep);
-
-        currentStepLiveData.setValue(forwardStep);
-
-        // TODO: Use Mapper/Factory for Step -> StepView
-        StepView stepView = null;
-        if (forwardStep != null) {
-            BaseStepView.Builder stepViewBuilder = BaseStepView.builder()
-                    .setIdentifier(forwardStep.getIdentifier())
-                    .setNavDirection(NavDirection.SHIFT_LEFT);
-            if (forwardStep instanceof UIStep) {
-                UIStep uiStep = (UIStep) forwardStep;
-                stepViewBuilder.setTitle(uiStep.getTitle());
-                stepViewBuilder.setDetail(uiStep.getDetail());
-            }
-            stepView = stepViewBuilder.build();
-        }
-
+        Step currentStep = currentStepLiveData.getValue();
+        TaskResult taskResult = taskResultLiveData.getValue();
+        checkState(currentStep != null);
+        checkState(taskResult != null);
+        Step nextStep = stepNavigator.getNextStep(currentStep, taskResult);
+        LOGGER.debug("Setting forwardStep: {}", nextStep);
+        currentStepLiveData.setValue(nextStep);
+        StepView stepView = stepViewFactory.apply(nextStep);
         stepViewLiveData.setValue(stepView);
     }
 
