@@ -33,8 +33,10 @@
 package org.sagebionetworks.research.mobile_ui.show_step.view;
 
 import android.os.Bundle;
+import android.support.annotation.LayoutRes;
 import android.support.annotation.NonNull;
 
+import org.sagebionetworks.research.domain.mobile_ui.R;
 import org.sagebionetworks.research.mobile_ui.show_step.view.view_binding.UIStepViewBinding;
 import org.sagebionetworks.research.presentation.model.interfaces.StepView;
 import org.sagebionetworks.research.presentation.model.interfaces.UIStepView;
@@ -58,5 +60,11 @@ public class ShowUIStepFragment extends
     @Override
     protected UIStepViewBinding instantiateBinding() {
         return new UIStepViewBinding();
+    }
+
+    @Override
+    @LayoutRes
+    public int getLayoutId() {
+        return R.layout.rs2_show_ui_step_fragment_layout;
     }
 }

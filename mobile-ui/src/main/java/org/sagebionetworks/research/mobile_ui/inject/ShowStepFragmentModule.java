@@ -79,8 +79,7 @@ public class ShowStepFragmentModule {
     @Provides
     static ShowStepFragmentFactory provideShowStepFragmentFactory(
             final Map<Class<? extends StepView>, ShowStepFragmentFactory> showStepFragmentFactoryMap) {
-        return (@NonNull StepView stepView) ->
-        {
+        return (@NonNull StepView stepView) -> {
             if (showStepFragmentFactoryMap.containsKey(stepView.getClass())) {
                 return showStepFragmentFactoryMap.get(stepView.getClass()).create(stepView);
             }
@@ -88,13 +87,5 @@ public class ShowStepFragmentModule {
             // If we don't have a factory we default to the most general ShowStepFragment.
             return ShowStepFragment.newInstance(stepView);
         };
-    }
-
-    /**
-     * Class key used when one desires to override the layout for a given ShowStepFragment.
-     */
-    @MapKey
-    public @interface ShowStepFragmentKey {
-        Class<? extends ShowStepFragmentBase> value();
     }
 }

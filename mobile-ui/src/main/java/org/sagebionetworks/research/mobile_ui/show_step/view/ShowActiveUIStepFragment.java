@@ -33,6 +33,7 @@
 package org.sagebionetworks.research.mobile_ui.show_step.view;
 
 import android.os.Bundle;
+import android.support.annotation.LayoutRes;
 import android.support.annotation.NonNull;
 
 import org.sagebionetworks.research.domain.mobile_ui.R;
@@ -54,6 +55,12 @@ public class ShowActiveUIStepFragment extends
         Bundle arguments = ShowStepFragmentBase.createArguments(stepView);
         fragment.setArguments(arguments);
         return fragment;
+    }
+
+    @Override
+    @LayoutRes
+    protected int getLayoutId() {
+        return R.layout.rs2_show_active_ui_step_fragment_layout;
     }
 
     @Override

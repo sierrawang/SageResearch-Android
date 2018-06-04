@@ -75,9 +75,6 @@ public abstract class ShowStepFragmentBase
         extends Fragment {
     private static final Logger LOGGER = LoggerFactory.getLogger(ShowStepFragmentBase.class);
     private static final String ARGUMENT_STEP_VIEW = "STEP_VIEW";
-
-    @Inject
-    protected static Map<Class<? extends ShowStepFragmentBase>, Integer> RESOURCE_MAP;
     @Inject
     protected PerformTaskFragment performTaskFragment;
     @Inject
@@ -193,19 +190,11 @@ public abstract class ShowStepFragmentBase
     }
 
     /**
-     * Returns the layout resource that corresponds to the layout for this fragment. If the layout id for this step
-     * fragment isn't set in the ShowStepFragmentModule then R.layout.rs2_generic_step is the default value.
+     * Returns the layout resource that corresponds to the layout for this fragment.
      * @return the layout resource that corresponds to the layout for this fragment.
      */
     @LayoutRes
-    protected int getLayoutId()  {
-        Integer resId = RESOURCE_MAP.get(this.getClass());
-        if (resId != null) {
-            return resId;
-        } else {
-            return R.layout.rs2_generic_step;
-        }
-    }
+    protected abstract int getLayoutId();
 
     /**
      * Instantiates and returns and instance of the correct type of StepViewBinding for this fragment.
