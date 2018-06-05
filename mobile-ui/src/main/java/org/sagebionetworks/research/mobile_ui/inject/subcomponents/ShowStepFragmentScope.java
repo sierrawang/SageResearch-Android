@@ -30,44 +30,14 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.sagebionetworks.research.mpower;
+package org.sagebionetworks.research.mobile_ui.inject.subcomponents;
 
-import android.app.Activity;
-import android.support.multidex.MultiDexApplication;
-import android.support.v4.app.Fragment;
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
 
-import javax.inject.Inject;
+import javax.inject.Scope;
 
-import dagger.android.AndroidInjector;
-import dagger.android.DispatchingAndroidInjector;
-import dagger.android.HasActivityInjector;
-import dagger.android.support.HasSupportFragmentInjector;
-
-public class MPowerApplication extends MultiDexApplication implements HasSupportFragmentInjector,
-        HasActivityInjector {
-    @Inject
-    DispatchingAndroidInjector<Activity> dispatchingActivityInjector;
-
-    @Inject
-    DispatchingAndroidInjector<Fragment> dispatchingSupportFragmentInjector;
-
-    @Override
-    public void onCreate() {
-        super.onCreate();
-        DaggerMPowerApplicationComponent
-                .builder()
-                .application(this)
-                .build()
-                .inject(this);
-    }
-
-    @Override
-    public AndroidInjector<Activity> activityInjector() {
-        return dispatchingActivityInjector;
-    }
-
-    @Override
-    public AndroidInjector<Fragment> supportFragmentInjector() {
-        return dispatchingSupportFragmentInjector;
-    }
+@Scope
+@Retention(RetentionPolicy.RUNTIME)
+public @interface ShowStepFragmentScope {
 }

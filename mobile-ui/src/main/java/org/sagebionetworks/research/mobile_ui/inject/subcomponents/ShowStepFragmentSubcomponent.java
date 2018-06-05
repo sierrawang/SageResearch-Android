@@ -30,44 +30,20 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.sagebionetworks.research.mpower;
+package org.sagebionetworks.research.mobile_ui.inject.subcomponents;
 
-import android.app.Activity;
-import android.support.multidex.MultiDexApplication;
-import android.support.v4.app.Fragment;
+import org.sagebionetworks.research.mobile_ui.show_step.view.ShowStepFragment;
+import org.sagebionetworks.research.presentation.inject.ShowStepViewModelModule;
 
-import javax.inject.Inject;
-
+import dagger.Subcomponent;
 import dagger.android.AndroidInjector;
-import dagger.android.DispatchingAndroidInjector;
-import dagger.android.HasActivityInjector;
-import dagger.android.support.HasSupportFragmentInjector;
 
-public class MPowerApplication extends MultiDexApplication implements HasSupportFragmentInjector,
-        HasActivityInjector {
-    @Inject
-    DispatchingAndroidInjector<Activity> dispatchingActivityInjector;
+@ShowStepFragmentScope
+@Subcomponent(modules = ShowStepViewModelModule.class)
+public abstract class ShowStepFragmentSubcomponent implements AndroidInjector<ShowStepFragment> {
 
-    @Inject
-    DispatchingAndroidInjector<Fragment> dispatchingSupportFragmentInjector;
-
-    @Override
-    public void onCreate() {
-        super.onCreate();
-        DaggerMPowerApplicationComponent
-                .builder()
-                .application(this)
-                .build()
-                .inject(this);
-    }
-
-    @Override
-    public AndroidInjector<Activity> activityInjector() {
-        return dispatchingActivityInjector;
-    }
-
-    @Override
-    public AndroidInjector<Fragment> supportFragmentInjector() {
-        return dispatchingSupportFragmentInjector;
+    @Subcomponent.Builder
+    public static abstract class Builder extends AndroidInjector.Builder<ShowStepFragment> {
+        public abstract ShowStepFragmentSubcomponent build();
     }
 }

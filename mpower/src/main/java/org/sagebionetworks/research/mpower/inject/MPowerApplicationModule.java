@@ -50,7 +50,8 @@ import dagger.android.AndroidInjector;
 import dagger.multibindings.IntoMap;
 import dagger.multibindings.IntoSet;
 
-@Module(includes = {AndroidInjectionModule.class, AppTaskModule.class, DataModule.class},
+@Module(includes = {AndroidInjectionModule.class, AppTaskModule.class, DataModule.class,
+        AppShowStepModule.class},
         subcomponents = {MainActivitySubcomponent.class})
 public abstract class MPowerApplicationModule {
     @Binds

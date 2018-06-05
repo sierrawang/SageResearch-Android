@@ -30,20 +30,31 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.sagebionetworks.research.mobile_ui.inject;
+package org.sagebionetworks.research.mpower.inject;
 
-import org.sagebionetworks.research.mobile_ui.show_step.view.ShowStepFragment;
-import org.sagebionetworks.research.presentation.inject.ShowStepViewModelModule;
+import org.sagebionetworks.research.mpower.inject.subcomponents.ShowInstructionStepFragmentSubcomponent;
+import org.sagebionetworks.research.mpower.inject.subcomponents.ShowOverviewStepFragmentSubcomponent;
+import org.sagebionetworks.research.mpower.show_step_fragment.ShowInstructionStepFragment;
+import org.sagebionetworks.research.mpower.show_step_fragment.ShowOverviewStepFragment;
 
-import dagger.Subcomponent;
+import dagger.Binds;
+import dagger.Module;
 import dagger.android.AndroidInjector;
+import dagger.android.support.FragmentKey;
+import dagger.multibindings.IntoMap;
 
-@ShowStepFragmentScope
-@Subcomponent(modules = ShowStepViewModelModule.class)
-public abstract class ShowStepFragmentSubcomponent implements AndroidInjector<ShowStepFragment> {
+@Module(subcomponents = {ShowInstructionStepFragmentSubcomponent.class, ShowOverviewStepFragmentSubcomponent.class},
+        includes = {AppStepModule.class, AppStepViewModule.class, AppShowStepFragmentModule.class})
+public abstract class AppShowStepModule {
+    @Binds
+    @IntoMap
+    @FragmentKey(ShowInstructionStepFragment.class)
+    abstract AndroidInjector.Factory<? extends android.support.v4.app.Fragment>
+    bindShowInstructionStepFragmentInjectoryFactory(ShowInstructionStepFragmentSubcomponent.Builder builder);
 
-    @Subcomponent.Builder
-    public static abstract class Builder extends AndroidInjector.Builder<ShowStepFragment> {
-        public abstract ShowStepFragmentSubcomponent build();
-    }
+    @Binds
+    @IntoMap
+    @FragmentKey(ShowOverviewStepFragment.class)
+    abstract AndroidInjector.Factory<? extends android.support.v4.app.Fragment>
+    bindShowOverviewStepFragmentInjectoryFactory(ShowOverviewStepFragmentSubcomponent.Builder builder);
 }
