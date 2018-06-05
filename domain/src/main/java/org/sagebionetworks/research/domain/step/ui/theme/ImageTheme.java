@@ -35,6 +35,8 @@ package org.sagebionetworks.research.domain.step.ui.theme;
 import android.support.annotation.Nullable;
 
 import com.google.auto.value.AutoValue;
+import com.google.gson.Gson;
+import com.google.gson.TypeAdapter;
 
 @AutoValue
 public abstract class ImageTheme {
@@ -49,6 +51,10 @@ public abstract class ImageTheme {
 
     public static Builder builder() {
         return new AutoValue_ImageTheme.Builder();
+    }
+
+    public static TypeAdapter<ImageTheme> typeAdapter(Gson gson) {
+        return new AutoValue_ImageTheme.GsonTypeAdapter(gson);
     }
 
     /**

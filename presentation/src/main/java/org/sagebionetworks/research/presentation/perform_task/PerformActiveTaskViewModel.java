@@ -36,6 +36,7 @@ import android.support.annotation.NonNull;
 
 import org.sagebionetworks.research.domain.repository.TaskRepository;
 import org.sagebionetworks.research.domain.task.navigation.StepNavigatorFactory;
+import org.sagebionetworks.research.presentation.inject.StepViewModule.StepViewFactory;
 import org.sagebionetworks.research.presentation.mapper.TaskMapper;
 import org.sagebionetworks.research.presentation.model.TaskView;
 
@@ -50,8 +51,9 @@ public class PerformActiveTaskViewModel extends PerformTaskViewModel {
             @NonNull final UUID taskRunUUID,
             @NonNull final StepNavigatorFactory stepNavigatorFactory,
             @NonNull final TaskRepository taskRepository,
-            @NonNull final TaskMapper taskMapper) {
-        super(taskView, taskRunUUID, stepNavigatorFactory, taskRepository, taskMapper);
+            @NonNull final TaskMapper taskMapper,
+            @NonNull final StepViewFactory stepViewFactory) {
+        super(taskView, taskRunUUID, stepNavigatorFactory, taskRepository, taskMapper, stepViewFactory);
     }
 
     public Observable<Long> getCountdown() {

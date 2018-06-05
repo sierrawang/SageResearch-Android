@@ -30,26 +30,54 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.sagebionetworks.research.mobile_ui.show_step.view;
+package org.sagebionetworks.research.mpower.show_step_fragment;
 
+import android.os.Bundle;
 import android.support.annotation.NonNull;
 
 import org.sagebionetworks.research.domain.mobile_ui.R;
-import org.sagebionetworks.research.mobile_ui.show_step.view.view_binding.UIStepViewBinding;
+import org.sagebionetworks.research.mobile_ui.show_step.view.ShowStepFragmentBase;
+import org.sagebionetworks.research.mobile_ui.show_step.view.view_binding.TappingActiveUIStepViewBinding;
+import org.sagebionetworks.research.mobile_ui.widget.ActionButton;
+import org.sagebionetworks.research.presentation.ActionType;
 import org.sagebionetworks.research.presentation.model.interfaces.StepView;
 import org.sagebionetworks.research.presentation.show_step.ShowGenericStepViewModel;
 
-// TODO rkolmos 05/25/2018 Make this class use the specific types of StepView, ViewModel for an instruction step.
-public class ShowInstructionStepFragment extends ShowStepFragmentBase
-        <StepView, ShowGenericStepViewModel, UIStepViewBinding> {
+// TODO: rkolmos 06/04/2018 make this fragment use the correct generics.
+public class ShowTappingActiveUIStepFragment extends
+        ShowStepFragmentBase<StepView, ShowGenericStepViewModel, TappingActiveUIStepViewBinding> {
+    @NonNull
+    public static ShowTappingActiveUIStepFragment newInstance(@NonNull StepView stepView) {
+        ShowTappingActiveUIStepFragment fragment = new ShowTappingActiveUIStepFragment();
+        Bundle arguments = ShowStepFragmentBase.createArguments(stepView);
+        fragment.setArguments(arguments);
+        return fragment;
+    }
+
     @NonNull
     @Override
-    protected UIStepViewBinding instantiateBinding() {
-        return new UIStepViewBinding();
+    protected TappingActiveUIStepViewBinding instantiateBinding() {
+        return new TappingActiveUIStepViewBinding();
     }
 
     @Override
     protected int getLayoutId() {
         return 0;
+    }
+
+    @Override
+    @ActionType
+    protected String getActionTypeFromActionButton(@NonNull ActionButton actionButton) {
+        int actionButtonId = actionButton.getId();
+        String actionType = super.getActionTypeFromActionButton(actionButton);
+        if (actionType != null) {
+            return actionType;
+        } else if (R.id.leftTapButton == actionButtonId) {
+            return ActionType.LEFT_TAP;
+        } else if (R.id.rightTapButton == actionButtonId) {
+            return ActionType.RIGHT_TAP;
+        }
+
+        return null;
     }
 }

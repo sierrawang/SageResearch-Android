@@ -32,16 +32,24 @@
 
 package org.sagebionetworks.research.mobile_ui.inject;
 
+import org.sagebionetworks.research.domain.step.interfaces.Step;
 import org.sagebionetworks.research.mobile_ui.inject.ShowStepFragmentSubcomponent.Builder;
 import org.sagebionetworks.research.mobile_ui.show_step.view.ShowStepFragment;
+import org.sagebionetworks.research.presentation.inject.StepViewModule;
+import org.sagebionetworks.research.presentation.inject.StepViewModule.StepViewFactory;
+
+import java.util.Map;
 
 import dagger.Binds;
 import dagger.Module;
+import dagger.Provides;
 import dagger.android.AndroidInjector;
 import dagger.android.support.FragmentKey;
 import dagger.multibindings.IntoMap;
+import dagger.multibindings.Multibinds;
 
-@Module(subcomponents = {ShowStepFragmentSubcomponent.class})
+@Module(subcomponents = {ShowStepFragmentSubcomponent.class},
+        includes = {ShowStepFragmentModule.class, StepViewModule.class})
 public abstract class ShowStepModule {
     @Binds
     @IntoMap

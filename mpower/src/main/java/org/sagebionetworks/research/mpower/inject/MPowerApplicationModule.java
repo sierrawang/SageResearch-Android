@@ -61,11 +61,4 @@ public abstract class MPowerApplicationModule {
     @ActivityKey(MainActivity.class)
     abstract AndroidInjector.Factory<? extends Activity> bindYourActivityInjectorFactory(
             MainActivitySubcomponent.Builder builder);
-
-
-    @Provides
-    @IntoSet
-    static TypeAdapterFactory provideAutoValueTypeAdapter() {
-        return MPowerAutoValueTypeAdapterFactory.create();
-    }
 }

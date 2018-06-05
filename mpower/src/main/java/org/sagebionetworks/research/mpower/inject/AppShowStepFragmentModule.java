@@ -30,43 +30,33 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.sagebionetworks.research.mobile_ui.show_step.view;
+package org.sagebionetworks.research.mpower.inject;
 
-import android.support.annotation.NonNull;
+import org.sagebionetworks.research.mobile_ui.inject.ShowStepFragmentModule;
+import org.sagebionetworks.research.mobile_ui.inject.ShowStepFragmentModule.ShowStepFragmentFactory;
+import org.sagebionetworks.research.mobile_ui.inject.ShowStepFragmentModule.StepViewKey;
+import org.sagebionetworks.research.mpower.show_step_fragment.ShowInstructionStepFragment;
+import org.sagebionetworks.research.mpower.show_step_fragment.ShowOverviewStepFragment;
+import org.sagebionetworks.research.mpower.step_view.InstructionStepView;
+import org.sagebionetworks.research.mpower.step_view.OverviewStepView;
 
-import org.sagebionetworks.research.domain.mobile_ui.R;
-import org.sagebionetworks.research.mobile_ui.show_step.view.view_binding.TappingActiveUIStepViewBinding;
-import org.sagebionetworks.research.mobile_ui.widget.ActionButton;
-import org.sagebionetworks.research.presentation.ActionType;
-import org.sagebionetworks.research.presentation.model.interfaces.StepView;
-import org.sagebionetworks.research.presentation.show_step.ShowGenericStepViewModel;
+import dagger.Module;
+import dagger.Provides;
+import dagger.multibindings.IntoMap;
 
-public class ShowTappingActiveUIStepFragment extends ShowStepFragmentBase
-        <StepView, ShowGenericStepViewModel, TappingActiveUIStepViewBinding> {
-    @NonNull
-    @Override
-    protected TappingActiveUIStepViewBinding instantiateBinding() {
-        return new TappingActiveUIStepViewBinding();
+@Module(includes = {ShowStepFragmentModule.class})
+public class AppShowStepFragmentModule {
+    @Provides
+    @IntoMap
+    @StepViewKey(InstructionStepView.class)
+    static ShowStepFragmentFactory provideShowInstructionStepFragmentFactory() {
+        return ShowInstructionStepFragment::newInstance;
     }
 
-    @Override
-    protected int getLayoutId() {
-        return 0;
-    }
-
-    @Override
-    @ActionType
-    protected String getActionTypeFromActionButton(@NonNull ActionButton actionButton) {
-        int actionButtonId = actionButton.getId();
-        String actionType = super.getActionTypeFromActionButton(actionButton);
-        if (actionType != null) {
-            return actionType;
-        } else if (R.id.leftTapButton == actionButtonId) {
-            return ActionType.LEFT_TAP;
-        } else if (R.id.rightTapButton == actionButtonId) {
-            return ActionType.RIGHT_TAP;
-        }
-
-        return null;
+    @Provides
+    @IntoMap
+    @StepViewKey(OverviewStepView.class)
+    static ShowStepFragmentFactory provideShowOverviewStepFragmentFactory() {
+        return ShowOverviewStepFragment::newInstance;
     }
 }

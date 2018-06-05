@@ -33,6 +33,7 @@
 
 <resources>
     <!-- We use rs2_generic_step for all the layouts by default -->
-    <item type="layout" name="rs2_show_ui_step_fragment_layout">@layout/rs2_generic_step</item>
-    <item type="layout" name="rs2_show_active_ui_step_fragment_layout">@layout/rs2_generic_step</item>
+    <item type="layout" name="rs2_default_show_step_fragment_layout">@layout/rs2_generic_step</item>
+    <item type="layout" name="rs2_show_ui_step_fragment_layout">@layout/rs2_default_show_step_fragment_layout</item>
+    <item type="layout" name="rs2_show_active_ui_step_fragment_layout">@layout/rs2_default_show_step_fragment_layout</item>
 </resources>

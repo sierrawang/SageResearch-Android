@@ -46,7 +46,7 @@ import dagger.multibindings.IntoMap;
 /**
  * Add app-specific steps.
  */
-@Module(includes = {StepViewModule.class})
+@Module(includes = StepViewModule.class)
 public class AppStepViewModule {
     @Provides
     @IntoMap

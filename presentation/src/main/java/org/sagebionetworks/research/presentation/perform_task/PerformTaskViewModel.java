@@ -51,6 +51,7 @@ import org.sagebionetworks.research.domain.task.Task;
 import org.sagebionetworks.research.domain.task.TaskInfo;
 import org.sagebionetworks.research.domain.task.navigation.StepNavigator;
 import org.sagebionetworks.research.domain.task.navigation.StepNavigatorFactory;
+import org.sagebionetworks.research.presentation.inject.StepViewModule;
 import org.sagebionetworks.research.presentation.inject.StepViewModule.StepViewFactory;
 import org.sagebionetworks.research.presentation.mapper.TaskMapper;
 import org.sagebionetworks.research.presentation.model.BaseStepView;
@@ -91,8 +92,7 @@ public class PerformTaskViewModel extends ViewModel {
 
     private final TaskRepository taskRepository;
 
-    @Inject
-    StepViewFactory stepViewFactory;
+    private final StepViewFactory stepViewFactory;
 
     @Nullable
     private TaskResult taskResult;
@@ -107,12 +107,13 @@ public class PerformTaskViewModel extends ViewModel {
 
     public PerformTaskViewModel(@NonNull TaskView taskView, @NonNull UUID taskRunUUID,
             @NonNull StepNavigatorFactory stepNavigatorFactory, @NonNull TaskRepository taskRepository,
-            @NonNull TaskMapper taskMapper) {
+            @NonNull TaskMapper taskMapper, StepViewFactory stepViewFactory) {
         this.taskView = checkNotNull(taskView);
         this.taskRunUuid = checkNotNull(taskRunUUID);
         this.stepNavigatorFactory = checkNotNull(stepNavigatorFactory);
         this.taskRepository = checkNotNull(taskRepository);
         this.taskMapper = checkNotNull(taskMapper);
+        this.stepViewFactory = stepViewFactory;
 
         taskLiveData = new MutableLiveData<>();
         taskResultLiveData = new MutableLiveData<>();
@@ -183,8 +184,6 @@ public class PerformTaskViewModel extends ViewModel {
         LOGGER.debug("goForward called");
         Step currentStep = currentStepLiveData.getValue();
         TaskResult taskResult = taskResultLiveData.getValue();
-        checkState(currentStep != null);
-        checkState(taskResult != null);
         Step nextStep = stepNavigator.getNextStep(currentStep, taskResult);
         LOGGER.debug("Setting forwardStep: {}", nextStep);
         currentStepLiveData.setValue(nextStep);

@@ -30,20 +30,36 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.sagebionetworks.research.mpower.inject;
+package org.sagebionetworks.research.mpower.show_step_fragment;
 
-import com.google.gson.TypeAdapterFactory;
-import com.ryanharter.auto.value.gson.GsonTypeAdapterFactory;
+import android.os.Bundle;
+import android.support.annotation.NonNull;
 
-/**
- * Auto-generated TypeAdapterFactory for @AutoValue classes in the :app module. Due to how the auto-value-gson
- * annotationProcessor works, a separate @GsonTypeAdapterFactory is needed for each gradle module.
- */
-@GsonTypeAdapterFactory
-public abstract class MPowerAutoValueTypeAdapterFactory implements TypeAdapterFactory {
-    //     Static factory method to access the package
-    //     private generated implementation
-    public static TypeAdapterFactory create() {
-        return new AutoValueGson_MPowerAutoValueTypeAdapterFactory();
+import org.sagebionetworks.research.mobile_ui.show_step.view.ShowStepFragmentBase;
+import org.sagebionetworks.research.mobile_ui.show_step.view.view_binding.UIStepViewBinding;
+import org.sagebionetworks.research.mpower.R;
+import org.sagebionetworks.research.mpower.step_view.InstructionStepView;
+import org.sagebionetworks.research.presentation.model.interfaces.StepView;
+import org.sagebionetworks.research.presentation.show_step.show_step_view_models.ShowUIStepViewModel;
+
+public class ShowInstructionStepFragment extends
+        ShowStepFragmentBase<InstructionStepView, ShowUIStepViewModel<InstructionStepView>, UIStepViewBinding> {
+    @NonNull
+    public static ShowInstructionStepFragment newInstance(@NonNull StepView stepView) {
+        ShowInstructionStepFragment fragment = new ShowInstructionStepFragment();
+        Bundle arguments = ShowStepFragmentBase.createArguments(stepView);
+        fragment.setArguments(arguments);
+        return fragment;
+    }
+
+    @NonNull
+    @Override
+    protected UIStepViewBinding instantiateBinding() {
+        return new UIStepViewBinding();
+    }
+
+    @Override
+    protected int getLayoutId() {
+        return R.layout.mpower2_instruction_step;
     }
 }

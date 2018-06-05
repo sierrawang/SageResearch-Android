@@ -82,4 +82,9 @@ public class ShowStepFragment extends ShowStepFragmentBase<StepView, ShowGeneric
 
         return null;
     }
+
+    @Override
+    protected int getLayoutId() {
+        return R.layout.rs2_default_show_step_fragment_layout;
+    }
 }

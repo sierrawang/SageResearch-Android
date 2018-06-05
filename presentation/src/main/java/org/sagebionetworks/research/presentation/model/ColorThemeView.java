@@ -69,6 +69,10 @@ public abstract class ColorThemeView implements Parcelable {
     public abstract Builder toBuilder();
 
     public static ColorThemeView fromColorTheme(@Nullable ColorTheme colorTheme) {
+        if (colorTheme == null) {
+            return null;
+        }
+
         return ColorThemeView.builder()
                 // .setColorStyles(colorTheme.getColorStyles())
                 .setLightStyle(colorTheme.isLightStyle())

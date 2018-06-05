@@ -62,4 +62,9 @@ public class OverviewStep extends UIStepBase {
             @Nullable final ImageTheme imageTheme) {
         super(identifier, actions, title, text, detail, footnote, colorTheme, imageTheme);
     }
+
+    @Override
+    public String getType() {
+        return TYPE_KEY;
+    }
 }

@@ -49,8 +49,6 @@ import org.sagebionetworks.research.domain.mobile_ui.R;
 import org.sagebionetworks.research.domain.result.implementations.TaskResultBase;
 import org.sagebionetworks.research.domain.result.interfaces.TaskResult;
 import org.sagebionetworks.research.mobile_ui.inject.ShowStepFragmentModule.ShowStepFragmentFactory;
-import org.sagebionetworks.research.mobile_ui.mapper.StepMapper;
-import org.sagebionetworks.research.mobile_ui.show_step.view.ShowStepFragment;
 import org.sagebionetworks.research.mobile_ui.show_step.view.ShowStepFragmentBase;
 import org.sagebionetworks.research.presentation.model.interfaces.StepView;
 import org.sagebionetworks.research.presentation.model.interfaces.StepView.NavDirection;
@@ -156,6 +154,7 @@ public class PerformTaskFragment extends Fragment implements HasSupportFragmentI
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.rs2_fragment_perform_task, container, false);
         unbinder = ButterKnife.bind(this, view);
+        showStep(performTaskViewModel.getStep().getValue());
         return view;
     }
 

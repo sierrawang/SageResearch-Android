@@ -71,21 +71,20 @@ public class ShowStepFragmentModule {
     @Provides
     @IntoMap
     @StepViewKey(ActiveUIStepView.class)
-    static ShowStepFragmentFactory provideShowActivEUIStepFragmentFactory() {
+    static ShowStepFragmentFactory provideShowActiveUIStepFragmentFactory() {
         return ShowActiveUIStepFragment::newInstance;
     }
 
-
     @Provides
-    static ShowStepFragmentFactory provideShowStepFragmentFactory(
-            final Map<Class<? extends StepView>, ShowStepFragmentFactory> showStepFragmentFactoryMap) {
+    public static ShowStepFragmentFactory provideShowStepFragmentFactory(
+            Map<Class<? extends StepView>, ShowStepFragmentFactory> showStepFragmentFactoryMap) {
         return (@NonNull StepView stepView) -> {
             if (showStepFragmentFactoryMap.containsKey(stepView.getClass())) {
                 return showStepFragmentFactoryMap.get(stepView.getClass()).create(stepView);
             }
 
             // If we don't have a factory we default to the most general ShowStepFragment.
-            return ShowStepFragment.newInstance(stepView);
+            return ShowUIStepFragment.newInstance(stepView);
         };
     }
 }

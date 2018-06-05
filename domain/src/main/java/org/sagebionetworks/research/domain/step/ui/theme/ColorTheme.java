@@ -33,9 +33,12 @@
 package org.sagebionetworks.research.domain.step.ui.theme;
 
 import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 
 import com.google.auto.value.AutoValue;
 import com.google.common.collect.ImmutableMap;
+import com.google.gson.Gson;
+import com.google.gson.TypeAdapter;
 
 import java.util.Map;
 
@@ -45,7 +48,7 @@ public abstract class ColorTheme {
     public static abstract class Builder {
         public abstract ColorTheme build();
 
-        public abstract Builder setColorStyles(@NonNull Map<String, String> colorStyles);
+        public abstract Builder setColorStyles(@Nullable Map<String, String> colorStyles);
 
         public abstract Builder setLightStyle(boolean isLightStyle);
     }
@@ -54,6 +57,11 @@ public abstract class ColorTheme {
         return new AutoValue_ColorTheme.Builder();
     }
 
+    public static TypeAdapter<ColorTheme> typeAdapter(Gson gson) {
+        return new AutoValue_ColorTheme.GsonTypeAdapter(gson);
+    }
+
+    @Nullable
     public abstract ImmutableMap<String, String> getColorStyles();
 
     public abstract boolean isLightStyle();

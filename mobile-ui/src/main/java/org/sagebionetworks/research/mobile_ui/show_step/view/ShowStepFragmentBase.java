@@ -128,7 +128,6 @@ public abstract class ShowStepFragmentBase
         this.showStepViewModel = (VM) ViewModelProviders
                 .of(this, this.showStepViewModelFactory.create(this.performTaskViewModel, stepViewArg))
                 .get(stepViewArg.getIdentifier(), this.showStepViewModelFactory.getViewModelClass(stepViewArg));
-        this.showStepViewModel.getStepView().observe(this, this.stepViewBinding::update);
     }
 
     @Override
@@ -139,6 +138,8 @@ public abstract class ShowStepFragmentBase
         this.stepViewBinding = this.instantiateBinding();
         this.stepViewUnbinder = ButterKnife.bind(this.stepViewBinding, view);
         this.stepViewBinding.setActionButtonClickListener(this::handleActionButtonClick);
+        this.showStepViewModel.getStepView().observe(this, this.stepViewBinding::update);
+        this.stepViewBinding.update(this.showStepViewModel.getStepView().getValue());
         return view;
     }
 

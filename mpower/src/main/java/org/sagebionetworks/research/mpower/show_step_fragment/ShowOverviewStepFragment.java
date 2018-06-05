@@ -30,30 +30,36 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.sagebionetworks.research.presentation.mapper;
+package org.sagebionetworks.research.mpower.show_step_fragment;
 
-import com.google.common.base.Function;
+import android.os.Bundle;
+import android.support.annotation.NonNull;
 
-import org.sagebionetworks.research.domain.step.interfaces.Step;
-import org.sagebionetworks.research.presentation.inject.StepViewModule;
-import org.sagebionetworks.research.presentation.inject.StepViewModule.StepViewFactory;
+import org.sagebionetworks.research.mobile_ui.show_step.view.ShowStepFragmentBase;
+import org.sagebionetworks.research.mobile_ui.show_step.view.view_binding.UIStepViewBinding;
+import org.sagebionetworks.research.mpower.R;
+import org.sagebionetworks.research.mpower.step_view.OverviewStepView;
 import org.sagebionetworks.research.presentation.model.interfaces.StepView;
+import org.sagebionetworks.research.presentation.show_step.show_step_view_models.ShowUIStepViewModel;
 
-
-import dagger.Component;
-import javax.inject.Singleton;
-
-public class StepMapper implements Function<Step, StepView> {
-    private static StepViewFactory FACTORY = DaggerStepMapper_StepMapperComponent.builder().build().getStepViewFactory();
-
-    @Component(modules = {StepViewModule.class})
-    @Singleton
-    public interface StepMapperComponent {
-        StepViewFactory getStepViewFactory();
+public class ShowOverviewStepFragment extends
+        ShowStepFragmentBase<OverviewStepView, ShowUIStepViewModel<OverviewStepView>, UIStepViewBinding> {
+    @NonNull
+    public static ShowOverviewStepFragment newInstance(@NonNull StepView stepView) {
+        ShowOverviewStepFragment fragment = new ShowOverviewStepFragment();
+        Bundle arguments = ShowStepFragmentBase.createArguments(stepView);
+        fragment.setArguments(arguments);
+        return fragment;
     }
 
     @Override
-    public StepView apply(final Step step) {
-        return FACTORY.apply(step);
+    protected int getLayoutId() {
+        return R.layout.mpower2_overview_step;
+    }
+
+    @NonNull
+    @Override
+    protected UIStepViewBinding instantiateBinding() {
+        return new UIStepViewBinding();
     }
 }

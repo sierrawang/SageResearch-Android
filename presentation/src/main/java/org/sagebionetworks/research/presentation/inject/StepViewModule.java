@@ -47,9 +47,10 @@ import dagger.MapKey;
 import dagger.Module;
 import dagger.Provides;
 import dagger.multibindings.IntoMap;
+import dagger.multibindings.Multibinds;
 
 @Module
-public class StepViewModule {
+public abstract class StepViewModule {
     // We use the return value of the getType() method on the step as the key which maps to a function that turns
     // the step into a step view.
     @MapKey
@@ -57,6 +58,8 @@ public class StepViewModule {
         String value();
     }
 
+    @Multibinds
+    abstract Map<String, StepViewFactory> stepToFactoryMap();
 
     public interface StepViewFactory {
         @Nullable
@@ -85,14 +88,14 @@ public class StepViewModule {
     }
 
     @Provides
-    static StepViewFactory provideStepViewFactory(final Map<String, StepViewFactory> stepToFunctionMap) {
+    static StepViewFactory provideStepViewFactory(final Map<String, StepViewFactory> stepToFactoryMap) {
         return (final Step step) ->
         {
             String type = step.getType();
-            if (stepToFunctionMap.containsKey(type)) {
-                return stepToFunctionMap.get(type).apply(step);
+            if (stepToFactoryMap.containsKey(type)) {
+                return stepToFactoryMap.get(type).apply(step);
             } else {
-                return null;
+                return UIStepViewBase.fromUIStep(step);
             }
         };
     }
