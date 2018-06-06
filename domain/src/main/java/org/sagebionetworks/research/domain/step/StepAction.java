@@ -35,7 +35,7 @@ package org.sagebionetworks.research.domain.step;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 
-import org.sagebionetworks.research.domain.step.ui.action.ActionType;
+import org.sagebionetworks.research.domain.step.ui.action.interfaces.ActionType;
 
 public class StepAction {
     private StepAction(@NonNull ActionType actionType, @Nullable String title, boolean isHidden,

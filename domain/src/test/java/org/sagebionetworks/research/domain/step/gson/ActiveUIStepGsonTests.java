@@ -36,7 +36,7 @@ import org.junit.*;
 import org.sagebionetworks.research.domain.step.implementations.ActiveUIStepBase;
 import org.sagebionetworks.research.domain.step.interfaces.ActiveUIStep;
 import org.sagebionetworks.research.domain.step.interfaces.Step;
-import org.sagebionetworks.research.domain.step.ui.UIAction;
+import org.sagebionetworks.research.domain.step.ui.action.interfaces.Action;
 
 import java.util.Collections;
 
@@ -47,14 +47,14 @@ import static org.junit.Assert.*;
 public class ActiveUIStepGsonTests extends IndividualStepGsonTest {
     @Test
     public void testExample_1() {
-        ActiveUIStep expected = new ActiveUIStepBase("testActiveUIStep1", Collections.<String, UIAction>emptyMap(),
+        ActiveUIStep expected = new ActiveUIStepBase("testActiveUIStep1", Collections.<String, Action>emptyMap(),
                 "title", "text", null, null, null, null, null, false);
         commonTest(expected, "ActiveUIStep_1.json");
     }
 
     @Test
     public void testExample_2() {
-        ActiveUIStep expected = new ActiveUIStepBase("testActiveUIStep2", Collections.<String, UIAction>emptyMap(),
+        ActiveUIStep expected = new ActiveUIStepBase("testActiveUIStep2", Collections.<String, Action>emptyMap(),
                 "title", "text", "detail", "footnote", null , null, null, false);
         commonTest(expected, "ActiveUIStep_2.json");
     }
@@ -62,7 +62,7 @@ public class ActiveUIStepGsonTests extends IndividualStepGsonTest {
     @Test
     public void testExample_3() {
         ActiveUIStepBase expected = new ActiveUIStepBase("testActiveUIStep3",
-                Collections.<String, UIAction>emptyMap(), "title", "text", "detail", "footnote", null, null,
+                Collections.<String, Action>emptyMap(), "title", "text", "detail", "footnote", null, null,
                 5D, false);
         commonTest(expected, "ActiveUIStep_3.json");
     }

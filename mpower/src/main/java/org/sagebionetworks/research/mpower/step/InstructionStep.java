@@ -37,7 +37,7 @@ import android.support.annotation.Nullable;
 
 import org.sagebionetworks.research.domain.step.StepType;
 import org.sagebionetworks.research.domain.step.implementations.ActiveUIStepBase;
-import org.sagebionetworks.research.domain.step.ui.UIAction;
+import org.sagebionetworks.research.domain.step.ui.action.interfaces.Action;
 import org.sagebionetworks.research.domain.step.ui.theme.ColorTheme;
 import org.sagebionetworks.research.domain.step.ui.theme.ImageTheme;
 
@@ -49,7 +49,7 @@ public class InstructionStep extends ActiveUIStepBase {
     // TODO: rkolmos 06/01/2018 for now an instruction step adds no functionality to a ActiveUIStep.
 
     public InstructionStep(@NonNull final String identifier,
-            @NonNull final Map<String, UIAction> actions,
+            @NonNull final Map<String, Action> actions,
             @Nullable final String title,
             @Nullable final String text,
             @Nullable final String detail,

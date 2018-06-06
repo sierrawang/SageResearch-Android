@@ -41,7 +41,7 @@ import com.google.common.base.Objects;
 import org.sagebionetworks.research.domain.interfaces.HashCodeHelper;
 import org.sagebionetworks.research.domain.step.StepType;
 import org.sagebionetworks.research.domain.step.interfaces.ActiveUIStep;
-import org.sagebionetworks.research.domain.step.ui.UIAction;
+import org.sagebionetworks.research.domain.step.ui.action.interfaces.Action;
 import org.sagebionetworks.research.domain.step.ui.theme.ColorTheme;
 import org.sagebionetworks.research.domain.step.ui.theme.ImageTheme;
 
@@ -63,7 +63,7 @@ public class ActiveUIStepBase extends UIStepBase implements ActiveUIStep {
         backgroundAudioRequired = false;
     }
 
-    public ActiveUIStepBase(@NonNull final String identifier, @NonNull final Map<String, UIAction> actions,
+    public ActiveUIStepBase(@NonNull final String identifier, @NonNull final Map<String, Action> actions,
             @Nullable final String title, @Nullable final String text,
             @Nullable final String detail, @Nullable final String footnote,
             @Nullable final ColorTheme colorTheme, @Nullable final ImageTheme imageTheme,

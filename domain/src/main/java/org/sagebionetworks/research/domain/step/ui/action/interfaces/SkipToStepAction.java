@@ -30,14 +30,15 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.sagebionetworks.research.domain.step.ui.action;
+package org.sagebionetworks.research.domain.step.ui.action.interfaces;
 
-import android.support.annotation.DrawableRes;
-import android.support.annotation.StringRes;
+import android.support.annotation.Nullable;
 
-public interface Action {
-    @StringRes
-    int getButtonTitle();
-    @DrawableRes
-    int getButtonIcon();
+public interface SkipToStepAction extends Action {
+    /**
+     * Returns the identifier of the step to skip to for this action.
+     * @return the identifier of the step to skip to fro this action.
+     */
+    @Nullable
+    String getSkipToStepIdentifier();
 }

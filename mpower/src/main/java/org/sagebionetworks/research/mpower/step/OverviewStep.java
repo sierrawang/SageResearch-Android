@@ -39,7 +39,7 @@ import com.google.common.collect.ImmutableList;
 
 import org.sagebionetworks.research.domain.step.StepType;
 import org.sagebionetworks.research.domain.step.implementations.UIStepBase;
-import org.sagebionetworks.research.domain.step.ui.UIAction;
+import org.sagebionetworks.research.domain.step.ui.action.interfaces.Action;
 import org.sagebionetworks.research.domain.step.ui.theme.ColorTheme;
 import org.sagebionetworks.research.domain.step.ui.theme.ImageTheme;
 
@@ -53,7 +53,7 @@ public class OverviewStep extends UIStepBase {
     private final ImmutableList<Icon> icons;
 
     public OverviewStep(@NonNull final String identifier,
-            @Nullable final Map<String, UIAction> actions,
+            @Nullable final Map<String, Action> actions,
             @Nullable final String title, @Nullable final String text, @Nullable final String detail,
             @Nullable final String footnote,
             @Nullable final ColorTheme colorTheme,

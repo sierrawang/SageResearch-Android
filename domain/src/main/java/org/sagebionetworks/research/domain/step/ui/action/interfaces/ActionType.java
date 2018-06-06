@@ -30,14 +30,18 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.sagebionetworks.research.domain.step.ui.action;
+package org.sagebionetworks.research.domain.step.ui.action.interfaces;
 
-import org.sagebionetworks.research.domain.step.interfaces.Step;
+public enum ActionType {
+    NAVIGATION,
+    CUSTOM;
 
-import java.util.Optional;
-
-public interface ActionHandler {
-    Optional<Action> getAction(ActionType type, Step step);
-
-    Optional<Boolean> shouldHideAction(ActionType type, Step step);
+    public enum Navigation {
+        FORWARD,
+        BACKWARD,
+        SKIP,
+        CANCEL,
+        LEARN_MORE,
+        ADD_MORE
+    }
 }

@@ -42,7 +42,7 @@ import com.google.common.collect.ImmutableMap;
 import org.sagebionetworks.research.domain.interfaces.HashCodeHelper;
 import org.sagebionetworks.research.domain.step.StepType;
 import org.sagebionetworks.research.domain.step.interfaces.ThemedUIStep;
-import org.sagebionetworks.research.domain.step.ui.UIAction;
+import org.sagebionetworks.research.domain.step.ui.action.interfaces.Action;
 import org.sagebionetworks.research.domain.step.ui.theme.ColorTheme;
 import org.sagebionetworks.research.domain.step.ui.theme.ImageTheme;
 
@@ -52,7 +52,7 @@ public class UIStepBase extends StepBase implements ThemedUIStep {
     public static final String TYPE_KEY = StepType.UI;
 
     @NonNull
-    private final ImmutableMap<String, UIAction> actions;
+    private final ImmutableMap<String, Action> actions;
 
     @Nullable
     private final String detail;
@@ -84,7 +84,7 @@ public class UIStepBase extends StepBase implements ThemedUIStep {
         imageTheme = null;
     }
 
-    public UIStepBase(@NonNull final String identifier, @Nullable final Map<String, UIAction> actions,
+    public UIStepBase(@NonNull final String identifier, @Nullable final Map<String, Action> actions,
             @Nullable final String title, @Nullable final String text,
             @Nullable final String detail, @Nullable final String footnote,
             @Nullable final ColorTheme colorTheme,
@@ -105,7 +105,7 @@ public class UIStepBase extends StepBase implements ThemedUIStep {
 
     @NonNull
     @Override
-    public ImmutableMap<String, UIAction> getActions() {
+    public ImmutableMap<String, Action> getActions() {
         return actions;
     }
 

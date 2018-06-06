@@ -40,7 +40,7 @@ import com.google.common.collect.ImmutableMap;
 import org.junit.*;
 import org.sagebionetworks.research.domain.step.StepType;
 import org.sagebionetworks.research.domain.step.interfaces.ThemedUIStep;
-import org.sagebionetworks.research.domain.step.ui.UIAction;
+import org.sagebionetworks.research.domain.step.ui.action.interfaces.Action;
 import org.sagebionetworks.research.domain.step.ui.theme.ColorPlacement;
 import org.sagebionetworks.research.domain.step.ui.theme.ColorTheme;
 import org.sagebionetworks.research.domain.step.ui.theme.ImageTheme;
@@ -66,7 +66,7 @@ public class UIStepViewTests {
     }
 
     protected static ThemedUIStep mockThemedUIStep(@NonNull final String identifier,
-            @Nullable final ImmutableMap<String, UIAction> actions,
+            @Nullable final ImmutableMap<String, Action> actions,
             @Nullable final String title, @Nullable final String text,
             @Nullable final String detail, @Nullable final String footnote,
             @Nullable final ColorTheme colorTheme,

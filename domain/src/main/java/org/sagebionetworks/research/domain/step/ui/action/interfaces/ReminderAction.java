@@ -30,17 +30,15 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.sagebionetworks.research.domain.step.ui;
+package org.sagebionetworks.research.domain.step.ui.action.interfaces;
 
 import android.support.annotation.Nullable;
 
-/**
- * Defines a title and image for an asyncAction.
- */
-public interface UIAction {
+public interface ReminderAction extends Action {
+    /**
+     * Returns the identifier of the reminder to set corresponding to this action.
+     * @return the idetnifier of the reminder to set corresponding to this action.
+     */
     @Nullable
-    String getButtonIcon();
-
-    @Nullable
-    String getButtonTitle();
+    String getReminderIdentifier();
 }

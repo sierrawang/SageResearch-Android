@@ -30,13 +30,34 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.sagebionetworks.research.domain.step.ui;
+package org.sagebionetworks.research.domain.step.ui.action.implementations;
 
-/**
- * Specifies behavior of UIAction buttons.
- */
-public interface UIActionHandler {
-    UIAction getAction(@UIActionType String actionType);
+import com.google.auto.value.AutoValue;
+import com.google.gson.Gson;
+import com.google.gson.TypeAdapter;
 
-    boolean shouldHideAction(@UIActionType String actionType);
+import org.sagebionetworks.research.domain.step.ui.action.interfaces.SkipToStepAction;
+
+@AutoValue
+public abstract class SkipToStepActionBase implements SkipToStepAction {
+    @AutoValue.Builder
+    public abstract static class Builder {
+        public abstract SkipToStepActionBase build();
+
+        public abstract Builder setButtonTitle(String buttonTitle);
+
+        public abstract Builder setButtonIconName(String buttonIconName);
+
+        public abstract Builder setSkipToStepIdentifier(String reminderIdentifier);
+    }
+
+    public static Builder builder() {
+        return new AutoValue_SkipToStepActionBase.Builder();
+    }
+
+    public static TypeAdapter<SkipToStepActionBase> typeAdapter(Gson gson) {
+        return new AutoValue_SkipToStepActionBase.GsonTypeAdapter(gson);
+    }
+
+    public abstract Builder toBuilder();
 }

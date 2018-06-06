@@ -37,7 +37,7 @@ import android.support.annotation.Nullable;
 
 import com.google.common.collect.ImmutableMap;
 
-import org.sagebionetworks.research.domain.step.ui.UIAction;
+import org.sagebionetworks.research.domain.step.ui.action.interfaces.Action;
 
 /**
  * A UIStep defines a display unit.
@@ -50,7 +50,7 @@ public interface UIStep extends Step {
      * @return custom UI actions for this step
      */
     @NonNull
-    ImmutableMap<String, UIAction> getActions();
+    ImmutableMap<String, Action> getActions();
 
     /**
      * Additional detailed explanation for the step.

@@ -30,8 +30,34 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.sagebionetworks.research.domain.step.ui.action;
+package org.sagebionetworks.research.domain.step.ui.action.implementations;
 
-public interface SkipToStepAction extends Action {
-    String getSkipToStepIdentifier();
+import com.google.auto.value.AutoValue;
+import com.google.gson.Gson;
+import com.google.gson.TypeAdapter;
+
+import org.sagebionetworks.research.domain.step.ui.action.interfaces.ReminderAction;
+
+@AutoValue
+public abstract class ReminderActionBase implements ReminderAction {
+    @AutoValue.Builder
+    public abstract static class Builder {
+        public abstract ReminderActionBase build();
+
+        public abstract Builder setButtonTitle(String buttonTitle);
+
+        public abstract Builder setButtonIconName(String buttonIconName);
+
+        public abstract Builder setReminderIdentifier(String reminderIdentifier);
+    }
+
+    public static Builder builder() {
+        return new AutoValue_ReminderActionBase.Builder();
+    }
+
+    public static TypeAdapter<ReminderActionBase> typeAdapter(Gson gson) {
+        return new AutoValue_ReminderActionBase.GsonTypeAdapter(gson);
+    }
+
+    public abstract Builder toBuilder();
 }

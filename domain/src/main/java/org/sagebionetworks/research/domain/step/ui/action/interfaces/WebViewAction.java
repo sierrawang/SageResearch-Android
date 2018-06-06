@@ -30,7 +30,7 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.sagebionetworks.research.domain.step.ui.action;
+package org.sagebionetworks.research.domain.step.ui.action.interfaces;
 
 import android.net.Uri;
 

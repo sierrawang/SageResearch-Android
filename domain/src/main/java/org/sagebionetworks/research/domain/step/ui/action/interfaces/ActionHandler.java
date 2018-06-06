@@ -30,30 +30,14 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.sagebionetworks.research.domain.step.ui;
+package org.sagebionetworks.research.domain.step.ui.action.interfaces;
 
-import com.google.auto.value.AutoValue;
-import com.google.gson.Gson;
-import com.google.gson.TypeAdapter;
+import org.sagebionetworks.research.domain.step.interfaces.Step;
 
-@AutoValue
-public abstract class ConcreteUIAction implements UIAction {
-    @AutoValue.Builder
-    public abstract static class Builder {
-        public abstract ConcreteUIAction build();
+import java.util.Optional;
 
-        public abstract Builder setButtonIcon(String buttonIcon);
+public interface ActionHandler {
+    Optional<Action> getAction(ActionType type, Step step);
 
-        public abstract Builder setButtonTitle(String buttonTitle);
-    }
-
-    public static Builder builder() {
-        return new AutoValue_ConcreteUIAction.Builder();
-    }
-
-    public static TypeAdapter<ConcreteUIAction> typeAdapter(Gson gson) {
-        return new AutoValue_ConcreteUIAction.GsonTypeAdapter(gson);
-    }
-
-    public abstract Builder toBuilder();
+    Optional<Boolean> shouldHideAction(ActionType type, Step step);
 }

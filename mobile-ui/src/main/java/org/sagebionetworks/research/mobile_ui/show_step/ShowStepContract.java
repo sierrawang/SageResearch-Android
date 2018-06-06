@@ -36,9 +36,9 @@ import android.support.annotation.Keep;
 import android.support.annotation.Nullable;
 
 import org.sagebionetworks.research.domain.result.interfaces.Result;
-import org.sagebionetworks.research.domain.step.ui.UIActionType;
 import org.sagebionetworks.research.mobile_ui.BasePresenter;
 import org.sagebionetworks.research.mobile_ui.BaseView;
+import org.sagebionetworks.research.presentation.ActionType;
 
 import java.util.Set;
 
@@ -48,7 +48,7 @@ public interface ShowStepContract {
     interface Presenter<T extends View> extends BasePresenter<T> {
         void finish();
 
-        void handleAction(@UIActionType String actionType);
+        void handleAction(@ActionType String actionType);
 
         void saveStepResult(Result result);
     }

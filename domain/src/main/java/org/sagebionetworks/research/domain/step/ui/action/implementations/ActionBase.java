@@ -30,16 +30,32 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.sagebionetworks.research.domain.step.ui;
+package org.sagebionetworks.research.domain.step.ui.action.implementations;
 
-import android.support.annotation.StringDef;
-import java.lang.annotation.Retention;
-import java.lang.annotation.RetentionPolicy;
+import com.google.auto.value.AutoValue;
+import com.google.gson.Gson;
+import com.google.gson.TypeAdapter;
 
-@Retention(RetentionPolicy.SOURCE)
-@StringDef({UIActionType.NEXT, UIActionType.PREVIOUS, UIActionType.END})
-public @interface UIActionType {
-    String NEXT = "next";
-    String PREVIOUS = "previous";
-    String END = "end";
+import org.sagebionetworks.research.domain.step.ui.action.interfaces.Action;
+
+@AutoValue
+public abstract class ActionBase implements Action {
+    @AutoValue.Builder
+    public abstract static class Builder {
+        public abstract ActionBase build();
+
+        public abstract Builder setButtonIconName(String buttonIcon);
+
+        public abstract Builder setButtonTitle(String buttonTitle);
+    }
+
+    public static Builder builder() {
+        return new AutoValue_ActionBase.Builder();
+    }
+
+    public static TypeAdapter<ActionBase> typeAdapter(Gson gson) {
+        return new AutoValue_ActionBase.GsonTypeAdapter(gson);
+    }
+
+    public abstract Builder toBuilder();
 }

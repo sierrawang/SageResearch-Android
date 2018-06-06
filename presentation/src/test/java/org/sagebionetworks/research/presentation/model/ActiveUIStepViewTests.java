@@ -37,7 +37,7 @@ import com.google.common.collect.ImmutableMap;
 import org.junit.*;
 import org.sagebionetworks.research.domain.step.StepType;
 import org.sagebionetworks.research.domain.step.interfaces.ActiveUIStep;
-import org.sagebionetworks.research.domain.step.ui.UIAction;
+import org.sagebionetworks.research.domain.step.ui.action.interfaces.Action;
 import org.sagebionetworks.research.domain.step.ui.theme.ColorPlacement;
 import org.sagebionetworks.research.domain.step.ui.theme.ColorTheme;
 import org.sagebionetworks.research.domain.step.ui.theme.ImageTheme;
@@ -61,7 +61,7 @@ public class ActiveUIStepViewTests {
                 "detail", "footnote", colorTheme, imageTheme, 5.0, true);
     }
 
-    public static ActiveUIStep mockActiveUIStep(String identifier, ImmutableMap<String, UIAction> actions,
+    public static ActiveUIStep mockActiveUIStep(String identifier, ImmutableMap<String, Action> actions,
             String title, String text, String detail, String footnote, ColorTheme colorTheme, ImageTheme imageTheme,
             Double duration, boolean isBackgroundAudioRequired) {
         ActiveUIStep step = mock(ActiveUIStep.class);

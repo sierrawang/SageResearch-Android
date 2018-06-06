@@ -37,7 +37,8 @@ import android.support.annotation.Nullable;
 
 import com.google.common.collect.ImmutableMap;
 
-import org.sagebionetworks.research.domain.step.ui.UIAction;
+import org.sagebionetworks.research.domain.step.ui.action.interfaces.Action;
+
 
 public interface UIActionView {
     int getButtonIcon();
@@ -46,7 +47,7 @@ public interface UIActionView {
     String getButtonTitle();
 
     @NonNull
-    static ImmutableMap<String, UIActionView> getActionsFrom(@NonNull ImmutableMap<String, UIAction> actions) {
+    static ImmutableMap<String, UIActionView> getActionsFrom(@NonNull ImmutableMap<String, Action> actions) {
         return null;
     }
 }

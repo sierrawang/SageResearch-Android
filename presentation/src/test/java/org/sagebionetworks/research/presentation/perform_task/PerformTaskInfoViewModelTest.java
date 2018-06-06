@@ -39,7 +39,6 @@ import org.mockito.*;
 import org.sagebionetworks.research.domain.repository.TaskRepository;
 import org.sagebionetworks.research.domain.task.navigation.StepNavigator;
 import org.sagebionetworks.research.domain.task.navigation.StepNavigatorFactory;
-import org.sagebionetworks.research.presentation.mapper.StepMapper;
 import org.sagebionetworks.research.presentation.model.TaskView;
 
 public class PerformTaskInfoViewModelTest {
@@ -47,9 +46,6 @@ public class PerformTaskInfoViewModelTest {
     public InstantTaskExecutorRule instantExecutor = new InstantTaskExecutorRule();
 
     private PerformTaskViewModel performTaskViewModel;
-
-    @Mock
-    private StepMapper stepMapper;
 
     @Mock
     private StepNavigator stepNavigator;

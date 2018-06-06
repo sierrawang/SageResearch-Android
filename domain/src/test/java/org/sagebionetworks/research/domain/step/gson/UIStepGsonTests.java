@@ -37,8 +37,8 @@ import com.google.common.collect.ImmutableMap;
 import org.junit.*;
 import org.sagebionetworks.research.domain.step.interfaces.Step;
 import org.sagebionetworks.research.domain.step.interfaces.UIStep;
-import org.sagebionetworks.research.domain.step.ui.ConcreteUIAction;
-import org.sagebionetworks.research.domain.step.ui.UIAction;
+import org.sagebionetworks.research.domain.step.ui.action.implementations.ActionBase;
+import org.sagebionetworks.research.domain.step.ui.action.interfaces.Action;
 
 import static org.junit.Assert.*;
 import static org.mockito.Mockito.*;
@@ -48,7 +48,7 @@ public class UIStepGsonTests extends IndividualStepGsonTest {
     public void testExample_1() {
         UIStep expected = mock(UIStep.class);
         when(expected.getIdentifier()).thenReturn("testUIStep1");
-        when(expected.getActions()).thenReturn(ImmutableMap.<String, UIAction>of());
+        when(expected.getActions()).thenReturn(ImmutableMap.<String, Action>of());
         when(expected.getTitle()).thenReturn("title");
         when(expected.getText()).thenReturn("text");
         when(expected.getDetail()).thenReturn(null);
@@ -61,8 +61,8 @@ public class UIStepGsonTests extends IndividualStepGsonTest {
     public void testExample_2() {
         UIStep expected = mock(UIStep.class);
         when(expected.getIdentifier()).thenReturn("testUIStep2");
-        when(expected.getActions()).thenReturn(ImmutableMap.<String, UIAction>builder()
-                .put("goForward", ConcreteUIAction.builder().setButtonTitle("Go, Dogs!").build()).build());
+        when(expected.getActions()).thenReturn(ImmutableMap.<String, Action>builder()
+                .put("goForward", ActionBase.builder().setButtonTitle("Go, Dogs!").build()).build());
         when(expected.getTitle()).thenReturn("title");
         when(expected.getText()).thenReturn("text");
         when(expected.getDetail()).thenReturn("detail");
