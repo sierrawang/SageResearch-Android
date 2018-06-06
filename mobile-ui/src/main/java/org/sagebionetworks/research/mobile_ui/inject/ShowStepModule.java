@@ -48,24 +48,23 @@ import dagger.android.support.FragmentKey;
 import dagger.multibindings.IntoMap;
 
 @Module(subcomponents = {ShowStepFragmentSubcomponent.class, ShowUIStepFragmentSubcomponent.class,
-        ShowActiveUIStepFragmentSubcomponent.class},
-        includes = {ShowStepFragmentModule.class, StepViewModule.class})
+        ShowActiveUIStepFragmentSubcomponent.class})
 public abstract class ShowStepModule {
     @Binds
     @IntoMap
     @FragmentKey(ShowStepFragment.class)
     abstract AndroidInjector.Factory<? extends android.support.v4.app.Fragment>
-    bindShowStepFragmentInjectoryFactory(ShowStepFragmentSubcomponent.Builder builder);
+    bindShowStepFragmentInjectorFactory(ShowStepFragmentSubcomponent.Builder builder);
 
     @Binds
     @IntoMap
     @FragmentKey(ShowUIStepFragment.class)
     abstract AndroidInjector.Factory<? extends android.support.v4.app.Fragment>
-    bindShowUIStepFragmentInjectoryFactory(ShowUIStepFragmentSubcomponent.Builder builder);
+    bindShowUIStepFragmentInjectorFactory(ShowUIStepFragmentSubcomponent.Builder builder);
 
     @Binds
     @IntoMap
     @FragmentKey(ShowActiveUIStepFragment.class)
     abstract AndroidInjector.Factory<? extends android.support.v4.app.Fragment>
-    bindShowActiveUIStepFragmentInjectoryFactory(ShowActiveUIStepFragmentSubcomponent.Builder builder);
+    bindShowActiveUIStepFragmentInjectorFactory(ShowActiveUIStepFragmentSubcomponent.Builder builder);
 }

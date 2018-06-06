@@ -67,7 +67,7 @@ public abstract class ShowStepViewModelModule {
     @IntoMap
     @StepViewClassKey(UIStepView.class)
     static AbstractShowStepViewModelFactory<?, ? extends StepView> provideUIStepVMF() {
-        return new ShowUIStepViewModelFactory();
+        return new ShowUIStepViewModelFactory<UIStepView>();
     }
 
     // TODO: rkolmos 06/01/2018 Implement a view model for FormUISteps.
@@ -75,7 +75,7 @@ public abstract class ShowStepViewModelModule {
     @IntoMap
     @StepViewClassKey(FormUIStepView.class)
     static AbstractShowStepViewModelFactory<?, ? extends StepView> provideFormUIStepVMF() {
-        return new ShowUIStepViewModelFactory();
+        return new ShowUIStepViewModelFactory<FormUIStepView>();
     }
 
     @Provides

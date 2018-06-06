@@ -40,6 +40,7 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import org.sagebionetworks.research.domain.mobile_ui.R2.id;
+import org.sagebionetworks.research.mobile_ui.widget.ActionButton;
 import org.sagebionetworks.research.mobile_ui.widget.NavigationActionBar;
 import org.sagebionetworks.research.mobile_ui.widget.NavigationActionBar.ActionButtonClickListener;
 import org.sagebionetworks.research.mobile_ui.widget.StepHeader;
@@ -76,7 +77,7 @@ public class UIStepViewBinding implements StepViewBinding<UIStepView> {
      * info action buttons.
      */
     @Nullable
-    @BindView(id.stepHeader)
+    @BindView(id.rs2_step_header)
     public StepHeader stepHeader;
 
     /**
@@ -84,7 +85,7 @@ public class UIStepViewBinding implements StepViewBinding<UIStepView> {
      * the title and text labels.
      */
     @Nullable
-    @BindView(id.stepBody)
+    @BindView(id.rs2_step_body)
     public View stepBody;
 
     /**
@@ -99,7 +100,7 @@ public class UIStepViewBinding implements StepViewBinding<UIStepView> {
      * or icon that is associated with the step.
      */
     @Nullable
-    @BindView(id.imageView)
+    @BindView(id.rs2_image_view)
     public ImageView imageView;
 
     /**
@@ -107,39 +108,39 @@ public class UIStepViewBinding implements StepViewBinding<UIStepView> {
      * title consisting of a brief description of what the step represents.
      **/
     @Nullable
-    @BindView(id.titleLabel)
-    public TextView titleLabel;
+    @BindView(id.rs2_title)
+    public TextView title;
 
     /**
      * Views can optionally have a text view with the id `textLabel`. This view generally displays the main
      * content for the step in medium size font.
      */
     @Nullable
-    @BindView(id.textLabel)
-    public TextView textLabel;
+    @BindView(id.rs2_text)
+    public TextView text;
 
     /**
      * Views can optionally have a text view with the id `detailLabel`. This view generally displays further
      * information related to the information displayed on the textLabel.
      */
     @Nullable
-    @BindView(id.detailLabel)
-    public TextView detailLabel;
+    @BindView(id.rs2_detail)
+    public TextView detail;
 
     /**
      * Views can optionally have a text view with the id `footnoteLabel`. This view generally displays the
      * footnote of the step that is being displayed.
      */
     @Nullable
-    @BindView(id.footnoteLabel)
-    public TextView footnoteLabel;
+    @BindView(id.rs2_footnote)
+    public TextView footnote;
 
     /**
      * Views can optionally have a text view with the id `progressLabel`. This view generally displays a string
      * indicating how much progress the user has made into the current active task (i.e. "STEP 1 OF 6").
      */
     @Nullable
-    @BindView(id.progressLabel)
+    @BindView(id.rs2_progress_label)
     public TextView progressLabel;
 
     /**
@@ -148,7 +149,7 @@ public class UIStepViewBinding implements StepViewBinding<UIStepView> {
      * to the string displayed on the progressLabel.
      */
     @Nullable
-    @BindView(id.progressBar)
+    @BindView(id.rs2_progress_bar)
     public ProgressBar progressBar;
 
     /**
@@ -156,32 +157,32 @@ public class UIStepViewBinding implements StepViewBinding<UIStepView> {
      * active task when pressed
      */
     @Nullable
-    @BindView(id.cancelButton)
-    public Button cancelButton;
+    @BindView(id.rs2_step_navigation_action_cancel)
+    public ActionButton cancelButton;
 
     /**
      * Views can optionally have a button with the id `nextButton`. This button generally moves on to the next
      * step in the active task, or completes the task when pressed.
      */
     @Nullable
-    @BindView(id.nextButton)
-    public Button nextButton;
+    @BindView(id.rs2_step_navigation_action_forward)
+    public ActionButton nextButton;
 
     /**
      * Views can optionally have a button with the id `backButton`. This button generally causes the task to
      * navigate to the previous step when pressed.
      */
     @Nullable
-    @BindView(id.backButton)
-    public Button backButton;
+    @BindView(id.rs2_step_navigation_action_backward)
+    public ActionButton backButton;
 
     /**
      * Views can optionally have a button with the id `skipButton`. This button generally causes the current
      * step to be skipped when pressed.
      */
     @Nullable
-    @BindView(id.skipButton)
-    public Button skipButton;
+    @BindView(id.rs2_step_navigation_action_skip)
+    public ActionButton skipButton;
 
     @Override
     public void setActionButtonClickListener(ActionButtonClickListener actionButtonClickListener) {
@@ -196,19 +197,21 @@ public class UIStepViewBinding implements StepViewBinding<UIStepView> {
 
     @Override
     public void update(UIStepView stepView) {
-        updateTextView(this.titleLabel, stepView.getTitle());
-        updateTextView(this.textLabel, stepView.getText());
-        updateTextView(this.detailLabel, stepView.getDetail());
-        updateTextView(this.footnoteLabel, stepView.getFootnote());
+        updateTextView(this.title, stepView.getTitle());
+        updateTextView(this.text, stepView.getText());
+        updateTextView(this.detail, stepView.getDetail());
+        updateTextView(this.footnote, stepView.getFootnote());
 
         if (this.imageView != null) {
-            DisplayDrawable drawable = stepView.getImageTheme().getImageResource();
-            Integer imageResourceId = drawable.drawableRes != null ? drawable.drawableRes :
-                    drawable.defaultDrawableRes;
-            if (imageResourceId != null) {
-                this.imageView.setImageResource(imageResourceId);
-            } else {
-                System.err.println("DisplayDrawable has null drawableRes and null defaultDrawableRes");
+            if (stepView.getImageTheme() != null) {
+                DisplayDrawable drawable = stepView.getImageTheme().getImageResource();
+                Integer imageResourceId = drawable.drawableRes != null ? drawable.drawableRes :
+                        drawable.defaultDrawableRes;
+                if (imageResourceId != null) {
+                    this.imageView.setImageResource(imageResourceId);
+                } else {
+                    System.err.println("DisplayDrawable has null drawableRes and null defaultDrawableRes");
+                }
             }
         }
 
@@ -219,7 +222,7 @@ public class UIStepViewBinding implements StepViewBinding<UIStepView> {
         if (view != null) {
             if (displayString.displayString != null) {
                 view.setText(displayString.displayString);
-            } else {
+            } else if (displayString.defaultDisplayStringRes != null) {
                 view.setText(displayString.defaultDisplayStringRes);
             }
         }

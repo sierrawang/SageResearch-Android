@@ -75,7 +75,7 @@ public abstract class ShowStepFragmentBase
         extends Fragment {
     private static final Logger LOGGER = LoggerFactory.getLogger(ShowStepFragmentBase.class);
     private static final String ARGUMENT_STEP_VIEW = "STEP_VIEW";
-    @Inject
+    private static final String ARGUMENT_TASK_FRAGMENT = "TASK_FRAGMENT";
     protected PerformTaskFragment performTaskFragment;
     @Inject
     protected ShowStepViewModelFactory showStepViewModelFactory;
@@ -102,6 +102,10 @@ public abstract class ShowStepFragmentBase
         Bundle args = new Bundle();
         args.putParcelable(ARGUMENT_STEP_VIEW, stepView);
         return args;
+    }
+
+    public void setPerformTaskFragment(PerformTaskFragment performTaskFragment) {
+        this.performTaskFragment = performTaskFragment;
     }
 
     @Override
@@ -139,6 +143,7 @@ public abstract class ShowStepFragmentBase
         this.stepViewUnbinder = ButterKnife.bind(this.stepViewBinding, view);
         this.stepViewBinding.setActionButtonClickListener(this::handleActionButtonClick);
         this.showStepViewModel.getStepView().observe(this, this.stepViewBinding::update);
+        this.stepViewBinding.setActionButtonClickListener(this::handleActionButtonClick);
         this.stepViewBinding.update(this.showStepViewModel.getStepView().getValue());
         return view;
     }

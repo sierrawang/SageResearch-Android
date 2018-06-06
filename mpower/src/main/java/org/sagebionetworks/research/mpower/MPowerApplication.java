@@ -36,6 +36,8 @@ import android.app.Activity;
 import android.support.multidex.MultiDexApplication;
 import android.support.v4.app.Fragment;
 
+import org.sagebionetworks.research.mpower.inject.DaggerMPowerApplicationComponent;
+
 import javax.inject.Inject;
 
 import dagger.android.AndroidInjector;

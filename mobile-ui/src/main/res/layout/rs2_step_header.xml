@@ -46,7 +46,7 @@
     android:paddingTop="0dp">
 
     <TextView
-        android:id="@id/rs2_step_header_progress_label"
+        android:id="@id/rs2_progress_label"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginBottom="4dp"
@@ -55,15 +55,15 @@
         android:textColor="#ffffff"
         android:textSize="12sp"
         android:textStyle="bold"
-        app:layout_constraintBottom_toTopOf="@+id/rs2_step_header_progress_bar"
+        app:layout_constraintBottom_toTopOf="@id/rs2_progress_bar"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.5"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/rs2_step_header_action_button_group"
+        app:layout_constraintTop_toBottomOf="@id/rs2_step_header_action_button_group"
         app:layout_constraintVertical_bias="1" />
 
     <ProgressBar
-        android:id="@+id/rs2_step_header_progress_bar"
+        android:id="@id/rs2_progress_bar"
         style="@style/Widget.ResearchStack.StepHeader.ProgressBar"
         android:layout_width="0dp"
         android:layout_height="10dp"
@@ -85,7 +85,7 @@
         app:layout_constraintVertical_chainStyle="spread_inside">
 
         <org.sagebionetworks.research.mobile_ui.widget.ActionButton
-            android:id="@+id/rs2_step_navigation_action_cancel"
+            android:id="@id/rs2_step_navigation_action_cancel"
             style="@style/Widget.ResearchStack.StepHeader.CancelButton"
             android:layout_width="30dp"
             android:layout_height="0dp"
@@ -95,14 +95,14 @@
             android:layout_marginTop="20dp"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintDimensionRatio="H,1:1"
-            app:layout_constraintEnd_toStartOf="@+id/rs2_step_header_progress_bar_floating"
+            app:layout_constraintEnd_toStartOf="@id/rs2_progress_bar_floating"
             app:layout_constraintHorizontal_bias="0"
             app:layout_constraintHorizontal_chainStyle="spread_inside"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
 
         <ProgressBar
-            android:id="@+id/rs2_step_header_progress_bar_floating"
+            android:id="@id/rs2_progress_bar_floating"
             style="@style/Widget.ResearchStack.StepHeader.ProgressBar.Floating"
             android:layout_width="0dp"
             android:layout_height="10dp"
@@ -118,7 +118,7 @@
             app:layout_constraintTop_toTopOf="parent" />
 
         <org.sagebionetworks.research.mobile_ui.widget.ActionButton
-            android:id="@+id/rs2_step_navigation_action_info"
+            android:id="@id/rs2_step_navigation_action_info"
             style="@style/Widget.ResearchStack.StepHeader.InfoButton"
             android:layout_width="30dp"
             android:layout_height="0dp"
@@ -131,7 +131,7 @@
             app:layout_constraintDimensionRatio="H,1:1"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="1"
-            app:layout_constraintStart_toEndOf="@+id/rs2_step_header_progress_bar_floating"
+            app:layout_constraintStart_toEndOf="@id/rs2_progress_bar_floating"
             app:layout_constraintTop_toTopOf="parent" />
 
     </android.support.constraint.ConstraintLayout>

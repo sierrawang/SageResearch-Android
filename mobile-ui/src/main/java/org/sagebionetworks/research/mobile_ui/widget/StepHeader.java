@@ -70,13 +70,13 @@ public class StepHeader extends ConstraintLayout {
     @BindView(id.rs2_step_navigation_action_info)
     @NonNull
     ActionButton infoButton;
-    @BindView(R2.id.rs2_step_header_progress_label)
+    @BindView(R2.id.rs2_progress_label)
     @NonNull
     TextView progressLabel;
-    @BindView(R2.id.rs2_step_header_progress_bar)
+    @BindView(R2.id.rs2_progress_bar)
     @NonNull
     ProgressBar progressBar;
-    @BindView(R2.id.rs2_step_header_progress_bar_floating)
+    @BindView(R2.id.rs2_progress_bar_floating)
     @NonNull
     ProgressBar progressBarFloating;
     @BindView(R2.id.rs2_step_header_action_button_group)

@@ -30,23 +30,36 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.sagebionetworks.research.mobile_ui.inject;
+package org.sagebionetworks.research.mpower.inject;
 
-import org.sagebionetworks.research.mobile_ui.perform_task.PerformTaskFragment;
+import org.sagebionetworks.research.mpower.step_view.InstructionStepView;
+import org.sagebionetworks.research.mpower.step_view.OverviewStepView;
+import org.sagebionetworks.research.presentation.inject.ShowStepViewModelModule.StepViewClassKey;
+import org.sagebionetworks.research.presentation.model.interfaces.ActiveUIStepView;
+import org.sagebionetworks.research.presentation.model.interfaces.StepView;
+import org.sagebionetworks.research.presentation.show_step.show_step_view_model_factories.AbstractShowStepViewModelFactory;
+import org.sagebionetworks.research.presentation.show_step.show_step_view_model_factories.ShowActiveUIStepViewModelFactory;
+import org.sagebionetworks.research.presentation.show_step.show_step_view_model_factories.ShowStepViewModelFactory;
+import org.sagebionetworks.research.presentation.show_step.show_step_view_model_factories.ShowUIStepViewModelFactory;
+import java.util.Map;
 
-import dagger.Subcomponent;
-import dagger.android.AndroidInjector;
+import dagger.Module;
+import dagger.Provides;
+import dagger.multibindings.IntoMap;
 
-@PerformTaskFragmentScope
-@Subcomponent(modules = ShowStepModule.class)
-public abstract class TaskActivityFragmentSubcomponent implements AndroidInjector<PerformTaskFragment> {
-    @Subcomponent.Builder
-    public abstract static class Builder extends AndroidInjector.Builder<PerformTaskFragment> {
-        public abstract TaskActivityFragmentSubcomponent build();
+@Module
+public class AppShowStepViewModelModule {
+    @Provides
+    @IntoMap
+    @StepViewClassKey(OverviewStepView.class)
+    static AbstractShowStepViewModelFactory<?, ? extends StepView> provideOverviewStepVMF() {
+        return new ShowUIStepViewModelFactory<OverviewStepView>();
     }
 
-//    static PerformTaskViewModelFactory providePerformTaskViewModelFactory(
-//            StepNavigatorFactory stepNavigatorFactory) {
-//        return new PerformTaskViewModelFactory(stepNavigatorFactory);
-//    }
+    @Provides
+    @IntoMap
+    @StepViewClassKey(InstructionStepView.class)
+    static AbstractShowStepViewModelFactory<?, ? extends StepView> provideInstructionStepVMF() {
+        return new ShowUIStepViewModelFactory<InstructionStepView>();
+    }
 }

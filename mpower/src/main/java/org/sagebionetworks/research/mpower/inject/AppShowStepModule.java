@@ -44,7 +44,8 @@ import dagger.android.support.FragmentKey;
 import dagger.multibindings.IntoMap;
 
 @Module(subcomponents = {ShowInstructionStepFragmentSubcomponent.class, ShowOverviewStepFragmentSubcomponent.class},
-        includes = {AppStepModule.class, AppStepViewModule.class, AppShowStepFragmentModule.class})
+        includes = {AppStepModule.class, AppStepViewModule.class, AppShowStepViewModelModule.class,
+                AppShowStepFragmentModule.class})
 public abstract class AppShowStepModule {
     @Binds
     @IntoMap

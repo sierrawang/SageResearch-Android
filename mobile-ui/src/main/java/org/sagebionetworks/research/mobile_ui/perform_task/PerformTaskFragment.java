@@ -190,6 +190,7 @@ public class PerformTaskFragment extends Fragment implements HasSupportFragmentI
         }
 
         ShowStepFragmentBase step = showStepFragmentFactory.create(stepView);
+        step.setPerformTaskFragment(this);
         currentStepFragment = step;
         FragmentTransaction transaction = getChildFragmentManager().beginTransaction();
 

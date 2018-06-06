@@ -42,7 +42,7 @@
         android:layout_width="0dp"
         android:layout_height="0dp"
         android:fadeScrollbars="false"
-        app:layout_constraintBottom_toTopOf="@+id/navigationActionBar"
+        app:layout_constraintBottom_toTopOf="@id/rs2_step_navigation_action_bar"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="1.0"
         app:layout_constraintStart_toStartOf="parent"
@@ -57,7 +57,7 @@
             android:paddingBottom="20dp">
 
             <ImageView
-                android:id="@+id/imageView"
+                android:id="@+id/rs2_image_view"
                 android:layout_width="0dp"
                 android:layout_height="0dp"
                 android:scaleType="fitXY"
@@ -72,20 +72,20 @@
                 style="@style/Widget.ResearchStack.StepHeader.Overview"
                 android:layout_width="0dp"
                 android:layout_height="0dp"
-                app:layout_constraintBottom_toBottomOf="@id/imageView"
-                app:layout_constraintEnd_toEndOf="@id/imageView"
-                app:layout_constraintStart_toStartOf="@id/imageView"
-                app:layout_constraintTop_toTopOf="@id/imageView" />
+                app:layout_constraintBottom_toBottomOf="@id/rs2_image_view"
+                app:layout_constraintEnd_toEndOf="@id/rs2_image_view"
+                app:layout_constraintStart_toStartOf="@id/rs2_image_view"
+                app:layout_constraintTop_toTopOf="@id/rs2_image_view" />
 
             <include
-                android:id="@+id/stepBody"
+                android:id="@id/rs2_step_body"
                 layout="@layout/rs2_step_body"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="20dp"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/imageView" />
+                app:layout_constraintTop_toBottomOf="@id/rs2_image_view" />
 
             <TextView
                 android:id="@+id/overallIconDescriptionLabel"
@@ -98,7 +98,7 @@
                 android:text="This is what you'll need"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/stepBody" />
+                app:layout_constraintTop_toBottomOf="@id/rs2_step_body" />
 
             <include
                 android:id="@+id/iconView"
@@ -115,7 +115,7 @@
     </ScrollView>
 
     <org.sagebionetworks.research.mobile_ui.widget.NavigationActionBar
-        android:id="@+id/navigationActionBar"
+        android:id="@+id/rs2_step_navigation_action_bar"
         style="@style/Widget.ResearchStack.NavigationActionBar.Overview"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
