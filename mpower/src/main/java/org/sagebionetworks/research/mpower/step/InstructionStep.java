@@ -60,4 +60,9 @@ public class InstructionStep extends ActiveUIStepBase {
         super(identifier, actions, title, text, detail, footnote, colorTheme, imageTheme, duration,
                 backgroundAudioRequired);
     }
+
+    @Override
+    public String getType() {
+        return TYPE_KEY;
+    }
 }
