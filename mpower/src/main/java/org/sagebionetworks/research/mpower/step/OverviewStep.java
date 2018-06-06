@@ -35,36 +35,44 @@ package org.sagebionetworks.research.mpower.step;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 
-import com.google.common.collect.ImmutableMap;
+import com.google.common.collect.ImmutableList;
 
 import org.sagebionetworks.research.domain.step.StepType;
 import org.sagebionetworks.research.domain.step.implementations.UIStepBase;
 import org.sagebionetworks.research.domain.step.ui.UIAction;
 import org.sagebionetworks.research.domain.step.ui.theme.ColorTheme;
 import org.sagebionetworks.research.domain.step.ui.theme.ImageTheme;
-import org.sagebionetworks.research.presentation.DisplayString;
-import org.sagebionetworks.research.presentation.model.ColorThemeView;
-import org.sagebionetworks.research.presentation.model.ImageThemeView;
-import org.sagebionetworks.research.presentation.model.UIActionView;
 
+import java.util.List;
 import java.util.Map;
 
 public class OverviewStep extends UIStepBase {
     public static final String TYPE_KEY = StepType.OVERVIEW;
 
-    // TODO: rkolmos 06/01/2018 add icons and other functionality to overview step.
+    @NonNull
+    private final ImmutableList<Icon> icons;
 
     public OverviewStep(@NonNull final String identifier,
             @Nullable final Map<String, UIAction> actions,
             @Nullable final String title, @Nullable final String text, @Nullable final String detail,
             @Nullable final String footnote,
             @Nullable final ColorTheme colorTheme,
-            @Nullable final ImageTheme imageTheme) {
+            @Nullable final ImageTheme imageTheme,
+            @NonNull final List<Icon> icons) {
         super(identifier, actions, title, text, detail, footnote, colorTheme, imageTheme);
+        this.icons = ImmutableList.copyOf(icons);
     }
 
     @Override
     public String getType() {
         return TYPE_KEY;
+    }
+
+    /**
+     * Returns the list of icons for this overview step.
+     * @return the list of icons for this overview step.
+     */
+    public ImmutableList<Icon> getIcons() {
+        return this.icons;
     }
 }

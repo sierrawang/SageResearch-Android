@@ -71,7 +71,7 @@ import java.util.Map;
  * @param <VM> The type of StepViewModel that this fragment uses.
  */
 public abstract class ShowStepFragmentBase
-        <S extends StepView, VM extends ShowStepViewModel<S>, SB extends StepViewBinding>
+        <S extends StepView, VM extends ShowStepViewModel<S>, SB extends StepViewBinding<S>>
         extends Fragment {
     private static final Logger LOGGER = LoggerFactory.getLogger(ShowStepFragmentBase.class);
     private static final String ARGUMENT_STEP_VIEW = "STEP_VIEW";

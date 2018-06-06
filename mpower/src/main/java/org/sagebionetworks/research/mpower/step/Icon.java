@@ -30,38 +30,41 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.sagebionetworks.research.mpower.show_step_fragment;
+package org.sagebionetworks.research.mpower.step;
 
-import android.os.Bundle;
 import android.support.annotation.NonNull;
-import android.support.v4.app.Fragment;
+import android.support.annotation.Nullable;
 
-import org.sagebionetworks.research.mobile_ui.show_step.view.ShowStepFragmentBase;
-import org.sagebionetworks.research.mobile_ui.show_step.view.view_binding.UIStepViewBinding;
-import org.sagebionetworks.research.mpower.R;
-import org.sagebionetworks.research.mpower.step_view.InstructionStepView;
-import org.sagebionetworks.research.presentation.model.interfaces.StepView;
-import org.sagebionetworks.research.presentation.show_step.show_step_view_models.ShowUIStepViewModel;
+import com.google.auto.value.AutoValue;
+import com.google.gson.Gson;
+import com.google.gson.TypeAdapter;
 
-public class ShowInstructionStepFragment extends
-        ShowStepFragmentBase<InstructionStepView, ShowUIStepViewModel<InstructionStepView>,
-                UIStepViewBinding<InstructionStepView>> {
-    @NonNull
-    public static ShowInstructionStepFragment newInstance(@NonNull StepView stepView) {
-        ShowInstructionStepFragment fragment = new ShowInstructionStepFragment();
-        Bundle arguments = ShowStepFragmentBase.createArguments(stepView);
-        fragment.setArguments(arguments);
-        return fragment;
+/**
+ * Represents one of the icons that appears in the Overview steps. Icons have an image name ("icon") and a description
+ * of the image ("title")
+ */
+@AutoValue
+public abstract class Icon {
+    @AutoValue.Builder
+    public abstract static class Builder {
+        public abstract Icon build();
+
+        public abstract Builder setIcon(@NonNull String icon);
+
+        public abstract Builder setTitle(@Nullable String title);
+    }
+
+    public static Builder builder() {
+        return new AutoValue_Icon.Builder();
+    }
+
+    public static TypeAdapter<Icon> typeAdapter(Gson gson) {
+        return new AutoValue_Icon.GsonTypeAdapter(gson);
     }
 
     @NonNull
-    @Override
-    protected UIStepViewBinding<InstructionStepView> instantiateBinding() {
-        return new UIStepViewBinding<>();
-    }
+    public abstract String getIcon();
 
-    @Override
-    protected int getLayoutId() {
-        return R.layout.mpower2_instruction_step;
-    }
+    @Nullable
+    public abstract String getTitle();
 }

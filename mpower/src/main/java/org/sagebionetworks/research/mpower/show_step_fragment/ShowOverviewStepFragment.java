@@ -36,14 +36,15 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 
 import org.sagebionetworks.research.mobile_ui.show_step.view.ShowStepFragmentBase;
-import org.sagebionetworks.research.mobile_ui.show_step.view.view_binding.UIStepViewBinding;
 import org.sagebionetworks.research.mpower.R;
+import org.sagebionetworks.research.mpower.step_binding.OverviewStepViewBinding;
 import org.sagebionetworks.research.mpower.step_view.OverviewStepView;
 import org.sagebionetworks.research.presentation.model.interfaces.StepView;
 import org.sagebionetworks.research.presentation.show_step.show_step_view_models.ShowUIStepViewModel;
 
 public class ShowOverviewStepFragment extends
-        ShowStepFragmentBase<OverviewStepView, ShowUIStepViewModel<OverviewStepView>, UIStepViewBinding> {
+        ShowStepFragmentBase<OverviewStepView, ShowUIStepViewModel<OverviewStepView>,
+                OverviewStepViewBinding<OverviewStepView>> {
     @NonNull
     public static ShowOverviewStepFragment newInstance(@NonNull StepView stepView) {
         ShowOverviewStepFragment fragment = new ShowOverviewStepFragment();
@@ -59,7 +60,7 @@ public class ShowOverviewStepFragment extends
 
     @NonNull
     @Override
-    protected UIStepViewBinding instantiateBinding() {
-        return new UIStepViewBinding();
+    protected OverviewStepViewBinding<OverviewStepView> instantiateBinding() {
+        return new OverviewStepViewBinding<>();
     }
 }

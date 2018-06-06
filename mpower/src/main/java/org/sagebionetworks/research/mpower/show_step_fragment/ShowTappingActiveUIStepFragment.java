@@ -37,7 +37,7 @@ import android.support.annotation.NonNull;
 
 import org.sagebionetworks.research.domain.mobile_ui.R;
 import org.sagebionetworks.research.mobile_ui.show_step.view.ShowStepFragmentBase;
-import org.sagebionetworks.research.mobile_ui.show_step.view.view_binding.TappingActiveUIStepViewBinding;
+import org.sagebionetworks.research.mobile_ui.show_step.view.view_binding.StepViewBinding;
 import org.sagebionetworks.research.mobile_ui.widget.ActionButton;
 import org.sagebionetworks.research.presentation.ActionType;
 import org.sagebionetworks.research.presentation.model.interfaces.StepView;
@@ -45,7 +45,7 @@ import org.sagebionetworks.research.presentation.show_step.ShowGenericStepViewMo
 
 // TODO: rkolmos 06/04/2018 make this fragment use the correct generics.
 public class ShowTappingActiveUIStepFragment extends
-        ShowStepFragmentBase<StepView, ShowGenericStepViewModel, TappingActiveUIStepViewBinding> {
+        ShowStepFragmentBase<StepView, ShowGenericStepViewModel, StepViewBinding<StepView>> {
     @NonNull
     public static ShowTappingActiveUIStepFragment newInstance(@NonNull StepView stepView) {
         ShowTappingActiveUIStepFragment fragment = new ShowTappingActiveUIStepFragment();
@@ -56,8 +56,8 @@ public class ShowTappingActiveUIStepFragment extends
 
     @NonNull
     @Override
-    protected TappingActiveUIStepViewBinding instantiateBinding() {
-        return new TappingActiveUIStepViewBinding();
+    protected StepViewBinding<StepView> instantiateBinding() {
+        return null;
     }
 
     @Override

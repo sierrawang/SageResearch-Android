@@ -35,9 +35,11 @@ package org.sagebionetworks.research.mpower.step_view;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 
+import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
 
 import org.sagebionetworks.research.domain.step.interfaces.Step;
+import org.sagebionetworks.research.mpower.step.Icon;
 import org.sagebionetworks.research.mpower.step.OverviewStep;
 import org.sagebionetworks.research.presentation.DisplayString;
 import org.sagebionetworks.research.presentation.model.ColorThemeView;
@@ -46,8 +48,11 @@ import org.sagebionetworks.research.presentation.model.UIActionView;
 import org.sagebionetworks.research.presentation.model.implementations.UIStepViewBase;
 import org.sagebionetworks.research.presentation.model.interfaces.UIStepView;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public class OverviewStepView extends UIStepViewBase {
-    // TODO: rkolmos 06/01/2018 add icons and other functionality to OverviewStepView.
+    private final ImmutableList<IconView> iconViews;
 
     public OverviewStepView(@NonNull final String identifier, final int navDirection,
             @NonNull final ImmutableMap<String, UIActionView> actions,
@@ -56,8 +61,10 @@ public class OverviewStepView extends UIStepViewBase {
             @Nullable final DisplayString detail,
             @Nullable final DisplayString footnote,
             @Nullable final ColorThemeView colorTheme,
-            @Nullable final ImageThemeView imageTheme) {
+            @Nullable final ImageThemeView imageTheme,
+            @NonNull final List<IconView> iconViews) {
         super(identifier, navDirection, actions, title, text, detail, footnote, colorTheme, imageTheme);
+        this.iconViews = ImmutableList.copyOf(iconViews);
     }
 
     @NonNull
@@ -67,8 +74,19 @@ public class OverviewStepView extends UIStepViewBase {
         }
 
         UIStepView uiStepView = UIStepViewBase.fromUIStep(step);
+        OverviewStep overviewStep = (OverviewStep)step;
+        List<IconView> iconViews = new ArrayList<>();
+        for (Icon icon : overviewStep.getIcons()) {
+            iconViews.add(IconView.fromIcon(icon));
+        }
+
         return new OverviewStepView(uiStepView.getIdentifier(), uiStepView.getNavDirection(), uiStepView.getActions(),
                 uiStepView.getTitle(), uiStepView.getText(), uiStepView.getDetail(), uiStepView.getFootnote(),
-                uiStepView.getColorTheme(), uiStepView.getImageTheme());
+                uiStepView.getColorTheme(), uiStepView.getImageTheme(), iconViews);
+    }
+
+    @NonNull
+    public ImmutableList<IconView> getIconViews() {
+        return this.iconViews;
     }
 }

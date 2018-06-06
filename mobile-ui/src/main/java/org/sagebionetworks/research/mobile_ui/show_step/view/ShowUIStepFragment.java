@@ -43,7 +43,7 @@ import org.sagebionetworks.research.presentation.model.interfaces.UIStepView;
 import org.sagebionetworks.research.presentation.show_step.show_step_view_models.ShowUIStepViewModel;
 
 public class ShowUIStepFragment extends
-        ShowStepFragmentBase<UIStepView, ShowUIStepViewModel<UIStepView>, UIStepViewBinding> {
+        ShowStepFragmentBase<UIStepView, ShowUIStepViewModel<UIStepView>, UIStepViewBinding<UIStepView>> {
     @NonNull
     public static ShowUIStepFragment newInstance(@NonNull StepView stepView) {
         if (!(stepView instanceof UIStepView)) {
@@ -58,8 +58,8 @@ public class ShowUIStepFragment extends
 
     @NonNull
     @Override
-    protected UIStepViewBinding instantiateBinding() {
-        return new UIStepViewBinding();
+    protected UIStepViewBinding<UIStepView> instantiateBinding() {
+        return new UIStepViewBinding<>();
     }
 
     @Override

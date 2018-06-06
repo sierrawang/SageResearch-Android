@@ -30,33 +30,22 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.sagebionetworks.research.mobile_ui.show_step.view.view_binding;
+package org.sagebionetworks.research.mpower;
 
-import android.support.annotation.NonNull;
+import com.google.gson.TypeAdapterFactory;
+import com.ryanharter.auto.value.gson.GsonTypeAdapterFactory;
 
-import org.sagebionetworks.research.domain.mobile_ui.R2.id;
-import org.sagebionetworks.research.mobile_ui.widget.ActionButton;
-
-import butterknife.BindView;
+import org.sagebionetworks.research.domain.AutoValueGson_DomainAutoValueTypeAdapterFactory;
 
 /**
- * A TappingActiveUIStepViewBinding is a special type of ActiveUIStepViewBinding which has the following extra
- * non-optional fields
- *      leftTapButton : ActionButton - The left button that the user taps to perform the task.
- *      rightTapButton : ActionButton - The right button that the user taps to perform the task.
- */
-public class TappingActiveUIStepViewBinding extends ActiveUIStepViewBinding {
-    /**
-     * This non-optional ActionButton represents the left button that the user taps to perform the task.
-     */
-    @BindView(id.leftTapButton)
-    @NonNull
-    public ActionButton leftTapButton;
-
-    /**
-     * This non-optional ActionButton represents the right button that hte user taps to perform the task.
-     */
-    @BindView(id.rightTapButton)
-    @NonNull
-    public ActionButton rightTapButton;
+* Auto-generated TypeAdapterFactory for @AutoValue classes in the :mpower module. Due to how the auto-value-gson
+* annotationProcessor works, a separate @GsonTypeAdapterFactory is needed for each gradle module.
+*/
+@GsonTypeAdapterFactory
+public abstract class MPowerAutoValueTypeAdapterFactory implements TypeAdapterFactory {
+    //     Static factory method to access the package
+    //     private generated implementation
+    public static TypeAdapterFactory create() {
+        return new AutoValueGson_MPowerAutoValueTypeAdapterFactory();
+    }
 }

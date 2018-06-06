@@ -37,6 +37,7 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import org.sagebionetworks.research.domain.mobile_ui.R2.id;
+import org.sagebionetworks.research.presentation.model.interfaces.ActiveUIStepView;
 
 import butterknife.BindView;
 
@@ -48,7 +49,7 @@ import butterknife.BindView;
  *      countdownLabel : TextView - The label to display the text corresponding to the countdownDial's progress on.
  *      unitLabel : TextView - The label to display the unit that the countdown is occurring in on.
  */
-public class ActiveUIStepViewBinding extends UIStepViewBinding {
+public class ActiveUIStepViewBinding<S extends ActiveUIStepView> extends UIStepViewBinding<S> {
     /**
      * The binding can optionally contain a progress bar which displays a visual representation of the progress
      * toward finishing the active step.

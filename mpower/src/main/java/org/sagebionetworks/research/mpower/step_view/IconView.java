@@ -30,38 +30,43 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.sagebionetworks.research.mpower.show_step_fragment;
+package org.sagebionetworks.research.mpower.step_view;
 
-import android.os.Bundle;
 import android.support.annotation.NonNull;
-import android.support.v4.app.Fragment;
+import android.support.annotation.Nullable;
 
-import org.sagebionetworks.research.mobile_ui.show_step.view.ShowStepFragmentBase;
-import org.sagebionetworks.research.mobile_ui.show_step.view.view_binding.UIStepViewBinding;
-import org.sagebionetworks.research.mpower.R;
-import org.sagebionetworks.research.mpower.step_view.InstructionStepView;
-import org.sagebionetworks.research.presentation.model.interfaces.StepView;
-import org.sagebionetworks.research.presentation.show_step.show_step_view_models.ShowUIStepViewModel;
+import com.google.auto.value.AutoValue;
 
-public class ShowInstructionStepFragment extends
-        ShowStepFragmentBase<InstructionStepView, ShowUIStepViewModel<InstructionStepView>,
-                UIStepViewBinding<InstructionStepView>> {
-    @NonNull
-    public static ShowInstructionStepFragment newInstance(@NonNull StepView stepView) {
-        ShowInstructionStepFragment fragment = new ShowInstructionStepFragment();
-        Bundle arguments = ShowStepFragmentBase.createArguments(stepView);
-        fragment.setArguments(arguments);
-        return fragment;
+import org.sagebionetworks.research.mpower.step.Icon;
+import org.sagebionetworks.research.presentation.DisplayString;
+
+@AutoValue
+public abstract class IconView {
+    @AutoValue.Builder
+    public abstract static class Builder {
+        public abstract IconView build();
+
+        @Nullable
+        public abstract Builder setTitle(@Nullable DisplayString title);
+
+        // TODO: rkolmos 06/06/2018 Implement the icon part once the image resolver is implmeneted.
+    }
+
+    public static Builder builder() {
+        return new AutoValue_IconView.Builder();
     }
 
     @NonNull
-    @Override
-    protected UIStepViewBinding<InstructionStepView> instantiateBinding() {
-        return new UIStepViewBinding<>();
+    public static IconView fromIcon(@NonNull Icon icon) {
+        String title = icon.getTitle();
+        if (title != null) {
+            return IconView.builder()
+                    .setTitle(new DisplayString(null, title))
+                    .build();
+        } else {
+            return null;
+        }
     }
 
-    @Override
-    protected int getLayoutId() {
-        return R.layout.mpower2_instruction_step;
-    }
+    public abstract DisplayString getTitle();
 }

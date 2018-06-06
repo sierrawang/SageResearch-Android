@@ -71,7 +71,7 @@ import javax.annotation.Nullable;
  *      - skipButton : Button - The button which causes the task to skip the current step when pressed. (Note: this
  *          button is different then the next button because no result will be created for the current step)
  */
-public class UIStepViewBinding implements StepViewBinding<UIStepView> {
+public class UIStepViewBinding<S extends UIStepView> implements StepViewBinding<S> {
     /**
      * Views can optionally have a header view. This view generally contains the progress bar, and the cancel and =
      * info action buttons.
@@ -196,7 +196,7 @@ public class UIStepViewBinding implements StepViewBinding<UIStepView> {
     }
 
     @Override
-    public void update(UIStepView stepView) {
+    public void update(S stepView) {
         updateTextView(this.title, stepView.getTitle());
         updateTextView(this.text, stepView.getText());
         updateTextView(this.detail, stepView.getDetail());

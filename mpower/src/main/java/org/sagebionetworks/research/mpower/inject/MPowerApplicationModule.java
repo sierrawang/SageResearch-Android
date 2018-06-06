@@ -35,10 +35,12 @@ package org.sagebionetworks.research.mpower.inject;
 import android.app.Activity;
 import android.content.Context;
 
+import com.google.gson.TypeAdapter;
 import com.google.gson.TypeAdapterFactory;
 
 import org.sagebionetworks.research.data.inject.DataModule;
 import org.sagebionetworks.research.mpower.MPowerApplication;
+import org.sagebionetworks.research.mpower.MPowerAutoValueTypeAdapterFactory;
 import org.sagebionetworks.research.mpower.MainActivity;
 
 import dagger.Binds;
@@ -61,4 +63,10 @@ public abstract class MPowerApplicationModule {
     @ActivityKey(MainActivity.class)
     abstract AndroidInjector.Factory<? extends Activity>
         bindActivityInjectorFactory(MainActivitySubcomponent.Builder builder);
+
+    @Provides
+    @IntoSet
+    static TypeAdapterFactory provideMPowerAutoValueTypeAdapterFactory() {
+        return MPowerAutoValueTypeAdapterFactory.create();
+    }
 }
