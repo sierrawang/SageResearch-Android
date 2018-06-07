@@ -147,14 +147,14 @@ public class PerformTaskFragment extends Fragment implements HasSupportFragmentI
                 .of(this, taskViewModelFactory.create(taskView, taskRunParcelableUuid.getUuid()))
                 .get(PerformTaskViewModel.class);
 
-        performTaskViewModel.getStep().observe(this, this::showStep);
+        performTaskViewModel.getStepView().observe(this, this::showStep);
     }
 
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.rs2_fragment_perform_task, container, false);
         unbinder = ButterKnife.bind(this, view);
-        showStep(performTaskViewModel.getStep().getValue());
+        showStep(performTaskViewModel.getStepView().getValue());
         return view;
     }
 

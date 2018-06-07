@@ -148,7 +148,12 @@ public class PerformTaskViewModel extends ViewModel {
     }
 
     @NonNull
-    public LiveData<StepView> getStep() {
+    public LiveData<Step> getStep() {
+        return currentStepLiveData;
+    }
+
+    @NonNull
+    public LiveData<StepView> getStepView() {
         return stepViewLiveData;
     }
 
@@ -189,6 +194,10 @@ public class PerformTaskViewModel extends ViewModel {
         currentStepLiveData.setValue(nextStep);
         StepView stepView = stepViewFactory.apply(nextStep);
         stepViewLiveData.setValue(stepView);
+    }
+
+    public StepNavigator getStepNavigator() {
+        return this.stepNavigator;
     }
 
     protected void onCleared() {

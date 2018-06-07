@@ -44,7 +44,8 @@ import org.sagebionetworks.research.mpower.step.OverviewStep;
 import org.sagebionetworks.research.presentation.DisplayString;
 import org.sagebionetworks.research.presentation.model.ColorThemeView;
 import org.sagebionetworks.research.presentation.model.ImageThemeView;
-import org.sagebionetworks.research.presentation.model.UIActionView;
+import org.sagebionetworks.research.presentation.model.action.ActionView;
+import org.sagebionetworks.research.presentation.model.action.ActionViewBase;
 import org.sagebionetworks.research.presentation.model.implementations.UIStepViewBase;
 import org.sagebionetworks.research.presentation.model.interfaces.UIStepView;
 
@@ -55,7 +56,7 @@ public class OverviewStepView extends UIStepViewBase {
     private final ImmutableList<IconView> iconViews;
 
     public OverviewStepView(@NonNull final String identifier, final int navDirection,
-            @NonNull final ImmutableMap<String, UIActionView> actions,
+            @NonNull final ImmutableMap<String, ActionView> actions,
             @Nullable final DisplayString title,
             @Nullable final DisplayString text,
             @Nullable final DisplayString detail,

@@ -30,38 +30,36 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.sagebionetworks.research.presentation.model.interfaces;
+package org.sagebionetworks.research.presentation.model.action;
 
-import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
+import com.google.auto.value.AutoValue;
 
-import com.google.common.collect.ImmutableMap;
-
+import org.sagebionetworks.research.domain.step.ui.action.interfaces.ReminderAction;
+import org.sagebionetworks.research.presentation.DisplayDrawable;
 import org.sagebionetworks.research.presentation.DisplayString;
-import org.sagebionetworks.research.presentation.model.ColorThemeView;
-import org.sagebionetworks.research.presentation.model.ImageThemeView;
-import org.sagebionetworks.research.presentation.model.action.ActionView;
-import org.sagebionetworks.research.presentation.model.action.ActionViewBase;
 
-public interface UIStepView extends StepView {
-    @Nullable
-    DisplayString getTitle();
+@AutoValue
+public abstract class ReminderActionViewBase implements ReminderActionView {
+    @AutoValue.Builder
+    public abstract static class Builder {
+        public abstract ReminderActionViewBase build();
 
-    @Nullable
-    DisplayString getText();
+        public abstract Builder setButtonIcon(DisplayDrawable buttonIcon);
 
-    @Nullable
-    DisplayString getDetail();
+        public abstract Builder setButtonTitle(DisplayString buttonTitle);
 
-    @Nullable
-    DisplayString getFootnote();
+        public abstract Builder setReminderIdentifier(String reminderIdentifier);
+    }
 
-    @NonNull
-    ImmutableMap<String, ActionView> getActions();
+    public static Builder builder() {
+        return new AutoValue_ReminderActionViewBase.Builder();
+    }
 
-    @Nullable
-    ColorThemeView getColorTheme();
-
-    @Nullable
-    ImageThemeView getImageTheme();
+    public static ReminderActionViewBase fromReminderAction(ReminderAction reminderAction) {
+        // TODO rkolmos 06/07/2018 add the icon to this method.
+        return ReminderActionViewBase.builder()
+                .setButtonTitle(new DisplayString(null, reminderAction.getButtonTitle()))
+                .setReminderIdentifier(reminderAction.getReminderIdentifier())
+                .build();
+    }
 }

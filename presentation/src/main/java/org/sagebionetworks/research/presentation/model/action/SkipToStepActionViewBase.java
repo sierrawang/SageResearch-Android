@@ -30,38 +30,36 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.sagebionetworks.research.presentation.model.interfaces;
+package org.sagebionetworks.research.presentation.model.action;
 
-import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
+import com.google.auto.value.AutoValue;
 
-import com.google.common.collect.ImmutableMap;
-
+import org.sagebionetworks.research.domain.step.ui.action.interfaces.SkipToStepAction;
+import org.sagebionetworks.research.presentation.DisplayDrawable;
 import org.sagebionetworks.research.presentation.DisplayString;
-import org.sagebionetworks.research.presentation.model.ColorThemeView;
-import org.sagebionetworks.research.presentation.model.ImageThemeView;
-import org.sagebionetworks.research.presentation.model.action.ActionView;
-import org.sagebionetworks.research.presentation.model.action.ActionViewBase;
 
-public interface UIStepView extends StepView {
-    @Nullable
-    DisplayString getTitle();
+@AutoValue
+public abstract class SkipToStepActionViewBase implements SkipToStepActionView {
+    @AutoValue.Builder
+    public abstract static class Builder {
+        public abstract SkipToStepActionViewBase build();
 
-    @Nullable
-    DisplayString getText();
+        public abstract Builder setButtonIcon(DisplayDrawable buttonIcon);
 
-    @Nullable
-    DisplayString getDetail();
+        public abstract Builder setButtonTitle(DisplayString buttonTitle);
 
-    @Nullable
-    DisplayString getFootnote();
+        public abstract Builder setSkipToStepIdentifier(String skipToStepIdentifier);
+    }
 
-    @NonNull
-    ImmutableMap<String, ActionView> getActions();
+    public static Builder builder() {
+        return new AutoValue_SkipToStepActionViewBase.Builder();
+    }
 
-    @Nullable
-    ColorThemeView getColorTheme();
-
-    @Nullable
-    ImageThemeView getImageTheme();
+    public static SkipToStepActionViewBase fromSkipToStepAction(SkipToStepAction skipToStepAction) {
+        // TODO rkolmos 06/07/2018 add the icon to this method.
+        return SkipToStepActionViewBase.builder()
+                .setButtonTitle(new DisplayString(null, skipToStepAction.getButtonTitle()))
+                .setSkipToStepIdentifier(skipToStepAction.getSkipToStepIdentifier())
+                .build();
+    }
 }

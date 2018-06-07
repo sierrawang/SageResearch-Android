@@ -30,24 +30,34 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.sagebionetworks.research.presentation.model;
+package org.sagebionetworks.research.presentation.model.action;
 
-import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
-
-import com.google.common.collect.ImmutableMap;
+import com.google.auto.value.AutoValue;
 
 import org.sagebionetworks.research.domain.step.ui.action.interfaces.Action;
+import org.sagebionetworks.research.presentation.DisplayDrawable;
+import org.sagebionetworks.research.presentation.DisplayString;
 
+@AutoValue
+public abstract class ActionViewBase implements ActionView {
+    @AutoValue.Builder
+    public abstract static class Builder {
+        public abstract ActionViewBase build();
 
-public interface UIActionView {
-    int getButtonIcon();
+        public abstract Builder setButtonIcon(DisplayDrawable buttonIcon);
 
-    @Nullable
-    String getButtonTitle();
+        public abstract Builder setButtonTitle(DisplayString buttonTitle);
 
-    @NonNull
-    static ImmutableMap<String, UIActionView> getActionsFrom(@NonNull ImmutableMap<String, Action> actions) {
-        return null;
+    }
+
+    public static Builder builder() {
+        return new AutoValue_ActionViewBase.Builder();
+    }
+
+    public static ActionViewBase fromAction(Action action) {
+        // TODO rkolmos 06/07/2018 add icon to this method.
+        return ActionViewBase.builder()
+                .setButtonTitle(new DisplayString(null, action.getButtonTitle()))
+                .build();
     }
 }

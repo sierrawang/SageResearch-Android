@@ -142,9 +142,9 @@ public abstract class ShowStepFragmentBase
         this.stepViewBinding = this.instantiateBinding();
         this.stepViewUnbinder = ButterKnife.bind(this.stepViewBinding, view);
         this.stepViewBinding.setActionButtonClickListener(this::handleActionButtonClick);
-        this.showStepViewModel.getStepView().observe(this, this.stepViewBinding::update);
+        this.showStepViewModel.getStepView().observe(this, this::update);
         this.stepViewBinding.setActionButtonClickListener(this::handleActionButtonClick);
-        this.stepViewBinding.update(this.showStepViewModel.getStepView().getValue());
+        this.update(this.showStepViewModel.getStepView().getValue());
         return view;
     }
 
@@ -162,6 +162,10 @@ public abstract class ShowStepFragmentBase
     protected void handleActionButtonClick(@NonNull ActionButton actionButton) {
         @ActionType String actionType = this.getActionTypeFromActionButton(actionButton);
         this.showStepViewModel.handleAction(actionType);
+    }
+
+    protected void update(S stepView) {
+        this.stepViewBinding.update(stepView);
     }
 
     /**

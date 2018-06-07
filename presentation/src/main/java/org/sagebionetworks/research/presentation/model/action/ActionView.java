@@ -30,38 +30,13 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.sagebionetworks.research.presentation.model.interfaces;
+package org.sagebionetworks.research.presentation.model.action;
 
-import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
-
-import com.google.common.collect.ImmutableMap;
-
+import org.sagebionetworks.research.presentation.DisplayDrawable;
 import org.sagebionetworks.research.presentation.DisplayString;
-import org.sagebionetworks.research.presentation.model.ColorThemeView;
-import org.sagebionetworks.research.presentation.model.ImageThemeView;
-import org.sagebionetworks.research.presentation.model.action.ActionView;
-import org.sagebionetworks.research.presentation.model.action.ActionViewBase;
 
-public interface UIStepView extends StepView {
-    @Nullable
-    DisplayString getTitle();
+public interface ActionView {
+    DisplayDrawable getButtonIcon();
 
-    @Nullable
-    DisplayString getText();
-
-    @Nullable
-    DisplayString getDetail();
-
-    @Nullable
-    DisplayString getFootnote();
-
-    @NonNull
-    ImmutableMap<String, ActionView> getActions();
-
-    @Nullable
-    ColorThemeView getColorTheme();
-
-    @Nullable
-    ImageThemeView getImageTheme();
+    DisplayString getButtonTitle();
 }

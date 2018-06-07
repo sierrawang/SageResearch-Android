@@ -32,9 +32,7 @@
 
 package org.sagebionetworks.research.mobile_ui.show_step.view.view_binding;
 
-import android.support.annotation.VisibleForTesting;
 import android.view.View;
-import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
@@ -46,7 +44,6 @@ import org.sagebionetworks.research.mobile_ui.widget.NavigationActionBar.ActionB
 import org.sagebionetworks.research.mobile_ui.widget.StepHeader;
 import org.sagebionetworks.research.presentation.DisplayDrawable;
 import org.sagebionetworks.research.presentation.DisplayString;
-import org.sagebionetworks.research.presentation.model.interfaces.StepView;
 import org.sagebionetworks.research.presentation.model.interfaces.UIStepView;
 
 import butterknife.BindView;
@@ -96,7 +93,7 @@ public class UIStepViewBinding<S extends UIStepView> implements StepViewBinding<
     public NavigationActionBar navigationActionBar;
 
     /**
-     * Views can optionally have an image view with the id `imageView`. This view generally displays and image
+     * Views can optionally have an image view with the id `rs2_image_view`. This view generally displays and image
      * or icon that is associated with the step.
      */
     @Nullable
@@ -104,7 +101,7 @@ public class UIStepViewBinding<S extends UIStepView> implements StepViewBinding<
     public ImageView imageView;
 
     /**
-     * Views can optionally have a title view with the id `titleLabel`. This view generally displays a large
+     * Views can optionally have a title view with the id `rs2_title`. This view generally displays a large
      * title consisting of a brief description of what the step represents.
      **/
     @Nullable
@@ -112,7 +109,7 @@ public class UIStepViewBinding<S extends UIStepView> implements StepViewBinding<
     public TextView title;
 
     /**
-     * Views can optionally have a text view with the id `textLabel`. This view generally displays the main
+     * Views can optionally have a text view with the id `rs2_text`. This view generally displays the main
      * content for the step in medium size font.
      */
     @Nullable
@@ -120,7 +117,7 @@ public class UIStepViewBinding<S extends UIStepView> implements StepViewBinding<
     public TextView text;
 
     /**
-     * Views can optionally have a text view with the id `detailLabel`. This view generally displays further
+     * Views can optionally have a text view with the id `rs2_detail`. This view generally displays further
      * information related to the information displayed on the textLabel.
      */
     @Nullable
@@ -128,7 +125,7 @@ public class UIStepViewBinding<S extends UIStepView> implements StepViewBinding<
     public TextView detail;
 
     /**
-     * Views can optionally have a text view with the id `footnoteLabel`. This view generally displays the
+     * Views can optionally have a text view with the id `rs2_footnote`. This view generally displays the
      * footnote of the step that is being displayed.
      */
     @Nullable
@@ -136,7 +133,7 @@ public class UIStepViewBinding<S extends UIStepView> implements StepViewBinding<
     public TextView footnote;
 
     /**
-     * Views can optionally have a text view with the id `progressLabel`. This view generally displays a string
+     * Views can optionally have a text view with the id `rs2_progress_label`. This view generally displays a string
      * indicating how much progress the user has made into the current active task (i.e. "STEP 1 OF 6").
      */
     @Nullable
@@ -144,7 +141,7 @@ public class UIStepViewBinding<S extends UIStepView> implements StepViewBinding<
     public TextView progressLabel;
 
     /**
-     * Views can optionally have a progress bar with the id `progressBar1. This progress bar generally displays
+     * Views can optionally have a progress bar with the id `rs2_progress_bar. This progress bar generally displays
      * a visual indication of how much progress the user has made into the current active task. This corresponds
      * to the string displayed on the progressLabel.
      */
@@ -153,36 +150,44 @@ public class UIStepViewBinding<S extends UIStepView> implements StepViewBinding<
     public ProgressBar progressBar;
 
     /**
-     * Views can optionally have a button with the id `cancelButton`. This button generally ends the current
-     * active task when pressed
+     * Views can optionally have a button with the id `rs2_step_navigation_action_cancel`. This button generally
+     * ends the current active task when pressed
      */
     @Nullable
     @BindView(id.rs2_step_navigation_action_cancel)
     public ActionButton cancelButton;
 
     /**
-     * Views can optionally have a button with the id `nextButton`. This button generally moves on to the next
-     * step in the active task, or completes the task when pressed.
+     * Views can optionally have a button with the id `rs2_step_navigation_action_forward`. This button generally
+     * moves on to the next step in the active task, or completes the task when pressed.
      */
     @Nullable
     @BindView(id.rs2_step_navigation_action_forward)
     public ActionButton nextButton;
 
     /**
-     * Views can optionally have a button with the id `backButton`. This button generally causes the task to
-     * navigate to the previous step when pressed.
+     * Views can optionally have a button with the id `rs2_step_navigation_action_backward`. This button generally
+     * causes the task to navigate to the previous step when pressed.
      */
     @Nullable
     @BindView(id.rs2_step_navigation_action_backward)
     public ActionButton backButton;
 
     /**
-     * Views can optionally have a button with the id `skipButton`. This button generally causes the current
-     * step to be skipped when pressed.
+     * Views can optionally have a button with the id `rs2_step_navigation_action_skip`. This button generally
+     * causes the current step to be skipped when pressed.
      */
     @Nullable
     @BindView(id.rs2_step_navigation_action_skip)
     public ActionButton skipButton;
+
+    /**
+     * Views can optionally have a button with the id `rs2_step_navigation_action_info`. This button generally
+     * displays more information about the step.
+     */
+    @Nullable
+    @BindView(id.rs2_step_navigation_action_info)
+    public ActionButton infoButton;
 
     @Override
     public void setActionButtonClickListener(ActionButtonClickListener actionButtonClickListener) {
@@ -197,10 +202,10 @@ public class UIStepViewBinding<S extends UIStepView> implements StepViewBinding<
 
     @Override
     public void update(S stepView) {
-        updateTextView(this.title, stepView.getTitle());
-        updateTextView(this.text, stepView.getText());
-        updateTextView(this.detail, stepView.getDetail());
-        updateTextView(this.footnote, stepView.getFootnote());
+        this.updateTextView(this.title, stepView.getTitle());
+        this.updateTextView(this.text, stepView.getText());
+        this.updateTextView(this.detail, stepView.getDetail());
+        this.updateTextView(this.footnote, stepView.getFootnote());
 
         if (this.imageView != null) {
             if (stepView.getImageTheme() != null) {
@@ -218,7 +223,7 @@ public class UIStepViewBinding<S extends UIStepView> implements StepViewBinding<
         // TODO rkolmos 05/29/2018 implement color theme update
     }
 
-    protected static void updateTextView(TextView view, DisplayString displayString) {
+    protected void updateTextView(TextView view, DisplayString displayString) {
         if (view != null) {
             if (displayString.displayString != null) {
                 view.setText(displayString.displayString);
