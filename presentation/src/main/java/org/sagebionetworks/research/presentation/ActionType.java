@@ -43,9 +43,9 @@ import java.lang.annotation.RetentionPolicy;
 @Retention(RetentionPolicy.SOURCE)
 @StringDef({ActionType.BACKWARD, ActionType.CANCEL, ActionType.FORWARD, ActionType.INFO, ActionType.SKIP})
 public @interface ActionType {
-    String BACKWARD = "back";
+    String BACKWARD = "goBackward";
     String CANCEL = "cancel";
-    String FORWARD = "next";
-    String INFO = "info";
+    String FORWARD = "goForward";
+    String INFO = "learnMore";
     String SKIP = "skip";
 }

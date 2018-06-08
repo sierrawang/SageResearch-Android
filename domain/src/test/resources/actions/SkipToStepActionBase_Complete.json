@@ -1,6 +1,6 @@
 {
   "type":"skip",
-  "icon":"icon",
-  "title":"title",
+  "buttonIcon":"icon",
+  "buttonTitle":"title",
   "skipToStepIdentifier":"skipTo"
 }

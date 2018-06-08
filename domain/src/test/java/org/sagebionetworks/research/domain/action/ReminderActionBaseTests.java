@@ -46,6 +46,8 @@ public class ReminderActionBaseTests extends IndividualActionTests {
             .setReminderIdentifier("reminder").build();
     public static final ReminderActionBase NO_REMINDER = ReminderActionBase.builder().setButtonIconName("icon").setButtonTitle("title")
             .build();
+    public static final ReminderActionBase NO_TITLE = ReminderActionBase.builder().setButtonIconName("icon")
+            .setReminderIdentifier("reminder").build();
 
     @Test
     public void testReminderActionBase_Complete() {
@@ -53,8 +55,13 @@ public class ReminderActionBaseTests extends IndividualActionTests {
     }
 
     @Test
-    public void testReminderActionBase_NO_REMINDER() {
+    public void testReminderActionBase_NoReminder() {
         testCommon(NO_REMINDER, "ReminderActionBase_NoReminder.json");
+    }
+
+    @Test
+    public void testReminderActionBase_NoTitle() {
+        testCommon(NO_TITLE, "ReminderActionBase_NoTitle.json");
     }
 
     public void testCommon(Action expected, String filename) {

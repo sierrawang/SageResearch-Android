@@ -48,7 +48,6 @@ public interface Action {
      * @return the button title specificed for this action.
      */
     @Nullable
-    @SerializedName("title")
     String getButtonTitle();
 
     /**
@@ -56,7 +55,7 @@ public interface Action {
      * @return the icon specified for this action.
      */
     @Nullable
-    @SerializedName("icon")
+    @SerializedName("buttonIcon")
     String getButtonIconName();
 
     /**

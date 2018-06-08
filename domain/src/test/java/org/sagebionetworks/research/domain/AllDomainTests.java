@@ -35,11 +35,12 @@ package org.sagebionetworks.research.domain;
 import org.junit.runner.*;
 import org.junit.runners.*;
 import org.junit.runners.Suite.*;
+import org.sagebionetworks.research.domain.action.AllActionGsonTests;
 import org.sagebionetworks.research.domain.navigation.AllNavigatorTests;
 import org.sagebionetworks.research.domain.result.gson.AllResultGsonTests;
 import org.sagebionetworks.research.domain.step.gson.AllStepGsonTests;
 
 @RunWith(Suite.class)
-@SuiteClasses({AllNavigatorTests.class, AllStepGsonTests.class, AllResultGsonTests.class})
+@SuiteClasses({AllNavigatorTests.class, AllStepGsonTests.class, AllResultGsonTests.class, AllActionGsonTests.class})
 public class AllDomainTests {
 }

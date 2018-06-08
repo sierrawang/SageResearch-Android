@@ -80,13 +80,6 @@ public class InputFieldsModule {
 
     @Provides
     @IntoMap
-    @ClassKey(Action.class)
-    static JsonDeserializer<?> providedUIActionDeserializer() {
-        return createPassThroughDeserializer(ActionBase.class);
-    }
-
-    @Provides
-    @IntoMap
     @ClassKey(BaseType.class)
     static Map<String, Class<?>> provideBaseTypeClassMap() {
         Map<String, Class<?>> classMap = new HashMap<>();

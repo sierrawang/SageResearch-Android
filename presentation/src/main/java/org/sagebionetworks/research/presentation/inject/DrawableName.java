@@ -30,49 +30,13 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.sagebionetworks.research.presentation.model.interfaces;
+package org.sagebionetworks.research.presentation.inject;
 
-import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
+import android.support.annotation.StringDef;
 
-import com.google.common.collect.ImmutableMap;
-
-import org.sagebionetworks.research.presentation.ActionType;
-import org.sagebionetworks.research.presentation.DisplayString;
-import org.sagebionetworks.research.presentation.model.ColorThemeView;
-import org.sagebionetworks.research.presentation.model.ImageThemeView;
-import org.sagebionetworks.research.presentation.model.action.ActionView;
-import org.sagebionetworks.research.presentation.model.action.ActionViewBase;
-
-public interface UIStepView extends StepView {
-    @Nullable
-    DisplayString getTitle();
-
-    @Nullable
-    DisplayString getText();
-
-    @Nullable
-    DisplayString getDetail();
-
-    @Nullable
-    DisplayString getFootnote();
-
-    @NonNull
-    ImmutableMap<String, ActionView> getActions();
-
-    @Nullable
-    ColorThemeView getColorTheme();
-
-    @Nullable
-    ImageThemeView getImageTheme();
-
-    /**
-     * Returns the step's ActionView for the given ActionType. Step ActionViews take priority over all other
-     * types of ActionViews and as a result the ActionView returned here will definitely change the appearance of the
-     * ActionButton corresponding to this ActionView for the step.
-     * @param actionType The type of action to get the action view for.
-     * @return the step's ActionView for the given ActionType.
-     */
-    @Nullable
-    ActionView getActionFor(@ActionType String actionType);
+@StringDef({DrawableName.CANCEL, DrawableName.INFO, DrawableName.BACK})
+public @interface DrawableName {
+    String CANCEL = "cancel";
+    String INFO = "info";
+    String BACK = "back";
 }

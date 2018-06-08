@@ -51,10 +51,12 @@ import org.sagebionetworks.research.domain.task.Task;
 import org.sagebionetworks.research.domain.task.TaskInfo;
 import org.sagebionetworks.research.domain.task.navigation.StepNavigator;
 import org.sagebionetworks.research.domain.task.navigation.StepNavigatorFactory;
+import org.sagebionetworks.research.presentation.ActionType;
 import org.sagebionetworks.research.presentation.inject.StepViewModule;
 import org.sagebionetworks.research.presentation.inject.StepViewModule.StepViewFactory;
 import org.sagebionetworks.research.presentation.mapper.TaskMapper;
 import org.sagebionetworks.research.presentation.model.BaseStepView;
+import org.sagebionetworks.research.presentation.model.action.ActionView;
 import org.sagebionetworks.research.presentation.model.interfaces.StepView;
 import org.sagebionetworks.research.presentation.model.interfaces.StepView.NavDirection;
 import org.sagebionetworks.research.presentation.model.TaskView;
@@ -243,5 +245,34 @@ public class PerformTaskViewModel extends ViewModel {
     @VisibleForTesting
     void taskInitSuccess() {
         goForward();
+    }
+
+    /**
+     * Returns true if there is a step after the current one in the task, false otherwise.
+     * @return true if there is a step after the current one in the task, false otherwise.
+     */
+    public boolean hasNextStep() {
+        return this.stepNavigator.getNextStep(this.getStep().getValue(), this.getTaskResult().getValue()) != null;
+    }
+
+    /**
+     * Returns true if there is a step before the current one in the task, false otherwise.
+     * @return true if there is a step before the current one in the task, false otherwise.
+     */
+    public boolean hasPreviousStep() {
+        return this.stepNavigator.getPreviousStep(this.getStep().getValue(), this.getTaskResult().getValue()) != null;
+    }
+
+    /**
+     * Returns the task's default ActionView for the given ActionType. The ActionView overrides the appearance of the
+     * actions buttons throughout the task. Note individual steps can still override their getActionFor() method
+     * and take priority over this ActionView.
+     * @param actionType - The type of action to get the action view for.
+     * @return The default ActionView for the given ActionType.
+     */
+    @Nullable
+    public ActionView getActionFor(@ActionType String actionType) {
+        // By default we have no task default ActionViews.
+        return null;
     }
 }

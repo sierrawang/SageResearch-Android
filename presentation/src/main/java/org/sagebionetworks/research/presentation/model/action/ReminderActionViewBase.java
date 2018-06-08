@@ -34,6 +34,7 @@ package org.sagebionetworks.research.presentation.model.action;
 
 import com.google.auto.value.AutoValue;
 
+import org.sagebionetworks.research.domain.presentation.R;
 import org.sagebionetworks.research.domain.step.ui.action.interfaces.ReminderAction;
 import org.sagebionetworks.research.presentation.DisplayDrawable;
 import org.sagebionetworks.research.presentation.DisplayString;
@@ -58,9 +59,11 @@ public abstract class ReminderActionViewBase implements ReminderActionView {
     }
 
     public static ReminderActionViewBase fromReminderAction(ReminderAction reminderAction) {
+        // If the button title is null we use the reminder identifier as the title.
         // TODO rkolmos 06/07/2018 add the icon to this method.
         return ReminderActionViewBase.builder()
-                .setButtonTitle(new DisplayString(null, reminderAction.getButtonTitle()))
+                .setButtonTitle(new DisplayString(R.string.rs2_navigation_action_reminder,
+                        reminderAction.getButtonTitle()))
                 .setReminderIdentifier(reminderAction.getReminderIdentifier())
                 .build();
     }

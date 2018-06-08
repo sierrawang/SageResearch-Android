@@ -35,11 +35,16 @@ package org.sagebionetworks.research.mobile_ui.show_step.view;
 import android.os.Bundle;
 import android.support.annotation.LayoutRes;
 import android.support.annotation.NonNull;
+import android.view.View;
 
 import org.sagebionetworks.research.domain.mobile_ui.R;
 import org.sagebionetworks.research.domain.task.navigation.StepNavigator;
 import org.sagebionetworks.research.mobile_ui.show_step.view.view_binding.UIStepViewBinding;
 import org.sagebionetworks.research.mobile_ui.widget.ActionButton;
+import org.sagebionetworks.research.presentation.ActionType;
+import org.sagebionetworks.research.presentation.DisplayDrawable;
+import org.sagebionetworks.research.presentation.DisplayString;
+import org.sagebionetworks.research.presentation.inject.DrawableName;
 import org.sagebionetworks.research.presentation.model.action.ActionView;
 import org.sagebionetworks.research.presentation.model.action.ActionViewBase;
 import org.sagebionetworks.research.presentation.model.interfaces.StepView;
@@ -48,8 +53,15 @@ import org.sagebionetworks.research.presentation.show_step.show_step_view_models
 
 import java.util.Map;
 
+import javax.inject.Inject;
+
+import dagger.Provides;
+
 public class ShowUIStepFragment extends
         ShowStepFragmentBase<UIStepView, ShowUIStepViewModel<UIStepView>, UIStepViewBinding<UIStepView>> {
+    @Inject
+    Map<String, Integer> drawableResourceMap;
+
     @NonNull
     public static ShowUIStepFragment newInstance(@NonNull StepView stepView) {
         if (!(stepView instanceof UIStepView)) {
@@ -80,44 +92,121 @@ public class ShowUIStepFragment extends
         this.updateNavigationButtons(stepView);
     }
 
+    // region Navigation Buttons
     protected void updateNavigationButtons(UIStepView stepView) {
-        Map<String, ActionView> actions = stepView.getActions();
-        StepNavigator stepNavigator = this.performTaskViewModel.getStepNavigator();
-        if (this.stepViewBinding.nextButton != null) {
-            ActionView nextButtonAction = actions.get("goForward");
-            if (nextButtonAction != null && nextButtonAction.getButtonTitle() != null) {
-                this.stepViewBinding.nextButton.setText(nextButtonAction.getButtonTitle().displayString);
-            } else {
-                if (stepNavigator.getNextStep(this.performTaskViewModel.getStep().getValue(),
-                        this.performTaskViewModel.getTaskResult().getValue()) != null) {
-                    // This is the last step.
-                    this.stepViewBinding.nextButton.setText(R.string.rs2_navigation_action_forward_last_step);
-                } else {
-                    // This isn't the last step.
-                    this.stepViewBinding.nextButton.setText(R.string.rs2_navigation_action_forward);
-                }
-            }
-        }
-
-        this.updateNavigationButton(stepView, this.stepViewBinding.skipButton, "skip",
-                R.string.rs2_navigation_action_skip);
-        this.updateNavigationButton(stepView, this.stepViewBinding.backButton, "goBack",
-                R.string.rs2_navigation_action_backward);
-        this.updateNavigationButton(stepView, this.stepViewBinding.cancelButton, "cancel",
-                R.string.rs2_navigation_action_cancel);
-        this.updateNavigationButton(stepView, this.stepViewBinding.infoButton, "info",
-                R.string.rs2_navigation_action_info);
+        this.updateButtonFromActionView(this.stepViewBinding.nextButton, this.getForwardButtonActionView(stepView));
+        this.updateButtonFromActionView(this.stepViewBinding.backButton, this.getBackwardButtonActionView(stepView));
+        this.updateButtonFromActionView(this.stepViewBinding.cancelButton, this.getCancelButtonActionView(stepView));
+        this.updateButtonFromActionView(this.stepViewBinding.skipButton, this.getSkipButtonActionView(stepView));
+        this.updateButtonFromActionView(this.stepViewBinding.infoButton, this.getSkipButtonActionView(stepView));
     }
 
-    protected void updateNavigationButton(UIStepView StepView, ActionButton button, String actionKey, int defaultStringRes) {
-        Map<String, ActionView> actions = stepView.getActions();
+    protected void updateButtonFromActionView(ActionButton button, ActionView actionView) {
         if (button != null) {
-            ActionView actionViewBase = actions.get(actionKey);
-            if (actionViewBase != null && actionViewBase.getButtonTitle() != null) {
-                button.setText(actionViewBase.getButtonTitle().displayString);
+            if (actionView != null) {
+                DisplayString buttonTitle = actionView.getButtonTitle();
+                if (buttonTitle != null) {
+                    if (buttonTitle.displayString != null) {
+                        button.setText(buttonTitle.displayString);
+                    } else if (buttonTitle.defaultDisplayStringRes != null) {
+                        button.setText(buttonTitle.defaultDisplayStringRes);
+                    } else {
+                        button.setText("");
+                    }
+                }
+
+                DisplayDrawable buttonIcon = actionView.getButtonIcon();
+                if (buttonIcon != null) {
+                    if (buttonIcon.drawableRes != null) {
+                        button.setBackgroundResource(buttonIcon.drawableRes);
+                    } else if (buttonIcon.defaultDrawableRes != null) {
+                        button.setBackgroundResource(buttonIcon.drawableRes);
+                    }
+                }
             } else {
-                button.setText(defaultStringRes);
+                // If the actionView is null this indicates that the button should be hidden.
+                button.setVisibility(View.GONE);
             }
         }
     }
+
+    protected ActionView getDefaultActionView(UIStepView stepView, @ActionType String actionType) {
+        ActionView result = stepView.getActionFor(actionType);
+        // if the stepView has an action from the json then we use that.
+        if (result != null) {
+            return result;
+        }
+
+        // if the task view model has a default action this task precedent over the overall default
+        result = this.performTaskViewModel.getActionFor(actionType);
+        if (result != null) {
+            return result;
+        }
+
+        return null;
+    }
+
+    protected ActionView getForwardButtonActionView(UIStepView stepView) {
+        ActionView result = this.getDefaultActionView(stepView, ActionType.FORWARD);
+        if (result != null) {
+            return result;
+        }
+
+        // if neither the task nor the step has an action we use a default one.
+        String title;
+        if (this.performTaskViewModel.hasNextStep()) {
+            title = getResources().getString(R.string.rs2_navigation_action_forward);
+        } else {
+            title = getResources().getString(R.string.rs2_navigation_action_forward_last_step);
+        }
+
+        return ActionViewBase.builder().setButtonTitle(new DisplayString(null, title)).build();
+    }
+
+    protected ActionView getBackwardButtonActionView(UIStepView stepView) {
+        ActionView result = this.getDefaultActionView(stepView, ActionType.BACKWARD);
+        if (result != null) {
+            return result;
+        }
+
+        // If there is no previous step we will return null indicating the button should be hidden.
+        if (this.performTaskViewModel.hasPreviousStep()) {
+            String title = getResources().getString(R.string.rs2_navigation_action_backward);
+            return ActionViewBase.builder().setButtonTitle(new DisplayString(null, title)).build();
+        } else {
+            return null;
+        }
+
+    }
+
+    protected ActionView getSkipButtonActionView(UIStepView stepView) {
+        ActionView result = this.getDefaultActionView(stepView, ActionType.SKIP);
+        if (result != null) {
+            return result;
+        }
+
+        String title = this.getResources().getString(R.string.rs2_navigation_action_skip);
+        return ActionViewBase.builder().setButtonTitle(new DisplayString(null, title)).build();
+    }
+
+    protected ActionView getInfoButtonActionView(UIStepView stepView) {
+        ActionView result = this.getDefaultActionView(stepView, ActionType.SKIP);
+        if (result != null) {
+            return result;
+        }
+
+        Integer iconResId = this.drawableResourceMap.get(DrawableName.INFO);
+        return ActionViewBase.builder().setButtonIcon(new DisplayDrawable(null, iconResId)).build();
+    }
+
+    protected ActionView getCancelButtonActionView(UIStepView stepView) {
+        ActionView result = this.getDefaultActionView(stepView, ActionType.SKIP);
+        if (result != null) {
+            return result;
+        }
+
+        Integer iconResId = this.drawableResourceMap.get(DrawableName.BACK);
+        return ActionViewBase.builder().setButtonIcon(new DisplayDrawable(null, iconResId)).build();
+    }
+    // endregion
 }

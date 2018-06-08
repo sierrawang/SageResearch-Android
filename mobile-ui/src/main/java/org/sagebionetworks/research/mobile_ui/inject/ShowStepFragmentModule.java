@@ -38,6 +38,7 @@ import org.sagebionetworks.research.mobile_ui.show_step.view.ShowActiveUIStepFra
 import org.sagebionetworks.research.mobile_ui.show_step.view.ShowStepFragment;
 import org.sagebionetworks.research.mobile_ui.show_step.view.ShowStepFragmentBase;
 import org.sagebionetworks.research.mobile_ui.show_step.view.ShowUIStepFragment;
+import org.sagebionetworks.research.presentation.inject.DrawableModule;
 import org.sagebionetworks.research.presentation.model.interfaces.ActiveUIStepView;
 import org.sagebionetworks.research.presentation.model.interfaces.StepView;
 import org.sagebionetworks.research.presentation.model.interfaces.UIStepView;
@@ -49,7 +50,9 @@ import dagger.Module;
 import dagger.Provides;
 import dagger.multibindings.IntoMap;
 
-@Module
+// The ShowUIStepViewFragment needs the drawable module so it doesn't make sense to use one of these modules without
+// the other.
+@Module(includes = DrawableModule.class)
 public class ShowStepFragmentModule {
     @MapKey
     public @interface StepViewKey {

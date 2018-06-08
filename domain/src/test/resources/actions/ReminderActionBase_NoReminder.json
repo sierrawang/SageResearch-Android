@@ -1,5 +1,5 @@
 {
   "type":"reminder",
-  "icon":"icon",
-  "title":"title"
+  "buttonIcon":"icon",
+  "buttonTitle":"title"
 }

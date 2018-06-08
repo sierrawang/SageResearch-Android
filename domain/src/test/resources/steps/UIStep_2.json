@@ -7,6 +7,7 @@
   "footnote": "footnote",
   "actions": {
     "goForward": {
+      "type":"base",
       "buttonTitle": "Go, Dogs!"
     }
   }

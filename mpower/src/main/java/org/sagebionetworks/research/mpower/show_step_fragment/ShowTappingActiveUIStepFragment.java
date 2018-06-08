@@ -72,10 +72,10 @@ public class ShowTappingActiveUIStepFragment extends
         String actionType = super.getActionTypeFromActionButton(actionButton);
         if (actionType != null) {
             return actionType;
-        } else if (R.id.leftTapButton == actionButtonId) {
-            return ActionType.LEFT_TAP;
-        } else if (R.id.rightTapButton == actionButtonId) {
-            return ActionType.RIGHT_TAP;
+//        } else if (R.id.leftTapButton == actionButtonId) {
+//            return ActionType.LEFT_TAP;
+//        } else if (R.id.rightTapButton == actionButtonId) {
+//            return ActionType.RIGHT_TAP;
         }
 
         return null;

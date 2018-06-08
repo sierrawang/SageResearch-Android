@@ -37,6 +37,7 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 
 import com.google.common.collect.ImmutableMap;
+import com.google.common.collect.ImmutableMap.Builder;
 
 import org.sagebionetworks.research.domain.step.interfaces.Step;
 import org.sagebionetworks.research.domain.step.interfaces.ThemedUIStep;
@@ -44,6 +45,7 @@ import org.sagebionetworks.research.domain.step.ui.action.implementations.SkipTo
 import org.sagebionetworks.research.domain.step.ui.action.interfaces.Action;
 import org.sagebionetworks.research.domain.step.ui.action.interfaces.ReminderAction;
 import org.sagebionetworks.research.domain.step.ui.action.interfaces.SkipToStepAction;
+import org.sagebionetworks.research.presentation.ActionType;
 import org.sagebionetworks.research.presentation.DisplayString;
 import org.sagebionetworks.research.presentation.model.ColorThemeView;
 import org.sagebionetworks.research.presentation.model.ImageThemeView;
@@ -148,7 +150,6 @@ public class UIStepViewBase implements UIStepView {
         this.imageTheme = imageTheme;
     }
 
-
     @NonNull
     @Override
     public String getIdentifier() {
@@ -201,6 +202,13 @@ public class UIStepViewBase implements UIStepView {
     @Override
     public ImageThemeView getImageTheme() {
         return this.imageTheme;
+    }
+
+    @Nullable
+    @Override
+    public ActionView getActionFor(@ActionType final String actionType) {
+        // If we have an action from the json for the given actionType we use this, otherwise we return null.
+        return this.actions.get(actionType);
     }
 
     @Override
