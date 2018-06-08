@@ -30,11 +30,13 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.sagebionetworks.research.presentation.model.action;
+package org.sagebionetworks.research.domain.step.ui.action;
 
-import javax.annotation.Nullable;
+import android.support.annotation.StringDef;
 
-public interface SkipToStepActionView extends ActionView {
-    @Nullable
-    String getSkipToStepIdentifier();
+@StringDef({ActionDeserializationType.BASE, ActionDeserializationType.REMINDER, ActionDeserializationType.SKIP})
+public @interface ActionDeserializationType {
+    String BASE = "Base";
+    String REMINDER = "reminder";
+    String SKIP = "skip";
 }

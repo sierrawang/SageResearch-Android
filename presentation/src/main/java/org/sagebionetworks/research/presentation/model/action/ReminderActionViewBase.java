@@ -38,17 +38,19 @@ import org.sagebionetworks.research.domain.step.ui.action.interfaces.ReminderAct
 import org.sagebionetworks.research.presentation.DisplayDrawable;
 import org.sagebionetworks.research.presentation.DisplayString;
 
+import javax.annotation.Nullable;
+
 @AutoValue
 public abstract class ReminderActionViewBase implements ReminderActionView {
     @AutoValue.Builder
     public abstract static class Builder {
         public abstract ReminderActionViewBase build();
 
-        public abstract Builder setButtonIcon(DisplayDrawable buttonIcon);
+        public abstract Builder setButtonIcon(@Nullable DisplayDrawable buttonIcon);
 
-        public abstract Builder setButtonTitle(DisplayString buttonTitle);
+        public abstract Builder setButtonTitle(@Nullable DisplayString buttonTitle);
 
-        public abstract Builder setReminderIdentifier(String reminderIdentifier);
+        public abstract Builder setReminderIdentifier(@Nullable String reminderIdentifier);
     }
 
     public static Builder builder() {

@@ -36,10 +36,13 @@ import com.google.auto.value.AutoValue;
 import com.google.gson.Gson;
 import com.google.gson.TypeAdapter;
 
+import org.sagebionetworks.research.domain.step.ui.action.ActionDeserializationType;
 import org.sagebionetworks.research.domain.step.ui.action.interfaces.Action;
 
 @AutoValue
 public abstract class ActionBase implements Action {
+    public static final String TYPE_KEY = ActionDeserializationType.BASE;
+
     @AutoValue.Builder
     public abstract static class Builder {
         public abstract ActionBase build();
@@ -47,6 +50,12 @@ public abstract class ActionBase implements Action {
         public abstract Builder setButtonIconName(String buttonIcon);
 
         public abstract Builder setButtonTitle(String buttonTitle);
+    }
+
+    @Override
+    @ActionDeserializationType
+    public String getType() {
+        return TYPE_KEY;
     }
 
     public static Builder builder() {

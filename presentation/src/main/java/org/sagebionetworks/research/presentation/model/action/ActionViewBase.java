@@ -32,6 +32,8 @@
 
 package org.sagebionetworks.research.presentation.model.action;
 
+import android.support.annotation.Nullable;
+
 import com.google.auto.value.AutoValue;
 
 import org.sagebionetworks.research.domain.step.ui.action.interfaces.Action;
@@ -44,9 +46,9 @@ public abstract class ActionViewBase implements ActionView {
     public abstract static class Builder {
         public abstract ActionViewBase build();
 
-        public abstract Builder setButtonIcon(DisplayDrawable buttonIcon);
+        public abstract Builder setButtonIcon(@Nullable DisplayDrawable buttonIcon);
 
-        public abstract Builder setButtonTitle(DisplayString buttonTitle);
+        public abstract Builder setButtonTitle(@Nullable DisplayString buttonTitle);
 
     }
 

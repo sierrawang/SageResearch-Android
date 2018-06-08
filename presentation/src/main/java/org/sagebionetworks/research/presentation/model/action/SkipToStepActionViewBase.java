@@ -38,17 +38,19 @@ import org.sagebionetworks.research.domain.step.ui.action.interfaces.SkipToStepA
 import org.sagebionetworks.research.presentation.DisplayDrawable;
 import org.sagebionetworks.research.presentation.DisplayString;
 
+import javax.annotation.Nullable;
+
 @AutoValue
 public abstract class SkipToStepActionViewBase implements SkipToStepActionView {
     @AutoValue.Builder
     public abstract static class Builder {
         public abstract SkipToStepActionViewBase build();
 
-        public abstract Builder setButtonIcon(DisplayDrawable buttonIcon);
+        public abstract Builder setButtonIcon(@Nullable DisplayDrawable buttonIcon);
 
-        public abstract Builder setButtonTitle(DisplayString buttonTitle);
+        public abstract Builder setButtonTitle(@Nullable DisplayString buttonTitle);
 
-        public abstract Builder setSkipToStepIdentifier(String skipToStepIdentifier);
+        public abstract Builder setSkipToStepIdentifier(@Nullable String skipToStepIdentifier);
     }
 
     public static Builder builder() {

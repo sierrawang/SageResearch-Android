@@ -36,10 +36,13 @@ import com.google.auto.value.AutoValue;
 import com.google.gson.Gson;
 import com.google.gson.TypeAdapter;
 
+import org.sagebionetworks.research.domain.step.ui.action.ActionDeserializationType;
 import org.sagebionetworks.research.domain.step.ui.action.interfaces.SkipToStepAction;
 
 @AutoValue
 public abstract class SkipToStepActionBase implements SkipToStepAction {
+    public static final String TYPE_KEY = ActionDeserializationType.SKIP;
+
     @AutoValue.Builder
     public abstract static class Builder {
         public abstract SkipToStepActionBase build();
@@ -49,6 +52,12 @@ public abstract class SkipToStepActionBase implements SkipToStepAction {
         public abstract Builder setButtonIconName(String buttonIconName);
 
         public abstract Builder setSkipToStepIdentifier(String reminderIdentifier);
+    }
+
+    @Override
+    @ActionDeserializationType
+    public String getType() {
+        return TYPE_KEY;
     }
 
     public static Builder builder() {

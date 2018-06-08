@@ -37,6 +37,8 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.annotation.StringRes;
 
+import org.sagebionetworks.research.domain.step.ui.action.ActionDeserializationType;
+
 public interface Action {
     /**
      * Returns the button title specified for this action. Button titles are used to override the defaults to make
@@ -52,4 +54,11 @@ public interface Action {
      */
     @Nullable
     String getButtonIconName();
+
+    /**
+     * Returns the action type this object was deserialized as.
+     * @return the action type this object was deserilaized as.
+     */
+    @ActionDeserializationType
+    String getType();
 }

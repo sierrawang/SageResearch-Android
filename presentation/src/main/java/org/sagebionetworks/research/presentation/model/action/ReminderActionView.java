@@ -32,6 +32,9 @@
 
 package org.sagebionetworks.research.presentation.model.action;
 
+import javax.annotation.Nullable;
+
 public interface ReminderActionView extends ActionView {
+    @Nullable
     String getReminderIdentifier();
 }
