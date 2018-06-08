@@ -85,21 +85,21 @@ public class ActionModule {
     @Provides
     @IntoMap
     @ClassKey(Action.class)
-    static JsonDeserializer provideActionDeserializer() {
+    static JsonDeserializer<?> provideActionDeserializer() {
         return createPassThroughDeserializer(ActionBase.class);
     }
 
     @Provides
     @IntoMap
     @ClassKey(ReminderAction.class)
-    static JsonDeserializer provideReminderActionDeserializer() {
+    static JsonDeserializer<?> provideReminderActionDeserializer() {
         return createPassThroughDeserializer(ReminderActionBase.class);
     }
 
     @Provides
     @IntoMap
     @ClassKey(SkipToStepAction.class)
-    static JsonDeserializer provideSkipToStepActionDeserializer() {
+    static JsonDeserializer<?> provideSkipToStepActionDeserializer() {
         return createPassThroughDeserializer(SkipToStepActionBase.class);
     }
 

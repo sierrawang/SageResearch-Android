@@ -1,0 +1,6 @@
+{
+  "type":"skip",
+  "icon":"icon",
+  "title":"title",
+  "skipToStepIdentifier":"skipTo"
+}

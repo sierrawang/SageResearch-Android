@@ -30,43 +30,47 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.sagebionetworks.research.domain.step.ui.action.implementations;
+package org.sagebionetworks.research.domain.action;
 
-import com.google.auto.value.AutoValue;
-import com.google.gson.Gson;
-import com.google.gson.TypeAdapter;
+import static org.junit.Assert.assertNotNull;
 
-import org.sagebionetworks.research.domain.step.ui.action.ActionDeserializationType;
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
+
+import org.junit.Before;
 import org.sagebionetworks.research.domain.step.ui.action.interfaces.Action;
 
-import javax.annotation.Nullable;
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileReader;
+import java.io.Reader;
+import java.net.URL;
 
-@AutoValue
-public abstract class ActionBase implements Action {
-    public static final String TYPE_KEY = ActionDeserializationType.BASE;
+public class IndividualActionTests {
+    protected ActionTestComponent actionTestComponent;
 
-    @AutoValue.Builder
-    public abstract static class Builder {
-        public abstract ActionBase build();
-
-        public abstract Builder setButtonIconName(@Nullable String buttonIcon);
-
-        public abstract Builder setButtonTitle(@Nullable String buttonTitle);
+    @Before
+    public void setup() {
+        this.actionTestComponent = DaggerActionTestComponent.builder().build();
     }
 
-    @Override
-    @ActionDeserializationType
-    public String getType() {
-        return TYPE_KEY;
+    @Nullable
+    private Action readJsonFileHelper(URL url) {
+        try {
+            Reader reader = new FileReader(new File(url.getFile()));
+            Action action = this.actionTestComponent.gson().fromJson(reader, Action.class);
+            return action;
+        } catch (FileNotFoundException e) {
+            return null;
+        }
     }
 
-    public static Builder builder() {
-        return new AutoValue_ActionBase.Builder();
+    @NonNull
+    protected Action readJsonFile(String filename) {
+        ClassLoader loader = this.getClass().getClassLoader();
+        URL url = loader.getResource("actions/" + filename);
+        Action action = this.readJsonFileHelper(url);
+        assertNotNull("Failed to read file " + filename, action);
+        return action;
     }
-
-    public static TypeAdapter<ActionBase> typeAdapter(Gson gson) {
-        return new AutoValue_ActionBase.GsonTypeAdapter(gson);
-    }
-
-    public abstract Builder toBuilder();
 }

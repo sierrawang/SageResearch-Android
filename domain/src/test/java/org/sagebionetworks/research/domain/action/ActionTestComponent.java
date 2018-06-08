@@ -30,43 +30,19 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.sagebionetworks.research.domain.step.ui.action.implementations;
+package org.sagebionetworks.research.domain.action;
 
-import com.google.auto.value.AutoValue;
 import com.google.gson.Gson;
-import com.google.gson.TypeAdapter;
 
-import org.sagebionetworks.research.domain.step.ui.action.ActionDeserializationType;
-import org.sagebionetworks.research.domain.step.ui.action.interfaces.Action;
+import org.sagebionetworks.research.domain.inject.ActionModule;
+import org.sagebionetworks.research.domain.inject.GsonModule;
 
-import javax.annotation.Nullable;
+import javax.inject.Singleton;
 
-@AutoValue
-public abstract class ActionBase implements Action {
-    public static final String TYPE_KEY = ActionDeserializationType.BASE;
+import dagger.Component;
 
-    @AutoValue.Builder
-    public abstract static class Builder {
-        public abstract ActionBase build();
-
-        public abstract Builder setButtonIconName(@Nullable String buttonIcon);
-
-        public abstract Builder setButtonTitle(@Nullable String buttonTitle);
-    }
-
-    @Override
-    @ActionDeserializationType
-    public String getType() {
-        return TYPE_KEY;
-    }
-
-    public static Builder builder() {
-        return new AutoValue_ActionBase.Builder();
-    }
-
-    public static TypeAdapter<ActionBase> typeAdapter(Gson gson) {
-        return new AutoValue_ActionBase.GsonTypeAdapter(gson);
-    }
-
-    public abstract Builder toBuilder();
+@Component(modules = {ActionModule.class, GsonModule.class})
+@Singleton
+public interface ActionTestComponent {
+    Gson gson();
 }

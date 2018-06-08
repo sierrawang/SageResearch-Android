@@ -30,43 +30,46 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.sagebionetworks.research.domain.step.ui.action.implementations;
+package org.sagebionetworks.research.domain.action;
 
-import com.google.auto.value.AutoValue;
-import com.google.gson.Gson;
-import com.google.gson.TypeAdapter;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
 
-import org.sagebionetworks.research.domain.step.ui.action.ActionDeserializationType;
+import org.junit.Test;
+import org.sagebionetworks.research.domain.step.ui.action.implementations.ActionBase;
 import org.sagebionetworks.research.domain.step.ui.action.interfaces.Action;
 
-import javax.annotation.Nullable;
+public class ActionBaseTests extends IndividualActionTests {
+    public static final ActionBase COMPLETE = ActionBase.builder().setButtonIconName("icon").setButtonTitle("title").build();
+    public static final ActionBase NO_TITLE = ActionBase.builder().setButtonIconName("icon").build();
+    public static final ActionBase NO_ICON = ActionBase.builder().setButtonTitle("title").build();
+    public static final ActionBase EMPTY = ActionBase.builder().build();
 
-@AutoValue
-public abstract class ActionBase implements Action {
-    public static final String TYPE_KEY = ActionDeserializationType.BASE;
-
-    @AutoValue.Builder
-    public abstract static class Builder {
-        public abstract ActionBase build();
-
-        public abstract Builder setButtonIconName(@Nullable String buttonIcon);
-
-        public abstract Builder setButtonTitle(@Nullable String buttonTitle);
+    @Test
+    public void testActionBase_Complete() {
+        this.testCommon(COMPLETE, "ActionBase_Complete.json");
     }
 
-    @Override
-    @ActionDeserializationType
-    public String getType() {
-        return TYPE_KEY;
+    @Test
+    public void testActionBase_NoTitle() {
+        this.testCommon(NO_TITLE, "ActionBase_NoTitle.json");
     }
 
-    public static Builder builder() {
-        return new AutoValue_ActionBase.Builder();
+    @Test
+    public void testActionBase_NoIcon() {
+        this.testCommon(NO_ICON, "ActionBase_NoIcon.json");
     }
 
-    public static TypeAdapter<ActionBase> typeAdapter(Gson gson) {
-        return new AutoValue_ActionBase.GsonTypeAdapter(gson);
+    @Test
+    public void testActionBase_Empty() {
+        this.testCommon(EMPTY,  "ActionBase_Empty.json");
     }
 
-    public abstract Builder toBuilder();
+    private void testCommon(ActionBase expected, String filename) {
+        Action action = this.readJsonFile(filename);
+        assertNotNull(action);
+        assertTrue(action instanceof ActionBase);
+        assertEquals(expected, action);
+    }
 }

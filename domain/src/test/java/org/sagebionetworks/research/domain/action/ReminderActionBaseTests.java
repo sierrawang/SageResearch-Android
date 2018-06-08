@@ -30,43 +30,37 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.sagebionetworks.research.domain.step.ui.action.implementations;
+package org.sagebionetworks.research.domain.action;
 
-import com.google.auto.value.AutoValue;
-import com.google.gson.Gson;
-import com.google.gson.TypeAdapter;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
 
-import org.sagebionetworks.research.domain.step.ui.action.ActionDeserializationType;
+import org.junit.Assert;
+import org.junit.Test;
+import org.sagebionetworks.research.domain.step.ui.action.implementations.ReminderActionBase;
 import org.sagebionetworks.research.domain.step.ui.action.interfaces.Action;
 
-import javax.annotation.Nullable;
+public class ReminderActionBaseTests extends IndividualActionTests {
+    public static final ReminderActionBase COMPLETE = ReminderActionBase.builder().setButtonIconName("icon").setButtonTitle("title")
+            .setReminderIdentifier("reminder").build();
+    public static final ReminderActionBase NO_REMINDER = ReminderActionBase.builder().setButtonIconName("icon").setButtonTitle("title")
+            .build();
 
-@AutoValue
-public abstract class ActionBase implements Action {
-    public static final String TYPE_KEY = ActionDeserializationType.BASE;
-
-    @AutoValue.Builder
-    public abstract static class Builder {
-        public abstract ActionBase build();
-
-        public abstract Builder setButtonIconName(@Nullable String buttonIcon);
-
-        public abstract Builder setButtonTitle(@Nullable String buttonTitle);
+    @Test
+    public void testReminderActionBase_Complete() {
+        testCommon(COMPLETE, "ReminderActionBase_Complete.json");
     }
 
-    @Override
-    @ActionDeserializationType
-    public String getType() {
-        return TYPE_KEY;
+    @Test
+    public void testReminderActionBase_NO_REMINDER() {
+        testCommon(NO_REMINDER, "ReminderActionBase_NoReminder.json");
     }
 
-    public static Builder builder() {
-        return new AutoValue_ActionBase.Builder();
+    public void testCommon(Action expected, String filename) {
+        Action action = this.readJsonFile(filename);
+        assertNotNull(action);
+        assertTrue(action instanceof ReminderActionBase);
+        assertEquals(expected, action);
     }
-
-    public static TypeAdapter<ActionBase> typeAdapter(Gson gson) {
-        return new AutoValue_ActionBase.GsonTypeAdapter(gson);
-    }
-
-    public abstract Builder toBuilder();
 }

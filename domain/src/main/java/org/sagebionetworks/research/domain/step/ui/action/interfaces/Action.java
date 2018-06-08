@@ -37,6 +37,8 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.annotation.StringRes;
 
+import com.google.gson.annotations.SerializedName;
+
 import org.sagebionetworks.research.domain.step.ui.action.ActionDeserializationType;
 
 public interface Action {
@@ -46,6 +48,7 @@ public interface Action {
      * @return the button title specificed for this action.
      */
     @Nullable
+    @SerializedName("title")
     String getButtonTitle();
 
     /**
@@ -53,6 +56,7 @@ public interface Action {
      * @return the icon specified for this action.
      */
     @Nullable
+    @SerializedName("icon")
     String getButtonIconName();
 
     /**

@@ -1,0 +1,6 @@
+{
+  "type":"reminder",
+  "icon":"icon",
+  "title":"title",
+  "reminderIdentifier":"reminder"
+}

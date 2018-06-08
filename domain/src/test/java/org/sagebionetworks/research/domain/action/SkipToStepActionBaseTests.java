@@ -30,43 +30,36 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.sagebionetworks.research.domain.step.ui.action.implementations;
+package org.sagebionetworks.research.domain.action;
 
-import com.google.auto.value.AutoValue;
-import com.google.gson.Gson;
-import com.google.gson.TypeAdapter;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
 
-import org.sagebionetworks.research.domain.step.ui.action.ActionDeserializationType;
+import org.junit.Test;
+import org.sagebionetworks.research.domain.step.ui.action.implementations.SkipToStepActionBase;
 import org.sagebionetworks.research.domain.step.ui.action.interfaces.Action;
 
-import javax.annotation.Nullable;
+public class SkipToStepActionBaseTests extends IndividualActionTests {
+    public static final SkipToStepActionBase COMPLETE = SkipToStepActionBase.builder().setButtonIconName("icon")
+            .setButtonTitle("title").setSkipToStepIdentifier("skipTo").build();
+    public static final SkipToStepActionBase NO_SKIP_TO = SkipToStepActionBase.builder().setButtonIconName("icon")
+            .setButtonTitle("title").build();
 
-@AutoValue
-public abstract class ActionBase implements Action {
-    public static final String TYPE_KEY = ActionDeserializationType.BASE;
-
-    @AutoValue.Builder
-    public abstract static class Builder {
-        public abstract ActionBase build();
-
-        public abstract Builder setButtonIconName(@Nullable String buttonIcon);
-
-        public abstract Builder setButtonTitle(@Nullable String buttonTitle);
+    @Test
+    public void testSkipToStepActionBase_Complete() {
+        testCommon(COMPLETE, "SkipToStepActionBase_Complete.json");
     }
 
-    @Override
-    @ActionDeserializationType
-    public String getType() {
-        return TYPE_KEY;
+    @Test
+    public void testSkipToStepActionBase_NoSkipTo() {
+        testCommon(NO_SKIP_TO, "SkipToStepActionBase_NoSkipTo.json");
     }
 
-    public static Builder builder() {
-        return new AutoValue_ActionBase.Builder();
+    private void testCommon(Action expected, String filename) {
+        Action action = this.readJsonFile(filename);
+        assertNotNull(action);
+        assertTrue(action instanceof SkipToStepActionBase);
+        assertEquals(expected, action);
     }
-
-    public static TypeAdapter<ActionBase> typeAdapter(Gson gson) {
-        return new AutoValue_ActionBase.GsonTypeAdapter(gson);
-    }
-
-    public abstract Builder toBuilder();
 }
