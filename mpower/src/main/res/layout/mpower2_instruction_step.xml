@@ -39,7 +39,7 @@
     tools:layout_editor_absoluteY="81dp">
 
     <org.sagebionetworks.research.mobile_ui.widget.NavigationActionBar
-        android:id="@+id/navigationActionBar"
+        android:id="@id/rs2_step_navigation_action_bar"
         style="@style/Widget.ResearchStack.NavigationActionBar.Instruction"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
@@ -52,7 +52,7 @@
         android:layout_width="0dp"
         android:layout_height="0dp"
         android:fadeScrollbars="false"
-        app:layout_constraintBottom_toTopOf="@+id/navigationActionBar"
+        app:layout_constraintBottom_toTopOf="@id/rs2_step_navigation_action_bar"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent">
