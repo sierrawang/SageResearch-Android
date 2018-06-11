@@ -32,6 +32,7 @@
 
 package org.sagebionetworks.research.mpower.step_binding;
 
+import android.graphics.Paint;
 import android.view.Gravity;
 import android.view.View;
 import android.widget.ImageButton;
@@ -39,6 +40,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import org.sagebionetworks.research.mobile_ui.show_step.view.view_binding.UIStepViewBinding;
+import org.sagebionetworks.research.mobile_ui.widget.ActionButton;
 import org.sagebionetworks.research.mpower.R;
 import org.sagebionetworks.research.mpower.step_view.IconView;
 import org.sagebionetworks.research.mpower.step_view.OverviewStepView;
@@ -84,6 +86,12 @@ public class OverviewStepViewBinding<S extends OverviewStepView> extends UIStepV
     @Override
     public void update(S overviewStepView) {
         super.update(overviewStepView);
+        // Make the reminder button underlined.
+        ActionButton reminderButton = this.getSkipButton();
+        if (reminderButton != null) {
+            reminderButton.setPaintFlags(reminderButton.getPaintFlags() | Paint.UNDERLINE_TEXT_FLAG);
+        }
+
         TextView title = this.getTitle();
         if (title != null) {
             title.setGravity(Gravity.CENTER);

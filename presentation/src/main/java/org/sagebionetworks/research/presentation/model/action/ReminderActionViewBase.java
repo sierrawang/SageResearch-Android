@@ -59,7 +59,6 @@ public abstract class ReminderActionViewBase implements ReminderActionView {
     }
 
     public static ReminderActionViewBase fromReminderAction(ReminderAction reminderAction) {
-        // If the button title is null we use the reminder identifier as the title.
         // TODO rkolmos 06/07/2018 add the icon to this method.
         return ReminderActionViewBase.builder()
                 .setButtonTitle(new DisplayString(R.string.rs2_navigation_action_reminder,

@@ -32,6 +32,7 @@
 
 package org.sagebionetworks.research.mobile_ui.show_step.view;
 
+import android.graphics.Paint;
 import android.view.View;
 
 import org.sagebionetworks.research.domain.mobile_ui.R;
@@ -55,11 +56,12 @@ public abstract class ShowUIStepFragmentBase<S extends UIStepView> extends
 
     // region Navigation Buttons
     protected void updateNavigationButtons(UIStepView stepView) {
+        ActionButton skipButton = this.stepViewBinding.getSkipButton();
         this.updateButtonFromActionView(this.stepViewBinding.getNextButton(), this.getForwardButtonActionView(stepView));
         this.updateButtonFromActionView(this.stepViewBinding.getBackButton(), this.getBackwardButtonActionView(stepView));
         this.updateButtonFromActionView(this.stepViewBinding.getCancelButton(), this.getCancelButtonActionView(stepView));
-        this.updateButtonFromActionView(this.stepViewBinding.getSkipButton(), this.getSkipButtonActionView(stepView));
-        this.updateButtonFromActionView(this.stepViewBinding.getInfoButton(), this.getSkipButtonActionView(stepView));
+        this.updateButtonFromActionView(skipButton, this.getSkipButtonActionView(stepView));
+        this.updateButtonFromActionView(this.stepViewBinding.getInfoButton(), this.getInfoButtonActionView(stepView));
     }
 
     protected void updateButtonFromActionView(ActionButton button, ActionView actionView) {
@@ -72,7 +74,7 @@ public abstract class ShowUIStepFragmentBase<S extends UIStepView> extends
                     } else if (buttonTitle.defaultDisplayStringRes != null) {
                         button.setText(buttonTitle.defaultDisplayStringRes);
                     } else {
-                        button.setText("");
+                        button.setText(null);
                     }
                 }
 
@@ -81,7 +83,7 @@ public abstract class ShowUIStepFragmentBase<S extends UIStepView> extends
                     if (buttonIcon.drawableRes != null) {
                         button.setBackgroundResource(buttonIcon.drawableRes);
                     } else if (buttonIcon.defaultDrawableRes != null) {
-                        button.setBackgroundResource(buttonIcon.drawableRes);
+                        button.setBackgroundResource(buttonIcon.defaultDrawableRes);
                     }
                 }
             } else {
@@ -151,7 +153,7 @@ public abstract class ShowUIStepFragmentBase<S extends UIStepView> extends
     }
 
     protected ActionView getInfoButtonActionView(UIStepView stepView) {
-        ActionView result = this.getDefaultActionView(stepView, ActionType.SKIP);
+        ActionView result = this.getDefaultActionView(stepView, ActionType.INFO);
         if (result != null) {
             return result;
         }
@@ -162,7 +164,7 @@ public abstract class ShowUIStepFragmentBase<S extends UIStepView> extends
     }
 
     protected ActionView getCancelButtonActionView(UIStepView stepView) {
-        ActionView result = this.getDefaultActionView(stepView, ActionType.SKIP);
+        ActionView result = this.getDefaultActionView(stepView, ActionType.CANCEL);
         if (result != null) {
             return result;
         }
