@@ -69,6 +69,7 @@
                 app:srcCompat="@drawable/f_walking1" />
 
             <org.sagebionetworks.research.mobile_ui.widget.StepHeader
+                android:id="@id/rs2_step_header"
                 style="@style/Widget.ResearchStack.StepHeader.Overview"
                 android:layout_width="0dp"
                 android:layout_height="0dp"

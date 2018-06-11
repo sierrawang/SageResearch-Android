@@ -45,7 +45,8 @@ import org.sagebionetworks.research.presentation.show_step.ShowGenericStepViewMo
 import org.sagebionetworks.research.presentation.show_step.show_step_view_models.ShowActiveUIStepViewModel;
 
 public class ShowActiveUIStepFragment extends
-       ShowUIStepFragmentBase<ActiveUIStepView> {
+       ShowUIStepFragmentBase<ActiveUIStepView, ShowActiveUIStepViewModel<ActiveUIStepView>,
+               ActiveUIStepViewBinding<ActiveUIStepView>> {
     @NonNull
     public static ShowActiveUIStepFragment newInstance(@NonNull StepView stepView) {
         if (!(stepView instanceof ActiveUIStepView)) {

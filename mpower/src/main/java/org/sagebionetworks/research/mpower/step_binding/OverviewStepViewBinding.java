@@ -37,6 +37,7 @@ import android.view.Gravity;
 import android.view.View;
 import android.widget.ImageButton;
 import android.widget.ImageView;
+import android.widget.ScrollView;
 import android.widget.TextView;
 
 import org.sagebionetworks.research.mobile_ui.show_step.view.view_binding.UIStepViewBinding;
@@ -48,6 +49,7 @@ import org.sagebionetworks.research.presentation.DisplayString;
 
 import java.util.List;
 
+import butterknife.BindView;
 import butterknife.BindViews;
 import butterknife.ButterKnife;
 import butterknife.Unbinder;
@@ -81,6 +83,14 @@ public class OverviewStepViewBinding<S extends OverviewStepView> extends UIStepV
 
     public List<TextView> getIconLabels() {
         return this.overviewStepViewHolder.iconLabels;
+    }
+
+    public ScrollView getScrollView() {
+        return this.overviewStepViewHolder.scrollView;
+    }
+
+    public TextView getOverallIconDescriptionLabel() {
+        return this.overviewStepViewHolder.overallIconDescriptionLabel;
     }
 
     @Override
@@ -138,5 +148,11 @@ public class OverviewStepViewBinding<S extends OverviewStepView> extends UIStepV
 
         @BindViews({R.id.centerIconLabel, R.id.leftIconLabel, R.id.rightIconLabel})
         public List<TextView> iconLabels;
+
+        @BindView(R.id.scrollView)
+        public ScrollView scrollView;
+
+        @BindView(R.id.overallIconDescriptionLabel)
+        public TextView overallIconDescriptionLabel;
     }
 }

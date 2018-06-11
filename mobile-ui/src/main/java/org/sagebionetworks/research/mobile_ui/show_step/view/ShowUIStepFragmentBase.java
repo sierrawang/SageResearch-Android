@@ -46,8 +46,9 @@ import org.sagebionetworks.research.presentation.model.action.ActionViewBase;
 import org.sagebionetworks.research.presentation.model.interfaces.UIStepView;
 import org.sagebionetworks.research.presentation.show_step.show_step_view_models.ShowUIStepViewModel;
 
-public abstract class ShowUIStepFragmentBase<S extends UIStepView> extends
-    ShowStepFragmentBase<S, ShowUIStepViewModel<S>, UIStepViewBinding<S>> {
+public abstract class ShowUIStepFragmentBase<S extends UIStepView,
+        VM extends ShowUIStepViewModel<S>, SB extends UIStepViewBinding<S>> extends
+    ShowStepFragmentBase<S, VM, SB> {
     @Override
     protected void update(S stepView) {
         super.update(stepView);

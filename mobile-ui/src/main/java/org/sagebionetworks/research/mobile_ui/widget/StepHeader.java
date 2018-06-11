@@ -54,6 +54,8 @@ import org.w3c.dom.Text;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import butterknife.OnClick;
+import butterknife.Optional;
 import butterknife.Unbinder;
 
 public class StepHeader extends ConstraintLayout {
@@ -113,6 +115,8 @@ public class StepHeader extends ConstraintLayout {
         this.actionButtonClickListener = listener;
     }
 
+    @Optional
+    @OnClick({id.rs2_step_navigation_action_cancel, id.rs2_step_navigation_action_info})
     public void onActionButtonClick(@NonNull ActionButton actionButton) {
         LOGGER.debug("Action button clicked, text: {}", actionButton.getText());
 

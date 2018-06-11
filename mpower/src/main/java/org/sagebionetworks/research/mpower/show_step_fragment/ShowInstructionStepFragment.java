@@ -47,7 +47,8 @@ import org.sagebionetworks.research.presentation.model.interfaces.StepView;
 import org.sagebionetworks.research.presentation.show_step.show_step_view_models.ShowUIStepViewModel;
 
 public class ShowInstructionStepFragment extends
-        ShowUIStepFragmentBase<InstructionStepView> {
+        ShowUIStepFragmentBase<InstructionStepView, ShowUIStepViewModel<InstructionStepView>,
+                UIStepViewBinding<InstructionStepView>> {
     @NonNull
     public static ShowInstructionStepFragment newInstance(@NonNull StepView stepView) {
         ShowInstructionStepFragment fragment = new ShowInstructionStepFragment();

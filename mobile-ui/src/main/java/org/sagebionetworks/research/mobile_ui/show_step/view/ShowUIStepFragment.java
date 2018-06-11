@@ -57,7 +57,8 @@ import javax.inject.Inject;
 
 import dagger.Provides;
 
-public class ShowUIStepFragment extends ShowUIStepFragmentBase<UIStepView> {
+public class ShowUIStepFragment extends
+        ShowUIStepFragmentBase<UIStepView, ShowUIStepViewModel<UIStepView>, UIStepViewBinding<UIStepView>> {
     @NonNull
     public static ShowUIStepFragment newInstance(@NonNull StepView stepView) {
         if (!(stepView instanceof UIStepView)) {
