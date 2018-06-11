@@ -35,9 +35,7 @@ package org.sagebionetworks.research.mpower.step_binding;
 import android.graphics.Paint;
 import android.view.Gravity;
 import android.view.View;
-import android.widget.ImageButton;
 import android.widget.ImageView;
-import android.widget.ScrollView;
 import android.widget.TextView;
 
 import org.sagebionetworks.research.mobile_ui.show_step.view.view_binding.UIStepViewBinding;
@@ -45,6 +43,7 @@ import org.sagebionetworks.research.mobile_ui.widget.ActionButton;
 import org.sagebionetworks.research.mpower.R;
 import org.sagebionetworks.research.mpower.step_view.IconView;
 import org.sagebionetworks.research.mpower.step_view.OverviewStepView;
+import org.sagebionetworks.research.mpower.widget.DisablableScrollView;
 import org.sagebionetworks.research.presentation.DisplayString;
 
 import java.util.List;
@@ -85,7 +84,7 @@ public class OverviewStepViewBinding<S extends OverviewStepView> extends UIStepV
         return this.overviewStepViewHolder.iconLabels;
     }
 
-    public ScrollView getScrollView() {
+    public DisablableScrollView getScrollView() {
         return this.overviewStepViewHolder.scrollView;
     }
 
@@ -150,7 +149,7 @@ public class OverviewStepViewBinding<S extends OverviewStepView> extends UIStepV
         public List<TextView> iconLabels;
 
         @BindView(R.id.scrollView)
-        public ScrollView scrollView;
+        public DisablableScrollView scrollView;
 
         @BindView(R.id.overallIconDescriptionLabel)
         public TextView overallIconDescriptionLabel;

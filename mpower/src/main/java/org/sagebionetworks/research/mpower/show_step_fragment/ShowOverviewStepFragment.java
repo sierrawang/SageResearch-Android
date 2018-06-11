@@ -84,6 +84,7 @@ public class ShowOverviewStepFragment extends
             Bundle savedInstanceState) {
         View returnValue = super.onCreateView(inflater, container, savedInstanceState);
         // Hide all the extra information when the view is created.
+        this.stepViewBinding.getScrollView().setScrollingEnabled(false);
         this.stepViewBinding.getTitle().setAlpha(0f);
         this.stepViewBinding.getText().setAlpha(0f);
         this.stepViewBinding.getOverallIconDescriptionLabel().setAlpha(0f);
@@ -115,6 +116,7 @@ public class ShowOverviewStepFragment extends
     }
 
     protected void scrollToBottomAndFadeIn() {
+        this.stepViewBinding.getScrollView().setScrollingEnabled(true);
         long duration = 300;
         List<ViewPropertyAnimator> fadeInAnimators = new ArrayList<>();
         fadeInAnimators.add(this.stepViewBinding.getTitle().animate().alpha(1f).setDuration(duration));

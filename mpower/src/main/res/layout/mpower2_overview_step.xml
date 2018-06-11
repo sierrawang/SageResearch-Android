@@ -37,7 +37,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-    <ScrollView
+    <org.sagebionetworks.research.mpower.widget.DisablableScrollView
         android:id="@+id/scrollView"
         android:layout_width="0dp"
         android:layout_height="0dp"
@@ -53,7 +53,6 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginBottom="0dp"
-            android:orientation="vertical"
             android:paddingBottom="20dp">
 
             <ImageView
@@ -113,7 +112,7 @@
                 app:layout_constraintTop_toBottomOf="@id/overallIconDescriptionLabel" />
 
         </android.support.constraint.ConstraintLayout>
-    </ScrollView>
+    </org.sagebionetworks.research.mpower.widget.DisablableScrollView>
 
     <org.sagebionetworks.research.mobile_ui.widget.NavigationActionBar
         android:id="@+id/rs2_step_navigation_action_bar"
