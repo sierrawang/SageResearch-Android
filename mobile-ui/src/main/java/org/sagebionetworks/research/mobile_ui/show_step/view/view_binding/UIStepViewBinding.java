@@ -32,23 +32,31 @@
 
 package org.sagebionetworks.research.mobile_ui.show_step.view.view_binding;
 
+import android.animation.ObjectAnimator;
+import android.graphics.drawable.AnimationDrawable;
+import android.graphics.drawable.Drawable;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import org.sagebionetworks.research.domain.mobile_ui.R2.id;
+import org.sagebionetworks.research.domain.step.ui.theme.FetchableImageTheme;
+import org.sagebionetworks.research.domain.step.ui.theme.ImageTheme;
 import org.sagebionetworks.research.mobile_ui.widget.ActionButton;
 import org.sagebionetworks.research.mobile_ui.widget.NavigationActionBar;
 import org.sagebionetworks.research.mobile_ui.widget.NavigationActionBar.ActionButtonClickListener;
 import org.sagebionetworks.research.mobile_ui.widget.StepHeader;
 import org.sagebionetworks.research.presentation.DisplayDrawable;
 import org.sagebionetworks.research.presentation.DisplayString;
+import org.sagebionetworks.research.presentation.model.AnimationImageThemeView;
 import org.sagebionetworks.research.presentation.model.ImageThemeView;
+import org.sagebionetworks.research.presentation.model.interfaces.FetchableImageThemeView;
 import org.sagebionetworks.research.presentation.model.interfaces.UIStepView;
 
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
+import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -185,21 +193,6 @@ public class UIStepViewBinding<S extends UIStepView> implements StepViewBinding<
         this.updateTextView(this.getText(), stepView.getText());
         this.updateTextView(this.getDetail(), stepView.getDetail());
         this.updateTextView(this.getFoonote(), stepView.getFootnote());
-
-        ImageView imageView = this.getImageView();
-        if (imageView != null) {
-            if (stepView.getImageTheme() != null) {
-                DisplayDrawable drawable = stepView.getImageTheme().getImageResource();
-                Integer imageResourceId = drawable.drawableRes != null ? drawable.drawableRes :
-                        drawable.defaultDrawableRes;
-                if (imageResourceId != null) {
-                    imageView.setImageResource(imageResourceId);
-                } else {
-                    System.err.println("DisplayDrawable has null drawableRes and null defaultDrawableRes");
-                }
-            }
-        }
-
         // TODO rkolmos 05/29/2018 implement color theme update
     }
 

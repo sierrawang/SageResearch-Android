@@ -38,7 +38,9 @@ import android.support.annotation.Nullable;
 import com.google.auto.value.AutoValue;
 
 import org.sagebionetworks.research.mpower.step.Icon;
+import org.sagebionetworks.research.presentation.DisplayDrawable;
 import org.sagebionetworks.research.presentation.DisplayString;
+import org.sagebionetworks.research.presentation.mapper.DrawableMapper;
 
 @AutoValue
 public abstract class IconView {
@@ -49,7 +51,8 @@ public abstract class IconView {
         @Nullable
         public abstract Builder setTitle(@Nullable DisplayString title);
 
-        // TODO: rkolmos 06/06/2018 Implement the icon part once the image resolver is implmeneted.
+        @Nullable
+        public abstract Builder setIcon(@Nullable DisplayDrawable icon);
     }
 
     public static Builder builder() {
@@ -57,11 +60,14 @@ public abstract class IconView {
     }
 
     @NonNull
-    public static IconView fromIcon(@NonNull Icon icon) {
+    public static IconView fromIcon(@NonNull Icon icon, DrawableMapper mapper) {
         String title = icon.getTitle();
+        DisplayDrawable iconDrawable = new DisplayDrawable(null, mapper.getDrawableFromName(
+                icon.getIcon()));
         if (title != null) {
             return IconView.builder()
                     .setTitle(new DisplayString(null, title))
+                    .setIcon(iconDrawable)
                     .build();
         } else {
             return null;
@@ -69,4 +75,6 @@ public abstract class IconView {
     }
 
     public abstract DisplayString getTitle();
+
+    public abstract DisplayDrawable getIcon();
 }

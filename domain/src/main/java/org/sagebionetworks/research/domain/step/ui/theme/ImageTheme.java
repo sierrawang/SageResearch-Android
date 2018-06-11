@@ -37,34 +37,13 @@ import android.support.annotation.Nullable;
 import com.google.auto.value.AutoValue;
 import com.google.gson.Gson;
 import com.google.gson.TypeAdapter;
+import com.google.gson.annotations.SerializedName;
 
-@AutoValue
-public abstract class ImageTheme {
-    @AutoValue.Builder
-    public static abstract class Builder {
-        public abstract ImageTheme builder();
-
-        public abstract Builder setColorPlacement(@ColorPlacement String colorPlacement);
-
-        public abstract Builder setImageResourceName(String imageResourceName);
-    }
-
-    public static Builder builder() {
-        return new AutoValue_ImageTheme.Builder();
-    }
-
-    public static TypeAdapter<ImageTheme> typeAdapter(Gson gson) {
-        return new AutoValue_ImageTheme.GsonTypeAdapter(gson);
-    }
-
-    /**
-     * @return preferred placement of the image. Default placement is `iconBefore` if undefined.
-     */
+public interface ImageTheme {
     @Nullable
     @ColorPlacement
-    public abstract String getColorPlacement();
+    @SerializedName("placementType")
+    String getColorPlacement();
 
-    public abstract String getImageResourceName();
-
-    public abstract Builder toBuilder();
+    String getType();
 }

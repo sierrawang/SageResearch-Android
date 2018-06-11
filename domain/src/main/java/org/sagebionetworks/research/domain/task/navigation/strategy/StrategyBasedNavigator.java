@@ -35,10 +35,12 @@ package org.sagebionetworks.research.domain.task.navigation.strategy;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 
+import org.jetbrains.annotations.NotNull;
 import org.sagebionetworks.research.domain.result.interfaces.Result;
 import org.sagebionetworks.research.domain.result.interfaces.TaskResult;
 import org.sagebionetworks.research.domain.step.interfaces.Step;
 import org.sagebionetworks.research.domain.task.navigation.StepNavigator;
+import org.sagebionetworks.research.domain.task.navigation.StepNavigatorFactory;
 import org.sagebionetworks.research.domain.task.navigation.TaskProgress;
 import org.sagebionetworks.research.domain.task.navigation.TreeNavigator;
 import org.sagebionetworks.research.domain.task.navigation.strategy.StepNavigationStrategy.BackStepStrategy;
@@ -129,5 +131,18 @@ public class StrategyBasedNavigator implements StepNavigator {
     @Nullable
     public Step getStep(@NonNull final String identifier) {
         return this.treeNavigator.getStep(identifier);
+    }
+
+    @NotNull
+    @Override
+    public List<Step> getSteps() {
+        return this.treeNavigator.getSteps();
+    }
+
+    public static class Factory implements StepNavigatorFactory {
+        @Override
+        public StepNavigator create(final List<Step> steps, final List<String> progressMarkers) {
+            return new StrategyBasedNavigator(steps, progressMarkers);
+        }
     }
 }

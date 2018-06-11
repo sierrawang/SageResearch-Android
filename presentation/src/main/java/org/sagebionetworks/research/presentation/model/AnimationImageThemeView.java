@@ -30,58 +30,53 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.sagebionetworks.research.domain.task.navigation;
+package org.sagebionetworks.research.presentation.model;
 
-import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 
 import com.google.auto.value.AutoValue;
-import com.google.common.collect.ImmutableList;
-import com.google.gson.Gson;
-import com.google.gson.TypeAdapter;
 
-import org.sagebionetworks.research.domain.async.AsyncAction;
-import org.sagebionetworks.research.domain.step.interfaces.Step;
-import org.sagebionetworks.research.domain.task.Task;
+import org.sagebionetworks.research.domain.step.ui.theme.AnimationImageTheme;
+import org.sagebionetworks.research.domain.step.ui.theme.ColorPlacement;
+import org.sagebionetworks.research.presentation.DisplayDrawable;
+import org.sagebionetworks.research.presentation.mapper.DrawableMapper;
 
-import java.util.Collections;
+import java.util.ArrayList;
 import java.util.List;
 
 @AutoValue
-public abstract class TaskBase implements Task {
-
+public abstract class AnimationImageThemeView extends ImageThemeView {
     @AutoValue.Builder
     public abstract static class Builder {
-        public abstract TaskBase build();
+        public abstract AnimationImageThemeView build();
 
-        public abstract Builder setAsyncActions(@NonNull List<AsyncAction> asyncActions);
+        public abstract Builder setColorPlacement(@ColorPlacement String colorPlacement);
 
-        public abstract Builder setIdentifier(@NonNull String identifier);
+        public abstract Builder setImageResources(@Nullable List<DisplayDrawable> imageResources);
 
-        public abstract Builder setSteps(@NonNull List<Step> steps);
-
-        public abstract Builder setProgressMarkers(@NonNull List<String> progressMarkers);
+        public abstract Builder setDuration(@Nullable Double duration);
     }
+
+    public abstract List<DisplayDrawable> getImageResources();
+
+    public abstract Double getDuration();
 
     public static Builder builder() {
-        return new AutoValue_TaskBase.Builder()
-                .setAsyncActions(Collections.<AsyncAction>emptyList());
+        return new AutoValue_AnimationImageThemeView.Builder();
     }
 
-    public static TypeAdapter<TaskBase> typeAdapter(Gson gson) {
-        return new AutoValue_TaskBase.GsonTypeAdapter(gson)
-                .setDefaultSteps(ImmutableList.<Step>of())
-                .setDefaultProgressMarkers(ImmutableList.<String>of())
-                .setDefaultAsyncActions(ImmutableList.<AsyncAction>of());
-    }
+    public static AnimationImageThemeView fromAnimationImageTheme(AnimationImageTheme imageTheme,
+            DrawableMapper mapper) {
+        List<DisplayDrawable> imageResources = new ArrayList<>();
+        for (String id : imageTheme.getImageResourceNames()) {
+            imageResources.add(new DisplayDrawable(null, mapper.getDrawableFromName(id)));
+        }
 
-    @NonNull
-    @Override
-    public Task copyWithSteps(final List<Step> steps) {
-        return this.builder()
-                .setIdentifier(this.getIdentifier())
-                .setAsyncActions(this.getAsyncActions())
-                .setSteps(steps)
-                .setProgressMarkers(this.getProgressMarkers())
+        return AnimationImageThemeView.builder()
+                .setColorPlacement(imageTheme.getColorPlacement())
+                .setDuration(imageTheme.getDuration())
+                .setImageResources(imageResources)
                 .build();
+
     }
 }

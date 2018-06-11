@@ -30,58 +30,51 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.sagebionetworks.research.domain.task.navigation;
+package org.sagebionetworks.research.domain.step.ui.theme;
 
-import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 
 import com.google.auto.value.AutoValue;
-import com.google.common.collect.ImmutableList;
 import com.google.gson.Gson;
 import com.google.gson.TypeAdapter;
+import com.google.gson.annotations.SerializedName;
 
-import org.sagebionetworks.research.domain.async.AsyncAction;
-import org.sagebionetworks.research.domain.step.interfaces.Step;
-import org.sagebionetworks.research.domain.task.Task;
-
-import java.util.Collections;
 import java.util.List;
 
 @AutoValue
-public abstract class TaskBase implements Task {
+public abstract class AnimationImageTheme implements ImageTheme {
+    public static final String TYPE_KEY = ImageThemeType.ANIMATION;
 
     @AutoValue.Builder
     public abstract static class Builder {
-        public abstract TaskBase build();
+        public abstract AnimationImageTheme build();
 
-        public abstract Builder setAsyncActions(@NonNull List<AsyncAction> asyncActions);
+        public abstract Builder setColorPlacement(@Nullable @ColorPlacement String colorPlacement);
 
-        public abstract Builder setIdentifier(@NonNull String identifier);
+        public abstract Builder setImageResourceNames(@Nullable List<String> imageResourceNames);
 
-        public abstract Builder setSteps(@NonNull List<Step> steps);
-
-        public abstract Builder setProgressMarkers(@NonNull List<String> progressMarkers);
+        public abstract Builder setDuration(@Nullable Double duration);
     }
 
     public static Builder builder() {
-        return new AutoValue_TaskBase.Builder()
-                .setAsyncActions(Collections.<AsyncAction>emptyList());
+        return new AutoValue_AnimationImageTheme.Builder();
     }
 
-    public static TypeAdapter<TaskBase> typeAdapter(Gson gson) {
-        return new AutoValue_TaskBase.GsonTypeAdapter(gson)
-                .setDefaultSteps(ImmutableList.<Step>of())
-                .setDefaultProgressMarkers(ImmutableList.<String>of())
-                .setDefaultAsyncActions(ImmutableList.<AsyncAction>of());
+    public static TypeAdapter<AnimationImageTheme> typeAdapter(Gson gson) {
+        return new AutoValue_AnimationImageTheme.GsonTypeAdapter(gson);
     }
 
-    @NonNull
+    @Nullable
+    @SerializedName("imageNames")
+    public abstract List<String> getImageResourceNames();
+
+    @Nullable
+    @SerializedName("animationDuration")
+    public abstract Double getDuration();
+
     @Override
-    public Task copyWithSteps(final List<Step> steps) {
-        return this.builder()
-                .setIdentifier(this.getIdentifier())
-                .setAsyncActions(this.getAsyncActions())
-                .setSteps(steps)
-                .setProgressMarkers(this.getProgressMarkers())
-                .build();
+    @ImageThemeType
+    public String getType() {
+        return TYPE_KEY;
     }
 }

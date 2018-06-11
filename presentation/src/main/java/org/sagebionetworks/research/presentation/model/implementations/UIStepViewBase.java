@@ -38,6 +38,7 @@ import android.support.annotation.Nullable;
 
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.ImmutableMap.Builder;
+import com.google.gson.annotations.SerializedName;
 
 import org.sagebionetworks.research.domain.step.interfaces.Step;
 import org.sagebionetworks.research.domain.step.interfaces.ThemedUIStep;
@@ -47,6 +48,7 @@ import org.sagebionetworks.research.domain.step.ui.action.interfaces.ReminderAct
 import org.sagebionetworks.research.domain.step.ui.action.interfaces.SkipToStepAction;
 import org.sagebionetworks.research.presentation.ActionType;
 import org.sagebionetworks.research.presentation.DisplayString;
+import org.sagebionetworks.research.presentation.mapper.DrawableMapper;
 import org.sagebionetworks.research.presentation.model.ColorThemeView;
 import org.sagebionetworks.research.presentation.model.ImageThemeView;
 import org.sagebionetworks.research.presentation.model.action.ActionView;
@@ -84,7 +86,7 @@ public class UIStepViewBase implements UIStepView {
      * @param step The UIStep to create the UIStepViewBase from.
      * @return A UIStepViewBase created from the given ThemedUIStep.
      */
-    public static UIStepViewBase fromUIStep(Step step) {
+    public static UIStepViewBase fromUIStep(Step step, DrawableMapper mapper) {
         if (!(step instanceof ThemedUIStep)) {
             throw new IllegalArgumentException("Provided step: " + step + " is not a ThemedUIStep");
         }
@@ -98,7 +100,7 @@ public class UIStepViewBase implements UIStepView {
         DisplayString detail = new DisplayString(null, uiStep.getDetail());
         DisplayString footnote = new DisplayString(null, uiStep.getFootnote());
         ColorThemeView colorTheme = ColorThemeView.fromColorTheme(uiStep.getColorTheme());
-        ImageThemeView imageTheme = ImageThemeView.fromImageTheme(uiStep.getImageTheme());
+        ImageThemeView imageTheme = ImageThemeView.fromImageTheme(uiStep.getImageTheme(), mapper);
         // TODO: rkolmos 05/30/2018 for now the nav direction is always left.
         return new UIStepViewBase(identifier, NavDirection.SHIFT_LEFT, actions, title, text, detail, footnote,
                 colorTheme, imageTheme);

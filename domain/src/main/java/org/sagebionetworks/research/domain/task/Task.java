@@ -53,4 +53,7 @@ public interface Task {
 
     @NonNull
     Task copyWithSteps(List<Step> steps);
+
+    @NonNull
+    ImmutableList<String> getProgressMarkers();
 }

@@ -39,6 +39,7 @@ import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.ImmutableMap.Builder;
 
+import org.jetbrains.annotations.NotNull;
 import org.sagebionetworks.research.domain.result.interfaces.TaskResult;
 import org.sagebionetworks.research.domain.step.interfaces.Step;
 import org.slf4j.Logger;
@@ -58,7 +59,7 @@ public class OrderedStepNavigator implements StepNavigator {
     public static final class Factory implements StepNavigatorFactory {
 
         @Override
-        public StepNavigator create(List<Step> steps) {
+        public StepNavigator create(List<Step> steps, List<String> progressMarkers) {
             return new OrderedStepNavigator(steps);
         }
     }
@@ -133,5 +134,11 @@ public class OrderedStepNavigator implements StepNavigator {
         int stepNumber = steps.indexOf(step) + 1;
         int totalSteps = steps.size();
         return new TaskProgress(stepNumber, totalSteps, false);
+    }
+
+    @NotNull
+    @Override
+    public List<Step> getSteps() {
+        return steps;
     }
 }

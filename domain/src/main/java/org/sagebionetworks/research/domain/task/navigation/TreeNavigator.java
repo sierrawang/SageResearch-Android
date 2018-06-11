@@ -53,6 +53,14 @@ public class TreeNavigator implements StepNavigator {
        this.stepsById = buildStepsByID(steps);
     }
 
+
+
+    @NotNull
+    @Override
+    public List<Step> getSteps() {
+        return new ArrayList<>(this.stepsById.values());
+    }
+
     /**
      * Constructs and returns an ImmutableMap that maps step identifiers to steps for every step
      * and every substep of every step recursively, in the given list of steps.
@@ -116,7 +124,7 @@ public class TreeNavigator implements StepNavigator {
         }
 
         if (current.step != null) {
-            if (hasFoundInitial.get() && current.isLeaf()) {
+            if ((initialStep == null || hasFoundInitial.get()) && current.isLeaf()) {
                 return current.step;
             }
 

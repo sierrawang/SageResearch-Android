@@ -46,14 +46,17 @@ import org.sagebionetworks.research.domain.result.implementations.TaskResultBase
 import org.sagebionetworks.research.domain.result.interfaces.Result;
 import org.sagebionetworks.research.domain.result.interfaces.TaskResult;
 import org.sagebionetworks.research.domain.step.interfaces.Step;
+import org.sagebionetworks.research.domain.step.interfaces.ThemedUIStep;
 import org.sagebionetworks.research.domain.step.interfaces.UIStep;
 import org.sagebionetworks.research.domain.task.Task;
 import org.sagebionetworks.research.domain.task.TaskInfo;
 import org.sagebionetworks.research.domain.task.navigation.StepNavigator;
 import org.sagebionetworks.research.domain.task.navigation.StepNavigatorFactory;
+import org.sagebionetworks.research.domain.task.navigation.TaskProgress;
 import org.sagebionetworks.research.presentation.ActionType;
 import org.sagebionetworks.research.presentation.inject.StepViewModule;
 import org.sagebionetworks.research.presentation.inject.StepViewModule.StepViewFactory;
+import org.sagebionetworks.research.presentation.mapper.DrawableMapper;
 import org.sagebionetworks.research.presentation.mapper.TaskMapper;
 import org.sagebionetworks.research.presentation.model.BaseStepView;
 import org.sagebionetworks.research.presentation.model.action.ActionView;
@@ -64,6 +67,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.threeten.bp.Instant;
 
+import java.util.HashMap;
+import java.util.Map;
 import java.util.UUID;
 
 import io.reactivex.Completable;
@@ -71,6 +76,9 @@ import io.reactivex.disposables.CompositeDisposable;
 
 import static com.google.common.base.Preconditions.checkNotNull;
 import static com.google.common.base.Preconditions.checkState;
+
+import com.google.common.collect.ImmutableMap;
+import com.google.common.collect.ImmutableMap.Builder;
 
 import javax.inject.Inject;
 
@@ -90,11 +98,15 @@ public class PerformTaskViewModel extends ViewModel {
 
     private final MutableLiveData<TaskInfo> taskLiveData;
 
+    private final MutableLiveData<TaskProgress> taskProgressLiveData;
+
     private final TaskMapper taskMapper;
 
     private final TaskRepository taskRepository;
 
     private final StepViewFactory stepViewFactory;
+
+    private final DrawableMapper drawableMapper;
 
     @Nullable
     private TaskResult taskResult;
@@ -107,18 +119,24 @@ public class PerformTaskViewModel extends ViewModel {
 
     private final MutableLiveData<LoadableResource<TaskView>> taskViewLiveData;
 
+    private Map<Step, StepView> stepViewMapping;
+
     public PerformTaskViewModel(@NonNull TaskView taskView, @NonNull UUID taskRunUUID,
             @NonNull StepNavigatorFactory stepNavigatorFactory, @NonNull TaskRepository taskRepository,
-            @NonNull TaskMapper taskMapper, StepViewFactory stepViewFactory) {
+            @NonNull TaskMapper taskMapper, StepViewFactory stepViewFactory, @NonNull DrawableMapper drawableMapper) {
         this.taskView = checkNotNull(taskView);
         this.taskRunUuid = checkNotNull(taskRunUUID);
         this.stepNavigatorFactory = checkNotNull(stepNavigatorFactory);
         this.taskRepository = checkNotNull(taskRepository);
         this.taskMapper = checkNotNull(taskMapper);
         this.stepViewFactory = stepViewFactory;
+        this.drawableMapper = drawableMapper;
 
         taskLiveData = new MutableLiveData<>();
         taskResultLiveData = new MutableLiveData<>();
+
+        taskProgressLiveData = new MutableLiveData<>();
+        taskProgressLiveData.setValue(null);
 
         currentStepLiveData = new MutableLiveData<>();
         currentStepLiveData.setValue(null);
@@ -170,6 +188,11 @@ public class PerformTaskViewModel extends ViewModel {
     }
 
     @NonNull
+    public LiveData<TaskProgress> getTaskProgress() {
+        return taskProgressLiveData;
+    }
+
+    @NonNull
     public TaskView getTaskView() {
         return taskView;
     }
@@ -181,9 +204,11 @@ public class PerformTaskViewModel extends ViewModel {
         checkState(currentStep != null);
         checkState(taskResult != null);
         Step backStep = stepNavigator.getPreviousStep(currentStep, taskResult);
+        TaskProgress backProgress = stepNavigator.getProgress(backStep, taskResult);
+        taskProgressLiveData.setValue(backProgress);
         LOGGER.debug("Setting backStep: {}", backStep);
         currentStepLiveData.setValue(backStep);
-        StepView stepView = stepViewFactory.apply(backStep);
+        StepView stepView = this.stepViewMapping.get(backStep);
         stepViewLiveData.setValue(stepView);
     }
 
@@ -192,9 +217,11 @@ public class PerformTaskViewModel extends ViewModel {
         Step currentStep = currentStepLiveData.getValue();
         TaskResult taskResult = taskResultLiveData.getValue();
         Step nextStep = stepNavigator.getNextStep(currentStep, taskResult);
+        TaskProgress nextProgress = stepNavigator.getProgress(nextStep, taskResult);
+        taskProgressLiveData.setValue(nextProgress);
         LOGGER.debug("Setting forwardStep: {}", nextStep);
         currentStepLiveData.setValue(nextStep);
-        StepView stepView = stepViewFactory.apply(nextStep);
+        StepView stepView = this.stepViewMapping.get(nextStep);
         stepViewLiveData.setValue(stepView);
     }
 
@@ -209,7 +236,14 @@ public class PerformTaskViewModel extends ViewModel {
     @VisibleForTesting
     void handleTaskLoad(Task task) {
         LOGGER.debug("Loaded task: {}", task);
-        stepNavigator = stepNavigatorFactory.create(task.getSteps());
+        stepNavigator = stepNavigatorFactory.create(task.getSteps(), task.getProgressMarkers());
+        this.stepViewMapping = new HashMap<>();
+        for (Step step : this.stepNavigator.getSteps()) {
+            // This if statement is necessary to ensure we can call stepViewFactory.apply on the step.
+            if (step instanceof ThemedUIStep) {
+                this.stepViewMapping.put(step, stepViewFactory.apply(step, drawableMapper));
+            }
+        }
     }
 
     @VisibleForTesting

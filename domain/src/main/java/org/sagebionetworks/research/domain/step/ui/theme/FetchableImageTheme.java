@@ -30,58 +30,43 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.sagebionetworks.research.domain.task.navigation;
-
-import android.support.annotation.NonNull;
+package org.sagebionetworks.research.domain.step.ui.theme;
 
 import com.google.auto.value.AutoValue;
-import com.google.common.collect.ImmutableList;
 import com.google.gson.Gson;
 import com.google.gson.TypeAdapter;
+import com.google.gson.annotations.SerializedName;
 
-import org.sagebionetworks.research.domain.async.AsyncAction;
-import org.sagebionetworks.research.domain.step.interfaces.Step;
-import org.sagebionetworks.research.domain.task.Task;
-
-import java.util.Collections;
-import java.util.List;
+import javax.annotation.Nullable;
 
 @AutoValue
-public abstract class TaskBase implements Task {
+public abstract class FetchableImageTheme implements ImageTheme {
+    public static final String TYPE_KEY = ImageThemeType.FETCHABLE;
 
     @AutoValue.Builder
     public abstract static class Builder {
-        public abstract TaskBase build();
+        public abstract FetchableImageTheme build();
 
-        public abstract Builder setAsyncActions(@NonNull List<AsyncAction> asyncActions);
+        public abstract Builder setColorPlacement(@Nullable @ColorPlacement String colorPlacement);
 
-        public abstract Builder setIdentifier(@NonNull String identifier);
-
-        public abstract Builder setSteps(@NonNull List<Step> steps);
-
-        public abstract Builder setProgressMarkers(@NonNull List<String> progressMarkers);
+        public abstract Builder setImageResourceName(@Nullable String imageResourceName);
     }
 
     public static Builder builder() {
-        return new AutoValue_TaskBase.Builder()
-                .setAsyncActions(Collections.<AsyncAction>emptyList());
+        return new AutoValue_FetchableImageTheme.Builder();
     }
 
-    public static TypeAdapter<TaskBase> typeAdapter(Gson gson) {
-        return new AutoValue_TaskBase.GsonTypeAdapter(gson)
-                .setDefaultSteps(ImmutableList.<Step>of())
-                .setDefaultProgressMarkers(ImmutableList.<String>of())
-                .setDefaultAsyncActions(ImmutableList.<AsyncAction>of());
+    public static TypeAdapter<FetchableImageTheme> typeAdapter(Gson gson) {
+        return new AutoValue_FetchableImageTheme.GsonTypeAdapter(gson);
     }
 
-    @NonNull
+    @Nullable
+    @SerializedName("imageName")
+    public abstract String getImageResourceName();
+
     @Override
-    public Task copyWithSteps(final List<Step> steps) {
-        return this.builder()
-                .setIdentifier(this.getIdentifier())
-                .setAsyncActions(this.getAsyncActions())
-                .setSteps(steps)
-                .setProgressMarkers(this.getProgressMarkers())
-                .build();
+    @ImageThemeType
+    public String getType() {
+        return TYPE_KEY;
     }
 }

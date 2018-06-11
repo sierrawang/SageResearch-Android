@@ -44,6 +44,7 @@ import org.sagebionetworks.research.mpower.R;
 import org.sagebionetworks.research.mpower.step_view.IconView;
 import org.sagebionetworks.research.mpower.step_view.OverviewStepView;
 import org.sagebionetworks.research.mpower.widget.DisablableScrollView;
+import org.sagebionetworks.research.presentation.DisplayDrawable;
 import org.sagebionetworks.research.presentation.DisplayString;
 
 import java.util.List;
@@ -125,7 +126,18 @@ public class OverviewStepViewBinding<S extends OverviewStepView> extends UIStepV
                 iconImageViews.get(i).setVisibility(View.GONE);
                 iconLabels.get(i).setVisibility(View.GONE);
             } else {
-                // TODO rkolmos 06/06/2018 update image view
+                DisplayDrawable icon = iconView.getIcon();
+                if (icon != null) {
+                    int resId = 0;
+                    if (icon.drawableRes != null) {
+                        resId = icon.drawableRes;
+                    } else if (icon.defaultDrawableRes != null) {
+                        resId = icon.defaultDrawableRes;
+                    }
+
+                    iconImageViews.get(i).setImageResource(resId);
+                }
+
                 DisplayString titleDisplayString = iconView.getTitle();
                 if (title != null) {
                     String titleString = null;

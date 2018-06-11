@@ -110,4 +110,11 @@ public class ActiveUIStepBase extends UIStepBase implements ActiveUIStep {
                 .add("duration", this.getDuration())
                 .add("isBackgroundAudioRequired", this.isBackgroundAudioRequired());
     }
+
+    @Override
+    public ActiveUIStepBase copyWithIdentifier(@NonNull String identifier) {
+        return new ActiveUIStepBase(identifier, this.getActions(), this.getTitle(), this.getText(), this.getDetail(),
+                this.getFootnote(), this.getColorTheme(), this.getImageTheme(), this.getDuration(),
+                this.isBackgroundAudioRequired());
+    }
 }

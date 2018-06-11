@@ -56,4 +56,12 @@ public interface Step {
     @NonNull
     @StepType
     String getType();
+
+    /**
+     * Returns a copy of this step with the given identifier.
+     * @param identifier the identifier for the new step.
+     * @return a copy of this step with the given identifier.
+     */
+    @NonNull
+    Step copyWithIdentifier(@NonNull String identifier);
 }

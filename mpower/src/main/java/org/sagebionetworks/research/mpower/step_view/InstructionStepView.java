@@ -40,6 +40,7 @@ import com.google.common.collect.ImmutableMap;
 import org.sagebionetworks.research.domain.step.interfaces.Step;
 import org.sagebionetworks.research.mpower.step.InstructionStep;
 import org.sagebionetworks.research.presentation.DisplayString;
+import org.sagebionetworks.research.presentation.mapper.DrawableMapper;
 import org.sagebionetworks.research.presentation.model.ColorThemeView;
 import org.sagebionetworks.research.presentation.model.ImageThemeView;
 import org.sagebionetworks.research.presentation.model.action.ActionView;
@@ -65,12 +66,12 @@ public class InstructionStepView extends ActiveUIStepViewBase {
     }
 
     @NonNull
-    public static InstructionStepView fromInstructionStep(@NonNull Step step) {
+    public static InstructionStepView fromInstructionStep(@NonNull Step step, DrawableMapper mapper) {
         if (!(step instanceof InstructionStep)) {
             throw new IllegalArgumentException("Provided step: " + step + " is not an InstructionStep");
         }
 
-        ActiveUIStepViewBase activeUIStepView = ActiveUIStepViewBase.fromActiveUIStep(step);
+        ActiveUIStepViewBase activeUIStepView = ActiveUIStepViewBase.fromActiveUIStep(step, mapper);
         return new InstructionStepView(activeUIStepView.getIdentifier(), activeUIStepView.getNavDirection(),
                 activeUIStepView.getActions(), activeUIStepView.getTitle(), activeUIStepView.getText(),
                 activeUIStepView.getDetail(), activeUIStepView.getFootnote(), activeUIStepView.getColorTheme(),

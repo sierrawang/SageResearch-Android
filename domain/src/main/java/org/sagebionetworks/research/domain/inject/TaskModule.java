@@ -41,6 +41,9 @@ import org.sagebionetworks.research.domain.task.TaskInfoBase;
 import org.sagebionetworks.research.domain.task.navigation.OrderedStepNavigator;
 import org.sagebionetworks.research.domain.task.navigation.StepNavigatorFactory;
 import org.sagebionetworks.research.domain.task.navigation.TaskBase;
+import org.sagebionetworks.research.domain.task.navigation.TreeNavigator;
+import org.sagebionetworks.research.domain.task.navigation.strategy.StrategyBasedNavigator;
+import org.sagebionetworks.research.domain.task.navigation.strategy.StrategyBasedNavigator.Factory;
 
 import dagger.Module;
 import dagger.Provides;
@@ -65,7 +68,7 @@ public abstract class TaskModule {
     @Singleton
     @Provides
     static StepNavigatorFactory provideStepNavigatorFactory() {
-        return new OrderedStepNavigator.Factory();
+        return new StrategyBasedNavigator.Factory();
     }
 
     /**

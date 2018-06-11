@@ -36,6 +36,7 @@ import android.support.annotation.Nullable;
 
 import org.sagebionetworks.research.domain.step.StepType;
 import org.sagebionetworks.research.domain.step.interfaces.Step;
+import org.sagebionetworks.research.presentation.mapper.DrawableMapper;
 import org.sagebionetworks.research.presentation.model.implementations.ActiveUIStepViewBase;
 import org.sagebionetworks.research.presentation.model.implementations.FormUIStepViewBase;
 import org.sagebionetworks.research.presentation.model.implementations.UIStepViewBase;
@@ -63,7 +64,7 @@ public abstract class StepViewModule {
 
     public interface StepViewFactory {
         @Nullable
-        StepView apply(Step step);
+        StepView apply(Step step, DrawableMapper mapper);
     }
 
     @Provides
@@ -89,13 +90,13 @@ public abstract class StepViewModule {
 
     @Provides
     static StepViewFactory provideStepViewFactory(final Map<String, StepViewFactory> stepToFactoryMap) {
-        return (final Step step) ->
+        return (final Step step, final DrawableMapper mapper) ->
         {
             String type = step.getType();
             if (stepToFactoryMap.containsKey(type)) {
-                return stepToFactoryMap.get(type).apply(step);
+                return stepToFactoryMap.get(type).apply(step, mapper);
             } else {
-                return UIStepViewBase.fromUIStep(step);
+                return UIStepViewBase.fromUIStep(step, mapper);
             }
         };
     }

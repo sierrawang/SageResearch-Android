@@ -30,58 +30,45 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.sagebionetworks.research.domain.task.navigation;
+package org.sagebionetworks.research.presentation.model.interfaces;
 
-import android.support.annotation.NonNull;
+import android.graphics.drawable.Drawable;
+import android.support.annotation.Nullable;
+import android.view.Display;
 
 import com.google.auto.value.AutoValue;
-import com.google.common.collect.ImmutableList;
-import com.google.gson.Gson;
-import com.google.gson.TypeAdapter;
 
-import org.sagebionetworks.research.domain.async.AsyncAction;
-import org.sagebionetworks.research.domain.step.interfaces.Step;
-import org.sagebionetworks.research.domain.task.Task;
-
-import java.util.Collections;
-import java.util.List;
+import org.sagebionetworks.research.domain.step.ui.theme.ColorPlacement;
+import org.sagebionetworks.research.domain.step.ui.theme.FetchableImageTheme;
+import org.sagebionetworks.research.presentation.DisplayDrawable;
+import org.sagebionetworks.research.presentation.mapper.DrawableMapper;
+import org.sagebionetworks.research.presentation.model.ImageThemeView;
 
 @AutoValue
-public abstract class TaskBase implements Task {
-
+public abstract class FetchableImageThemeView extends ImageThemeView {
     @AutoValue.Builder
     public abstract static class Builder {
-        public abstract TaskBase build();
+        public abstract FetchableImageThemeView build();
 
-        public abstract Builder setAsyncActions(@NonNull List<AsyncAction> asyncActions);
+        public abstract Builder setColorPlacement(@ColorPlacement String colorPlacement);
 
-        public abstract Builder setIdentifier(@NonNull String identifier);
-
-        public abstract Builder setSteps(@NonNull List<Step> steps);
-
-        public abstract Builder setProgressMarkers(@NonNull List<String> progressMarkers);
+        public abstract Builder setImageResource(@Nullable DisplayDrawable imageResource);
     }
+
+    @Nullable
+    public abstract DisplayDrawable getImageResource();
 
     public static Builder builder() {
-        return new AutoValue_TaskBase.Builder()
-                .setAsyncActions(Collections.<AsyncAction>emptyList());
+        return new AutoValue_FetchableImageThemeView.Builder();
     }
 
-    public static TypeAdapter<TaskBase> typeAdapter(Gson gson) {
-        return new AutoValue_TaskBase.GsonTypeAdapter(gson)
-                .setDefaultSteps(ImmutableList.<Step>of())
-                .setDefaultProgressMarkers(ImmutableList.<String>of())
-                .setDefaultAsyncActions(ImmutableList.<AsyncAction>of());
-    }
-
-    @NonNull
-    @Override
-    public Task copyWithSteps(final List<Step> steps) {
-        return this.builder()
-                .setIdentifier(this.getIdentifier())
-                .setAsyncActions(this.getAsyncActions())
-                .setSteps(steps)
-                .setProgressMarkers(this.getProgressMarkers())
+    public static FetchableImageThemeView fromFetchableImageTheme(FetchableImageTheme imageTheme,
+            DrawableMapper mapper) {
+        // TODO: rkolmos 06/11/2018 fix this not to instantiate a new on every time.
+        return FetchableImageThemeView.builder()
+                .setColorPlacement(imageTheme.getColorPlacement())
+                .setImageResource(new DisplayDrawable(null,
+                        mapper.getDrawableFromName(imageTheme.getImageResourceName())))
                 .build();
     }
 }

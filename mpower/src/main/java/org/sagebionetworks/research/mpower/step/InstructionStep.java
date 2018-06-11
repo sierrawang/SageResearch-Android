@@ -65,4 +65,11 @@ public class InstructionStep extends ActiveUIStepBase {
     public String getType() {
         return TYPE_KEY;
     }
+
+    @Override
+    public InstructionStep copyWithIdentifier(@NonNull String identifier) {
+        return new InstructionStep(identifier, this.getActions(), this.getTitle(), this.getText(), this.getDetail(),
+                this.getFootnote(), this.getColorTheme(), this.getImageTheme(), this.getDuration(),
+                this.isBackgroundAudioRequired());
+    }
 }

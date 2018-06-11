@@ -47,6 +47,10 @@ import org.sagebionetworks.research.domain.step.interfaces.SectionStep;
 import org.sagebionetworks.research.domain.step.interfaces.Step;
 import org.sagebionetworks.research.domain.step.interfaces.TransformerStep;
 import org.sagebionetworks.research.domain.step.interfaces.UIStep;
+import org.sagebionetworks.research.domain.step.ui.theme.AnimationImageTheme;
+import org.sagebionetworks.research.domain.step.ui.theme.FetchableImageTheme;
+import org.sagebionetworks.research.domain.step.ui.theme.ImageTheme;
+import org.sagebionetworks.research.domain.step.ui.theme.ImageThemeType;
 
 
 import java.util.Map;
@@ -60,11 +64,20 @@ import dagger.multibindings.IntoSet;
 
 import static org.sagebionetworks.research.domain.inject.GsonModule.createPassThroughDeserializer;
 
+import android.support.v4.content.PermissionChecker.PermissionResult;
+
+import javax.inject.Inject;
+
 @Module(includes = {GsonModule.class})
 public class StepModule {
     @MapKey
     public @interface StepClassKey {
         Class<? extends Step> value();
+    }
+
+    @MapKey
+    public @interface ImageThemeClassKey {
+        Class<? extends ImageTheme> value();
     }
 
     // region Type Keys
@@ -142,6 +155,33 @@ public class StepModule {
         return TransformerStepBase.getJsonDeserializer();
     }
     // endregion
+
+    @Provides
+    @IntoMap
+    @ImageThemeClassKey(AnimationImageTheme.class)
+    static String provideAnimationImageThemeTypeKey() {
+        return AnimationImageTheme.TYPE_KEY;
+    }
+
+    @Provides
+    @IntoMap
+    @ImageThemeClassKey(FetchableImageTheme.class)
+    static String provideFetchableImageThemeTypeKey() {
+        return FetchableImageTheme.TYPE_KEY;
+    }
+
+    @Provides
+    @IntoSet
+    static RuntimeTypeAdapterFactory provideImageThemeTypeAdapterFactory(
+            Map<Class<? extends ImageTheme>, String> imageThemeClassKeys) {
+        RuntimeTypeAdapterFactory<ImageTheme> factory = RuntimeTypeAdapterFactory.of(ImageTheme.class);
+        for (Entry<Class<? extends ImageTheme>, String> entry : imageThemeClassKeys.entrySet()) {
+            factory.registerSubtype(entry.getKey(), entry.getValue());
+        }
+
+        return factory;
+    }
+
 
     /**
      * @return GSON runtime type adapter factory for polymorphic deserialization of Step classes

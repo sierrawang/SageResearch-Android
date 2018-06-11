@@ -46,6 +46,7 @@ import com.google.gson.annotations.SerializedName;
 
 import org.sagebionetworks.research.domain.interfaces.HashCodeHelper;
 import org.sagebionetworks.research.domain.step.StepType;
+import org.sagebionetworks.research.domain.step.interfaces.Step;
 import org.sagebionetworks.research.domain.step.interfaces.TransformerStep;
 
 import java.lang.reflect.Type;
@@ -66,6 +67,12 @@ public class TransformerStepBase extends StepBase implements TransformerStep {
     @Override
     public String getType() {
         return TYPE_KEY;
+    }
+
+    @NonNull
+    @Override
+    public TransformerStep copyWithIdentifier(@NonNull final String identifier) {
+        throw new UnsupportedOperationException("Transformer steps cannot be copied");
     }
 
     @NonNull

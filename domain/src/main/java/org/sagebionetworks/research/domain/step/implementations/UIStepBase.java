@@ -38,9 +38,11 @@ import android.support.annotation.Nullable;
 import com.google.common.base.MoreObjects.ToStringHelper;
 import com.google.common.base.Objects;
 import com.google.common.collect.ImmutableMap;
+import com.google.gson.annotations.SerializedName;
 
 import org.sagebionetworks.research.domain.interfaces.HashCodeHelper;
 import org.sagebionetworks.research.domain.step.StepType;
+import org.sagebionetworks.research.domain.step.interfaces.Step;
 import org.sagebionetworks.research.domain.step.interfaces.ThemedUIStep;
 import org.sagebionetworks.research.domain.step.ui.action.interfaces.Action;
 import org.sagebionetworks.research.domain.step.ui.theme.ColorTheme;
@@ -70,6 +72,7 @@ public class UIStepBase extends StepBase implements ThemedUIStep {
     private final ColorTheme colorTheme;
 
     @Nullable
+    @SerializedName("image")
     private final ImageTheme imageTheme;
 
     // Gson initialize defaults
@@ -137,6 +140,13 @@ public class UIStepBase extends StepBase implements ThemedUIStep {
     @Override
     public String getType() {
         return TYPE_KEY;
+    }
+
+    @NonNull
+    @Override
+    public UIStepBase copyWithIdentifier(@NonNull final String identifier) {
+        return new UIStepBase(identifier, this.getActions(), this.getTitle(), this.getText(), this.getDetail(),
+                this.getFootnote(), this.getColorTheme(), this.getImageTheme());
     }
 
     @Nullable

@@ -18,7 +18,8 @@
       "type": "active",
       "duration": 30,
       "image": {
-        "imageName": "TapLeft1",
+        "type":"fetchable",
+        "imageName": "tap_left1",
         "placementType": "fullsizeBackground"
       },
       "colorTheme": {
