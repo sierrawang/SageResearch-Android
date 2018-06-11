@@ -35,8 +35,11 @@ package org.sagebionetworks.research.mpower.show_step_fragment;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v4.app.Fragment;
+import android.view.View;
 
 import org.sagebionetworks.research.mobile_ui.show_step.view.ShowStepFragmentBase;
+import org.sagebionetworks.research.mobile_ui.show_step.view.ShowUIStepFragment;
+import org.sagebionetworks.research.mobile_ui.show_step.view.ShowUIStepFragmentBase;
 import org.sagebionetworks.research.mobile_ui.show_step.view.view_binding.UIStepViewBinding;
 import org.sagebionetworks.research.mpower.R;
 import org.sagebionetworks.research.mpower.step_view.InstructionStepView;
@@ -44,8 +47,7 @@ import org.sagebionetworks.research.presentation.model.interfaces.StepView;
 import org.sagebionetworks.research.presentation.show_step.show_step_view_models.ShowUIStepViewModel;
 
 public class ShowInstructionStepFragment extends
-        ShowStepFragmentBase<InstructionStepView, ShowUIStepViewModel<InstructionStepView>,
-                UIStepViewBinding<InstructionStepView>> {
+        ShowUIStepFragmentBase<InstructionStepView> {
     @NonNull
     public static ShowInstructionStepFragment newInstance(@NonNull StepView stepView) {
         ShowInstructionStepFragment fragment = new ShowInstructionStepFragment();
@@ -56,12 +58,12 @@ public class ShowInstructionStepFragment extends
 
     @NonNull
     @Override
-    protected UIStepViewBinding<InstructionStepView> instantiateBinding() {
-        return new UIStepViewBinding<>();
+    protected UIStepViewBinding<InstructionStepView> instantiateAndBindBinding(View view) {
+        return new UIStepViewBinding<>(view);
     }
 
     @Override
-    protected int getLayoutId() {
+    public int getLayoutId() {
         return R.layout.mpower2_instruction_step;
     }
 }

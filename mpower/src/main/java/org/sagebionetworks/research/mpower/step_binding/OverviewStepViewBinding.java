@@ -33,6 +33,7 @@
 package org.sagebionetworks.research.mpower.step_binding;
 
 import android.view.View;
+import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -45,24 +46,45 @@ import org.sagebionetworks.research.presentation.DisplayString;
 import java.util.List;
 
 import butterknife.BindViews;
+import butterknife.ButterKnife;
+import butterknife.Unbinder;
 
 /**
- * An OverviewStpeViewBinding is an extension of UIStepViewBinding that also has icon views. These icon views
+ * An OverviewStepViewBinding is an extension of UIStepViewBinding that also has icon views. These icon views
  * consist of an image view which displays the icon and a label which displays a description of the icon. There are
  * three of these views left, right, and center which are filled in the order center, left, right, depending on how
  * many icons are present.
  * @param <S> The type of step view this binding expects it's update method to recieve.
  */
 public class OverviewStepViewBinding<S extends OverviewStepView> extends UIStepViewBinding<S> {
-    @BindViews({R.id.centerIconImageView, R.id.leftIconImageView, R.id.rightIconImageView})
-    public List<ImageView> iconImageViews;
+    private final OverviewStepViewHolder overviewStepViewHolder;
+    private final Unbinder overviewStepViewHolderUnbinder;
 
-    @BindViews({R.id.centerIconLabel, R.id.leftIconLabel, R.id.rightIconLabel})
-    public List<TextView> iconLabels;
+    public OverviewStepViewBinding(View view) {
+        super(view);
+        this.overviewStepViewHolder = new OverviewStepViewHolder();
+        this.overviewStepViewHolderUnbinder = ButterKnife.bind(this.overviewStepViewHolder, view);
+    }
+
+    @Override
+    public void unbind() {
+        super.unbind();
+        this.overviewStepViewHolderUnbinder.unbind();
+    }
+
+    public List<ImageView> getIconImageViews() {
+        return this.overviewStepViewHolder.iconImageViews;
+    }
+
+    public List<TextView> getIconLabels() {
+        return this.overviewStepViewHolder.iconLabels;
+    }
 
     @Override
     public void update(S overviewStepView) {
         super.update(overviewStepView);
+        List<ImageView> iconImageViews = this.getIconImageViews();
+        List<TextView> iconLabels = this.getIconLabels();
 
         List<IconView> iconViews = overviewStepView.getIconViews();
         for (int i = 0; i < iconImageViews.size(); i++) {
@@ -72,8 +94,8 @@ public class OverviewStepViewBinding<S extends OverviewStepView> extends UIStepV
             }
 
             if (iconView == null) {
-                this.iconImageViews.get(i).setVisibility(View.GONE);
-                this.iconLabels.get(i).setVisibility(View.GONE);
+                iconImageViews.get(i).setVisibility(View.GONE);
+                iconLabels.get(i).setVisibility(View.GONE);
             } else {
                 // TODO rkolmos 06/06/2018 update image view
                 DisplayString title = iconView.getTitle();
@@ -85,9 +107,17 @@ public class OverviewStepViewBinding<S extends OverviewStepView> extends UIStepV
                         // TODO rkolmos 06/06/2018 resolve the resource and use it instead.
                     }
 
-                    this.iconLabels.get(i).setText(titleString);
+                    iconLabels.get(i).setText(titleString);
                 }
             }
         }
+    }
+
+    protected static class OverviewStepViewHolder {
+        @BindViews({R.id.centerIconImageView, R.id.leftIconImageView, R.id.rightIconImageView})
+        public List<ImageView> iconImageViews;
+
+        @BindViews({R.id.centerIconLabel, R.id.leftIconLabel, R.id.rightIconLabel})
+        public List<TextView> iconLabels;
     }
 }

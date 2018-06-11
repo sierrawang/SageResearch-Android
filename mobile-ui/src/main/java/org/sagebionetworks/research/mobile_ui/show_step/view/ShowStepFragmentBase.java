@@ -139,8 +139,7 @@ public abstract class ShowStepFragmentBase
             Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         View view = inflater.inflate(this.getLayoutId(), container, false);
-        this.stepViewBinding = this.instantiateBinding();
-        this.stepViewUnbinder = ButterKnife.bind(this.stepViewBinding, view);
+        this.stepViewBinding = this.instantiateAndBindBinding(view);
         this.stepViewBinding.setActionButtonClickListener(this::handleActionButtonClick);
         this.showStepViewModel.getStepView().observe(this, this::update);
         this.stepViewBinding.setActionButtonClickListener(this::handleActionButtonClick);
@@ -151,7 +150,7 @@ public abstract class ShowStepFragmentBase
     @Override
     public void onDestroyView() {
         super.onDestroyView();
-        this.stepViewUnbinder.unbind();
+        this.stepViewBinding.unbind();
     }
 
     /**
@@ -213,5 +212,5 @@ public abstract class ShowStepFragmentBase
      * @return An instance of the correct type of StepViewBinding for this fragment.
      */
     @NonNull
-    protected abstract SB instantiateBinding();
+    protected abstract SB instantiateAndBindBinding(View view);
 }

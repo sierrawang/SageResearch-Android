@@ -34,6 +34,7 @@ package org.sagebionetworks.research.mpower.show_step_fragment;
 
 import android.os.Bundle;
 import android.support.annotation.NonNull;
+import android.view.View;
 
 import org.sagebionetworks.research.domain.mobile_ui.R;
 import org.sagebionetworks.research.mobile_ui.show_step.view.ShowStepFragmentBase;
@@ -56,7 +57,7 @@ public class ShowTappingActiveUIStepFragment extends
 
     @NonNull
     @Override
-    protected StepViewBinding<StepView> instantiateBinding() {
+    protected StepViewBinding<StepView> instantiateAndBindBinding(View view) {
         return null;
     }
 
