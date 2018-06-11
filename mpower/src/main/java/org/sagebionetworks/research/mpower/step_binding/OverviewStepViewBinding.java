@@ -32,6 +32,7 @@
 
 package org.sagebionetworks.research.mpower.step_binding;
 
+import android.view.Gravity;
 import android.view.View;
 import android.widget.ImageButton;
 import android.widget.ImageView;
@@ -83,6 +84,16 @@ public class OverviewStepViewBinding<S extends OverviewStepView> extends UIStepV
     @Override
     public void update(S overviewStepView) {
         super.update(overviewStepView);
+        TextView title = this.getTitle();
+        if (title != null) {
+            title.setGravity(Gravity.CENTER);
+        }
+
+        TextView text = this.getText();
+        if (text != null) {
+            text.setGravity(Gravity.CENTER);
+        }
+
         List<ImageView> iconImageViews = this.getIconImageViews();
         List<TextView> iconLabels = this.getIconLabels();
 
@@ -98,12 +109,12 @@ public class OverviewStepViewBinding<S extends OverviewStepView> extends UIStepV
                 iconLabels.get(i).setVisibility(View.GONE);
             } else {
                 // TODO rkolmos 06/06/2018 update image view
-                DisplayString title = iconView.getTitle();
+                DisplayString titleDisplayString = iconView.getTitle();
                 if (title != null) {
                     String titleString = null;
-                    if (title.displayString != null) {
-                        titleString = title.displayString;
-                    } else if (title.defaultDisplayStringRes != null) {
+                    if (titleDisplayString.displayString != null) {
+                        titleString = titleDisplayString.displayString;
+                    } else if (titleDisplayString.defaultDisplayStringRes != null) {
                         // TODO rkolmos 06/06/2018 resolve the resource and use it instead.
                     }
 
