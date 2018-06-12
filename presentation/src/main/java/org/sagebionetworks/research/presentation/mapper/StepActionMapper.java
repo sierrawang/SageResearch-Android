@@ -58,7 +58,7 @@ public class StepActionMapper {
         switch (stepAction.actionType) {
             case CUSTOM:
                 StepCustomAction stepCustomAction = (StepCustomAction) stepAction;
-                displayString = new DisplayString(R.string.rs2_empty,
+                displayString = DisplayString.create(R.string.rs2_empty,
                         stepAction.title);
                 actionType = stepCustomAction.customActionType;
                 break;
@@ -67,7 +67,7 @@ public class StepActionMapper {
                 switch (stepNavigationAction.navigationActionType) {
                     // TODO: implement other actions
                     case FORWARD:
-                        displayString = new DisplayString(R.string.rs2_navigation_action_forward,
+                        displayString = DisplayString.create(R.string.rs2_navigation_action_forward,
                                 stepNavigationAction.title);
                         actionType = ActionType.FORWARD;
                 }

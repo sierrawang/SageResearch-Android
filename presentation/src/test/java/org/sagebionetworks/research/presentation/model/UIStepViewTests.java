@@ -103,10 +103,10 @@ public class UIStepViewTests {
         UIStepViewBase result = UIStepViewBase.fromUIStep(MOCK_UI_STEP);
         assertNotNull(result);
         assertEquals("identifier", result.getIdentifier());
-        assertEquals(new DisplayString(null, "title"), result.getTitle());
-        assertEquals(new DisplayString(null, "text"), result.getText());
-        assertEquals(new DisplayString(null, "detail"), result.getDetail());
-        assertEquals(new DisplayString(null, "footnote"), result.getFootnote());
+        assertEquals(DisplayString.create(null, "title"), result.getTitle());
+        assertEquals(DisplayString.create(null, "text"), result.getText());
+        assertEquals(DisplayString.create(null, "detail"), result.getDetail());
+        assertEquals(DisplayString.create(null, "footnote"), result.getFootnote());
         ColorThemeView colorThemeView = result.getColorTheme();
         assertNotNull(colorThemeView);
         assertTrue(colorThemeView.lightStyle());
@@ -114,6 +114,6 @@ public class UIStepViewTests {
         assertNotNull(imageThemeView);
         assertNotNull(imageThemeView.getColorPlacement());
         assertEquals(ColorPlacement.HEADER, imageThemeView.getColorPlacement());
-        assertNull(imageThemeView.getImageResource().drawableRes);
+        assertNull(imageThemeView.getImageResource().getDrawable());
     }
 }

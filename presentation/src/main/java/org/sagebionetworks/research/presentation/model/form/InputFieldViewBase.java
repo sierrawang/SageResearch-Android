@@ -98,9 +98,9 @@ public class InputFieldViewBase implements InputFieldView, Parcelable {
         Range range = inputField.getRange();
         List<SurveyRule> surveyRules = inputField.getSurveyRules();
         // TODO rkolmos 05/30/2018 do the correct thing with these strings
-        DisplayString prompt = new DisplayString(0, inputField.getPrompt());
-        DisplayString promptDetail = new DisplayString(0, inputField.getPromptDetail());
-        DisplayString placeholderText = new DisplayString(0, inputField.getPlaceholderText());
+        DisplayString prompt = DisplayString.create(0, inputField.getPrompt());
+        DisplayString promptDetail = DisplayString.create(0, inputField.getPromptDetail());
+        DisplayString placeholderText = DisplayString.create(0, inputField.getPlaceholderText());
 
         return new InputFieldViewBase(identifier, prompt, promptDetail, placeholderText, isOptional, formDataType,
                 uiHint, textFieldOptions, range, surveyRules);

@@ -203,8 +203,7 @@ public class UIStepViewBinding implements StepViewBinding<UIStepView> {
 
         if (this.imageView != null) {
             DisplayDrawable drawable = stepView.getImageTheme().getImageResource();
-            Integer imageResourceId = drawable.drawableRes != null ? drawable.drawableRes :
-                    drawable.defaultDrawableRes;
+            Integer imageResourceId = drawable.getDrawable();
             if (imageResourceId != null) {
                 this.imageView.setImageResource(imageResourceId);
             } else {
@@ -217,11 +216,7 @@ public class UIStepViewBinding implements StepViewBinding<UIStepView> {
 
     protected static void updateTextView(TextView view, DisplayString displayString) {
         if (view != null) {
-            if (displayString.displayString != null) {
-                view.setText(displayString.displayString);
-            } else {
-                view.setText(displayString.defaultDisplayStringRes);
-            }
+           view.setText(displayString.getDisplayString());
         }
     }
 }
