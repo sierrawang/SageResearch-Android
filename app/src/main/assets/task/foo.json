@@ -3,6 +3,7 @@
   "asyncActions": [],
   "actions": {
     "cancel": {
+      "type":"base",
       "iconName": "closeActivity"
     }
   },
@@ -20,6 +21,7 @@
       "image": "before",
       "actions": {
         "goForward": {
+          "type":"base",
           "buttonTitle": "Go, Dogs!"
         }
       }
@@ -107,11 +109,13 @@
       "text": "This is the second step in the Foo task.",
       "detail": "On this screen you should see an image below the text with a picture of a phone in a pocket. The next step after this one is an active step. When it starts, you should hear voice commands.",
       "image": {
+        "type":"fetchable",
         "imageName": "phoneinpocketIllustration",
         "placementType": "iconAfter"
       },
       "actions": {
         "goForward": {
+          "type":"base",
           "buttonTitle": "Start"
         }
       }
