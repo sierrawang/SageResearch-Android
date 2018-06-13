@@ -55,8 +55,10 @@ import org.sagebionetworks.research.mobile_ui.show_step.view.view_binding.UIStep
 import org.sagebionetworks.research.mobile_ui.widget.ActionButton;
 import org.sagebionetworks.research.mpower.R;
 import org.sagebionetworks.research.mpower.step_binding.OverviewStepViewBinding;
+import org.sagebionetworks.research.mpower.step_view.IconView;
 import org.sagebionetworks.research.mpower.step_view.OverviewStepView;
 import org.sagebionetworks.research.presentation.ActionType;
+import org.sagebionetworks.research.presentation.DisplayString;
 import org.sagebionetworks.research.presentation.model.interfaces.StepView;
 import org.sagebionetworks.research.presentation.show_step.show_step_view_models.ShowUIStepViewModel;
 
@@ -142,5 +144,31 @@ public class ShowOverviewStepFragment extends
         }
 
         scrollViewAnimator.start();
+    }
+
+    @Override
+    public void update(OverviewStepView stepView) {
+        super.update(stepView);
+        List<ImageView> iconImageViews = this.stepViewBinding.getIconImageViews();
+        List<TextView> iconLabels = this.stepViewBinding.getIconLabels();
+
+        List<IconView> iconViews = stepView.getIconViews();
+        for (int i = 0; i < iconImageViews.size(); i++) {
+            IconView iconView = null;
+            if (iconViews.size() > i) {
+                iconView = iconViews.get(i);
+            }
+
+            if (iconView == null) {
+                iconImageViews.get(i).setVisibility(View.GONE);
+                iconLabels.get(i).setVisibility(View.GONE);
+            } else {
+                DisplayString titleDisplayString = iconView.getTitle();
+                if (titleDisplayString != null) {
+                    String titleString = titleDisplayString.getString(getContext().getResources());
+                    iconLabels.get(i).setText(titleString);
+                }
+            }
+        }
     }
 }

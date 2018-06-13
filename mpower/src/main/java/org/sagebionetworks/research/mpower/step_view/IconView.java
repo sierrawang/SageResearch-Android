@@ -61,7 +61,7 @@ public abstract class IconView {
         String title = icon.getTitle();
         if (title != null) {
             return IconView.builder()
-                    .setTitle(new DisplayString(null, title))
+                    .setTitle(DisplayString.create(null, title))
                     .build();
         } else {
             return null;

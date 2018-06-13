@@ -110,35 +110,6 @@ public class OverviewStepViewBinding<S extends OverviewStepView> extends UIStepV
         if (text != null) {
             text.setGravity(Gravity.CENTER);
         }
-
-        List<ImageView> iconImageViews = this.getIconImageViews();
-        List<TextView> iconLabels = this.getIconLabels();
-
-        List<IconView> iconViews = overviewStepView.getIconViews();
-        for (int i = 0; i < iconImageViews.size(); i++) {
-            IconView iconView = null;
-            if (iconViews.size() > i) {
-                iconView = iconViews.get(i);
-            }
-
-            if (iconView == null) {
-                iconImageViews.get(i).setVisibility(View.GONE);
-                iconLabels.get(i).setVisibility(View.GONE);
-            } else {
-                // TODO rkolmos 06/06/2018 update image view
-                DisplayString titleDisplayString = iconView.getTitle();
-                if (title != null) {
-                    String titleString = null;
-                    if (titleDisplayString.displayString != null) {
-                        titleString = titleDisplayString.displayString;
-                    } else if (titleDisplayString.defaultDisplayStringRes != null) {
-                        // TODO rkolmos 06/06/2018 resolve the resource and use it instead.
-                    }
-
-                    iconLabels.get(i).setText(titleString);
-                }
-            }
-        }
     }
 
     protected static class OverviewStepViewHolder {

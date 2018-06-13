@@ -70,21 +70,17 @@ public abstract class ShowUIStepFragmentBase<S extends UIStepView,
             if (actionView != null) {
                 DisplayString buttonTitle = actionView.getButtonTitle();
                 if (buttonTitle != null) {
-                    if (buttonTitle.displayString != null) {
-                        button.setText(buttonTitle.displayString);
-                    } else if (buttonTitle.defaultDisplayStringRes != null) {
-                        button.setText(buttonTitle.defaultDisplayStringRes);
-                    } else {
-                        button.setText(null);
+                    String title = buttonTitle.getString(getContext().getResources());
+                    if (title != null) {
+                        button.setText(title);
                     }
                 }
 
                 DisplayDrawable buttonIcon = actionView.getButtonIcon();
                 if (buttonIcon != null) {
-                    if (buttonIcon.drawableRes != null) {
-                        button.setBackgroundResource(buttonIcon.drawableRes);
-                    } else if (buttonIcon.defaultDrawableRes != null) {
-                        button.setBackgroundResource(buttonIcon.defaultDrawableRes);
+                    Integer drawable = buttonIcon.getDrawable();
+                    if (drawable != null) {
+                        button.setBackgroundResource(drawable);
                     }
                 }
             } else {
@@ -124,7 +120,7 @@ public abstract class ShowUIStepFragmentBase<S extends UIStepView,
             title = getResources().getString(R.string.rs2_navigation_action_forward_last_step);
         }
 
-        return ActionViewBase.builder().setButtonTitle(new DisplayString(null, title)).build();
+        return ActionViewBase.builder().setButtonTitle(DisplayString.create(null, title)).build();
     }
 
     protected ActionView getBackwardButtonActionView(UIStepView stepView) {
@@ -136,7 +132,7 @@ public abstract class ShowUIStepFragmentBase<S extends UIStepView,
         // If there is no previous step we will return null indicating the button should be hidden.
         if (this.performTaskViewModel.hasPreviousStep()) {
             String title = getResources().getString(R.string.rs2_navigation_action_backward);
-            return ActionViewBase.builder().setButtonTitle(new DisplayString(null, title)).build();
+            return ActionViewBase.builder().setButtonTitle(DisplayString.create(null, title)).build();
         } else {
             return null;
         }
@@ -150,7 +146,7 @@ public abstract class ShowUIStepFragmentBase<S extends UIStepView,
         }
 
         String title = this.getResources().getString(R.string.rs2_navigation_action_skip);
-        return ActionViewBase.builder().setButtonTitle(new DisplayString(null, title)).build();
+        return ActionViewBase.builder().setButtonTitle(DisplayString.create(null, title)).build();
     }
 
     protected ActionView getInfoButtonActionView(UIStepView stepView) {
@@ -161,7 +157,7 @@ public abstract class ShowUIStepFragmentBase<S extends UIStepView,
 
         // TODO rkolmos 06/10/2018 make this id not hardcoded.
         Integer iconResId = R.drawable.rs2_info_icon;
-        return ActionViewBase.builder().setButtonIcon(new DisplayDrawable(null, iconResId)).build();
+        return ActionViewBase.builder().setButtonIcon(DisplayDrawable.create(null, iconResId)).build();
     }
 
     protected ActionView getCancelButtonActionView(UIStepView stepView) {
@@ -172,7 +168,7 @@ public abstract class ShowUIStepFragmentBase<S extends UIStepView,
 
         // TODO rkolmos 06/10/2018
         Integer iconResId = R.drawable.rs2_cancel_icon;
-        return ActionViewBase.builder().setButtonIcon(new DisplayDrawable(null, iconResId)).build();
+        return ActionViewBase.builder().setButtonIcon(DisplayDrawable.create(null, iconResId)).build();
     }
     // endregion
 }

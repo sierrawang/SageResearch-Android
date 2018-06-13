@@ -44,17 +44,13 @@ import org.sagebionetworks.research.mobile_ui.widget.NavigationActionBar.ActionB
 import org.sagebionetworks.research.mobile_ui.widget.StepHeader;
 import org.sagebionetworks.research.presentation.DisplayDrawable;
 import org.sagebionetworks.research.presentation.DisplayString;
-import org.sagebionetworks.research.presentation.model.ImageThemeView;
 import org.sagebionetworks.research.presentation.model.interfaces.UIStepView;
 
-import java.lang.annotation.Retention;
-import java.lang.annotation.RetentionPolicy;
+import javax.annotation.Nullable;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.Unbinder;
-
-import javax.annotation.Nullable;
 
 /**
  *  A UIStepViewBinding stores the various views that a step view may contain. Supported Views are:
@@ -190,8 +186,7 @@ public class UIStepViewBinding<S extends UIStepView> implements StepViewBinding<
         if (imageView != null) {
             if (stepView.getImageTheme() != null) {
                 DisplayDrawable drawable = stepView.getImageTheme().getImageResource();
-                Integer imageResourceId = drawable.drawableRes != null ? drawable.drawableRes :
-                        drawable.defaultDrawableRes;
+                Integer imageResourceId = drawable.getDrawable();
                 if (imageResourceId != null) {
                     imageView.setImageResource(imageResourceId);
                 } else {
@@ -205,10 +200,10 @@ public class UIStepViewBinding<S extends UIStepView> implements StepViewBinding<
 
     protected void updateTextView(TextView view, DisplayString displayString) {
         if (view != null) {
-            if (displayString.displayString != null) {
-                view.setText(displayString.displayString);
-            } else if (displayString.defaultDisplayStringRes != null) {
-                view.setText(displayString.defaultDisplayStringRes);
+            if (displayString.getDisplayString() != null) {
+                view.setText(displayString.getDisplayString());
+            } else if (displayString.getDefaultDisplayStringRes() != null) {
+                view.setText(displayString.getDefaultDisplayStringRes());
             }
         }
     }

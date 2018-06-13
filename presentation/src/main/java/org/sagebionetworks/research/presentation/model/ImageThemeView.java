@@ -69,7 +69,7 @@ public abstract class ImageThemeView implements Parcelable {
         return ImageThemeView.builder()
                 .setColorPlacement(imageTheme.getColorPlacement())
                 // There is no default image for the one displayed on the step's image view.
-                .setImageResource(new DisplayDrawable(null,
+                .setImageResource(DisplayDrawable.create(null,
                         DrawableMapper.getDrawableFromName(imageName)))
                 .build();
     }

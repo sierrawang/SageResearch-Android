@@ -30,38 +30,44 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.sagebionetworks.research.presentation.model.action;
+package org.sagebionetworks.research.presentation.model;
 
-import com.google.auto.value.AutoValue;
+import org.junit.*;
+import org.sagebionetworks.research.presentation.inject.StepViewModule;
+import org.sagebionetworks.research.presentation.inject.StepViewModule.StepViewFactory;
+import org.sagebionetworks.research.presentation.model.interfaces.ActiveUIStepView;
+import org.sagebionetworks.research.presentation.model.interfaces.StepView;
+import org.sagebionetworks.research.presentation.model.interfaces.UIStepView;
 
-import org.sagebionetworks.research.domain.step.ui.action.interfaces.SkipToStepAction;
-import org.sagebionetworks.research.presentation.DisplayDrawable;
-import org.sagebionetworks.research.presentation.DisplayString;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
 
-import javax.annotation.Nullable;
 
-@AutoValue
-public abstract class SkipToStepActionViewBase implements SkipToStepActionView {
-    @AutoValue.Builder
-    public abstract static class Builder {
-        public abstract SkipToStepActionViewBase build();
+import dagger.Component;
 
-        public abstract Builder setButtonIcon(@Nullable DisplayDrawable buttonIcon);
+public class StepMapperTests {
+    public StepMapperTestComponent component;
 
-        public abstract Builder setButtonTitle(@Nullable DisplayString buttonTitle);
-
-        public abstract Builder setSkipToStepIdentifier(@Nullable String skipToStepIdentifier);
+    @Before
+    public void setup() {
+        this.component = DaggerStepMapperTestComponent.builder().build();
     }
 
-    public static Builder builder() {
-        return new AutoValue_SkipToStepActionViewBase.Builder();
+    @Test
+    public void testMap_UIStep() {
+        StepView result = component.stepViewFactory().apply(UIStepViewTests.MOCK_UI_STEP);
+        assertNotNull(result);
+        assertTrue(result instanceof UIStepView);
+        // We leave it up to UIStepViewTests to make sure that the UIStepView here is correct. For here the fact that
+        // the correct type is returned is sufficient.
     }
 
-    public static SkipToStepActionViewBase fromSkipToStepAction(SkipToStepAction skipToStepAction) {
-        // TODO rkolmos 06/07/2018 add the icon to this method.
-        return SkipToStepActionViewBase.builder()
-                .setButtonTitle(DisplayString.create(null, skipToStepAction.getButtonTitle()))
-                .setSkipToStepIdentifier(skipToStepAction.getSkipToStepIdentifier())
-                .build();
+    @Test
+    public void testMap_ActiveStep() {
+        StepView result = component.stepViewFactory().apply(ActiveUIStepViewTests.MOCK_ACTIVE_UI_STEP);
+        assertNotNull(result);
+        assertTrue(result instanceof ActiveUIStepView);
+        // We leave it up to ActiveUIStepViewTests to make sure that the ActiveUIStepView here is correct. For here the fact that
+        // the correct type is returned is sufficient.
     }
 }
