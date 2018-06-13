@@ -49,7 +49,7 @@ import org.sagebionetworks.research.presentation.model.implementations.ActiveUIS
 import org.threeten.bp.Duration;
 
 public class InstructionStepView extends ActiveUIStepViewBase {
-    // TODO rkolmos 06/01/2018 for now an instruction step view adds no functionality to ActiveUIStepView
+    private final boolean firstRunOnly;
 
     public InstructionStepView(@NonNull final String identifier, final int navDirection,
             @NonNull final ImmutableMap<String, ActionView> actions,
@@ -60,9 +60,11 @@ public class InstructionStepView extends ActiveUIStepViewBase {
             @Nullable final ColorThemeView colorTheme,
             @Nullable final ImageThemeView imageTheme,
             @NonNull final Duration duration,
-            final boolean isBackgroundAudioRequired) {
+            final boolean isBackgroundAudioRequired,
+            final boolean isFirstRunOnly) {
         super(identifier, navDirection, actions, title, text, detail, footnote, colorTheme, imageTheme, duration,
                 isBackgroundAudioRequired);
+        this.firstRunOnly = isFirstRunOnly;
     }
 
     @NonNull
@@ -71,11 +73,12 @@ public class InstructionStepView extends ActiveUIStepViewBase {
             throw new IllegalArgumentException("Provided step: " + step + " is not an InstructionStep");
         }
 
+        InstructionStep instructionStep = (InstructionStep) step;
         ActiveUIStepViewBase activeUIStepView = ActiveUIStepViewBase.fromActiveUIStep(step, mapper);
         return new InstructionStepView(activeUIStepView.getIdentifier(), activeUIStepView.getNavDirection(),
                 activeUIStepView.getActions(), activeUIStepView.getTitle(), activeUIStepView.getText(),
                 activeUIStepView.getDetail(), activeUIStepView.getFootnote(), activeUIStepView.getColorTheme(),
                 activeUIStepView.getImageTheme(), activeUIStepView.getDuration(),
-                activeUIStepView.isBackgroundAudioRequired());
+                activeUIStepView.isBackgroundAudioRequired(), instructionStep.isFirstRunOnly());
     }
 }
