@@ -58,7 +58,7 @@ public class NextStepStrategyFactoryTest {
         NextStepStrategy nextStepStrategy = mock(NextStepStrategy.class);
         when(nextStepStrategy.getNextStepIdentifier(taskResult)).thenReturn(nextIdentifier);
 
-        Step step = new UIStepBase("identifier", null, null, null, null, null);
+        Step step = new UIStepBase("identifier", null, null, null, null, null, null, null);
 
         NextStepStrategy nextStepStrategyResult = nextStepStrategyFactory.create(step, nextStepStrategy);
 
@@ -68,7 +68,7 @@ public class NextStepStrategyFactoryTest {
     }
     @Test
     public void createWithNextStepIdentifier() {
-        Step step = new UIStepBase("identifier", null, null, null, null, null);
+        Step step = new UIStepBase("identifier", null, null, null, null, null, null, null);
         String nextIdentifier = "nextIdentifier";
 
         NextStepStrategy nextStepStrategy = nextStepStrategyFactory.create(step, nextIdentifier);

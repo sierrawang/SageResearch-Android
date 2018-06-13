@@ -42,9 +42,9 @@ public abstract class ImageTheme {
     public static abstract class Builder {
         public abstract ImageTheme builder();
 
-        public abstract Builder setColorPlacement(ColorPlacement colorPlacement);
+        public abstract Builder setColorPlacement(@ColorPlacement String colorPlacement);
 
-        public abstract Builder setImageResource(int imageResource);
+        public abstract Builder setImageResourceName(String imageResourceName);
     }
 
     public static Builder builder() {
@@ -55,9 +55,10 @@ public abstract class ImageTheme {
      * @return preferred placement of the image. Default placement is `iconBefore` if undefined.
      */
     @Nullable
-    public abstract ColorPlacement getColorPlacement();
+    @ColorPlacement
+    public abstract String getColorPlacement();
 
-    public abstract int getImageResource();
+    public abstract String getImageResourceName();
 
     public abstract Builder toBuilder();
 }

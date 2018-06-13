@@ -48,21 +48,21 @@ public class ActiveUIStepGsonTests extends IndividualStepGsonTest {
     @Test
     public void testExample_1() {
         ActiveUIStep expected = new ActiveUIStepBase("testActiveUIStep1", Collections.<String, UIAction>emptyMap(),
-                "title", "text", null, null, null, false);
+                "title", "text", null, null, null, null, null, false);
         commonTest(expected, "ActiveUIStep_1.json");
     }
 
     @Test
     public void testExample_2() {
         ActiveUIStep expected = new ActiveUIStepBase("testActiveUIStep2", Collections.<String, UIAction>emptyMap(),
-                "title", "text", "detail", "footnote", null, false);
+                "title", "text", "detail", "footnote", null , null, null, false);
         commonTest(expected, "ActiveUIStep_2.json");
     }
 
     @Test
     public void testExample_3() {
         ActiveUIStepBase expected = new ActiveUIStepBase("testActiveUIStep3",
-                Collections.<String, UIAction>emptyMap(), "title", "text", "detail", "footnote",
+                Collections.<String, UIAction>emptyMap(), "title", "text", "detail", "footnote", null, null,
                 5D, false);
         commonTest(expected, "ActiveUIStep_3.json");
     }

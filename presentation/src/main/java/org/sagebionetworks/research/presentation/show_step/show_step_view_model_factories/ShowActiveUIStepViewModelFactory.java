@@ -30,55 +30,24 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.sagebionetworks.research.presentation.show_step;
+package org.sagebionetworks.research.presentation.show_step.show_step_view_model_factories;
 
-import android.arch.lifecycle.ViewModel;
-import android.arch.lifecycle.ViewModelProvider;
-import android.support.annotation.NonNull;
 
-import org.sagebionetworks.research.presentation.model.StepView;
+import org.sagebionetworks.research.presentation.model.interfaces.ActiveUIStepView;
 import org.sagebionetworks.research.presentation.perform_task.PerformTaskViewModel;
+import org.sagebionetworks.research.presentation.show_step.show_step_view_models.ShowActiveUIStepViewModel;
 
-import java.util.Map;
 
-import javax.inject.Inject;
-
-public class ShowStepViewModelFactory {
-    private final Map<Class<? extends StepView>, AbstractShowStepViewModelFactory<?, ? extends StepView>> t;
-
-    @Inject
-    public ShowStepViewModelFactory(
-            Map<Class<? extends StepView>, AbstractShowStepViewModelFactory<?, ? extends StepView>> t) {
-        this.t = t;
+public class ShowActiveUIStepViewModelFactory implements
+        AbstractShowStepViewModelFactory<ShowActiveUIStepViewModel<ActiveUIStepView>, ActiveUIStepView> {
+    @Override
+    public ShowActiveUIStepViewModel<ActiveUIStepView> create(final PerformTaskViewModel performTaskViewModel,
+            final ActiveUIStepView stepView) {
+        return new ShowActiveUIStepViewModel<>(performTaskViewModel, stepView);
     }
 
-    public ViewModelProvider.Factory create(PerformTaskViewModel performTaskViewModel, final StepView stepView) {
-        return new ViewModelProvider.Factory() {
-
-            @NonNull
-            @Override
-            @SuppressWarnings(value = "unchecked")
-            public <T extends ViewModel> T create(@NonNull Class<T> modelClass) {
-                AbstractShowStepViewModelFactory af = getFactory(stepView);
-
-                if (modelClass.isAssignableFrom(af.getViewModelClass())) {
-                    // noinspection unchecked
-                    return (T) af.create(performTaskViewModel, stepView);
-                }
-                throw new IllegalArgumentException("Unknown ViewModel class");
-            }
-        };
-    }
-
-    public Class<? extends ShowStepViewModel> getViewModelClass(final StepView stepView) {
-        return getFactory(stepView).getViewModelClass();
-    }
-
-    private AbstractShowStepViewModelFactory getFactory(final StepView stepView) {
-        AbstractShowStepViewModelFactory factory = t.get(stepView.getClass());
-        if (factory == null) {
-            factory = t.get(StepView.class);
-        }
-        return factory;
+    @Override
+    public Class<? extends ShowActiveUIStepViewModel> getViewModelClass() {
+        return ShowActiveUIStepViewModel.class;
     }
 }

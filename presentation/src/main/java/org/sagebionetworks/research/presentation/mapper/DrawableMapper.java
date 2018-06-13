@@ -30,20 +30,15 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.sagebionetworks.research.presentation;
+package org.sagebionetworks.research.presentation.mapper;
 
-import org.junit.Test;
+import android.support.annotation.DrawableRes;
 
-import static org.junit.Assert.*;
+public class DrawableMapper {
+    private static final DrawableComponent drawableComponent = DaggerDrawableComponent.builder().build();
 
-/**
- * Example local unit test, which will execute on the development machine (host).
- *
- * @see <a href="http://d.android.com/tools/testing">Testing documentation</a>
- */
-public class ExampleUnitTest {
-    @Test
-    public void addition_isCorrect() {
-        assertEquals(4, 2 + 2);
+    @DrawableRes
+    public static Integer getDrawableFromName(String name) {
+        return drawableComponent.drawableMap().get(name);
     }
 }

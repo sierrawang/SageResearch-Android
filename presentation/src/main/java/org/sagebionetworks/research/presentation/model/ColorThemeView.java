@@ -30,14 +30,48 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.sagebionetworks.research.presentation.show_step;
+package org.sagebionetworks.research.presentation.model;
 
-import org.sagebionetworks.research.presentation.model.StepView;
-import org.sagebionetworks.research.presentation.perform_task.PerformTaskViewModel;
+import android.os.Parcelable;
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 
-public interface AbstractShowStepViewModelFactory<VM extends ShowStepViewModel<S>, S extends StepView> {
+import com.google.auto.value.AutoValue;
+import com.google.common.collect.ImmutableMap;
 
-    VM create(PerformTaskViewModel performTaskViewModel, S stepView);
+import org.sagebionetworks.research.domain.step.ui.theme.ColorPlacement;
+import org.sagebionetworks.research.domain.step.ui.theme.ColorStyle;
+import org.sagebionetworks.research.domain.step.ui.theme.ColorTheme;
 
-    Class<VM> getViewModelClass();
+import java.util.Map;
+
+// TODO rkolmos 05/30/2018 uncomment lines when ImmutableMap parcelable adapter is written.
+@AutoValue
+public abstract class ColorThemeView implements Parcelable {
+    @AutoValue.Builder
+    public abstract static class Builder {
+        public abstract ColorThemeView build();
+
+        // public abstract Builder setColorStyles(@NonNull ImmutableMap<String, String> colorStyles);
+
+        public abstract Builder setLightStyle(boolean isLightStyle);
+    }
+
+    public static Builder builder() {
+        return new AutoValue_ColorThemeView.Builder();
+    }
+
+
+    // public abstract ImmutableMap<String, String> getColorStyles();
+
+    public abstract boolean lightStyle();
+
+    public abstract Builder toBuilder();
+
+    public static ColorThemeView fromColorTheme(@Nullable ColorTheme colorTheme) {
+        return ColorThemeView.builder()
+                // .setColorStyles(colorTheme.getColorStyles())
+                .setLightStyle(colorTheme.isLightStyle())
+                .build();
+    }
 }

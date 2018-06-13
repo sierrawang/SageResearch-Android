@@ -43,7 +43,10 @@ import org.sagebionetworks.research.domain.mobile_ui.R2.id;
 import org.sagebionetworks.research.mobile_ui.widget.NavigationActionBar;
 import org.sagebionetworks.research.mobile_ui.widget.NavigationActionBar.ActionButtonClickListener;
 import org.sagebionetworks.research.mobile_ui.widget.StepHeader;
-import org.sagebionetworks.research.presentation.model.StepView;
+import org.sagebionetworks.research.presentation.DisplayDrawable;
+import org.sagebionetworks.research.presentation.DisplayString;
+import org.sagebionetworks.research.presentation.model.interfaces.StepView;
+import org.sagebionetworks.research.presentation.model.interfaces.UIStepView;
 
 import butterknife.BindView;
 import javax.annotation.Nullable;
@@ -67,7 +70,7 @@ import javax.annotation.Nullable;
  *      - skipButton : Button - The button which causes the task to skip the current step when pressed. (Note: this
  *          button is different then the next button because no result will be created for the current step)
  */
-public class UIStepViewBinding implements StepViewBinding {
+public class UIStepViewBinding implements StepViewBinding<UIStepView> {
     /**
      * Views can optionally have a header view. This view generally contains the progress bar, and the cancel and =
      * info action buttons.
@@ -192,25 +195,28 @@ public class UIStepViewBinding implements StepViewBinding {
     }
 
     @Override
-    public void update(StepView stepView) {
-        if (this.titleLabel != null) {
-            // TODO rkolmos 05/25/2018 do the correct thing here once the correct type of StepView is implemented
-        }
-
-        if (this.textLabel != null) {
-            // TODO rkolmos 05/25/2018 do the correct thing here once the correct type of StepView is implemented
-        }
-
-        if (this.detailLabel != null) {
-            // TODO rkolmos 05/25/2018 do the correct thing here once the correct type of StepView is implemented
-        }
-
-        if (this.footnoteLabel != null) {
-            // TODO rkolmos 05/25/2018 do the correct thing here once the correct type of StepView is implemented
-        }
+    public void update(UIStepView stepView) {
+        updateTextView(this.titleLabel, stepView.getTitle());
+        updateTextView(this.textLabel, stepView.getText());
+        updateTextView(this.detailLabel, stepView.getDetail());
+        updateTextView(this.footnoteLabel, stepView.getFootnote());
 
         if (this.imageView != null) {
-            // TODO rkolmos 05/25/2018 do the correct thing here once the correct type of StepView is implemented
+            DisplayDrawable drawable = stepView.getImageTheme().getImageResource();
+            Integer imageResourceId = drawable.getDrawable();
+            if (imageResourceId != null) {
+                this.imageView.setImageResource(imageResourceId);
+            } else {
+                System.err.println("DisplayDrawable has null drawableRes and null defaultDrawableRes");
+            }
+        }
+
+        // TODO rkolmos 05/29/2018 implement color theme update
+    }
+
+    protected static void updateTextView(TextView view, DisplayString displayString) {
+        if (view != null) {
+           view.setText(displayString.getDisplayString());
         }
     }
 }

@@ -30,15 +30,23 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.sagebionetworks.research.presentation.model;
+package org.sagebionetworks.research.presentation.show_step.show_step_view_model_factories;
 
-import com.google.auto.value.AutoValue;
-import com.google.gson.Gson;
-import com.google.gson.TypeAdapter;
+import org.sagebionetworks.research.presentation.model.interfaces.UIStepView;
+import org.sagebionetworks.research.presentation.perform_task.PerformTaskViewModel;
+import org.sagebionetworks.research.presentation.show_step.show_step_view_models.ShowStepViewModel;
+import org.sagebionetworks.research.presentation.show_step.show_step_view_models.ShowUIStepViewModel;
 
-@AutoValue
-public abstract class ActiveUIStepView implements StepView {
-    public static TypeAdapter<ActiveUIStepView> typeAdapter(Gson gson) {
-        return new AutoValue_ActiveUIStepView.GsonTypeAdapter(gson);
+public class ShowUIStepViewModelFactory implements
+        AbstractShowStepViewModelFactory<ShowUIStepViewModel<UIStepView>, UIStepView> {
+    @Override
+    public ShowUIStepViewModel<UIStepView> create(final PerformTaskViewModel performTaskViewModel,
+            final UIStepView stepView) {
+        return new ShowUIStepViewModel<>(performTaskViewModel, stepView);
+    }
+
+    @Override
+    public Class<? extends ShowStepViewModel> getViewModelClass() {
+        return ShowUIStepViewModel.class;
     }
 }

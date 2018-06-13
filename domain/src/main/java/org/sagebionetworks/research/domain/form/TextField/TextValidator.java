@@ -32,11 +32,14 @@
 
 package org.sagebionetworks.research.domain.form.TextField;
 
+import android.os.Parcelable;
+
 /**
  * A text validator is used to determine whether user input into a text field is considered valid.
  * The definition of valid is intentionally left vague so it can be defined on a case by case basis.
  */
-public interface TextValidator {
+// TODO rkolmos 06/12/2018 figure out how text validation will work.
+public interface TextValidator extends Parcelable {
     /**
      * Returns true if the given string represents a valid input, and false otherwise
      * @param string The string to validate

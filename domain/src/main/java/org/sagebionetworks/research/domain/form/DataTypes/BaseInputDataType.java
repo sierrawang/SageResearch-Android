@@ -32,6 +32,7 @@
 
 package org.sagebionetworks.research.domain.form.DataTypes;
 
+import android.os.Parcel;
 import android.support.annotation.StringDef;
 
 import com.google.common.base.Objects;
@@ -101,4 +102,30 @@ public class BaseInputDataType extends InputDataType {
         BaseInputDataType baseType = (BaseInputDataType) o;
         return Objects.equal(this.getBaseType(), baseType.getBaseType());
     }
+
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        dest.writeString(this.baseType);
+    }
+
+    protected BaseInputDataType(Parcel in) {
+        this.baseType = in.readString();
+    }
+
+    public static final Creator<BaseInputDataType> CREATOR = new Creator<BaseInputDataType>() {
+        @Override
+        public BaseInputDataType createFromParcel(Parcel source) {
+            return new BaseInputDataType(source);
+        }
+
+        @Override
+        public BaseInputDataType[] newArray(int size) {
+            return new BaseInputDataType[size];
+        }
+    };
 }

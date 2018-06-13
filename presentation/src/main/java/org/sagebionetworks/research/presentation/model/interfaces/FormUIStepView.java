@@ -30,41 +30,16 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.sagebionetworks.research.presentation.model;
+package org.sagebionetworks.research.presentation.model.interfaces;
 
-import android.os.Parcelable;
-import android.support.annotation.IntDef;
 import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
 
-import com.google.common.collect.ImmutableSet;
+import org.sagebionetworks.research.domain.form.interfaces.InputField;
+import org.sagebionetworks.research.presentation.model.form.InputFieldView;
 
-import java.lang.annotation.Retention;
+import java.util.List;
 
-import static java.lang.annotation.RetentionPolicy.SOURCE;
-
-/**
- * Map a {@link Step} to a {@link StepView} when data is moving from the Domain layer to this layer.
- */
-public interface StepView extends Parcelable {
-    @Retention(SOURCE)
-    @IntDef({NavDirection.SHIFT_LEFT, NavDirection.SHIFT_RIGHT})
-    @interface NavDirection {
-        int SHIFT_LEFT = 1;
-        int SHIFT_RIGHT = -1;
-    }
-
+public interface FormUIStepView extends UIStepView {
     @NonNull
-    String getIdentifier();
-
-    @Nullable
-    String getDetail();
-
-    @NavDirection int getNavDirection();
-
-    @NonNull
-    ImmutableSet<StepActionView> getStepActionViews();
-
-    @Nullable
-    String getTitle();
+    List<InputFieldView> getInputFields();
 }
