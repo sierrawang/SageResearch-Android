@@ -63,7 +63,6 @@
       "identifier": "fingerTappingInstructions",
       "type": "instruction",
       "title": "You will finger tap for 30 seconds with each hand",
-      "isFirstRunOnly": true,
       "text": "Speed of finger tapping can reflect severity of motor symptoms in Parkinson’s disease. This activity measures your tapping speed for each hand. Your medical provider may measure this differently.",
       "image": {
         "type":"animation",
