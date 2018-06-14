@@ -67,6 +67,10 @@ public class InstructionStepView extends ActiveUIStepViewBase {
         this.firstRunOnly = isFirstRunOnly;
     }
 
+    public boolean isFirstRunOnly() {
+        return this.firstRunOnly;
+    }
+
     @NonNull
     public static InstructionStepView fromInstructionStep(@NonNull Step step, DrawableMapper mapper) {
         if (!(step instanceof InstructionStep)) {

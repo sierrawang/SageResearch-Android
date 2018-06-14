@@ -32,12 +32,16 @@
 
 package org.sagebionetworks.research.presentation.model.action;
 
+import android.os.Parcelable;
+
 import org.sagebionetworks.research.presentation.DisplayDrawable;
 import org.sagebionetworks.research.presentation.DisplayString;
 
+import java.io.Serializable;
+
 import javax.annotation.Nullable;
 
-public interface ActionView {
+public interface ActionView extends Parcelable {
     @Nullable
     DisplayDrawable getButtonIcon();
 
