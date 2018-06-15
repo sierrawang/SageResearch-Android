@@ -30,41 +30,77 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.sagebionetworks.research.domain.async;
+package org.sagebionetworks.research.mpower;
 
-import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
-import java.time.Duration;
+
+import org.sagebionetworks.research.mobile_ui.recorder.Recorder;
 
 /**
- * Defines general configuration for asynchronous asyncAction that should be run in the background. Depending upon the
- * parameters and how the asyncAction is setup, this could be something that is run continuously or else is paused or reset
- * based on a timeout interval.
+ * A generic implementation of Recorder to facilitate testing the recorder service.
  */
-public interface AsyncAction {
-    /**
-     * A short string that uniquely identifies the asyncronous asyncAction within the task. The identifier is reproduced in
-     * the results of a async results.
-     *
-     * @return identifier
-     */
-    @NonNull
-    String getIdentifier();
+public class TestRecorder implements Recorder {
+    private boolean startCalled;
+    private boolean stopCalled;
+    private boolean cancelCalled;
+    private final String startStepIdentifier;
+    private final String stopStepIdentifier;
 
-    /**
-     * An identifier marking the step to start the asyncAction. If `null`, then the asyncAction will be started when the task is
-     * started.
-     *
-     * @return step identifier, or null
-     */
-    @Nullable
-    String getStartStepIdentifier();
+    public TestRecorder(final String startStepIdentifier, final String stopStepIdentifier) {
+        this.startStepIdentifier = startStepIdentifier;
+        this.stopStepIdentifier = stopStepIdentifier;
+        this.startCalled = false;
+        this.stopCalled = false;
+        this.cancelCalled = false;
+    }
 
-    /**
-     * An idetnifier marking the step to stop hte asyncAction. If `null`, then the asyncAction will be stopped when the
-     * task is stopped.
-     * @return step identifier, or null
-     */
+    @Override
+    public void start() {
+        this.startCalled = true;
+        this.stopCalled = false;
+        this.cancelCalled = false;
+    }
+
+    @Override
+    public void stop() {
+        this.startCalled = false;
+        this.stopCalled = true;
+        this.cancelCalled = false;
+    }
+
+    @Override
+    public void cancel() {
+        this.startCalled = false;
+        this.stopCalled = false;
+        this.cancelCalled = true;
+    }
+
+    @Override
+    public boolean isRunning() {
+        return this.startCalled;
+    }
+
+    public boolean isStartCalled() {
+        return startCalled;
+    }
+
+    public boolean isStopCalled() {
+        return stopCalled;
+    }
+
+    public boolean isCancelCalled() {
+        return cancelCalled;
+    }
+
     @Nullable
-    String getStopStepIDentifier();
+    @Override
+    public String getStartStepIdentifier() {
+        return this.startStepIdentifier;
+    }
+
+    @Nullable
+    @Override
+    public String getStopStepIdentifier() {
+        return this.stopStepIdentifier;
+    }
 }

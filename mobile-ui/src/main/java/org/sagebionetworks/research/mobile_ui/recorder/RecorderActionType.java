@@ -30,41 +30,17 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.sagebionetworks.research.domain.async;
+package org.sagebionetworks.research.mobile_ui.recorder;
 
-import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
-import java.time.Duration;
+import android.support.annotation.StringDef;
 
-/**
- * Defines general configuration for asynchronous asyncAction that should be run in the background. Depending upon the
- * parameters and how the asyncAction is setup, this could be something that is run continuously or else is paused or reset
- * based on a timeout interval.
- */
-public interface AsyncAction {
-    /**
-     * A short string that uniquely identifies the asyncronous asyncAction within the task. The identifier is reproduced in
-     * the results of a async results.
-     *
-     * @return identifier
-     */
-    @NonNull
-    String getIdentifier();
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
 
-    /**
-     * An identifier marking the step to start the asyncAction. If `null`, then the asyncAction will be started when the task is
-     * started.
-     *
-     * @return step identifier, or null
-     */
-    @Nullable
-    String getStartStepIdentifier();
-
-    /**
-     * An idetnifier marking the step to stop hte asyncAction. If `null`, then the asyncAction will be stopped when the
-     * task is stopped.
-     * @return step identifier, or null
-     */
-    @Nullable
-    String getStopStepIDentifier();
+@Retention(RetentionPolicy.SOURCE)
+@StringDef({RecorderActionType.START, RecorderActionType.STOP, RecorderActionType.CANCEL})
+public @interface RecorderActionType {
+    String START = "start";
+    String STOP = "stop";
+    String CANCEL = "cancel";
 }

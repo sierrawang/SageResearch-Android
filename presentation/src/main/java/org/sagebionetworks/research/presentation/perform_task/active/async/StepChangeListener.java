@@ -39,7 +39,6 @@ import org.sagebionetworks.research.domain.step.interfaces.Step;
 /**
  * Created by liujoshua on 10/11/2017.
  */
-
 public interface StepChangeListener {
     void onShowStep(@NonNull Step step);
 

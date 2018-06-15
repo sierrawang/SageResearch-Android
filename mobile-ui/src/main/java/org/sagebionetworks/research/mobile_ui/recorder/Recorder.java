@@ -30,41 +30,41 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.sagebionetworks.research.domain.async;
+package org.sagebionetworks.research.mobile_ui.recorder;
 
-import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
-import java.time.Duration;
+
+import org.sagebionetworks.research.domain.async.AsyncAction;
+
+import java.io.Serializable;
 
 /**
- * Defines general configuration for asynchronous asyncAction that should be run in the background. Depending upon the
- * parameters and how the asyncAction is setup, this could be something that is run continuously or else is paused or reset
- * based on a timeout interval.
+ * A Recorder records some sort of data about the user (e.g. phone's motion, audio, etc). Recorders are typically
+ * run on a different thread than ui so implementations should be thread safe to ensure there are no concurrency
+ * issues.
  */
-public interface AsyncAction {
-    /**
-     * A short string that uniquely identifies the asyncronous asyncAction within the task. The identifier is reproduced in
-     * the results of a async results.
-     *
-     * @return identifier
-     */
-    @NonNull
-    String getIdentifier();
+public interface Recorder extends Serializable {
+    void start();
+
+    void stop();
+
+    void cancel();
+
+    boolean isRunning();
 
     /**
-     * An identifier marking the step to start the asyncAction. If `null`, then the asyncAction will be started when the task is
-     * started.
-     *
-     * @return step identifier, or null
+     * Returns the identifier of the step to start the recorder on. If this method returns null the recorder will
+     * start when the task is started.
+     * @return the identifier of the step to start the recorder on.
      */
     @Nullable
     String getStartStepIdentifier();
 
     /**
-     * An idetnifier marking the step to stop hte asyncAction. If `null`, then the asyncAction will be stopped when the
-     * task is stopped.
-     * @return step identifier, or null
+     * Returns the identifier of the step to stop the recorder on. If this method returns null the recorder will
+     * stop when the task is stopped.
+     * @return the identifier of the step to start the recorder on.
      */
     @Nullable
-    String getStopStepIDentifier();
+    String getStopStepIdentifier();
 }
