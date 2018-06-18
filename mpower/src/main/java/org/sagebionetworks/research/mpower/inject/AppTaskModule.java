@@ -38,5 +38,4 @@ import dagger.Module;
 
 @Module(includes = {PerformTaskModule.class, AppStepModule.class})
 public class AppTaskModule {
-
 }

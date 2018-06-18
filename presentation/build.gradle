@@ -89,6 +89,9 @@ dependencies {
     annotationProcessor 'com.google.auto.value:auto-value-annotations:1.6' // include again for auto-value-gson
     annotationProcessor 'com.ryanharter.auto.value:auto-value-parcel:0.2.6'
 
+    testAnnotationProcessor 'com.google.dagger:dagger-android-processor:2.15'
+    testAnnotationProcessor 'com.google.dagger:dagger-compiler:2.15'
+
     implementation 'com.android.support:appcompat-v7:27.1.1'
 
     testImplementation 'junit:junit:4.12'

@@ -62,6 +62,8 @@ import javax.inject.Inject;
 
 import static com.google.common.base.Preconditions.checkNotNull;
 
+import java.util.Map;
+
 /**
  * A ShowStepFragmentBase implements the functionality common to showing all step fragments in terms of
  * 2 other unknown operations (instantiateBinding, getLayoutID).
@@ -69,12 +71,11 @@ import static com.google.common.base.Preconditions.checkNotNull;
  * @param <VM> The type of StepViewModel that this fragment uses.
  */
 public abstract class ShowStepFragmentBase
-        <S extends StepView, VM extends ShowStepViewModel<S>, SB extends StepViewBinding>
+        <S extends StepView, VM extends ShowStepViewModel<S>, SB extends StepViewBinding<S>>
         extends Fragment {
     private static final Logger LOGGER = LoggerFactory.getLogger(ShowStepFragmentBase.class);
     private static final String ARGUMENT_STEP_VIEW = "STEP_VIEW";
-
-    @Inject
+    private static final String ARGUMENT_TASK_FRAGMENT = "TASK_FRAGMENT";
     protected PerformTaskFragment performTaskFragment;
     @Inject
     protected ShowStepViewModelFactory showStepViewModelFactory;
@@ -85,6 +86,10 @@ public abstract class ShowStepFragmentBase
     protected SB stepViewBinding;
 
     private Unbinder stepViewUnbinder;
+
+    public ShowStepFragmentBase() {
+
+    }
 
     /**
      * Creates a Bundle containing the given StepView.
@@ -97,6 +102,10 @@ public abstract class ShowStepFragmentBase
         Bundle args = new Bundle();
         args.putParcelable(ARGUMENT_STEP_VIEW, stepView);
         return args;
+    }
+
+    public void setPerformTaskFragment(PerformTaskFragment performTaskFragment) {
+        this.performTaskFragment = performTaskFragment;
     }
 
     @Override
@@ -123,7 +132,6 @@ public abstract class ShowStepFragmentBase
         this.showStepViewModel = (VM) ViewModelProviders
                 .of(this, this.showStepViewModelFactory.create(this.performTaskViewModel, stepViewArg))
                 .get(stepViewArg.getIdentifier(), this.showStepViewModelFactory.getViewModelClass(stepViewArg));
-        this.showStepViewModel.getStepView().observe(this, this.stepViewBinding::update);
     }
 
     @Override
@@ -131,16 +139,18 @@ public abstract class ShowStepFragmentBase
             Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         View view = inflater.inflate(this.getLayoutId(), container, false);
-        this.stepViewBinding = this.instantiateBinding();
-        this.stepViewUnbinder = ButterKnife.bind(this.stepViewBinding, view);
+        this.stepViewBinding = this.instantiateAndBindBinding(view);
         this.stepViewBinding.setActionButtonClickListener(this::handleActionButtonClick);
+        this.showStepViewModel.getStepView().observe(this, this::update);
+        this.stepViewBinding.setActionButtonClickListener(this::handleActionButtonClick);
+        this.update(this.showStepViewModel.getStepView().getValue());
         return view;
     }
 
     @Override
     public void onDestroyView() {
         super.onDestroyView();
-        this.stepViewUnbinder.unbind();
+        this.stepViewBinding.unbind();
     }
 
     /**
@@ -151,6 +161,10 @@ public abstract class ShowStepFragmentBase
     protected void handleActionButtonClick(@NonNull ActionButton actionButton) {
         @ActionType String actionType = this.getActionTypeFromActionButton(actionButton);
         this.showStepViewModel.handleAction(actionType);
+    }
+
+    protected void update(S stepView) {
+        this.stepViewBinding.update(stepView);
     }
 
     /**
@@ -185,18 +199,18 @@ public abstract class ShowStepFragmentBase
     }
 
     /**
+     * Returns the layout resource that corresponds to the layout for this fragment.
+     * @return the layout resource that corresponds to the layout for this fragment.
+     */
+    @LayoutRes
+    protected abstract int getLayoutId();
+
+    /**
      * Instantiates and returns and instance of the correct type of StepViewBinding for this fragment.
      * Note: If a subclass needs to add any fields to the binding it should override this method to return a
      * different binding.
      * @return An instance of the correct type of StepViewBinding for this fragment.
      */
     @NonNull
-    protected abstract SB instantiateBinding();
-
-    /**
-     * Returns the layout resource that corresponds to the layout for this fragment.
-     * @return the layout resource that corresponds to the layout for this fragment.
-     */
-    @LayoutRes
-    protected abstract int getLayoutId();
+    protected abstract SB instantiateAndBindBinding(View view);
 }

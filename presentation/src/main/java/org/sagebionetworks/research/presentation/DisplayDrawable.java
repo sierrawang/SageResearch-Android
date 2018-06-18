@@ -90,5 +90,4 @@ public abstract class DisplayDrawable implements Parcelable {
             return this.getDefaultDrawableRes();
         }
     }
-
 }

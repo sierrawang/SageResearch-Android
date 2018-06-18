@@ -51,8 +51,12 @@ import org.sagebionetworks.research.domain.task.Task;
 import org.sagebionetworks.research.domain.task.TaskInfo;
 import org.sagebionetworks.research.domain.task.navigation.StepNavigator;
 import org.sagebionetworks.research.domain.task.navigation.StepNavigatorFactory;
+import org.sagebionetworks.research.presentation.ActionType;
+import org.sagebionetworks.research.presentation.inject.StepViewModule;
+import org.sagebionetworks.research.presentation.inject.StepViewModule.StepViewFactory;
 import org.sagebionetworks.research.presentation.mapper.TaskMapper;
 import org.sagebionetworks.research.presentation.model.BaseStepView;
+import org.sagebionetworks.research.presentation.model.action.ActionView;
 import org.sagebionetworks.research.presentation.model.interfaces.StepView;
 import org.sagebionetworks.research.presentation.model.interfaces.StepView.NavDirection;
 import org.sagebionetworks.research.presentation.model.TaskView;
@@ -67,6 +71,8 @@ import io.reactivex.disposables.CompositeDisposable;
 
 import static com.google.common.base.Preconditions.checkNotNull;
 import static com.google.common.base.Preconditions.checkState;
+
+import javax.inject.Inject;
 
 @MainThread
 public class PerformTaskViewModel extends ViewModel {
@@ -88,6 +94,8 @@ public class PerformTaskViewModel extends ViewModel {
 
     private final TaskRepository taskRepository;
 
+    private final StepViewFactory stepViewFactory;
+
     @Nullable
     private TaskResult taskResult;
 
@@ -101,12 +109,13 @@ public class PerformTaskViewModel extends ViewModel {
 
     public PerformTaskViewModel(@NonNull TaskView taskView, @NonNull UUID taskRunUUID,
             @NonNull StepNavigatorFactory stepNavigatorFactory, @NonNull TaskRepository taskRepository,
-            @NonNull TaskMapper taskMapper) {
+            @NonNull TaskMapper taskMapper, StepViewFactory stepViewFactory) {
         this.taskView = checkNotNull(taskView);
         this.taskRunUuid = checkNotNull(taskRunUUID);
         this.stepNavigatorFactory = checkNotNull(stepNavigatorFactory);
         this.taskRepository = checkNotNull(taskRepository);
         this.taskMapper = checkNotNull(taskMapper);
+        this.stepViewFactory = stepViewFactory;
 
         taskLiveData = new MutableLiveData<>();
         taskResultLiveData = new MutableLiveData<>();
@@ -141,7 +150,12 @@ public class PerformTaskViewModel extends ViewModel {
     }
 
     @NonNull
-    public LiveData<StepView> getStep() {
+    public LiveData<Step> getStep() {
+        return currentStepLiveData;
+    }
+
+    @NonNull
+    public LiveData<StepView> getStepView() {
         return stepViewLiveData;
     }
 
@@ -162,56 +176,30 @@ public class PerformTaskViewModel extends ViewModel {
 
     public void goBack() {
         LOGGER.debug("goBack called");
-
         Step currentStep = currentStepLiveData.getValue();
+        TaskResult taskResult = taskResultLiveData.getValue();
         checkState(currentStep != null);
-
-        Step backStep = stepNavigator.getPreviousStep(currentStepLiveData.getValue(), taskResultLiveData.getValue());
-
+        checkState(taskResult != null);
+        Step backStep = stepNavigator.getPreviousStep(currentStep, taskResult);
         LOGGER.debug("Setting backStep: {}", backStep);
         currentStepLiveData.setValue(backStep);
-
-        // TODO: Use Mapper/Factory for Step -> StepView
-        StepView stepView = null;
-        if (backStep != null) {
-            BaseStepView.Builder stepViewBuilder = BaseStepView.builder()
-                    .setIdentifier(backStep.getIdentifier())
-                    .setNavDirection(NavDirection.SHIFT_RIGHT);
-            if (backStep instanceof UIStep) {
-                UIStep uiStep = (UIStep) backStep;
-                stepViewBuilder.setTitle(uiStep.getTitle());
-                stepViewBuilder.setDetail(uiStep.getDetail());
-            }
-            stepView = stepViewBuilder.build();
-        }
-
+        StepView stepView = stepViewFactory.apply(backStep);
         stepViewLiveData.setValue(stepView);
     }
 
     public void goForward() {
         LOGGER.debug("goForward called");
-
-        Step forwardStep = stepNavigator.getNextStep(currentStepLiveData.getValue(), taskResultLiveData.getValue());
-
-        LOGGER.debug("Setting forwardStep: {}", forwardStep);
-
-        currentStepLiveData.setValue(forwardStep);
-
-        // TODO: Use Mapper/Factory for Step -> StepView
-        StepView stepView = null;
-        if (forwardStep != null) {
-            BaseStepView.Builder stepViewBuilder = BaseStepView.builder()
-                    .setIdentifier(forwardStep.getIdentifier())
-                    .setNavDirection(NavDirection.SHIFT_LEFT);
-            if (forwardStep instanceof UIStep) {
-                UIStep uiStep = (UIStep) forwardStep;
-                stepViewBuilder.setTitle(uiStep.getTitle());
-                stepViewBuilder.setDetail(uiStep.getDetail());
-            }
-            stepView = stepViewBuilder.build();
-        }
-
+        Step currentStep = currentStepLiveData.getValue();
+        TaskResult taskResult = taskResultLiveData.getValue();
+        Step nextStep = stepNavigator.getNextStep(currentStep, taskResult);
+        LOGGER.debug("Setting forwardStep: {}", nextStep);
+        currentStepLiveData.setValue(nextStep);
+        StepView stepView = stepViewFactory.apply(nextStep);
         stepViewLiveData.setValue(stepView);
+    }
+
+    public StepNavigator getStepNavigator() {
+        return this.stepNavigator;
     }
 
     protected void onCleared() {
@@ -257,5 +245,34 @@ public class PerformTaskViewModel extends ViewModel {
     @VisibleForTesting
     void taskInitSuccess() {
         goForward();
+    }
+
+    /**
+     * Returns true if there is a step after the current one in the task, false otherwise.
+     * @return true if there is a step after the current one in the task, false otherwise.
+     */
+    public boolean hasNextStep() {
+        return this.stepNavigator.getNextStep(this.getStep().getValue(), this.getTaskResult().getValue()) != null;
+    }
+
+    /**
+     * Returns true if there is a step before the current one in the task, false otherwise.
+     * @return true if there is a step before the current one in the task, false otherwise.
+     */
+    public boolean hasPreviousStep() {
+        return this.stepNavigator.getPreviousStep(this.getStep().getValue(), this.getTaskResult().getValue()) != null;
+    }
+
+    /**
+     * Returns the task's default ActionView for the given ActionType. The ActionView overrides the appearance of the
+     * actions buttons throughout the task. Note individual steps can still override their getActionFor() method
+     * and take priority over this ActionView.
+     * @param actionType - The type of action to get the action view for.
+     * @return The default ActionView for the given ActionType.
+     */
+    @Nullable
+    public ActionView getActionFor(@ActionType String actionType) {
+        // By default we have no task default ActionViews.
+        return null;
     }
 }

@@ -38,6 +38,7 @@ import android.support.annotation.NonNull;
 
 import org.sagebionetworks.research.domain.repository.TaskRepository;
 import org.sagebionetworks.research.domain.task.navigation.StepNavigatorFactory;
+import org.sagebionetworks.research.presentation.inject.StepViewModule.StepViewFactory;
 import org.sagebionetworks.research.presentation.mapper.TaskMapper;
 import org.sagebionetworks.research.presentation.model.TaskView;
 
@@ -54,12 +55,15 @@ public class PerformTaskViewModelFactory {
 
     private final TaskRepository taskRepository;
 
+    private final StepViewFactory stepViewFactory;
+
     @Inject
     public PerformTaskViewModelFactory(StepNavigatorFactory stepNavigatorFactory, TaskMapper taskMapper,
-            final TaskRepository taskRepository) {
+            final TaskRepository taskRepository, StepViewFactory stepViewFactory) {
         this.stepNavigatorFactory = stepNavigatorFactory;
         this.taskMapper = taskMapper;
         this.taskRepository = taskRepository;
+        this.stepViewFactory = stepViewFactory;
     }
 
     public ViewModelProvider.Factory create(@NonNull TaskView taskView, @NonNull UUID taskRunUUID) {
@@ -74,7 +78,7 @@ public class PerformTaskViewModelFactory {
                 if (modelClass.isAssignableFrom(PerformTaskViewModel.class)) {
                     // noinspection unchecked
                     return (T) new PerformTaskViewModel(taskView, taskRunUUID, stepNavigatorFactory,
-                            taskRepository, taskMapper);
+                            taskRepository, taskMapper, stepViewFactory);
                 }
                 throw new IllegalArgumentException("Unknown ViewModel class");
             }

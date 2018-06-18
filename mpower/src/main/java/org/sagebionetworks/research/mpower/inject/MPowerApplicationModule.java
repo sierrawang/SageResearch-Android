@@ -35,10 +35,12 @@ package org.sagebionetworks.research.mpower.inject;
 import android.app.Activity;
 import android.content.Context;
 
+import com.google.gson.TypeAdapter;
 import com.google.gson.TypeAdapterFactory;
 
 import org.sagebionetworks.research.data.inject.DataModule;
 import org.sagebionetworks.research.mpower.MPowerApplication;
+import org.sagebionetworks.research.mpower.MPowerAutoValueTypeAdapterFactory;
 import org.sagebionetworks.research.mpower.MainActivity;
 
 import dagger.Binds;
@@ -50,7 +52,7 @@ import dagger.android.AndroidInjector;
 import dagger.multibindings.IntoMap;
 import dagger.multibindings.IntoSet;
 
-@Module(includes = {AndroidInjectionModule.class, AppTaskModule.class, DataModule.class},
+@Module(includes = {AndroidInjectionModule.class, AppTaskModule.class, DataModule.class, AppShowStepModule.class},
         subcomponents = {MainActivitySubcomponent.class})
 public abstract class MPowerApplicationModule {
     @Binds
@@ -59,13 +61,12 @@ public abstract class MPowerApplicationModule {
     @Binds
     @IntoMap
     @ActivityKey(MainActivity.class)
-    abstract AndroidInjector.Factory<? extends Activity> bindYourActivityInjectorFactory(
-            MainActivitySubcomponent.Builder builder);
-
+    abstract AndroidInjector.Factory<? extends Activity>
+        bindActivityInjectorFactory(MainActivitySubcomponent.Builder builder);
 
     @Provides
     @IntoSet
-    static TypeAdapterFactory provideAutoValueTypeAdapter() {
+    static TypeAdapterFactory provideMPowerAutoValueTypeAdapterFactory() {
         return MPowerAutoValueTypeAdapterFactory.create();
     }
 }

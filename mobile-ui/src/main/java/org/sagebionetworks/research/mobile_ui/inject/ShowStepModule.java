@@ -32,8 +32,14 @@
 
 package org.sagebionetworks.research.mobile_ui.inject;
 
-import org.sagebionetworks.research.mobile_ui.inject.ShowStepFragmentSubcomponent.Builder;
+import org.sagebionetworks.research.mobile_ui.inject.subcomponents.ShowActiveUIStepFragmentSubcomponent;
+import org.sagebionetworks.research.mobile_ui.inject.subcomponents.ShowStepFragmentSubcomponent;
+import org.sagebionetworks.research.mobile_ui.inject.subcomponents.ShowUIStepFragmentSubcomponent;
+import org.sagebionetworks.research.mobile_ui.perform_task.PerformTaskFragment;
+import org.sagebionetworks.research.mobile_ui.show_step.view.ShowActiveUIStepFragment;
 import org.sagebionetworks.research.mobile_ui.show_step.view.ShowStepFragment;
+import org.sagebionetworks.research.mobile_ui.show_step.view.ShowUIStepFragment;
+import org.sagebionetworks.research.presentation.inject.StepViewModule;
 
 import dagger.Binds;
 import dagger.Module;
@@ -41,12 +47,24 @@ import dagger.android.AndroidInjector;
 import dagger.android.support.FragmentKey;
 import dagger.multibindings.IntoMap;
 
-@Module(subcomponents = {ShowStepFragmentSubcomponent.class})
+@Module(subcomponents = {ShowStepFragmentSubcomponent.class, ShowUIStepFragmentSubcomponent.class,
+        ShowActiveUIStepFragmentSubcomponent.class})
 public abstract class ShowStepModule {
     @Binds
     @IntoMap
     @FragmentKey(ShowStepFragment.class)
     abstract AndroidInjector.Factory<? extends android.support.v4.app.Fragment>
-    bindTaskActivityFragmentInjectoryFactory(
-            Builder builder);
+    bindShowStepFragmentInjectorFactory(ShowStepFragmentSubcomponent.Builder builder);
+
+    @Binds
+    @IntoMap
+    @FragmentKey(ShowUIStepFragment.class)
+    abstract AndroidInjector.Factory<? extends android.support.v4.app.Fragment>
+    bindShowUIStepFragmentInjectorFactory(ShowUIStepFragmentSubcomponent.Builder builder);
+
+    @Binds
+    @IntoMap
+    @FragmentKey(ShowActiveUIStepFragment.class)
+    abstract AndroidInjector.Factory<? extends android.support.v4.app.Fragment>
+    bindShowActiveUIStepFragmentInjectorFactory(ShowActiveUIStepFragmentSubcomponent.Builder builder);
 }

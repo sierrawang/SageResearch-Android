@@ -36,7 +36,8 @@
     <string name="rs2_navigation_action_backward">Back</string>
     <string name="rs2_navigation_action_skip">Skip</string>
     <string name="rs2_navigation_action_cancel">Cancel</string>
-    <string name="rs2_navigation_action_lean_more">Learn More</string>
+    <string name="rs2_navigation_action_reminder">Remind me later</string>
+    <string name="rs2_navigation_action_learn_more">Learn More</string>
     <string name="rs2_navigation_action_add_more">Add More</string>
     <string name="rs2_title_activity_task">TaskActivity</string>
     <string name="rs2_action_settings">Settings</string>

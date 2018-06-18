@@ -44,6 +44,7 @@ import android.view.View;
 
 import org.sagebionetworks.research.domain.mobile_ui.R;
 import org.sagebionetworks.research.domain.mobile_ui.R2;
+import org.sagebionetworks.research.presentation.model.interfaces.UIStepView;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

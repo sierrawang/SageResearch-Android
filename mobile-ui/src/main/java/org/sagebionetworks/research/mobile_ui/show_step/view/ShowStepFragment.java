@@ -35,6 +35,7 @@ package org.sagebionetworks.research.mobile_ui.show_step.view;
 import android.os.Bundle;
 import android.support.annotation.LayoutRes;
 import android.support.annotation.NonNull;
+import android.view.View;
 
 import org.sagebionetworks.research.domain.mobile_ui.R;
 import org.sagebionetworks.research.mobile_ui.show_step.view.view_binding.StepViewBinding;
@@ -49,15 +50,15 @@ import static com.google.common.base.Preconditions.checkNotNull;
 /**
  * Shows a simple step.
  */
-public class ShowStepFragment extends ShowStepFragmentBase<StepView, ShowGenericStepViewModel, StepViewBinding> {
+public class ShowStepFragment extends ShowStepFragmentBase<StepView, ShowGenericStepViewModel,
+        StepViewBinding<StepView>> {
     private static final String ARGUMENT_STEP_VIEW = "STEP_VIEW";
 
+    @NonNull
     public static ShowStepFragment newInstance(@NonNull StepView stepView) {
-        checkNotNull(stepView);
-
         ShowStepFragment fragment = new ShowStepFragment();
-        Bundle args = ShowStepFragmentBase.createArguments(stepView);
-        fragment.setArguments(args);
+        Bundle arguments = ShowStepFragmentBase.createArguments(stepView);
+        fragment.setArguments(arguments);
         return fragment;
     }
 
@@ -66,14 +67,8 @@ public class ShowStepFragment extends ShowStepFragmentBase<StepView, ShowGeneric
     }
 
     @Override
-    protected UIStepViewBinding instantiateBinding() {
-        return new UIStepViewBinding();
-    }
-
-    @Override
-    @LayoutRes
-    protected int getLayoutId() {
-        return R.layout.rs2_generic_step;
+    protected UIStepViewBinding instantiateAndBindBinding(View view) {
+        return new UIStepViewBinding(view);
     }
 
     @Override
@@ -88,5 +83,10 @@ public class ShowStepFragment extends ShowStepFragmentBase<StepView, ShowGeneric
         }
 
         return null;
+    }
+
+    @Override
+    protected int getLayoutId() {
+        return R.layout.rs2_default_show_step_fragment_layout;
     }
 }

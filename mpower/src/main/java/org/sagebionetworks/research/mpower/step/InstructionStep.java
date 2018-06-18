@@ -32,7 +32,6 @@
 
 package org.sagebionetworks.research.mpower.step;
 
-import android.graphics.Color;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 
@@ -42,69 +41,34 @@ import com.google.gson.Gson;
 import com.google.gson.TypeAdapter;
 
 import org.sagebionetworks.research.domain.step.StepType;
-import org.sagebionetworks.research.domain.step.interfaces.ActiveUIStep;
-import org.sagebionetworks.research.domain.step.ui.UIAction;
+import org.sagebionetworks.research.domain.step.implementations.ActiveUIStepBase;
+import org.sagebionetworks.research.domain.step.ui.action.interfaces.Action;
 import org.sagebionetworks.research.domain.step.ui.theme.ColorTheme;
 import org.sagebionetworks.research.domain.step.ui.theme.ImageTheme;
 
 import java.util.Map;
 
-@AutoValue
-public abstract class InstructionStep implements ActiveUIStep {
-    @AutoValue.Builder
-    public abstract static class Builder {
-        @NonNull
-        public abstract InstructionStep build();
+public class InstructionStep extends ActiveUIStepBase {
+    public static final String TYPE_KEY = StepType.INSTRUCTION;
 
-        @NonNull
-        public abstract Builder setActions(@NonNull Map<String, UIAction> actions);
+    // TODO: rkolmos 06/01/2018 for now an instruction step adds no functionality to a ActiveUIStep.
 
-        @NonNull
-        public abstract Builder setDetail(@Nullable String detail);
-
-        @NonNull
-        public abstract Builder setFootnote(@Nullable String footnote);
-
-        @NonNull
-        public abstract Builder setIdentifier(@NonNull String identifier);
-
-        @NonNull
-        public abstract Builder setColorTheme(@Nullable ColorTheme colorTheme);
-
-        @NonNull
-        public abstract Builder setImageTheme(@Nullable ImageTheme imageTheme);
-
-        @NonNull
-        public abstract Builder setText(@Nullable String text);
-
-        @NonNull
-        public abstract Builder setTitle(@Nullable String title);
-
-        @NonNull
-        public abstract Builder setDuration(@Nullable Double duration);
-
-        @NonNull
-        public abstract Builder setBackgroundAudioRequired(boolean isBackgroundAudioRequired);
-    }
-
-    public static final String TYPE_KEY = "instruction";
-
-    @NonNull
-    public static Builder builder() {
-        return new AutoValue_InstructionStep.Builder();
-    }
-
-    public static TypeAdapter<InstructionStep> typeAdapter(Gson gson) {
-        return new AutoValue_InstructionStep.GsonTypeAdapter(gson)
-                .setDefaultActions(ImmutableMap.of());
+    public InstructionStep(@NonNull final String identifier,
+            @NonNull final Map<String, Action> actions,
+            @Nullable final String title,
+            @Nullable final String text,
+            @Nullable final String detail,
+            @Nullable final String footnote,
+            @Nullable final ColorTheme colorTheme,
+            @Nullable final ImageTheme imageTheme,
+            @Nullable final Double duration, final boolean backgroundAudioRequired) {
+        super(identifier, actions, title, text, detail, footnote, colorTheme, imageTheme, duration,
+                backgroundAudioRequired);
     }
 
     @NonNull
     @Override
-    public final String getType() {
-        return StepType.INSTRUCTION;
+    public String getType() {
+        return TYPE_KEY;
     }
-
-    @NonNull
-    public abstract Builder toBuilder();
 }

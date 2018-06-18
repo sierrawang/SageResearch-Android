@@ -61,6 +61,10 @@ public abstract class ImageThemeView implements Parcelable {
      * @return an ImageThemeView created from the given ImageTheme.
      */
     public static ImageThemeView fromImageTheme(@Nullable ImageTheme imageTheme) {
+        if (imageTheme == null) {
+            return null;
+        }
+
         String imageName = imageTheme.getImageResourceName();
         return ImageThemeView.builder()
                 .setColorPlacement(imageTheme.getColorPlacement())

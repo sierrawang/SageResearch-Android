@@ -47,8 +47,8 @@ import org.sagebionetworks.research.domain.form.implementations.InputFieldBase;
 import org.sagebionetworks.research.domain.form.interfaces.Choice;
 import org.sagebionetworks.research.domain.form.interfaces.InputField;
 import org.sagebionetworks.research.domain.inject.GsonModule.ClassKey;
-import org.sagebionetworks.research.domain.step.ui.ConcreteUIAction;
-import org.sagebionetworks.research.domain.step.ui.UIAction;
+import org.sagebionetworks.research.domain.step.ui.action.implementations.ActionBase;
+import org.sagebionetworks.research.domain.step.ui.action.interfaces.Action;
 
 import java.lang.reflect.Type;
 import java.util.HashMap;
@@ -76,13 +76,6 @@ public class InputFieldsModule {
     @ClassKey(InputDataType.class)
     static JsonDeserializer<?> provideInputDataTypeDeserializer() {
         return InputDataType.getJsonDeserializer();
-    }
-
-    @Provides
-    @IntoMap
-    @ClassKey(UIAction.class)
-    static JsonDeserializer<?> providedUIActionDeserializer() {
-        return createPassThroughDeserializer(ConcreteUIAction.class);
     }
 
     @Provides

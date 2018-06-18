@@ -36,4 +36,11 @@
     <string name="rs2_remind_later">Remind me later</string>
     <string name="tap_button_text">Tap</string>
     <string name="tap_unit_label_text">Tap Count</string>
+
+    <string name="rs2_navigation_action_forward_last_step">Done</string>
+    <string name="rs2_navigation_action_forward">Next</string>
+    <string name="rs2_navigation_action_skip">Skip</string>
+    <string name="rs2_navigation_action_backward">Back</string>
+    <string name="rs2_navigation_action_cancel"></string>
+    <string name="rs2_navigation_action_info"></string>
 </resources>

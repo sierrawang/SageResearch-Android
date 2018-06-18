@@ -33,25 +33,29 @@
 package org.sagebionetworks.research.mobile_ui.show_step.view;
 
 import android.support.annotation.NonNull;
+import android.view.View;
 
 import org.sagebionetworks.research.domain.mobile_ui.R;
-import org.sagebionetworks.research.mobile_ui.show_step.view.view_binding.TappingActiveUIStepViewBinding;
+import org.sagebionetworks.research.mobile_ui.show_step.view.view_binding.UIStepViewBinding;
 import org.sagebionetworks.research.mobile_ui.widget.ActionButton;
 import org.sagebionetworks.research.presentation.ActionType;
 import org.sagebionetworks.research.presentation.model.interfaces.StepView;
+import org.sagebionetworks.research.presentation.model.interfaces.UIStepView;
 import org.sagebionetworks.research.presentation.show_step.ShowGenericStepViewModel;
+import org.sagebionetworks.research.presentation.show_step.show_step_view_models.ShowUIStepViewModel;
 
 public class ShowTappingActiveUIStepFragment extends ShowStepFragmentBase
-        <StepView, ShowGenericStepViewModel, TappingActiveUIStepViewBinding> {
-    @NonNull
-    @Override
-    protected TappingActiveUIStepViewBinding instantiateBinding() {
-        return new TappingActiveUIStepViewBinding();
-    }
+        <UIStepView, ShowUIStepViewModel<UIStepView>, UIStepViewBinding<UIStepView>> {
 
     @Override
     protected int getLayoutId() {
-        return R.layout.mpower2_tapping_step;
+        return 0;
+    }
+
+    @NonNull
+    @Override
+    protected UIStepViewBinding instantiateAndBindBinding(final View view) {
+        return null;
     }
 
     @Override
@@ -61,10 +65,6 @@ public class ShowTappingActiveUIStepFragment extends ShowStepFragmentBase
         String actionType = super.getActionTypeFromActionButton(actionButton);
         if (actionType != null) {
             return actionType;
-        } else if (R.id.leftTapButton == actionButtonId) {
-            return ActionType.LEFT_TAP;
-        } else if (R.id.rightTapButton == actionButtonId) {
-            return ActionType.RIGHT_TAP;
         }
 
         return null;

@@ -39,7 +39,7 @@ import org.junit.*;
 import org.sagebionetworks.research.domain.step.interfaces.ActiveUIStep;
 import org.sagebionetworks.research.domain.step.interfaces.FormUIStep;
 import org.sagebionetworks.research.domain.step.interfaces.Step;
-import org.sagebionetworks.research.domain.step.ui.ConcreteUIAction;
+import org.sagebionetworks.research.domain.step.ui.action.implementations.ActionBase;
 import org.sagebionetworks.research.domain.task.Task;
 
 import java.io.IOException;
@@ -70,7 +70,7 @@ public class FooTaskDeserializeTest extends JsonDeserializationTestBase {
             assertEquals("Step 1", step1.getTitle());
             assertEquals(
                     ImmutableMap.builder()
-                            .put("goForward", ConcreteUIAction.builder()
+                            .put("goForward", ActionBase.builder()
                                     .setButtonTitle("Go, Dogs!")
                                     .build())
                             .build(),
@@ -96,7 +96,7 @@ public class FooTaskDeserializeTest extends JsonDeserializationTestBase {
             assertEquals("step2", step8.getIdentifier());
             assertEquals(
                     ImmutableMap.builder()
-                            .put("goForward", ConcreteUIAction.builder()
+                            .put("goForward", ActionBase.builder()
                                     .setButtonTitle("Start")
                                     .build())
                             .build(),

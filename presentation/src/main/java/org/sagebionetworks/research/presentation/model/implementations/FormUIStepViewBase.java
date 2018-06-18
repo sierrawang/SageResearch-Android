@@ -44,11 +44,11 @@ import org.sagebionetworks.research.domain.step.interfaces.Step;
 import org.sagebionetworks.research.presentation.DisplayString;
 import org.sagebionetworks.research.presentation.model.ColorThemeView;
 import org.sagebionetworks.research.presentation.model.ImageThemeView;
-import org.sagebionetworks.research.presentation.model.UIActionView;
+import org.sagebionetworks.research.presentation.model.action.ActionView;
+import org.sagebionetworks.research.presentation.model.action.ActionViewBase;
 import org.sagebionetworks.research.presentation.model.form.InputFieldView;
 import org.sagebionetworks.research.presentation.model.form.InputFieldViewBase;
 import org.sagebionetworks.research.presentation.model.interfaces.FormUIStepView;
-import org.sagebionetworks.research.presentation.model.interfaces.UIStepView;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -58,7 +58,7 @@ public class FormUIStepViewBase extends UIStepViewBase implements FormUIStepView
 
     public FormUIStepViewBase(@NonNull final String identifier,
             @NavDirection final int navDirection,
-            @NonNull final ImmutableMap<String, UIActionView> actions,
+            @NonNull final ImmutableMap<String, ActionView> actions,
             @Nullable final DisplayString title,
             @Nullable final DisplayString text,
             @Nullable final DisplayString detail,

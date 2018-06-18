@@ -48,8 +48,7 @@ import android.view.ViewGroup;
 import org.sagebionetworks.research.domain.mobile_ui.R;
 import org.sagebionetworks.research.domain.result.implementations.TaskResultBase;
 import org.sagebionetworks.research.domain.result.interfaces.TaskResult;
-import org.sagebionetworks.research.mobile_ui.mapper.StepMapper;
-import org.sagebionetworks.research.mobile_ui.show_step.view.ShowStepFragment;
+import org.sagebionetworks.research.mobile_ui.inject.ShowStepFragmentModule.ShowStepFragmentFactory;
 import org.sagebionetworks.research.mobile_ui.show_step.view.ShowStepFragmentBase;
 import org.sagebionetworks.research.presentation.model.interfaces.StepView;
 import org.sagebionetworks.research.presentation.model.interfaces.StepView.NavDirection;
@@ -84,6 +83,9 @@ public class PerformTaskFragment extends Fragment implements HasSupportFragmentI
 
     @Inject
     DispatchingAndroidInjector<Fragment> fragmentDispatchingAndroidInjector;
+
+    @Inject
+    ShowStepFragmentFactory showStepFragmentFactory;
 
     @Inject
     PerformTaskViewModelFactory taskViewModelFactory;
@@ -145,13 +147,14 @@ public class PerformTaskFragment extends Fragment implements HasSupportFragmentI
                 .of(this, taskViewModelFactory.create(taskView, taskRunParcelableUuid.getUuid()))
                 .get(PerformTaskViewModel.class);
 
-        performTaskViewModel.getStep().observe(this, this::showStep);
+        performTaskViewModel.getStepView().observe(this, this::showStep);
     }
 
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.rs2_fragment_perform_task, container, false);
         unbinder = ButterKnife.bind(this, view);
+        showStep(performTaskViewModel.getStepView().getValue());
         return view;
     }
 
@@ -185,11 +188,10 @@ public class PerformTaskFragment extends Fragment implements HasSupportFragmentI
             }
             return;
         }
-        StepMapper mapper = new StepMapper(this);
-        ShowStepFragment step = mapper.create(stepView);
 
+        ShowStepFragmentBase step = showStepFragmentFactory.create(stepView);
+        step.setPerformTaskFragment(this);
         currentStepFragment = step;
-
         FragmentTransaction transaction = getChildFragmentManager().beginTransaction();
 
         if (NavDirection.SHIFT_LEFT == stepView.getNavDirection()) {

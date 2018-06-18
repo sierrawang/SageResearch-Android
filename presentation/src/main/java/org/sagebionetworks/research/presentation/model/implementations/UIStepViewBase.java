@@ -37,14 +37,27 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 
 import com.google.common.collect.ImmutableMap;
+import com.google.common.collect.ImmutableMap.Builder;
 
 import org.sagebionetworks.research.domain.step.interfaces.Step;
 import org.sagebionetworks.research.domain.step.interfaces.ThemedUIStep;
+import org.sagebionetworks.research.domain.step.ui.action.implementations.SkipToStepActionBase;
+import org.sagebionetworks.research.domain.step.ui.action.interfaces.Action;
+import org.sagebionetworks.research.domain.step.ui.action.interfaces.ReminderAction;
+import org.sagebionetworks.research.domain.step.ui.action.interfaces.SkipToStepAction;
+import org.sagebionetworks.research.presentation.ActionType;
 import org.sagebionetworks.research.presentation.DisplayString;
 import org.sagebionetworks.research.presentation.model.ColorThemeView;
 import org.sagebionetworks.research.presentation.model.ImageThemeView;
-import org.sagebionetworks.research.presentation.model.UIActionView;
+import org.sagebionetworks.research.presentation.model.action.ActionView;
+import org.sagebionetworks.research.presentation.model.action.ActionViewBase;
+import org.sagebionetworks.research.presentation.model.action.ReminderActionViewBase;
+import org.sagebionetworks.research.presentation.model.action.SkipToStepActionViewBase;
 import org.sagebionetworks.research.presentation.model.interfaces.UIStepView;
+
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Map.Entry;
 
 public class UIStepViewBase implements UIStepView {
     @NonNull
@@ -52,7 +65,7 @@ public class UIStepViewBase implements UIStepView {
     @NavDirection
     private final int navDirection;
     @NonNull
-    private final ImmutableMap<String, UIActionView> actions;
+    private final ImmutableMap<String, ActionView> actions;
     @Nullable
     private final DisplayString title;
     @Nullable
@@ -79,7 +92,7 @@ public class UIStepViewBase implements UIStepView {
         ThemedUIStep uiStep = (ThemedUIStep)step;
         String identifier = uiStep.getIdentifier();
         // TODO: rkolmos 05/29/2018 potentially change actions.
-        ImmutableMap<String, UIActionView> actions = UIActionView.getActionsFrom(uiStep.getActions());
+        ImmutableMap<String, ActionView> actions = ImmutableMap.copyOf(getActionsFrom(uiStep.getActions()));
         DisplayString title = DisplayString.create(null, uiStep.getTitle());
         DisplayString text = DisplayString.create(null, uiStep.getText());
         DisplayString detail = DisplayString.create(null, uiStep.getDetail());
@@ -89,6 +102,23 @@ public class UIStepViewBase implements UIStepView {
         // TODO: rkolmos 05/30/2018 for now the nav direction is always left.
         return new UIStepViewBase(identifier, NavDirection.SHIFT_LEFT, actions, title, text, detail, footnote,
                 colorTheme, imageTheme);
+    }
+
+    protected static Map<String, ActionView> getActionsFrom(Map<String, Action> actions) {
+        Map<String, ActionView> returnValue = new HashMap<>();
+        for (Entry<String, Action> entry : actions.entrySet()) {
+            String key = entry.getKey();
+            Action action = entry.getValue();
+            if (action instanceof ReminderAction) {
+                returnValue.put(key, ReminderActionViewBase.fromReminderAction((ReminderAction)action));
+            } else if (action instanceof SkipToStepAction) {
+                returnValue.put(key, SkipToStepActionViewBase.fromSkipToStepAction((SkipToStepAction)action));
+            } else {
+                returnValue.put(key, ActionViewBase.fromAction(action));
+            }
+        }
+
+        return returnValue;
     }
 
     /**
@@ -104,7 +134,7 @@ public class UIStepViewBase implements UIStepView {
      * @param imageTheme The imageTheme the UIStepViewBase should use, with resources fully resolved.
      */
     public UIStepViewBase(@NonNull final String identifier,
-            final int navDirection, @NonNull final ImmutableMap<String, UIActionView> actions,
+            final int navDirection, @NonNull final ImmutableMap<String, ActionView> actions,
             @Nullable final DisplayString title,
             @Nullable final DisplayString text, @Nullable final DisplayString detail,
             @Nullable final DisplayString footnote, @Nullable final ColorThemeView colorTheme,
@@ -119,7 +149,6 @@ public class UIStepViewBase implements UIStepView {
         this.colorTheme = colorTheme;
         this.imageTheme = imageTheme;
     }
-
 
     @NonNull
     @Override
@@ -159,7 +188,7 @@ public class UIStepViewBase implements UIStepView {
 
     @NonNull
     @Override
-    public ImmutableMap<String, UIActionView> getActions() {
+    public ImmutableMap<String, ActionView> getActions() {
         return this.actions;
     }
 
@@ -173,6 +202,13 @@ public class UIStepViewBase implements UIStepView {
     @Override
     public ImageThemeView getImageTheme() {
         return this.imageTheme;
+    }
+
+    @Nullable
+    @Override
+    public ActionView getActionFor(@ActionType final String actionType) {
+        // If we have an action from the json for the given actionType we use this, otherwise we return null.
+        return this.actions.get(actionType);
     }
 
     @Override
@@ -196,7 +232,7 @@ public class UIStepViewBase implements UIStepView {
     protected UIStepViewBase(Parcel in) {
         this.identifier = in.readString();
         this.navDirection = in.readInt();
-        this.actions = (ImmutableMap<String, UIActionView>) in.readSerializable();
+        this.actions = (ImmutableMap<String, ActionView>) in.readSerializable();
         this.title = in.readParcelable(DisplayString.class.getClassLoader());
         this.text = in.readParcelable(DisplayString.class.getClassLoader());
         this.detail = in.readParcelable(DisplayString.class.getClassLoader());

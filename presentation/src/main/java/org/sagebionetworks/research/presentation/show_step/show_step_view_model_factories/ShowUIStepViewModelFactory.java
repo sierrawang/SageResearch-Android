@@ -37,11 +37,11 @@ import org.sagebionetworks.research.presentation.perform_task.PerformTaskViewMod
 import org.sagebionetworks.research.presentation.show_step.show_step_view_models.ShowStepViewModel;
 import org.sagebionetworks.research.presentation.show_step.show_step_view_models.ShowUIStepViewModel;
 
-public class ShowUIStepViewModelFactory implements
-        AbstractShowStepViewModelFactory<ShowUIStepViewModel<UIStepView>, UIStepView> {
+public class ShowUIStepViewModelFactory<S extends UIStepView> implements
+        AbstractShowStepViewModelFactory<ShowUIStepViewModel<S>, S> {
     @Override
-    public ShowUIStepViewModel<UIStepView> create(final PerformTaskViewModel performTaskViewModel,
-            final UIStepView stepView) {
+    public ShowUIStepViewModel<S> create(final PerformTaskViewModel performTaskViewModel,
+            final S stepView) {
         return new ShowUIStepViewModel<>(performTaskViewModel, stepView);
     }
 

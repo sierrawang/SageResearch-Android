@@ -33,9 +33,8 @@
 package org.sagebionetworks.research.presentation.model;
 
 import org.junit.*;
-import org.sagebionetworks.research.domain.step.interfaces.ActiveUIStep;
-import org.sagebionetworks.research.presentation.mapper.StepMapper;
-import org.sagebionetworks.research.presentation.model.implementations.ActiveUIStepViewBase;
+import org.sagebionetworks.research.presentation.inject.StepViewModule;
+import org.sagebionetworks.research.presentation.inject.StepViewModule.StepViewFactory;
 import org.sagebionetworks.research.presentation.model.interfaces.ActiveUIStepView;
 import org.sagebionetworks.research.presentation.model.interfaces.StepView;
 import org.sagebionetworks.research.presentation.model.interfaces.UIStepView;
@@ -43,12 +42,20 @@ import org.sagebionetworks.research.presentation.model.interfaces.UIStepView;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
+
+import dagger.Component;
+
 public class StepMapperTests {
-    private static StepMapper stepMapper = new StepMapper();
+    public StepMapperTestComponent component;
+
+    @Before
+    public void setup() {
+        this.component = DaggerStepMapperTestComponent.builder().build();
+    }
 
     @Test
     public void testMap_UIStep() {
-        StepView result = stepMapper.apply(UIStepViewTests.MOCK_UI_STEP);
+        StepView result = component.stepViewFactory().apply(UIStepViewTests.MOCK_UI_STEP);
         assertNotNull(result);
         assertTrue(result instanceof UIStepView);
         // We leave it up to UIStepViewTests to make sure that the UIStepView here is correct. For here the fact that
@@ -57,7 +64,7 @@ public class StepMapperTests {
 
     @Test
     public void testMap_ActiveStep() {
-        StepView result = stepMapper.apply(ActiveUIStepViewTests.MOCK_ACTIVE_UI_STEP);
+        StepView result = component.stepViewFactory().apply(ActiveUIStepViewTests.MOCK_ACTIVE_UI_STEP);
         assertNotNull(result);
         assertTrue(result instanceof ActiveUIStepView);
         // We leave it up to ActiveUIStepViewTests to make sure that the ActiveUIStepView here is correct. For here the fact that

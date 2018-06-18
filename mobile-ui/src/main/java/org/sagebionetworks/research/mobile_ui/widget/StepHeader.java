@@ -54,6 +54,8 @@ import org.w3c.dom.Text;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import butterknife.OnClick;
+import butterknife.Optional;
 import butterknife.Unbinder;
 
 public class StepHeader extends ConstraintLayout {
@@ -70,13 +72,13 @@ public class StepHeader extends ConstraintLayout {
     @BindView(id.rs2_step_navigation_action_info)
     @NonNull
     ActionButton infoButton;
-    @BindView(R2.id.rs2_step_header_progress_label)
+    @BindView(R2.id.rs2_progress_label)
     @NonNull
     TextView progressLabel;
-    @BindView(R2.id.rs2_step_header_progress_bar)
+    @BindView(R2.id.rs2_progress_bar)
     @NonNull
     ProgressBar progressBar;
-    @BindView(R2.id.rs2_step_header_progress_bar_floating)
+    @BindView(R2.id.rs2_progress_bar_floating)
     @NonNull
     ProgressBar progressBarFloating;
     @BindView(R2.id.rs2_step_header_action_button_group)
@@ -113,6 +115,8 @@ public class StepHeader extends ConstraintLayout {
         this.actionButtonClickListener = listener;
     }
 
+    @Optional
+    @OnClick({id.rs2_step_navigation_action_cancel, id.rs2_step_navigation_action_info})
     public void onActionButtonClick(@NonNull ActionButton actionButton) {
         LOGGER.debug("Action button clicked, text: {}", actionButton.getText());
 

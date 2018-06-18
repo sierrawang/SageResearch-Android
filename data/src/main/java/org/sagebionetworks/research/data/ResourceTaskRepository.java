@@ -34,6 +34,8 @@ package org.sagebionetworks.research.data;
 
 import android.content.Context;
 import android.content.res.AssetManager;
+import android.content.res.Resources.NotFoundException;
+import android.support.annotation.DrawableRes;
 import android.support.annotation.NonNull;
 
 import com.google.common.collect.ImmutableList;
@@ -87,6 +89,23 @@ public class ResourceTaskRepository implements TaskRepository {
 
             return task.copyWithSteps(steps);
         });
+    }
+
+    /**
+     * Finds and returns the drawable resource with the given identifier, or throws a NotFoundException()
+     * @param name - the identifier of the drawable to find.
+     * @return the drawable resource with the given identifier.
+     * @throws NotFoundException if the given resource identifier cannot be resolved as a drawable.
+     */
+    @DrawableRes
+    public int resolveDrawableFromString(@NonNull String name) throws NotFoundException {
+        int resId = context.getResources().getIdentifier(name, "drawable", context.getPackageName());
+        if (resId == 0) {
+            // The resource was not found
+            throw new NotFoundException("Resource " + name + " couldn't be resolved as a drawable.");
+        } else {
+            return resId;
+        }
     }
 
     /**

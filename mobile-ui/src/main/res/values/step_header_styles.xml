@@ -33,20 +33,18 @@
 
 <resources>
     <style name="Widget.ResearchStack.StepHeader.CancelButton" parent="">
-        <item name="android:background">@drawable/cancel_button</item>
+        <item name="android:background">@drawable/rs2_cancel_icon</item>
     </style>
 
     <style name="Widget.ResearchStack.StepHeader.InfoButton" parent="">
-        <item name="android:background">@drawable/info_button</item>
+        <item name="android:background">@drawable/rs2_info_icon</item>
     </style>
 
     <style name="Widget.ResearchStack.StepHeader.ProgressBar" parent="Widget.AppCompat.ProgressBar.Horizontal">
-        <item name="android:progressDrawable">@drawable/progress_bar</item>
     </style>
 
     <style name="Widget.ResearchStack.StepHeader.ProgressBar.Floating"
         parent="Widget.AppCompat.ProgressBar.Horizontal">
-        <item name="android:progressDrawable">@drawable/progress_bar_floating</item>
     </style>
 
     <style name="Widget.ResearchStack.StepHeader.ImageView" parent="">

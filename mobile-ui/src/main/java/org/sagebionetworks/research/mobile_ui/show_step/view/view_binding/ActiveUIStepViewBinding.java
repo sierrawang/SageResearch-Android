@@ -33,12 +33,16 @@
 package org.sagebionetworks.research.mobile_ui.show_step.view.view_binding;
 
 import android.support.annotation.Nullable;
+import android.view.View;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import org.sagebionetworks.research.domain.mobile_ui.R2.id;
+import org.sagebionetworks.research.presentation.model.interfaces.ActiveUIStepView;
 
 import butterknife.BindView;
+import butterknife.ButterKnife;
+import butterknife.Unbinder;
 
 /**
  * An ActiveUIStepViewBinding is a view binding that has everything a UIStepViewBinding and the following optional
@@ -48,28 +52,47 @@ import butterknife.BindView;
  *      countdownLabel : TextView - The label to display the text corresponding to the countdownDial's progress on.
  *      unitLabel : TextView - The label to display the unit that the countdown is occurring in on.
  */
-public class ActiveUIStepViewBinding extends UIStepViewBinding {
-    /**
-     * The binding can optionally contain a progress bar which displays a visual representation of the progress
-     * toward finishing the active step.
-     */
-    @BindView(id.countdownDial)
-    @Nullable
-    public ProgressBar countdownDial;
+public class ActiveUIStepViewBinding<S extends ActiveUIStepView> extends UIStepViewBinding<S> {
+    private final ActiveUIStepViewHolder activeUIStepViewHolder;
+    private final Unbinder activeUIStepViewHolderUnbinder;
 
-    /**
-     * The binding can optionally have a TextView which displays a text representation of the progress toward
-     * finishing the active step.
-     */
-    @BindView(id.countdownLabel)
-    @Nullable
-    public TextView countdownLabel;
+    public ActiveUIStepViewBinding(View view) {
+        super(view);
+        this.activeUIStepViewHolder = new ActiveUIStepViewHolder();
+        this.activeUIStepViewHolderUnbinder = ButterKnife.bind(this.activeUIStepViewHolder, view);
+    }
 
-    /**
-     * The binding can optionally have a TextView which displays the unit that the countdown is occurring in.
-     */
-    @BindView(id.unitLabel)
-    public TextView unitLabel;
+    @Override
+    public void unbind() {
+        super.unbind();
+        this.activeUIStepViewHolderUnbinder.unbind();
+    }
+
+    // TODO rkolmos 06/10/2018 potentially override update();
+
+    protected static class ActiveUIStepViewHolder {
+        /**
+         * The binding can optionally contain a progress bar which displays a visual representation of the progress
+         * toward finishing the active step.
+         */
+        @BindView(id.countdownDial)
+        @Nullable
+        public ProgressBar countdownDial;
+
+        /**
+         * The binding can optionally have a TextView which displays a text representation of the progress toward
+         * finishing the active step.
+         */
+        @BindView(id.countLabel)
+        @Nullable
+        public TextView countdownLabel;
+
+        /**
+         * The binding can optionally have a TextView which displays the unit that the countdown is occurring in.
+         */
+        @BindView(id.unitLabel)
+        public TextView unitLabel;
+    }
 
     // TODO rkolmos 05/25/2018 override update to do the correct thing once the corresponding subclass of StepView is created
 }

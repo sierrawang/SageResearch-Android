@@ -42,7 +42,7 @@ import org.sagebionetworks.research.domain.form.interfaces.InputField;
 import org.sagebionetworks.research.domain.interfaces.HashCodeHelper;
 import org.sagebionetworks.research.domain.step.StepType;
 import org.sagebionetworks.research.domain.step.interfaces.FormUIStep;
-import org.sagebionetworks.research.domain.step.ui.UIAction;
+import org.sagebionetworks.research.domain.step.ui.action.interfaces.Action;
 import org.sagebionetworks.research.domain.step.ui.theme.ColorTheme;
 import org.sagebionetworks.research.domain.step.ui.theme.ImageTheme;
 
@@ -62,7 +62,7 @@ public class FormUIStepBase extends UIStepBase implements FormUIStep {
     @NonNull
     private final List<InputField> inputFields;
 
-    public FormUIStepBase(@NonNull final String identifier, @NonNull Map<String, UIAction> actions,
+    public FormUIStepBase(@NonNull final String identifier, @NonNull Map<String, Action> actions,
             @Nullable final String title, @Nullable final String text, @Nullable final String detail,
             @Nullable final String footnote, @Nullable final ColorTheme colorTheme,
             @Nullable final ImageTheme imageTheme, @NonNull final List<InputField> inputFields) {
