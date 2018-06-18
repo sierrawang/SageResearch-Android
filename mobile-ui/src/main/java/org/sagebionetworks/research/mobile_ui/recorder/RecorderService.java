@@ -42,113 +42,29 @@ import android.os.IBinder;
 import android.os.Looper;
 import android.os.Message;
 import android.os.Process;
+import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 
+import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.ImmutableSet;
 import com.google.common.collect.Sets;
 
 import java.util.Map;
+import java.util.Set;
 
 /**
  * The RecorderService handles the recorders that are needed for the task. Recorders can do things such as record
  * audio, phones motion, etc. Every recorder runs on it's own thread.
  */
 public class RecorderService extends Service {
-    public static final String RECORDER_KEY = "RECORDER";
-    public static final String ACTION_KEY = "ACTION";
-
-    public final class RecorderBinder extends Binder {
-        public RecorderService getService() {
-            return RecorderService.this;
-        }
-    }
-
-    /**
-     * A RecorderThread is a separate thread that handles one recorder.
-     */
-    private static final class RecorderThread extends Thread {
-        private final Recorder recorder;
-
-        public RecorderThread(final Recorder recorder) {
-            this.recorder = recorder;
-        }
-
-        @Override
-        public void run() {
-            this.recorder.start();
-        }
-
-        public void stopRecorder() {
-            this.recorder.stop();
-            this.interrupt();
-        }
-
-        public void cancelRecorder() {
-            this.recorder.cancel();
-            this.interrupt();
-        }
-    }
-
-    /**
-     * A ServiceHandler receives and handles messages from the RecorderService.
-     */
-    private static final class ServiceHandler extends Handler {
-        protected Map<Recorder, RecorderThread> recorderThreadMap;
-
-        public ServiceHandler(Looper looper) {
-            super(looper);
-        }
-
-        @Override
-        public void handleMessage(Message msg) {
-            Bundle bundle = msg.getData();
-            Recorder recorder = (Recorder)bundle.getSerializable(RECORDER_KEY);
-            @RecorderActionType String actionType = (String)bundle.getSerializable(ACTION_KEY);
-            switch (actionType) {
-                case RecorderActionType.START:
-                    this.startRecorder(recorder);
-                    break;
-                case RecorderActionType.STOP:
-                    this.stopRecorder(recorder);
-                    break;
-                case RecorderActionType.CANCEL:
-                    this.cancelRecorder(recorder);
-                    break;
-            }
-        }
-
-        private void startRecorder(Recorder recorder) {
-            RecorderThread thread = this.recorderThreadMap.get(recorder);
-            if (thread == null) {
-                thread = new RecorderThread(recorder);
-                this.recorderThreadMap.put(recorder, thread);
-            }
-
-            thread.start();
-        }
-
-        private void stopRecorder(Recorder recorder) {
-            RecorderThread thread = this.recorderThreadMap.remove(recorder);
-            if (thread == null) {
-                throw new IllegalStateException("Cannot stop recorder that hasn't been started.");
-            }
-
-            thread.stopRecorder();
-        }
-
-        private void cancelRecorder(Recorder recorder) {
-            RecorderThread thread = this.recorderThreadMap.get(recorder);
-            if (thread == null) {
-                throw new IllegalStateException("Cannot cancel recorder that hasn't been started.");
-            }
-
-            thread.cancelRecorder();
-        }
-    }
+    public static final String RECORDER_TYPE_KEY = "RECORDER_TYPE";
+    public static final String RECORDER_ID_KEY = "RECORDER_ID";
+    public static final String RECORDER_ACTION_KEY = "RECORDER_ACTION";
 
     protected Looper serviceLooper;
     protected ServiceHandler serviceHandler;
     protected IBinder serviceBinder;
+    protected Map<String, Recorder> recordersById;
 
     @Nullable
     @Override
@@ -177,34 +93,115 @@ public class RecorderService extends Service {
      */
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
-        Recorder recorder = (Recorder)intent.<Recorder>getSerializableExtra(RECORDER_KEY);
-        @RecorderActionType String actionType = (String)intent.<String>getSerializableExtra(ACTION_KEY);
-        Message message = serviceHandler.obtainMessage();
-        message.arg1 = startId;
+        @RecorderActionType String actionType = intent.getStringExtra(RECORDER_ACTION_KEY);
+        String recorderIdentifier = intent.getStringExtra(RECORDER_ID_KEY);
+        @RecorderType String recorderType = intent.getStringExtra(RECORDER_TYPE_KEY);
+        Message message = this.serviceHandler.obtainMessage();
         Bundle bundle = new Bundle();
-        bundle.putSerializable(RECORDER_KEY, recorder);
-        bundle.putSerializable(ACTION_KEY, actionType);
+        bundle.putString(RECORDER_ACTION_KEY, actionType);
+        bundle.putString(RECORDER_ID_KEY, recorderIdentifier);
+        bundle.putString(RECORDER_TYPE_KEY, recorderType);
         message.setData(bundle);
-        serviceHandler.handleMessage(message);
-
+        this.serviceHandler.handleMessage(message);
         return START_STICKY;
     }
 
     /**
-     * Returns the set of all recorders that are currently active for this service. An active recorder is either
-     * running, or has been canceled but not stopped.
-     * @return the set of all recorders that are currently active for this service.
+     * Returns an immutable map containing the active recorders keyed by their identifiers.
+     * @return an immutable map containing the active recorders keyed by their identifiers.
      */
-    public ImmutableSet<Recorder> getActiveRecorders() {
-        return ImmutableSet.copyOf(this.serviceHandler.recorderThreadMap.keySet());
+    public ImmutableMap<String, Recorder> getActiveRecorders() {
+        return ImmutableMap.copyOf(this.recordersById);
+    }
+
+    protected Recorder createRecorder(@NonNull String id, @RecorderType String type) {
+        Recorder recorder = new Recorder() {
+            @Override
+            public void start() {
+
+            }
+
+            @Override
+            public void stop() {
+
+            }
+
+            @Override
+            public void cancel() {
+
+            }
+
+            @Override
+            public boolean isRunning() {
+                return false;
+            }
+
+            @Nullable
+            @Override
+            public String getStartStepIdentifier() {
+                return null;
+            }
+
+            @Nullable
+            @Override
+            public String getStopStepIdentifier() {
+                return null;
+            }
+        };
+
+        this.recordersById.put(id, recorder);
+        return recorder;
+    }
+
+    public final class RecorderBinder extends Binder {
+        public RecorderService getService() {
+            return RecorderService.this;
+        }
     }
 
     /**
-     * Returns the set of all recorders that are currently running for this service. A running recorder is one that
-     * has been started but not stopped or canceled.
-     * @return the set of all running recorders for this service.
+     * A ServiceHandler receives and handles messages from the RecorderService.
      */
-    public ImmutableSet<Recorder> getRunningRecorders() {
-        return ImmutableSet.copyOf(Sets.filter(this.getActiveRecorders(), Recorder::isRunning));
+    private final class ServiceHandler extends Handler {
+        public ServiceHandler(Looper looper) {
+            super(looper);
+        }
+
+        @Override
+        public void handleMessage(Message msg) {
+            Bundle bundle = msg.getData();
+            @RecorderActionType String actionType = bundle.getString(RECORDER_ACTION_KEY);
+            String recorderId = bundle.getString(RECORDER_ID_KEY);
+            if (actionType == null || recorderId == null) {
+                throw new IllegalArgumentException("Null actionType or recorderId");
+            }
+
+            Recorder recorder = recordersById.get(recorderId);
+            switch (actionType) {
+                case RecorderActionType.START:
+                    if (recorder == null) {
+                        @RecorderType String recorderType = bundle.getString(RECORDER_TYPE_KEY);
+                        recorder = createRecorder(recorderId, recorderType);
+                    }
+
+                    recorder.start();
+                    break;
+                case RecorderActionType.STOP:
+                    if (recorder == null) {
+                        throw new IllegalArgumentException("Cannot stop recorder that isn't started.");
+                    }
+
+                    recordersById.remove(recorderId);
+                    recorder.stop();
+                    break;
+                case RecorderActionType.CANCEL:
+                    if (recorder == null) {
+                        throw new IllegalArgumentException("Cannot cancel recorder that isn't started.");
+                    }
+
+                    recorder.cancel();
+                    break;
+            }
+        }
     }
 }

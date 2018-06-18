@@ -34,7 +34,10 @@ package org.sagebionetworks.research.mobile_ui.recorder;
 
 import android.content.Context;
 import android.content.Intent;
+import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+
+import com.google.common.collect.ImmutableMap;
 
 import org.sagebionetworks.research.domain.async.AsyncAction;
 import org.sagebionetworks.research.domain.step.interfaces.Step;
@@ -52,28 +55,13 @@ import java.util.Set;
  */
 public class RecorderManager {
     private RecorderService service;
-    private Map<String, Recorder> recordersById;
     private Context context;
+    private Task task;
 
     public RecorderManager(RecorderService service, Task task, Context context) {
         this.service = service;
         this.context = context;
-        this.recordersById = new HashMap<>();
-        this.initializeRecordersFromTask(task);
-    }
-
-    /**
-     * Initializes all the recorders that will be needed during the task.
-     * @param task The task to initialize the recorders from.
-     */
-    private void initializeRecordersFromTask(Task task) {
-        for (AsyncAction action : task.getAsyncActions()) {
-            String identifier = action.getIdentifier();
-            if (RecorderManager.isRecorder(identifier)) {
-                Recorder recorder = RecorderManager.createRecorder(identifier, getRecorderTypeFromId(identifier));
-                this.recordersById.put(identifier, recorder);
-            }
-        }
+        this.task = task;
     }
 
     /**
@@ -85,117 +73,69 @@ public class RecorderManager {
      * @param navDirection The direction in which the transition from previousStep to nextStep occurred in.
      */
     public void onStepTransition(@Nullable Step previousStep, @Nullable Step nextStep, @NavDirection int navDirection) {
-        Set<Recorder> shouldStart = new HashSet<>();
-        Set<Recorder> shouldStop = new HashSet<>();
-        Set<Recorder> shouldCancel = new HashSet<>();
-
-        for (Recorder recorder : this.recordersById.values()) {
-            String startStepIdentifier = recorder.getStartStepIdentifier();
-            String stopStepIdentifier = recorder.getStopStepIdentifier();
+        // TODO: 06/18/2018 rkolmos get the equivalent information from the task.
+        Set<RecorderInfo> recorderInfos = new HashSet<>();
+        for (RecorderInfo info : recorderInfos) {
+            String startStepIdentifier = info.startStepId;
+            String stopStepIdentifier = info.stopStepId;
             if (previousStep == null) {
                 if (startStepIdentifier == null) {
                     // The task has just started so the recorder should be started if it has a null startStepIdentifier.
-                    shouldStart.add(recorder);
+                    this.context.startService(RecorderManager.createRecorderIntent(info.id, RecorderActionType.START,
+                            info.type));
                 }
             } else if (nextStep == null) {
                 // The task has just finished so the recorder should be stopped.
-                shouldStop.add(recorder);
+                this.context.startService(RecorderManager.createRecorderIntent(info.id, RecorderActionType.STOP, null));
             } else if (navDirection == NavDirection.SHIFT_LEFT) {
                 String nextStepIdentifier = nextStep.getIdentifier();
                 if (startStepIdentifier.equals(nextStepIdentifier)) {
                     // The recorder should be started.
-                    shouldStart.add(recorder);
+                    this.context.startService(RecorderManager.createRecorderIntent(info.id, RecorderActionType.START,
+                            info.type));
                 } else if (stopStepIdentifier != null && stopStepIdentifier.equals(stopStepIdentifier)) {
                     // The recorder should be stopped.
-                    shouldStop.add(recorder);
+                    this.context.startService(RecorderManager.createRecorderIntent(info.id, RecorderActionType.STOP,
+                            null));
                 }
             } else if (navDirection == NavDirection.SHIFT_RIGHT) {
                 // TODO: rkolmos 06/14/2018 Figure out what should happen to recorder when the user goes back.
             }
         }
-
-        this.sendServiceRequests(shouldStart, RecorderActionType.START);
-        this.sendServiceRequests(shouldStop, RecorderActionType.STOP);
-        this.sendServiceRequests(shouldCancel, RecorderActionType.CANCEL);
     }
 
-    /**
-     * Sends a request to perform the given actionType, for each recorder in the given set.
-     * @param recorders The set of recorders to perform the given actionType for.
-     * @param actionType The type of action to perform on each recorder.
-     */
-    private void sendServiceRequests(Set<Recorder> recorders, @RecorderActionType String actionType) {
-        for (Recorder recorder : recorders) {
-            Intent intent = RecorderManager.createRecorderIntent(recorder, actionType);
-            this.context.startService(intent);
-        }
+    public ImmutableMap<String, Recorder> getActiveRecorders() {
+        return this.service.getActiveRecorders();
     }
 
     /**
      * Creates and returns an Intent that can be given to the RecorderService to perform the given actionType
      * on the given recorder.
-     * @param recorder The recorder to perform the given actionType on.
+     * @param recorderId The identifier of the recorder to perform the given actionType on.
      * @param actionType The type of action to perform on the given recorder.
+     * @param recorderType The type of recorder should one need to be created, null otherwise.
      * @return an Intent that can be given to the RecorderService to perform the given actionType on the given
      *         recorder.
      */
-    public static Intent createRecorderIntent(Recorder recorder, @RecorderActionType String actionType) {
+    public static Intent createRecorderIntent(@NonNull String recorderId, @RecorderActionType String actionType,
+            @Nullable @RecorderType String recorderType) {
         Intent intent = new Intent(RecorderService.class.getName());
-        intent.putExtra(RecorderService.RECORDER_KEY, recorder);
-        intent.putExtra(RecorderService.ACTION_KEY, actionType);
+        intent.putExtra(RecorderService.RECORDER_ACTION_KEY, actionType);
+        intent.putExtra(RecorderService.RECORDER_ID_KEY, recorderId);
+        if (recorderType != null && actionType.equals(RecorderActionType.START)) {
+            intent.putExtra(RecorderService.RECORDER_TYPE_KEY, recorderType);
+        }
+
         return intent;
     }
 
     /**
-     * Creates and returns a Recorder with the given identifier, and the given type.
-     * @param identifier The identifier of the recorder to create.
-     * @param type The type of recorder to create.
-     * @return a Recorder with the given identifier, and the given type.
+     * TODO rkolmos 06/18/2018 remove this class and get this info from the task.
      */
-    private static Recorder createRecorder(String identifier, String type) {
-        // TODO rkolmos 06/14/2018 call the recorder factory here.
-        Recorder result = new Recorder() {
-            @Override
-            public void start() {
-
-            }
-
-            @Override
-            public void stop() {
-
-            }
-
-            @Override
-            public void cancel() {
-
-            }
-
-            @Override
-            public boolean isRunning() {
-                return false;
-            }
-
-            @Nullable
-            @Override
-            public String getStartStepIdentifier() {
-                return null;
-            }
-
-            @Nullable
-            @Override
-            public String getStopStepIdentifier() {
-                return null;
-            }
-        };
-
-        return result;
-    }
-
-    private static boolean isRecorder(String Identifier) {
-        return false;
-    }
-
-    private static String getRecorderTypeFromId(String identifier) {
-        return "";
+    private static final class RecorderInfo {
+        String startStepId;
+        String stopStepId;
+        String id;
+        @RecorderType String type;
     }
 }
