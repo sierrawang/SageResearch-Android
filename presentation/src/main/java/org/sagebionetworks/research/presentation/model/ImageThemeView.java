@@ -57,6 +57,10 @@ public abstract class ImageThemeView implements Parcelable {
      * @return an ImageThemeView created from the given ImageTheme.
      */
     public static ImageThemeView fromImageTheme(@Nullable ImageTheme imageTheme, DrawableMapper mapper) {
+        if (mapper == null) {
+            return null;
+        }
+
         if (imageTheme instanceof AnimationImageTheme) {
             return AnimationImageThemeView.fromAnimationImageTheme((AnimationImageTheme)imageTheme, mapper);
         } else if (imageTheme instanceof FetchableImageTheme) {

@@ -55,7 +55,7 @@ public class StepMapperTests {
 
     @Test
     public void testMap_UIStep() {
-        StepView result = component.stepViewFactory().apply(UIStepViewTests.MOCK_UI_STEP);
+        StepView result = component.stepViewFactory().apply(UIStepViewTests.MOCK_UI_STEP, null);
         assertNotNull(result);
         assertTrue(result instanceof UIStepView);
         // We leave it up to UIStepViewTests to make sure that the UIStepView here is correct. For here the fact that
@@ -64,7 +64,7 @@ public class StepMapperTests {
 
     @Test
     public void testMap_ActiveStep() {
-        StepView result = component.stepViewFactory().apply(ActiveUIStepViewTests.MOCK_ACTIVE_UI_STEP);
+        StepView result = component.stepViewFactory().apply(ActiveUIStepViewTests.MOCK_ACTIVE_UI_STEP, null);
         assertNotNull(result);
         assertTrue(result instanceof ActiveUIStepView);
         // We leave it up to ActiveUIStepViewTests to make sure that the ActiveUIStepView here is correct. For here the fact that

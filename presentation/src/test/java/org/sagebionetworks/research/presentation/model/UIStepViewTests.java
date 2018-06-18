@@ -45,6 +45,7 @@ import org.sagebionetworks.research.domain.step.ui.theme.ColorPlacement;
 import org.sagebionetworks.research.domain.step.ui.theme.ColorTheme;
 import org.sagebionetworks.research.domain.step.ui.theme.ImageTheme;
 import org.sagebionetworks.research.presentation.DisplayString;
+import org.sagebionetworks.research.presentation.mapper.DrawableMapper;
 import org.sagebionetworks.research.presentation.model.implementations.UIStepViewBase;
 
 import java.util.Map;
@@ -87,7 +88,6 @@ public class UIStepViewTests {
     public static ImageTheme mockImageTheme(@ColorPlacement String colorPlacement, String imageResourceName) {
         ImageTheme theme = mock(ImageTheme.class);
         when(theme.getColorPlacement()).thenReturn(colorPlacement);
-        when(theme.getImageResourceName()).thenReturn(imageResourceName);
         return theme;
     }
 
@@ -100,7 +100,7 @@ public class UIStepViewTests {
 
     @Test
     public void testFromTUIStep() {
-        UIStepViewBase result = UIStepViewBase.fromUIStep(MOCK_UI_STEP);
+        UIStepViewBase result = UIStepViewBase.fromUIStep(MOCK_UI_STEP, null);
         assertNotNull(result);
         assertEquals("identifier", result.getIdentifier());
         assertEquals(DisplayString.create(null, "title"), result.getTitle());
@@ -111,9 +111,7 @@ public class UIStepViewTests {
         assertNotNull(colorThemeView);
         assertTrue(colorThemeView.lightStyle());
         ImageThemeView imageThemeView = result.getImageTheme();
-        assertNotNull(imageThemeView);
-        assertNotNull(imageThemeView.getColorPlacement());
-        assertEquals(ColorPlacement.HEADER, imageThemeView.getColorPlacement());
-        assertNull(imageThemeView.getImageResource().getDrawable());
+        // The image theme view will be null since we have no drawable mapper.
+        assertNull(imageThemeView);
     }
 }
