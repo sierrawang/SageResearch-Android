@@ -60,7 +60,7 @@ public abstract class SkipToStepActionViewBase implements SkipToStepActionView {
     public static SkipToStepActionViewBase fromSkipToStepAction(SkipToStepAction skipToStepAction) {
         // TODO rkolmos 06/07/2018 add the icon to this method.
         return SkipToStepActionViewBase.builder()
-                .setButtonTitle(new DisplayString(null, skipToStepAction.getButtonTitle()))
+                .setButtonTitle(DisplayString.create(null, skipToStepAction.getButtonTitle()))
                 .setSkipToStepIdentifier(skipToStepAction.getSkipToStepIdentifier())
                 .build();
     }

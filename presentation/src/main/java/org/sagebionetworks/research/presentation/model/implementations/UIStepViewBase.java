@@ -95,10 +95,10 @@ public class UIStepViewBase implements UIStepView {
         String identifier = uiStep.getIdentifier();
         // TODO: rkolmos 05/29/2018 potentially change actions.
         ImmutableMap<String, ActionView> actions = ImmutableMap.copyOf(getActionsFrom(uiStep.getActions()));
-        DisplayString title = new DisplayString(null, uiStep.getTitle());
-        DisplayString text = new DisplayString(null, uiStep.getText());
-        DisplayString detail = new DisplayString(null, uiStep.getDetail());
-        DisplayString footnote = new DisplayString(null, uiStep.getFootnote());
+        DisplayString title = DisplayString.create(null, uiStep.getTitle());
+        DisplayString text = DisplayString.create(null, uiStep.getText());
+        DisplayString detail = DisplayString.create(null, uiStep.getDetail());
+        DisplayString footnote = DisplayString.create(null, uiStep.getFootnote());
         ColorThemeView colorTheme = ColorThemeView.fromColorTheme(uiStep.getColorTheme());
         ImageThemeView imageTheme = ImageThemeView.fromImageTheme(uiStep.getImageTheme(), mapper);
         // TODO: rkolmos 05/30/2018 for now the nav direction is always left.

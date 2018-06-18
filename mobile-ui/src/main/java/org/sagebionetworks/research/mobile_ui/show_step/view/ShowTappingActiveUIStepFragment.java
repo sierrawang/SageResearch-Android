@@ -30,17 +30,43 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.sagebionetworks.research.presentation.inject;
+package org.sagebionetworks.research.mobile_ui.show_step.view;
 
-import android.support.annotation.StringDef;
+import android.support.annotation.NonNull;
+import android.view.View;
 
-import java.lang.annotation.Retention;
-import java.lang.annotation.RetentionPolicy;
+import org.sagebionetworks.research.domain.mobile_ui.R;
+import org.sagebionetworks.research.mobile_ui.show_step.view.view_binding.UIStepViewBinding;
+import org.sagebionetworks.research.mobile_ui.widget.ActionButton;
+import org.sagebionetworks.research.presentation.ActionType;
+import org.sagebionetworks.research.presentation.model.interfaces.StepView;
+import org.sagebionetworks.research.presentation.model.interfaces.UIStepView;
+import org.sagebionetworks.research.presentation.show_step.ShowGenericStepViewModel;
+import org.sagebionetworks.research.presentation.show_step.show_step_view_models.ShowUIStepViewModel;
 
-@Retention(RetentionPolicy.SOURCE)
-@StringDef({DrawableName.CANCEL, DrawableName.INFO, DrawableName.BACK})
-public @interface DrawableName {
-    String CANCEL = "cancel";
-    String INFO = "info";
-    String BACK = "back";
+public class ShowTappingActiveUIStepFragment extends ShowStepFragmentBase
+        <UIStepView, ShowUIStepViewModel<UIStepView>, UIStepViewBinding<UIStepView>> {
+
+    @Override
+    protected int getLayoutId() {
+        return 0;
+    }
+
+    @NonNull
+    @Override
+    protected UIStepViewBinding instantiateAndBindBinding(final View view) {
+        return null;
+    }
+
+    @Override
+    @ActionType
+    protected String getActionTypeFromActionButton(@NonNull ActionButton actionButton) {
+        int actionButtonId = actionButton.getId();
+        String actionType = super.getActionTypeFromActionButton(actionButton);
+        if (actionType != null) {
+            return actionType;
+        }
+
+        return null;
+    }
 }

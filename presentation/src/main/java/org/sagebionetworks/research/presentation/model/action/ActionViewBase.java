@@ -59,7 +59,7 @@ public abstract class ActionViewBase implements ActionView {
     public static ActionViewBase fromAction(Action action) {
         // TODO rkolmos 06/07/2018 add icon to this method.
         return ActionViewBase.builder()
-                .setButtonTitle(new DisplayString(null, action.getButtonTitle()))
+                .setButtonTitle(DisplayString.create(null, action.getButtonTitle()))
                 .build();
     }
 }

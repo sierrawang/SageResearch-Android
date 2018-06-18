@@ -35,46 +35,37 @@ package org.sagebionetworks.research.mpower.step_view;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 
-import com.google.auto.value.AutoValue;
+import com.google.common.collect.ImmutableMap;
 
-import org.sagebionetworks.research.mpower.step.Icon;
-import org.sagebionetworks.research.presentation.DisplayDrawable;
+import org.sagebionetworks.research.domain.step.implementations.UIStepBase;
+import org.sagebionetworks.research.domain.step.interfaces.Step;
+import org.sagebionetworks.research.mpower.step.CompletionStep;
 import org.sagebionetworks.research.presentation.DisplayString;
-import org.sagebionetworks.research.presentation.mapper.DrawableMapper;
+import org.sagebionetworks.research.presentation.model.ColorThemeView;
+import org.sagebionetworks.research.presentation.model.ImageThemeView;
+import org.sagebionetworks.research.presentation.model.action.ActionView;
+import org.sagebionetworks.research.presentation.model.implementations.UIStepViewBase;
 
-@AutoValue
-public abstract class IconView {
-    @AutoValue.Builder
-    public abstract static class Builder {
-        public abstract IconView build();
-
-        @Nullable
-        public abstract Builder setTitle(@Nullable DisplayString title);
-
-        @Nullable
-        public abstract Builder setIcon(@Nullable DisplayDrawable icon);
+public class CompletionStepView extends UIStepViewBase {
+    public CompletionStepView(@NonNull final String identifier, final int navDirection,
+            @NonNull final ImmutableMap<String, ActionView> actions,
+            @Nullable final DisplayString title,
+            @Nullable final DisplayString text,
+            @Nullable final DisplayString detail,
+            @Nullable final DisplayString footnote,
+            @Nullable final ColorThemeView colorTheme,
+            @Nullable final ImageThemeView imageTheme) {
+        super(identifier, navDirection, actions, title, text, detail, footnote, colorTheme, imageTheme);
     }
 
-    public static Builder builder() {
-        return new AutoValue_IconView.Builder();
-    }
-
-    @NonNull
-    public static IconView fromIcon(@NonNull Icon icon, DrawableMapper mapper) {
-        String title = icon.getTitle();
-        DisplayDrawable iconDrawable = DisplayDrawable.create(null, mapper.getDrawableFromName(
-                icon.getIcon()));
-        if (title != null) {
-            return IconView.builder()
-                    .setIcon(iconDrawable)
-                    .setTitle(DisplayString.create(null, title))
-                    .build();
-        } else {
-            return null;
+    public static CompletionStepView fromCompletionStep(Step step) {
+        if (!(step instanceof CompletionStep)) {
+            throw new IllegalArgumentException("Provided step: " + step + " is not a CompletionStep.");
         }
+
+        UIStepViewBase uiStep = UIStepViewBase.fromUIStep(step);
+        return new CompletionStepView(uiStep.getIdentifier(), uiStep.getNavDirection(), uiStep.getActions(),
+                uiStep.getTitle(), uiStep.getText(), uiStep.getDetail(), uiStep.getFootnote(), uiStep.getColorTheme(),
+                uiStep.getImageTheme());
     }
-
-    public abstract DisplayString getTitle();
-
-    public abstract DisplayDrawable getIcon();
 }

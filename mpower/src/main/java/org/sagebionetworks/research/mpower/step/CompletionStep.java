@@ -30,17 +30,35 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.sagebionetworks.research.presentation.inject;
+package org.sagebionetworks.research.mpower.step;
 
-import android.support.annotation.StringDef;
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 
-import java.lang.annotation.Retention;
-import java.lang.annotation.RetentionPolicy;
+import org.sagebionetworks.research.domain.step.StepType;
+import org.sagebionetworks.research.domain.step.implementations.UIStepBase;
+import org.sagebionetworks.research.domain.step.ui.action.interfaces.Action;
+import org.sagebionetworks.research.domain.step.ui.theme.ColorTheme;
+import org.sagebionetworks.research.domain.step.ui.theme.ImageTheme;
 
-@Retention(RetentionPolicy.SOURCE)
-@StringDef({DrawableName.CANCEL, DrawableName.INFO, DrawableName.BACK})
-public @interface DrawableName {
-    String CANCEL = "cancel";
-    String INFO = "info";
-    String BACK = "back";
+import java.util.Map;
+
+public class CompletionStep extends UIStepBase {
+    public static final String TYPE_KEY = StepType.COMPLETION;
+
+    public CompletionStep(@NonNull final String identifier,
+            @Nullable final Map<String, Action> actions,
+            @Nullable final String title,
+            @Nullable final String text,
+            @Nullable final String detail,
+            @Nullable final String footnote,
+            @Nullable final ColorTheme colorTheme,
+            @Nullable final ImageTheme imageTheme) {
+        super(identifier, actions, title, text, detail, footnote, colorTheme, imageTheme);
+    }
+
+    @Override
+    public String getType() {
+        return TYPE_KEY;
+    }
 }

@@ -30,20 +30,16 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.sagebionetworks.research.presentation;
+package org.sagebionetworks.research.presentation.model;
 
-import org.junit.Test;
+import org.sagebionetworks.research.presentation.inject.StepViewModule;
+import org.sagebionetworks.research.presentation.inject.StepViewModule.StepViewFactory;
 
-import static org.junit.Assert.*;
+import javax.inject.Singleton;
+import dagger.Component;
 
-/**
- * Example local unit test, which will execute on the development machine (host).
- *
- * @see <a href="http://d.android.com/tools/testing">Testing documentation</a>
- */
-public class ExampleUnitTest {
-    @Test
-    public void addition_isCorrect() {
-        assertEquals(4, 2 + 2);
-    }
+@Component(modules = StepViewModule.class)
+@Singleton
+public interface StepMapperTestComponent {
+    StepViewFactory stepViewFactory();
 }

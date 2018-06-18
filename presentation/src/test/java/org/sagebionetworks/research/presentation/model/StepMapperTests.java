@@ -30,17 +30,44 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.sagebionetworks.research.presentation.inject;
+package org.sagebionetworks.research.presentation.model;
 
-import android.support.annotation.StringDef;
+import org.junit.*;
+import org.sagebionetworks.research.presentation.inject.StepViewModule;
+import org.sagebionetworks.research.presentation.inject.StepViewModule.StepViewFactory;
+import org.sagebionetworks.research.presentation.model.interfaces.ActiveUIStepView;
+import org.sagebionetworks.research.presentation.model.interfaces.StepView;
+import org.sagebionetworks.research.presentation.model.interfaces.UIStepView;
 
-import java.lang.annotation.Retention;
-import java.lang.annotation.RetentionPolicy;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
 
-@Retention(RetentionPolicy.SOURCE)
-@StringDef({DrawableName.CANCEL, DrawableName.INFO, DrawableName.BACK})
-public @interface DrawableName {
-    String CANCEL = "cancel";
-    String INFO = "info";
-    String BACK = "back";
+
+import dagger.Component;
+
+public class StepMapperTests {
+    public StepMapperTestComponent component;
+
+    @Before
+    public void setup() {
+        this.component = DaggerStepMapperTestComponent.builder().build();
+    }
+
+    @Test
+    public void testMap_UIStep() {
+        StepView result = component.stepViewFactory().apply(UIStepViewTests.MOCK_UI_STEP);
+        assertNotNull(result);
+        assertTrue(result instanceof UIStepView);
+        // We leave it up to UIStepViewTests to make sure that the UIStepView here is correct. For here the fact that
+        // the correct type is returned is sufficient.
+    }
+
+    @Test
+    public void testMap_ActiveStep() {
+        StepView result = component.stepViewFactory().apply(ActiveUIStepViewTests.MOCK_ACTIVE_UI_STEP);
+        assertNotNull(result);
+        assertTrue(result instanceof ActiveUIStepView);
+        // We leave it up to ActiveUIStepViewTests to make sure that the ActiveUIStepView here is correct. For here the fact that
+        // the correct type is returned is sufficient.
+    }
 }

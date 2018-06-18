@@ -69,6 +69,7 @@ public class InstructionStep extends ActiveUIStepBase {
         this.firstRunOnly = firstRunOnly;
     }
 
+    @NonNull
     @Override
     public String getType() {
         return TYPE_KEY;

@@ -30,17 +30,14 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.sagebionetworks.research.presentation.inject;
+package org.sagebionetworks.research.mpower.show_step_fragment;
 
-import android.support.annotation.StringDef;
+import org.sagebionetworks.research.mobile_ui.show_step.view.ShowUIStepFragment;
+import org.sagebionetworks.research.mpower.R;
 
-import java.lang.annotation.Retention;
-import java.lang.annotation.RetentionPolicy;
-
-@Retention(RetentionPolicy.SOURCE)
-@StringDef({DrawableName.CANCEL, DrawableName.INFO, DrawableName.BACK})
-public @interface DrawableName {
-    String CANCEL = "cancel";
-    String INFO = "info";
-    String BACK = "back";
+public class ShowCompletionStepFragment extends ShowUIStepFragment {
+    @Override
+    public int getLayoutId() {
+        return R.layout.mpower2_completion_step;
+    }
 }

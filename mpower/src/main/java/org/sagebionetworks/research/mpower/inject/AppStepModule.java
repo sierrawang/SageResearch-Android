@@ -37,6 +37,7 @@ import org.sagebionetworks.research.domain.inject.StepModule;
 import org.sagebionetworks.research.domain.inject.StepModule.StepClassKey;
 import org.sagebionetworks.research.domain.step.StepType;
 import org.sagebionetworks.research.domain.step.interfaces.ActiveUIStep;
+import org.sagebionetworks.research.mpower.step.CompletionStep;
 import org.sagebionetworks.research.mpower.step.InstructionStep;
 import org.sagebionetworks.research.mpower.step.OverviewStep;
 
@@ -70,4 +71,13 @@ public class AppStepModule {
     static String provideOverviewStepClassInfo() {
         return OverviewStep.TYPE_KEY;
     }
+
+    @Provides
+    @IntoMap
+    @StepClassKey(CompletionStep.class)
+    static String provideCompletionStepClassInfo() {
+        return CompletionStep.TYPE_KEY;
+    }
+
+
 }
