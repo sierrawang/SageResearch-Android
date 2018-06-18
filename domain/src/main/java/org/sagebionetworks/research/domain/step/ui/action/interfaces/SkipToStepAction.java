@@ -37,6 +37,7 @@ import android.support.annotation.Nullable;
 public interface SkipToStepAction extends Action {
     /**
      * Returns the identifier of the step to skip to for this action.
+     *
      * @return the identifier of the step to skip to fro this action.
      */
     @Nullable

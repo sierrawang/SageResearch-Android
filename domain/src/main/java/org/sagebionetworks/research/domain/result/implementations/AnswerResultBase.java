@@ -46,9 +46,11 @@ import org.sagebionetworks.research.domain.result.interfaces.AnswerResult;
 import org.threeten.bp.Instant;
 
 /**
- * The concrete implementation of a Result which stores an answer. A wrapper around,
- * AnswerResultData which adds behavior and can be subclassed.
- * @param <T> The type of the answer that is stored.
+ * The concrete implementation of a Result which stores an answer. A wrapper around, AnswerResultData which adds
+ * behavior and can be subclassed.
+ *
+ * @param <T>
+ *         The type of the answer that is stored.
  */
 public class AnswerResultBase<T> extends ResultBase implements AnswerResult<T> {
     @ResultType
@@ -64,13 +66,6 @@ public class AnswerResultBase<T> extends ResultBase implements AnswerResult<T> {
         this.answerResultData = AnswerResultData.create(answer, answerResultType);
     }
 
-    @NonNull
-    @ResultType
-    @Override
-    public String getType() {
-        return TYPE_KEY;
-    }
-
     @Nullable
     @Override
     public T getAnswer() {
@@ -84,6 +79,20 @@ public class AnswerResultBase<T> extends ResultBase implements AnswerResult<T> {
         return this.answerResultData.getAnswerResultType();
     }
 
+    @NonNull
+    @ResultType
+    @Override
+    public String getType() {
+        return TYPE_KEY;
+    }
+
+    @Override
+    protected boolean equalsHelper(Object o) {
+        AnswerResultBase answerResult = (AnswerResultBase) o;
+        return super.equalsHelper(o) &&
+                Objects.equal(this.answerResultData, answerResult.answerResultData);
+    }
+
     @Override
     protected HashCodeHelper hashCodeHelper() {
         return super.hashCodeHelper()
@@ -94,12 +103,5 @@ public class AnswerResultBase<T> extends ResultBase implements AnswerResult<T> {
     protected ToStringHelper toStringHelper() {
         return super.toStringHelper()
                 .add("TaskResultData", this.answerResultData);
-    }
-
-    @Override
-    protected boolean equalsHelper(Object o) {
-        AnswerResultBase answerResult = (AnswerResultBase) o;
-        return super.equalsHelper(o) &&
-                Objects.equal(this.answerResultData, answerResult.answerResultData);
     }
 }

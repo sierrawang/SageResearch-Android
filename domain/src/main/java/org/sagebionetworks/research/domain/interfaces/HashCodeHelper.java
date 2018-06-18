@@ -39,8 +39,8 @@ import java.util.HashSet;
 import java.util.Set;
 
 /**
- * A class to help with the creation of a hashCode without having to worry about doing any
- * math. User's simply add all the fields they want to be hashed and then call hash().
+ * A class to help with the creation of a hashCode without having to worry about doing any math. User's simply add all
+ * the fields they want to be hashed and then call hash().
  */
 public class HashCodeHelper {
     // This set represents the fields of the object that the HashCodeHelper is producing the hash code for.
@@ -55,7 +55,9 @@ public class HashCodeHelper {
 
     /**
      * Adds all the given fields to the fields that this HashCodeHelper is hashing.
-     * @param objects The objects to add as fields to this HashCodeHelper.
+     *
+     * @param objects
+     *         The objects to add as fields to this HashCodeHelper.
      * @return This HashCodeHelper.
      */
     public HashCodeHelper addFields(Object... objects) {
@@ -65,6 +67,7 @@ public class HashCodeHelper {
 
     /**
      * The hashCode for this hashCodeHelper.
+     *
      * @return The hashCode for this hashCodeHelper.
      */
     public int hash() {

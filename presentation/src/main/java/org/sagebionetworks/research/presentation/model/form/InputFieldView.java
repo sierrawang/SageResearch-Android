@@ -47,10 +47,30 @@ import java.util.List;
 
 public interface InputFieldView {
     /**
+     * @return data type for this input field. The data type can have an associated ui hint
+     */
+    @NonNull
+    InputDataType getFormDataType();
+
+    /**
+     * @return UI hint for how the study would prefer that the input field is displayed to the user
+     */
+    @Nullable
+    @InputUIHint
+    String getFormUIHint();
+
+    /**
      * @return identifier that is unique among form items within the step
      */
     @Nullable
     String getIdentifier();
+
+    /**
+     * @return text for display in a text field or text area to help users understand how to answer the item's
+     * question
+     */
+    @Nullable
+    DisplayString getPlaceholderText();
 
     /**
      * @return short text offering hint for data to be entered
@@ -65,39 +85,8 @@ public interface InputFieldView {
     DisplayString getPromptDetail();
 
     /**
-     * @return text for display in a text field or text area to help users understand how to
-     * answer the item's question
-     */
-    @Nullable
-    DisplayString getPlaceholderText();
-
-    /**
-     * @return true if this survey option is optional, false otherwise.
-     */
-    boolean isOptional();
-
-    /**
-     * @return data type for this input field. The data type can have an associated ui hint
-     */
-    @NonNull
-    InputDataType getFormDataType();
-
-    /**
-     * @return UI hint for how the study would prefer that the input field is displayed to the user
-     */
-    @Nullable
-    @InputUIHint
-    String getFormUIHint();
-
-    /**
-     * @return The text field options for this InputField or null if there are none.
-     */
-    @Nullable
-    TextFieldOptions getTextFieldOptions();
-
-    /**
-     * @return The range used by dates and numbers for setting up a picker wheel, slider, or providing
-     * text input validation, or null if this is not applicable
+     * @return The range used by dates and numbers for setting up a picker wheel, slider, or providing text input
+     * validation, or null if this is not applicable
      */
     @Nullable
     Range getRange();
@@ -107,4 +96,15 @@ public interface InputFieldView {
      */
     @Nullable
     List<SurveyRule> getSurveyRules();
+
+    /**
+     * @return The text field options for this InputField or null if there are none.
+     */
+    @Nullable
+    TextFieldOptions getTextFieldOptions();
+
+    /**
+     * @return true if this survey option is optional, false otherwise.
+     */
+    boolean isOptional();
 }

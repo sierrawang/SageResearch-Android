@@ -32,10 +32,7 @@
 
 package org.sagebionetworks.research.domain.step.ui.action.interfaces;
 
-import android.support.annotation.DrawableRes;
-import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
-import android.support.annotation.StringRes;
 
 import com.google.gson.annotations.SerializedName;
 
@@ -43,15 +40,8 @@ import org.sagebionetworks.research.domain.step.ui.action.ActionDeserializationT
 
 public interface Action {
     /**
-     * Returns the button title specified for this action. Button titles are used to override the defaults to make
-     * buttons display custom text.
-     * @return the button title specificed for this action.
-     */
-    @Nullable
-    String getButtonTitle();
-
-    /**
      * Returns the icon specified for this action.
+     *
      * @return the icon specified for this action.
      */
     @Nullable
@@ -59,7 +49,17 @@ public interface Action {
     String getButtonIconName();
 
     /**
+     * Returns the button title specified for this action. Button titles are used to override the defaults to make
+     * buttons display custom text.
+     *
+     * @return the button title specificed for this action.
+     */
+    @Nullable
+    String getButtonTitle();
+
+    /**
      * Returns the action type this object was deserialized as.
+     *
      * @return the action type this object was deserilaized as.
      */
     @ActionDeserializationType

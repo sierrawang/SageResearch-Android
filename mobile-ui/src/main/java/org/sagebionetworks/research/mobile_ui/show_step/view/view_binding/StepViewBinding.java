@@ -32,24 +32,26 @@
 
 package org.sagebionetworks.research.mobile_ui.show_step.view.view_binding;
 
-import android.support.annotation.VisibleForTesting;
-
 import org.sagebionetworks.research.mobile_ui.widget.NavigationActionBar.ActionButtonClickListener;
 import org.sagebionetworks.research.presentation.model.interfaces.StepView;
 
 public interface StepViewBinding<SV extends StepView> {
     /**
-     * Sets the ActionButtonClickListener to the given listener on all of the components that can handle a
-     * listener. Subclasses which add more ActionButtons should override this method.
-     * @param actionButtonClickListener The new listener to use for all of the components that can handle one.
+     * Sets the ActionButtonClickListener to the given listener on all of the components that can handle a listener.
+     * Subclasses which add more ActionButtons should override this method.
+     *
+     * @param actionButtonClickListener
+     *         The new listener to use for all of the components that can handle one.
      */
     void setActionButtonClickListener(ActionButtonClickListener actionButtonClickListener);
 
+    void unbind();
+
     /**
      * Updates the components of this binding, with the data from the given StepView.
-     * @param stepView The StepView to get the data from for the update.
+     *
+     * @param stepView
+     *         The StepView to get the data from for the update.
      */
     void update(SV stepView);
-
-    void unbind();
 }

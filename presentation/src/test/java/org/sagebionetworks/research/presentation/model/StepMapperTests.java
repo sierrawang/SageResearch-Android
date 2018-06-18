@@ -32,18 +32,14 @@
 
 package org.sagebionetworks.research.presentation.model;
 
-import org.junit.*;
-import org.sagebionetworks.research.presentation.inject.StepViewModule;
-import org.sagebionetworks.research.presentation.inject.StepViewModule.StepViewFactory;
-import org.sagebionetworks.research.presentation.model.interfaces.ActiveUIStepView;
-import org.sagebionetworks.research.presentation.model.interfaces.StepView;
-import org.sagebionetworks.research.presentation.model.interfaces.UIStepView;
-
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
-
-import dagger.Component;
+import org.junit.Before;
+import org.junit.Test;
+import org.sagebionetworks.research.presentation.model.interfaces.ActiveUIStepView;
+import org.sagebionetworks.research.presentation.model.interfaces.StepView;
+import org.sagebionetworks.research.presentation.model.interfaces.UIStepView;
 
 public class StepMapperTests {
     public StepMapperTestComponent component;
@@ -54,20 +50,20 @@ public class StepMapperTests {
     }
 
     @Test
-    public void testMap_UIStep() {
-        StepView result = component.stepViewFactory().apply(UIStepViewTests.MOCK_UI_STEP);
-        assertNotNull(result);
-        assertTrue(result instanceof UIStepView);
-        // We leave it up to UIStepViewTests to make sure that the UIStepView here is correct. For here the fact that
-        // the correct type is returned is sufficient.
-    }
-
-    @Test
     public void testMap_ActiveStep() {
         StepView result = component.stepViewFactory().apply(ActiveUIStepViewTests.MOCK_ACTIVE_UI_STEP);
         assertNotNull(result);
         assertTrue(result instanceof ActiveUIStepView);
         // We leave it up to ActiveUIStepViewTests to make sure that the ActiveUIStepView here is correct. For here the fact that
+        // the correct type is returned is sufficient.
+    }
+
+    @Test
+    public void testMap_UIStep() {
+        StepView result = component.stepViewFactory().apply(UIStepViewTests.MOCK_UI_STEP);
+        assertNotNull(result);
+        assertTrue(result instanceof UIStepView);
+        // We leave it up to UIStepViewTests to make sure that the UIStepView here is correct. For here the fact that
         // the correct type is returned is sufficient.
     }
 }

@@ -43,26 +43,11 @@ import org.sagebionetworks.research.presentation.DisplayString;
 import org.sagebionetworks.research.presentation.model.ColorThemeView;
 import org.sagebionetworks.research.presentation.model.ImageThemeView;
 import org.sagebionetworks.research.presentation.model.action.ActionView;
-import org.sagebionetworks.research.presentation.model.action.ActionViewBase;
 import org.sagebionetworks.research.presentation.model.implementations.ActiveUIStepViewBase;
 import org.threeten.bp.Duration;
 
 public class InstructionStepView extends ActiveUIStepViewBase {
     // TODO rkolmos 06/01/2018 for now an instruction step view adds no functionality to ActiveUIStepView
-
-    public InstructionStepView(@NonNull final String identifier, final int navDirection,
-            @NonNull final ImmutableMap<String, ActionView> actions,
-            @Nullable final DisplayString title,
-            @Nullable final DisplayString text,
-            @Nullable final DisplayString detail,
-            @Nullable final DisplayString footnote,
-            @Nullable final ColorThemeView colorTheme,
-            @Nullable final ImageThemeView imageTheme,
-            @NonNull final Duration duration,
-            final boolean isBackgroundAudioRequired) {
-        super(identifier, navDirection, actions, title, text, detail, footnote, colorTheme, imageTheme, duration,
-                isBackgroundAudioRequired);
-    }
 
     @NonNull
     public static InstructionStepView fromInstructionStep(@NonNull Step step) {
@@ -76,5 +61,19 @@ public class InstructionStepView extends ActiveUIStepViewBase {
                 activeUIStepView.getDetail(), activeUIStepView.getFootnote(), activeUIStepView.getColorTheme(),
                 activeUIStepView.getImageTheme(), activeUIStepView.getDuration(),
                 activeUIStepView.isBackgroundAudioRequired());
+    }
+
+    public InstructionStepView(@NonNull final String identifier, final int navDirection,
+            @NonNull final ImmutableMap<String, ActionView> actions,
+            @Nullable final DisplayString title,
+            @Nullable final DisplayString text,
+            @Nullable final DisplayString detail,
+            @Nullable final DisplayString footnote,
+            @Nullable final ColorThemeView colorTheme,
+            @Nullable final ImageThemeView imageTheme,
+            @NonNull final Duration duration,
+            final boolean isBackgroundAudioRequired) {
+        super(identifier, navDirection, actions, title, text, detail, footnote, colorTheme, imageTheme, duration,
+                isBackgroundAudioRequired);
     }
 }

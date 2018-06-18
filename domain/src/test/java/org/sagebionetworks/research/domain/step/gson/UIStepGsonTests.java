@@ -32,16 +32,19 @@
 
 package org.sagebionetworks.research.domain.step.gson;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
+
 import com.google.common.collect.ImmutableMap;
 
-import org.junit.*;
+import org.junit.Test;
 import org.sagebionetworks.research.domain.step.interfaces.Step;
 import org.sagebionetworks.research.domain.step.interfaces.UIStep;
 import org.sagebionetworks.research.domain.step.ui.action.implementations.ActionBase;
 import org.sagebionetworks.research.domain.step.ui.action.interfaces.Action;
-
-import static org.junit.Assert.*;
-import static org.mockito.Mockito.*;
 
 public class UIStepGsonTests extends IndividualStepGsonTest {
     @Test

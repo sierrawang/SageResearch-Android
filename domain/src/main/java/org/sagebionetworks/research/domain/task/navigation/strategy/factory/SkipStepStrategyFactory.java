@@ -32,6 +32,8 @@
 
 package org.sagebionetworks.research.domain.task.navigation.strategy.factory;
 
+import static com.google.common.base.Preconditions.checkNotNull;
+
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 
@@ -39,8 +41,6 @@ import org.sagebionetworks.research.domain.step.interfaces.Step;
 import org.sagebionetworks.research.domain.task.navigation.strategy.StepNavigationStrategy.SkipStepStrategy;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import static com.google.common.base.Preconditions.checkNotNull;
 
 /**
  * Created by liujoshua on 10/13/2017.

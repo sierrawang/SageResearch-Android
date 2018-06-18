@@ -54,20 +54,64 @@ import java.lang.reflect.Type;
 
 /**
  * ChoiceBase is the concrete implementation of a choice in a form.
- * @param <E> The type of answer that the choice represents.
+ *
+ * @param <E>
+ *         The type of answer that the choice represents.
  */
 public class ChoiceBase<E> extends ObjectHelper implements Choice<E> {
     @NonNull
     @SerializedName("value")
     private final E answerValue;
-    @NonNull
-    private final String text;
+
     @Nullable
     private final String detail;
+
     @Nullable
     @SerializedName("icon")
     private final String iconName;
+
     private final boolean isExclusive;
+
+    @NonNull
+    private final String text;
+
+    public static JsonDeserializer<ChoiceBase> getJsonDeserializer() {
+        return new JsonDeserializer<ChoiceBase>() {
+            @Override
+            public ChoiceBase deserialize(final JsonElement json, final Type typeOfT,
+                    final JsonDeserializationContext context)
+                    throws JsonParseException {
+                if (json.isJsonObject()) {
+                    // This behavior is a workaround for calling context.deserialize(json, ChoiceBase<T>). We
+                    // are writing this out long form to avoid the infinite recursion that occurs when a
+                    // JsonDeserializer<T> calls context.deserialize(json, T).
+                    JsonObject object = json.getAsJsonObject();
+                    Type innerType = getInnerType(typeOfT);
+                    JsonElement valueElement = object.get("value");
+                    Object answerValue = valueElement != null ? context.deserialize(valueElement, innerType) : null;
+                    JsonElement textElement = object.get("text");
+                    String text = (String)
+                            (textElement != null ? textElement.getAsString() : null);
+                    JsonElement detailElement = object.get("detail");
+                    String detail = (String)
+                            (detailElement != null ? detailElement.getAsString() : null);
+                    JsonElement iconElement = object.get("icon");
+                    String iconName = (String)
+                            (iconElement != null ? iconElement.getAsString() : null);
+                    JsonElement isExclusiveElement = object.get("isExclusive");
+                    boolean isExclusive = isExclusiveElement != null && isExclusiveElement.getAsBoolean();
+                    return new ChoiceBase<>(answerValue, text, detail, iconName, isExclusive);
+                } else if (json.isJsonPrimitive()) {
+                    // If the json is just a primitive value we assume that it is just a string and create a
+                    // ChoiceBase from it.
+                    String answerValue = context.deserialize(json, String.class);
+                    return new ChoiceBase<>(answerValue);
+                }
+
+                throw new JsonParseException("Unknown format for Choice");
+            }
+        };
+    }
 
     /**
      * Default initializer for gson.
@@ -106,12 +150,6 @@ public class ChoiceBase<E> extends ObjectHelper implements Choice<E> {
         return this.answerValue;
     }
 
-    @NonNull
-    @Override
-    public String getText() {
-        return this.text;
-    }
-
     @Nullable
     @Override
     public String getDetail() {
@@ -124,9 +162,10 @@ public class ChoiceBase<E> extends ObjectHelper implements Choice<E> {
         return this.iconName;
     }
 
+    @NonNull
     @Override
-    public boolean isExclusive() {
-        return this.isExclusive;
+    public String getText() {
+        return this.text;
     }
 
     @Override
@@ -136,19 +175,8 @@ public class ChoiceBase<E> extends ObjectHelper implements Choice<E> {
     }
 
     @Override
-    protected HashCodeHelper hashCodeHelper() {
-        return super.hashCodeHelper()
-                .addFields(this.isExclusive, this.iconName, this.detail, this.text, this.answerValue);
-    }
-
-    @Override
-    protected ToStringHelper toStringHelper() {
-        return super.toStringHelper()
-                .add("answerValue", this.getAnswerValue())
-                .add("text", this.getText())
-                .add("detail", this.getDetail())
-                .add("iconName", this.getIconName())
-                .add("isExclusive", this.isExclusive());
+    public boolean isExclusive() {
+        return this.isExclusive;
     }
 
     @Override
@@ -161,15 +189,31 @@ public class ChoiceBase<E> extends ObjectHelper implements Choice<E> {
                 Objects.equal(this.getIconName(), choice.getIconName());
     }
 
+    @Override
+    protected HashCodeHelper hashCodeHelper() {
+        return super.hashCodeHelper()
+                .addFields(this.isExclusive, this.iconName, this.detail, this.text, this.answerValue);
+    }
+
     // region Deserialization
 
+    @Override
+    protected ToStringHelper toStringHelper() {
+        return super.toStringHelper()
+                .add("answerValue", this.getAnswerValue())
+                .add("text", this.getText())
+                .add("detail", this.getDetail())
+                .add("iconName", this.getIconName())
+                .add("isExclusive", this.isExclusive());
+    }
 
     /**
-     * Given a Type corresponding to some Choice<T> returns a TypeToken corresponding to
-     * ChoiceBase<T>.
-     * @param typeOfT The type corresponding to some Choice<T> to produce a ChoiceBase<T> for.
-     * @return A TypeToken<ChoiceBase<T>> with the same generic parameter as the given Type which should
-     * be a Choice<T> for some Type T.
+     * Given a Type corresponding to some Choice<T> returns a TypeToken corresponding to ChoiceBase<T>.
+     *
+     * @param typeOfT
+     *         The type corresponding to some Choice<T> to produce a ChoiceBase<T> for.
+     * @return A TypeToken<ChoiceBase<T>> with the same generic parameter as the given Type which should be a
+     * Choice<T> for some Type T.
      */
     private static Type getInnerType(Type typeOfT) {
         TypeToken tToken = TypeToken.of(typeOfT);
@@ -182,44 +226,6 @@ public class ChoiceBase<E> extends ObjectHelper implements Choice<E> {
         }
 
         return null;
-    }
-
-    public static JsonDeserializer<ChoiceBase> getJsonDeserializer() {
-        return new JsonDeserializer<ChoiceBase>() {
-            @Override
-            public ChoiceBase deserialize(final JsonElement json, final Type typeOfT,
-                    final JsonDeserializationContext context)
-                    throws JsonParseException {
-                if (json.isJsonObject()) {
-                    // This behavior is a workaround for calling context.deserialize(json, ChoiceBase<T>). We
-                    // are writing this out long form to avoid the infinite recursion that occurs when a
-                    // JsonDeserializer<T> calls context.deserialize(json, T).
-                    JsonObject object = json.getAsJsonObject();
-                    Type innerType = getInnerType(typeOfT);
-                    JsonElement valueElement = object.get("value");
-                    Object answerValue =  valueElement != null ? context.deserialize(valueElement, innerType) : null;
-                    JsonElement textElement = object.get("text");
-                    String text = (String)
-                            (textElement != null ? textElement.getAsString() : null);
-                    JsonElement detailElement = object.get("detail");
-                    String detail = (String)
-                            (detailElement != null ? detailElement.getAsString() : null);
-                    JsonElement iconElement = object.get("icon");
-                    String iconName = (String)
-                            (iconElement != null ? iconElement.getAsString() : null);
-                    JsonElement isExclusiveElement = object.get("isExclusive");
-                    boolean isExclusive = isExclusiveElement != null && isExclusiveElement.getAsBoolean();
-                    return new ChoiceBase<>(answerValue, text, detail, iconName, isExclusive);
-                } else if (json.isJsonPrimitive()) {
-                    // If the json is just a primitive value we assume that it is just a string and create a
-                    // ChoiceBase from it.
-                    String answerValue = context.deserialize(json, String.class);
-                    return new ChoiceBase<>(answerValue);
-                }
-
-                throw new JsonParseException("Unknown format for Choice");
-            }
-        };
     }
 
     // endregion

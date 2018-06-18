@@ -55,22 +55,22 @@ public class UIStepBase extends StepBase implements ThemedUIStep {
     private final ImmutableMap<String, Action> actions;
 
     @Nullable
+    private final ColorTheme colorTheme;
+
+    @Nullable
     private final String detail;
 
     @Nullable
     private final String footnote;
 
     @Nullable
+    private final ImageTheme imageTheme;
+
+    @Nullable
     private final String text;
 
     @Nullable
     private final String title;
-
-    @Nullable
-    private final ColorTheme colorTheme;
-
-    @Nullable
-    private final ImageTheme imageTheme;
 
     // Gson initialize defaults
     UIStepBase() {
@@ -133,12 +133,6 @@ public class UIStepBase extends StepBase implements ThemedUIStep {
         return this.title;
     }
 
-    @NonNull
-    @Override
-    public String getType() {
-        return TYPE_KEY;
-    }
-
     @Nullable
     @Override
     public ColorTheme getColorTheme() {
@@ -151,11 +145,10 @@ public class UIStepBase extends StepBase implements ThemedUIStep {
         return this.imageTheme;
     }
 
+    @NonNull
     @Override
-    protected HashCodeHelper hashCodeHelper() {
-        return super.hashCodeHelper()
-                .addFields(this.actions, this.detail, this.footnote, this.text, this.title,
-                        this.colorTheme, this.imageTheme);
+    public String getType() {
+        return TYPE_KEY;
     }
 
     @Override
@@ -169,6 +162,13 @@ public class UIStepBase extends StepBase implements ThemedUIStep {
                 Objects.equal(this.getFootnote(), uiStep.getFootnote()) &&
                 Objects.equal(this.getColorTheme(), uiStep.getColorTheme()) &&
                 Objects.equal(this.getImageTheme(), uiStep.getImageTheme());
+    }
+
+    @Override
+    protected HashCodeHelper hashCodeHelper() {
+        return super.hashCodeHelper()
+                .addFields(this.actions, this.detail, this.footnote, this.text, this.title,
+                        this.colorTheme, this.imageTheme);
     }
 
     @Override

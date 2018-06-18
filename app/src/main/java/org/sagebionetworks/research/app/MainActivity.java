@@ -43,9 +43,10 @@ import org.slf4j.LoggerFactory;
 
 import java.util.UUID;
 
+import javax.inject.Inject;
+
 import dagger.android.AndroidInjection;
 import io.reactivex.disposables.CompositeDisposable;
-import javax.inject.Inject;
 
 public class MainActivity extends AppCompatActivity {
     private static final Logger LOGGER = LoggerFactory.getLogger(MainActivity.class);

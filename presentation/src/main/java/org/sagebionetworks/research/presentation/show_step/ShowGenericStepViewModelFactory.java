@@ -46,12 +46,12 @@ public class ShowGenericStepViewModelFactory
     }
 
     @Override
-    public Class<ShowGenericStepViewModel> getViewModelClass() {
-        return ShowGenericStepViewModel.class;
+    public ShowGenericStepViewModel create(final PerformTaskViewModel performTaskViewModel, final StepView stepView) {
+        return new ShowGenericStepViewModel(performTaskViewModel, stepView);
     }
 
     @Override
-    public ShowGenericStepViewModel create(final PerformTaskViewModel performTaskViewModel, final StepView stepView) {
-        return new ShowGenericStepViewModel(performTaskViewModel, stepView);
+    public Class<ShowGenericStepViewModel> getViewModelClass() {
+        return ShowGenericStepViewModel.class;
     }
 }

@@ -43,6 +43,9 @@ import java.util.List;
 
 public interface Task {
     @NonNull
+    Task copyWithSteps(List<Step> steps);
+
+    @NonNull
     ImmutableList<AsyncAction> getAsyncActions();
 
     @NonNull
@@ -50,7 +53,4 @@ public interface Task {
 
     @NonNull
     ImmutableList<Step> getSteps();
-
-    @NonNull
-    Task copyWithSteps(List<Step> steps);
 }

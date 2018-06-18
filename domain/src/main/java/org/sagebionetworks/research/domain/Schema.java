@@ -56,12 +56,10 @@ public class Schema {
     }
 
     @Override
-    public String toString() {
-        final StringBuffer sb = new StringBuffer("Schema{");
-        sb.append("identifier='").append(identifier).append('\'');
-        sb.append(", revision=").append(revision);
-        sb.append('}');
-        return sb.toString();
+    public int hashCode() {
+        int result = identifier.hashCode();
+        result = 31 * result + revision;
+        return result;
     }
 
     @Override
@@ -83,9 +81,11 @@ public class Schema {
     }
 
     @Override
-    public int hashCode() {
-        int result = identifier.hashCode();
-        result = 31 * result + revision;
-        return result;
+    public String toString() {
+        final StringBuffer sb = new StringBuffer("Schema{");
+        sb.append("identifier='").append(identifier).append('\'');
+        sb.append(", revision=").append(revision);
+        sb.append('}');
+        return sb.toString();
     }
 }

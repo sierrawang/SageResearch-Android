@@ -1,12 +1,12 @@
 {
-  "type":"answer",
+  "type": "answer",
   "data": {
     "identifier": "answerResult",
     "startTime": "1970-01-01T00:00:20Z",
     "endTime": "1970-01-01T00:00:30Z"
   },
   "answerResultData": {
-    "answer":true,
-    "answerResultType":"boolean"
+    "answer": true,
+    "answerResultType": "boolean"
   }
 }

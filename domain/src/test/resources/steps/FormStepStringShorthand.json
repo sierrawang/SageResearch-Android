@@ -2,7 +2,7 @@
   "identifier": "step3",
   "type": "form",
   "title": "Step 3",
-  "inputFields" : [
+  "inputFields": [
     {
       "dataType": "multipleChoice",
       "choices": [

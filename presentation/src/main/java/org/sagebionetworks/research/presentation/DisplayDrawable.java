@@ -32,7 +32,6 @@
 
 package org.sagebionetworks.research.presentation;
 
-import android.os.Parcel;
 import android.os.Parcelable;
 import android.support.annotation.DrawableRes;
 import android.support.annotation.Nullable;
@@ -55,14 +54,6 @@ public abstract class DisplayDrawable implements Parcelable {
         public abstract Builder setDrawableRes(@Nullable @DrawableRes Integer drawableRes);
     }
 
-    @Nullable
-    @DrawableRes
-    public abstract Integer getDefaultDrawableRes();
-
-    @Nullable
-    @DrawableRes
-    public abstract Integer getDrawableRes();
-
     public static Builder builder() {
         return new AutoValue_DisplayDrawable.Builder();
     }
@@ -75,9 +66,14 @@ public abstract class DisplayDrawable implements Parcelable {
                 .build();
     }
 
+    @Nullable
+    @DrawableRes
+    public abstract Integer getDefaultDrawableRes();
+
     /**
      * Returns the reference to the drawable that should be displayed for this DisplayDrawable, or null if no
      * reference could be resolved.
+     *
      * @return the reference to the drawable that should be displayed for this DisplayDrawable, or null if no
      * reference could be resolved.
      */
@@ -90,4 +86,8 @@ public abstract class DisplayDrawable implements Parcelable {
             return this.getDefaultDrawableRes();
         }
     }
+
+    @Nullable
+    @DrawableRes
+    public abstract Integer getDrawableRes();
 }

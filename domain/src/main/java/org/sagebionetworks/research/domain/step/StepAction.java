@@ -38,24 +38,6 @@ import android.support.annotation.Nullable;
 import org.sagebionetworks.research.domain.step.ui.action.interfaces.ActionType;
 
 public class StepAction {
-    private StepAction(@NonNull ActionType actionType, @Nullable String title, boolean isHidden,
-            boolean isEnabled) {
-        this.actionType = actionType;
-        this.title = title;
-        this.isHidden = isHidden;
-        this.isEnabled = isEnabled;
-    }
-
-    @NonNull
-    public final ActionType actionType;
-
-    @Nullable
-    public final String title;
-
-    public final boolean isHidden;
-
-    public final boolean isEnabled;
-
     public static class StepCustomAction extends StepAction {
         @NonNull
         public final String customActionType;
@@ -79,5 +61,23 @@ public class StepAction {
             super(ActionType.NAVIGATION, title, isHidden, isEnabled);
             this.navigationActionType = navigationActionType;
         }
+    }
+
+    @NonNull
+    public final ActionType actionType;
+
+    public final boolean isEnabled;
+
+    public final boolean isHidden;
+
+    @Nullable
+    public final String title;
+
+    private StepAction(@NonNull ActionType actionType, @Nullable String title, boolean isHidden,
+            boolean isEnabled) {
+        this.actionType = actionType;
+        this.title = title;
+        this.isHidden = isHidden;
+        this.isEnabled = isEnabled;
     }
 }

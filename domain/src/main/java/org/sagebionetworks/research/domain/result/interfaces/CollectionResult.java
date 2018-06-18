@@ -37,8 +37,8 @@ import android.support.annotation.NonNull;
 import com.google.common.collect.ImmutableList;
 
 /**
- * A CollectionResult represents a grouping of other results. Used when multiple results are logically
- * linked (e.g. part of the same step or part of the same form).
+ * A CollectionResult represents a grouping of other results. Used when multiple results are logically linked (e.g.
+ * part of the same step or part of the same form).
  */
 public interface CollectionResult extends Result {
     /**

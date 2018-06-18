@@ -53,14 +53,14 @@ import java.util.Map;
 public class FormUIStepBase extends UIStepBase implements FormUIStep {
     public static final String TYPE_KEY = StepType.FORM;
 
+    @NonNull
+    private final List<InputField> inputFields;
+
     // Gson initialize defaults
     FormUIStepBase() {
         super();
         inputFields = Collections.emptyList();
     }
-
-    @NonNull
-    private final List<InputField> inputFields;
 
     public FormUIStepBase(@NonNull final String identifier, @NonNull Map<String, Action> actions,
             @Nullable final String title, @Nullable final String text, @Nullable final String detail,
@@ -83,16 +83,16 @@ public class FormUIStepBase extends UIStepBase implements FormUIStep {
     }
 
     @Override
-    protected HashCodeHelper hashCodeHelper() {
-        return super.hashCodeHelper()
-                .addFields(this.inputFields);
-    }
-
-    @Override
     protected boolean equalsHelper(Object o) {
         FormUIStepBase formStep = (FormUIStepBase) o;
         return super.equalsHelper(o) &&
                 Objects.equal(this.getInputFields(), formStep.getInputFields());
+    }
+
+    @Override
+    protected HashCodeHelper hashCodeHelper() {
+        return super.hashCodeHelper()
+                .addFields(this.inputFields);
     }
 
     @Override

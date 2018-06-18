@@ -55,11 +55,20 @@ public class StrategyBasedNavigator implements StepNavigator {
 
     /**
      * Constructs a new StrategyBasedNavigator from the given list of steps, and the given list of progress markers.
-     * @param steps The list of steps to create this StepBasedNavigator from.
-     * @param progressMarkers The list of progress markers to create this StepBasedNavigator from.
+     *
+     * @param steps
+     *         The list of steps to create this StepBasedNavigator from.
+     * @param progressMarkers
+     *         The list of progress markers to create this StepBasedNavigator from.
      */
     public StrategyBasedNavigator(@NonNull final List<Step> steps, @Nullable List<String> progressMarkers) {
         this.treeNavigator = new TreeNavigator(steps, progressMarkers);
+    }
+
+    @Override
+    @Nullable
+    public Step getStep(@NonNull final String identifier) {
+        return this.treeNavigator.getStep(identifier);
     }
 
     @Override
@@ -67,7 +76,7 @@ public class StrategyBasedNavigator implements StepNavigator {
         Step nextStep = null;
         // First we try to get the next step from the step by casting it to a NextStepStrategy.
         if (step instanceof NextStepStrategy) {
-            String nextStepId = ((NextStepStrategy)step).getNextStepIdentifier(taskResult);
+            String nextStepId = ((NextStepStrategy) step).getNextStepIdentifier(taskResult);
             if (nextStepId != null) {
                 nextStep = this.getStep(nextStepId);
             }
@@ -82,7 +91,7 @@ public class StrategyBasedNavigator implements StepNavigator {
         if (nextStep != null) {
             // As long as the next step we have found shouldn't be skipped we return it.
             if (!(nextStep instanceof SkipStepStrategy) ||
-                    !((SkipStepStrategy)nextStep).shouldSkip(taskResult)) {
+                    !((SkipStepStrategy) nextStep).shouldSkip(taskResult)) {
                 return nextStep;
             }
 
@@ -97,8 +106,8 @@ public class StrategyBasedNavigator implements StepNavigator {
     @Override
     public Step getPreviousStep(@NonNull final Step step, @NonNull TaskResult taskResult) {
         // First we make sure that the given step allows backward navigation.
-        if (step instanceof BackStepStrategy && !((BackStepStrategy)step).isBackAllowed(taskResult)) {
-           return null;
+        if (step instanceof BackStepStrategy && !((BackStepStrategy) step).isBackAllowed(taskResult)) {
+            return null;
         }
 
         // If backward navigation is allowed we check the result.
@@ -123,11 +132,5 @@ public class StrategyBasedNavigator implements StepNavigator {
     @Override
     public TaskProgress getProgress(@NonNull final Step step, @NonNull TaskResult taskResult) {
         return this.treeNavigator.getProgress(step, taskResult);
-    }
-
-    @Override
-    @Nullable
-    public Step getStep(@NonNull final String identifier) {
-        return this.treeNavigator.getStep(identifier);
     }
 }

@@ -41,24 +41,18 @@ import org.sagebionetworks.research.domain.step.ui.action.interfaces.ReminderAct
 
 @AutoValue
 public abstract class ReminderActionBase implements ReminderAction {
-    public static final String TYPE_KEY = ActionDeserializationType.REMINDER;
-
     @AutoValue.Builder
     public abstract static class Builder {
         public abstract ReminderActionBase build();
 
-        public abstract Builder setButtonTitle(String buttonTitle);
-
         public abstract Builder setButtonIconName(String buttonIconName);
+
+        public abstract Builder setButtonTitle(String buttonTitle);
 
         public abstract Builder setReminderIdentifier(String reminderIdentifier);
     }
 
-    @Override
-    @ActionDeserializationType
-    public String getType() {
-        return TYPE_KEY;
-    }
+    public static final String TYPE_KEY = ActionDeserializationType.REMINDER;
 
     public static Builder builder() {
         return new AutoValue_ReminderActionBase.Builder();
@@ -66,6 +60,12 @@ public abstract class ReminderActionBase implements ReminderAction {
 
     public static TypeAdapter<ReminderActionBase> typeAdapter(Gson gson) {
         return new AutoValue_ReminderActionBase.GsonTypeAdapter(gson);
+    }
+
+    @Override
+    @ActionDeserializationType
+    public String getType() {
+        return TYPE_KEY;
     }
 
     public abstract Builder toBuilder();

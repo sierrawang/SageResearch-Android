@@ -91,17 +91,17 @@ public class ActiveUIStepBase extends UIStepBase implements ActiveUIStep {
     }
 
     @Override
-    protected HashCodeHelper hashCodeHelper() {
-        return super.hashCodeHelper()
-                .addFields(this.duration, this.backgroundAudioRequired);
-    }
-
-    @Override
     protected boolean equalsHelper(Object o) {
         ActiveUIStepBase activeStep = (ActiveUIStepBase) o;
         return super.equalsHelper(o) &&
                 Objects.equal(this.getDuration(), activeStep.getDuration()) &&
                 Objects.equal(this.isBackgroundAudioRequired(), activeStep.isBackgroundAudioRequired());
+    }
+
+    @Override
+    protected HashCodeHelper hashCodeHelper() {
+        return super.hashCodeHelper()
+                .addFields(this.duration, this.backgroundAudioRequired);
     }
 
     @Override

@@ -41,7 +41,6 @@ import com.google.auto.value.AutoValue;
 import org.sagebionetworks.research.domain.step.ui.theme.ColorPlacement;
 import org.sagebionetworks.research.domain.step.ui.theme.ImageTheme;
 import org.sagebionetworks.research.presentation.DisplayDrawable;
-import org.sagebionetworks.research.presentation.DisplayString;
 import org.sagebionetworks.research.presentation.mapper.DrawableMapper;
 
 @AutoValue
@@ -55,9 +54,15 @@ public abstract class ImageThemeView implements Parcelable {
         public abstract Builder setImageResource(@NonNull DisplayDrawable imageResource);
     }
 
+    public static Builder builder() {
+        return new AutoValue_ImageThemeView.Builder();
+    }
+
     /**
      * Creates an ImageThemeView from an ImageTheme.
-     * @param imageTheme The image theme to create this imageThemeView from.
+     *
+     * @param imageTheme
+     *         The image theme to create this imageThemeView from.
      * @return an ImageThemeView created from the given ImageTheme.
      */
     public static ImageThemeView fromImageTheme(@Nullable ImageTheme imageTheme) {
@@ -72,10 +77,6 @@ public abstract class ImageThemeView implements Parcelable {
                 .setImageResource(DisplayDrawable.create(null,
                         DrawableMapper.getDrawableFromName(imageName)))
                 .build();
-    }
-
-    public static Builder builder() {
-        return new AutoValue_ImageThemeView.Builder();
     }
 
     @Nullable

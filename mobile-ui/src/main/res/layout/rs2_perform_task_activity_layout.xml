@@ -35,7 +35,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context=".MainActivity">
-    
+
     <FrameLayout
         android:id="@+id/rs2_task_content_frame"
         android:layout_width="match_parent"

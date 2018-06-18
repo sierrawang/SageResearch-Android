@@ -49,40 +49,6 @@ import java.lang.reflect.Type;
 public abstract class InputDataType implements Parcelable {
     protected final int hashCode;
 
-    public InputDataType() {
-        this.hashCode = this.hashCodeHelper().hash();
-    }
-
-    public boolean equals(Object o) {
-        if (this == o) {
-            return true;
-        }
-
-        if (o == null || this.getClass() != o.getClass()) {
-            return false;
-        }
-
-        return this.equalsHelper(o);
-    }
-
-    /**
-     * Returns the HashCodeHelper that can be used to produce the hash code for this object.
-     * expected that subclasses will override this to add their own fields.
-     * @return The HashCodeHelper that can be used to create the hashCode for this object.
-     */
-    protected HashCodeHelper hashCodeHelper() {
-        return new HashCodeHelper();
-    }
-
-    /**
-     * Returns true if this objects fields are equal to o's fields.
-     * Expected that subclasses will override to also compare their own fields.
-     * Requires: this.getClass() == o.getClass()
-     * @param o The object to check for equality with.
-     * @return true if this is equal to o false otherwise.
-     */
-    protected abstract boolean equalsHelper(Object o);
-
     @Nullable
     public static JsonDeserializer<? extends InputDataType> getJsonDeserializer() {
         return new JsonDeserializer<InputDataType>() {
@@ -106,5 +72,41 @@ public abstract class InputDataType implements Parcelable {
                 throw new JsonParseException("JSON value " + json.toString() + " doesn't represent an InputDataType");
             }
         };
+    }
+
+    public InputDataType() {
+        this.hashCode = this.hashCodeHelper().hash();
+    }
+
+    public boolean equals(Object o) {
+        if (this == o) {
+            return true;
+        }
+
+        if (o == null || this.getClass() != o.getClass()) {
+            return false;
+        }
+
+        return this.equalsHelper(o);
+    }
+
+    /**
+     * Returns true if this objects fields are equal to o's fields. Expected that subclasses will override to also
+     * compare their own fields. Requires: this.getClass() == o.getClass()
+     *
+     * @param o
+     *         The object to check for equality with.
+     * @return true if this is equal to o false otherwise.
+     */
+    protected abstract boolean equalsHelper(Object o);
+
+    /**
+     * Returns the HashCodeHelper that can be used to produce the hash code for this object. expected that subclasses
+     * will override this to add their own fields.
+     *
+     * @return The HashCodeHelper that can be used to create the hashCode for this object.
+     */
+    protected HashCodeHelper hashCodeHelper() {
+        return new HashCodeHelper();
     }
 }

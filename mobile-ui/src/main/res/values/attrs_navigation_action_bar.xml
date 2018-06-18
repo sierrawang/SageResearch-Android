@@ -32,13 +32,13 @@
 
 <resources>
     <declare-styleable name="NavigationActionBar">
-        <attr name="primaryActionColor" format="reference"/>
-        <attr name="primaryActionTitleColor" format="reference"/>
-        <attr name="skipActionColor" format="reference"/>
-        <attr name="isShadowHidden" format="boolean"/>
-        <attr name="isBackwardHidden" format="boolean"/>
-        <attr name="isForwardHidden" format="boolean"/>
-        <attr name="isSkipHidden" format="boolean"/>
-        <attr name="isSkipAllowed" format="boolean"/>
+        <attr name="primaryActionColor" format="reference" />
+        <attr name="primaryActionTitleColor" format="reference" />
+        <attr name="skipActionColor" format="reference" />
+        <attr name="isShadowHidden" format="boolean" />
+        <attr name="isBackwardHidden" format="boolean" />
+        <attr name="isForwardHidden" format="boolean" />
+        <attr name="isSkipHidden" format="boolean" />
+        <attr name="isSkipAllowed" format="boolean" />
     </declare-styleable>
 </resources>

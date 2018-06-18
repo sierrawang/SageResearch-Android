@@ -32,6 +32,8 @@
 
 package org.sagebionetworks.research.domain.step.implementations;
 
+import static com.google.common.base.Preconditions.checkNotNull;
+
 import android.support.annotation.NonNull;
 
 import com.google.common.base.MoreObjects.ToStringHelper;
@@ -41,8 +43,6 @@ import org.sagebionetworks.research.domain.interfaces.HashCodeHelper;
 import org.sagebionetworks.research.domain.interfaces.ObjectHelper;
 import org.sagebionetworks.research.domain.step.StepType;
 import org.sagebionetworks.research.domain.step.interfaces.Step;
-
-import static com.google.common.base.Preconditions.checkNotNull;
 
 
 public abstract class StepBase extends ObjectHelper implements Step {

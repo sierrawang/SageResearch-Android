@@ -34,8 +34,11 @@ package org.sagebionetworks.research.presentation.perform_task;
 
 import android.arch.core.executor.testing.InstantTaskExecutorRule;
 
-import org.junit.*;
-import org.mockito.*;
+import org.junit.Before;
+import org.junit.Rule;
+import org.junit.Test;
+import org.mockito.Mock;
+import org.mockito.MockitoAnnotations;
 import org.sagebionetworks.research.domain.repository.TaskRepository;
 import org.sagebionetworks.research.domain.task.navigation.StepNavigator;
 import org.sagebionetworks.research.domain.task.navigation.StepNavigatorFactory;

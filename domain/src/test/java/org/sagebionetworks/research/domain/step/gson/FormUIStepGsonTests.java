@@ -32,9 +32,14 @@
 
 package org.sagebionetworks.research.domain.step.gson;
 
+import static junit.framework.Assert.assertEquals;
+import static junit.framework.Assert.assertTrue;
+
+import static org.junit.Assert.assertNotNull;
+
 import com.google.gson.JsonParseException;
 
-import org.junit.*;
+import org.junit.Test;
 import org.sagebionetworks.research.domain.form.DataTypes.CollectionInputDataType;
 import org.sagebionetworks.research.domain.form.implementations.ChoiceBase;
 import org.sagebionetworks.research.domain.form.implementations.ChoiceInputField;
@@ -52,11 +57,53 @@ import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 
-import static junit.framework.Assert.assertEquals;
-import static junit.framework.Assert.assertTrue;
-import static org.junit.Assert.assertNotNull;
-
 public class FormUIStepGsonTests extends IndividualStepGsonTest {
+
+    @Test
+    public void testIcons() {
+        List<Choice<Integer>> expectedChoices = new ArrayList<>();
+        expectedChoices.add(new ChoiceBase<>(1, "delighted", "Nothing could be better!",
+                "moodScale1", false));
+        expectedChoices.add(new ChoiceBase<>(2, "good", "Life is good.",
+                "moodScale2", false));
+        expectedChoices.add(new ChoiceBase<>(3, "so-so", "Things are okay, I guess.",
+                "moodScale3", false));
+        expectedChoices.add(new ChoiceBase<>(4, "sad", "I'm feeling a bit down.",
+                "moodScale4", false));
+        expectedChoices.add(new ChoiceBase<>(5, "miserable", "I cry into my pillow every night.",
+                "moodScale5", false));
+        List<InputField> expectedInputFields = new ArrayList<>();
+        expectedInputFields.add(new ChoiceInputField<Integer>(null, null, null, null,
+                false, new CollectionInputDataType("singleChoice", "integer"), "picker",
+                null, null, null, expectedChoices, null));
+        FormUIStep expected = new FormUIStepBase("imageList", null, "Single Choice with Images",
+                "Select a single option", null, null, null, null, expectedInputFields);
+        testCommon(expected, "FormIcons.json");
+    }
+
+    @Test(expected = JsonParseException.class)
+    public void testIncorrectChoiceType_StringIntoInteger() throws IOException {
+        ClassLoader loader = this.getClass().getClassLoader();
+        URL url = loader.getResource("steps/FormStringIntoInteger.json");
+        Reader in = new FileReader(new File(url.getPath()));
+        this.stepTestComponent.gson().fromJson(in, Step.class);
+    }
+
+    @Test
+    public void testInteger() {
+        List<Choice<Integer>> expectedChoices = new ArrayList<>();
+        expectedChoices.add(new ChoiceBase<>(1, "Alpha", null, null, false));
+        expectedChoices.add(new ChoiceBase<>(2, "Beta", null, null, false));
+        expectedChoices.add(new ChoiceBase<>(3, "Gamma", null, null, false));
+        expectedChoices.add(new ChoiceBase<>(0, "None of the above", null, null, true));
+        List<InputField> expectedInputFields = new ArrayList<>();
+        expectedInputFields.add(new ChoiceInputField<Integer>(null, null, null, null, false,
+                new CollectionInputDataType("multipleChoice", "integer"), "list",
+                null, null, null, expectedChoices, null));
+        FormUIStep expected = new FormUIStepBase("selectMultiple", null, "Multiple Choice",
+                "Select as many as you want", null, null, null, null, expectedInputFields);
+        testCommon(expected, "FormStepInteger.json");
+    }
 
     @Test
     public void testString() {
@@ -92,52 +139,6 @@ public class FormUIStepGsonTests extends IndividualStepGsonTest {
         FormUIStep expected = new FormUIStepBase("step3", null, "Step 3", null, null, null, null, null,
                 expectedInputFields);
         testCommon(expected, "FormStepStringShorthand.json");
-    }
-
-    @Test
-    public void testInteger() {
-        List<Choice<Integer>> expectedChoices = new ArrayList<>();
-        expectedChoices.add(new ChoiceBase<>(1, "Alpha", null, null, false));
-        expectedChoices.add(new ChoiceBase<>(2, "Beta", null, null, false));
-        expectedChoices.add(new ChoiceBase<>(3, "Gamma", null, null, false));
-        expectedChoices.add(new ChoiceBase<>(0, "None of the above", null, null, true));
-        List<InputField> expectedInputFields = new ArrayList<>();
-        expectedInputFields.add(new ChoiceInputField<Integer>(null, null, null, null, false,
-                new CollectionInputDataType("multipleChoice", "integer"), "list",
-                null, null, null, expectedChoices, null));
-        FormUIStep expected = new FormUIStepBase("selectMultiple", null, "Multiple Choice",
-                "Select as many as you want", null, null, null, null, expectedInputFields);
-        testCommon(expected, "FormStepInteger.json");
-    }
-
-    @Test
-    public void testIcons() {
-        List<Choice<Integer>> expectedChoices = new ArrayList<>();
-        expectedChoices.add(new ChoiceBase<>(1, "delighted", "Nothing could be better!",
-                "moodScale1", false));
-        expectedChoices.add(new ChoiceBase<>(2, "good", "Life is good.",
-                "moodScale2", false));
-        expectedChoices.add(new ChoiceBase<>(3, "so-so", "Things are okay, I guess.",
-                "moodScale3", false));
-        expectedChoices.add(new ChoiceBase<>(4, "sad", "I'm feeling a bit down.",
-                "moodScale4", false));
-        expectedChoices.add(new ChoiceBase<>(5, "miserable", "I cry into my pillow every night.",
-                "moodScale5", false));
-        List<InputField> expectedInputFields = new ArrayList<>();
-        expectedInputFields.add(new ChoiceInputField<Integer>(null, null, null, null,
-                false, new CollectionInputDataType("singleChoice", "integer"), "picker",
-                null, null, null, expectedChoices, null));
-        FormUIStep expected = new FormUIStepBase("imageList", null,"Single Choice with Images",
-                "Select a single option", null, null, null, null, expectedInputFields);
-        testCommon(expected, "FormIcons.json");
-    }
-
-    @Test(expected = JsonParseException.class)
-    public void testIncorrectChoiceType_StringIntoInteger() throws IOException {
-        ClassLoader loader = this.getClass().getClassLoader();
-        URL url = loader.getResource("steps/FormStringIntoInteger.json");
-        Reader in = new FileReader(new File(url.getPath()));
-        this.stepTestComponent.gson().fromJson(in, Step.class);
     }
 
     private void testCommon(FormUIStep expected, String filename) {

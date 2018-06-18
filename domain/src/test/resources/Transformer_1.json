@@ -1,5 +1,7 @@
 {
-  "identifier":"left",
-  "type":"transform",
-  "resourceTransformer": { "resourceName": "TappingSectionStep.json"}
+  "identifier": "left",
+  "type": "transform",
+  "resourceTransformer": {
+    "resourceName": "TappingSectionStep.json"
+  }
 }

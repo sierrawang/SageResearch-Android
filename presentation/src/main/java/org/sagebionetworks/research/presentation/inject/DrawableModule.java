@@ -51,17 +51,17 @@ public abstract class DrawableModule {
     @Provides
     @IntoMap
     @DrawableRes
-    @ResourceNameKey(DrawableName.CANCEL)
-    static Integer provideCancelResource() {
-        return R.drawable.rs2_cancel_icon;
+    @ResourceNameKey(DrawableName.BACK)
+    static Integer provideBackResource() {
+        return R.drawable.rs2_back_icon;
     }
 
     @Provides
     @IntoMap
     @DrawableRes
-    @ResourceNameKey(DrawableName.BACK)
-    static Integer provideBackResource() {
-        return R.drawable.rs2_back_icon;
+    @ResourceNameKey(DrawableName.CANCEL)
+    static Integer provideCancelResource() {
+        return R.drawable.rs2_cancel_icon;
     }
 
     @Provides

@@ -32,16 +32,16 @@
 
 package org.sagebionetworks.research.app;
 
+import static java.nio.charset.StandardCharsets.UTF_8;
+
 import com.google.gson.Gson;
 
-import org.junit.*;
+import org.junit.Before;
 
 import java.io.File;
 import java.io.IOException;
 import java.net.URL;
 import java.nio.file.Files;
-
-import static java.nio.charset.StandardCharsets.UTF_8;
 
 class JsonDeserializationTestBase {
     protected Gson gson;

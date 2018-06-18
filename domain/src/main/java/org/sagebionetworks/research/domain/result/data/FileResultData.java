@@ -52,6 +52,10 @@ public abstract class FileResultData {
         public abstract Builder setRelativePath(@NonNull final String relativePath);
     }
 
+    public static Builder builder() {
+        return new AutoValue_FileResultData.Builder();
+    }
+
     public static FileResultData create(final String fileType, final String relativePath) {
         return FileResultData.builder()
                 .setFileType(fileType)
@@ -59,19 +63,15 @@ public abstract class FileResultData {
                 .build();
     }
 
-    public static Builder builder() {
-        return new AutoValue_FileResultData.Builder();
-    }
-
     public static TypeAdapter<FileResultData> typeAdapter(Gson gson) {
         return new AutoValue_FileResultData.GsonTypeAdapter(gson);
     }
-
-    public abstract Builder toBuilder();
 
     @NonNull
     public abstract String getFileType();
 
     @NonNull
     public abstract String getRelativePath();
+
+    public abstract Builder toBuilder();
 }

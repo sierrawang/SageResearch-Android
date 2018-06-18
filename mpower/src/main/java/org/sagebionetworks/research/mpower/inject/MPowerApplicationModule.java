@@ -35,7 +35,6 @@ package org.sagebionetworks.research.mpower.inject;
 import android.app.Activity;
 import android.content.Context;
 
-import com.google.gson.TypeAdapter;
 import com.google.gson.TypeAdapterFactory;
 
 import org.sagebionetworks.research.data.inject.DataModule;
@@ -62,7 +61,7 @@ public abstract class MPowerApplicationModule {
     @IntoMap
     @ActivityKey(MainActivity.class)
     abstract AndroidInjector.Factory<? extends Activity>
-        bindActivityInjectorFactory(MainActivitySubcomponent.Builder builder);
+    bindActivityInjectorFactory(MainActivitySubcomponent.Builder builder);
 
     @Provides
     @IntoSet

@@ -32,6 +32,8 @@
 
 package org.sagebionetworks.research.presentation.perform_task.active.async;
 
+import static com.google.common.base.Preconditions.checkNotNull;
+
 import android.content.Context;
 import android.content.Intent;
 import android.os.Binder;
@@ -43,8 +45,6 @@ import android.support.annotation.Nullable;
 import java.util.UUID;
 
 import dagger.android.DaggerService;
-
-import static com.google.common.base.Preconditions.checkNotNull;
 
 public class AsyncActionService extends DaggerService {
     private static class AsyncActionBinder extends Binder implements AsyncAction {

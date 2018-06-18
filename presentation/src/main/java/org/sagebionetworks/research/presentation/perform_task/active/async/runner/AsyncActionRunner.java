@@ -32,14 +32,14 @@
 
 package org.sagebionetworks.research.presentation.perform_task.active.async.runner;
 
+import static com.google.common.base.Preconditions.checkNotNull;
+
 import android.support.annotation.CallSuper;
 import android.support.annotation.NonNull;
 
 import org.sagebionetworks.research.domain.async.AsyncAction;
 import org.sagebionetworks.research.domain.step.interfaces.Step;
 import org.sagebionetworks.research.presentation.perform_task.active.async.StepChangeListener;
-
-import static com.google.common.base.Preconditions.checkNotNull;
 
 /**
  * Created by liujoshua on 10/11/2017.
@@ -55,14 +55,6 @@ public abstract class AsyncActionRunner implements StepChangeListener {
 
     @Override
     @CallSuper
-    public void onShowStep(Step step) {
-        if (asyncAction.getStartStepIdentifier().equals(step.getIdentifier())) {
-            runAction();
-        }
-    }
-
-    @Override
-    @CallSuper
     public void onCancelStep(Step step) {
         //no-op
     }
@@ -71,6 +63,14 @@ public abstract class AsyncActionRunner implements StepChangeListener {
     @CallSuper
     public void onFinishStep(Step step) {
         //no-op
+    }
+
+    @Override
+    @CallSuper
+    public void onShowStep(Step step) {
+        if (asyncAction.getStartStepIdentifier().equals(step.getIdentifier())) {
+            runAction();
+        }
     }
 
     protected abstract void runAction();

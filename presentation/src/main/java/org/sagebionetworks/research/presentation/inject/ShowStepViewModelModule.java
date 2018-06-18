@@ -36,8 +36,8 @@ import org.sagebionetworks.research.presentation.model.interfaces.ActiveUIStepVi
 import org.sagebionetworks.research.presentation.model.interfaces.FormUIStepView;
 import org.sagebionetworks.research.presentation.model.interfaces.StepView;
 import org.sagebionetworks.research.presentation.model.interfaces.UIStepView;
-import org.sagebionetworks.research.presentation.show_step.show_step_view_model_factories.AbstractShowStepViewModelFactory;
 import org.sagebionetworks.research.presentation.show_step.ShowGenericStepViewModelFactory;
+import org.sagebionetworks.research.presentation.show_step.show_step_view_model_factories.AbstractShowStepViewModelFactory;
 import org.sagebionetworks.research.presentation.show_step.show_step_view_model_factories.ShowActiveUIStepViewModelFactory;
 import org.sagebionetworks.research.presentation.show_step.show_step_view_model_factories.ShowStepViewModelFactory;
 import org.sagebionetworks.research.presentation.show_step.show_step_view_model_factories.ShowUIStepViewModelFactory;
@@ -58,16 +58,9 @@ public abstract class ShowStepViewModelModule {
 
     @Provides
     @IntoMap
-    @StepViewClassKey(StepView.class)
-    static AbstractShowStepViewModelFactory<?, ? extends StepView> provideGenericStepVMF() {
-        return new ShowGenericStepViewModelFactory();
-    }
-
-    @Provides
-    @IntoMap
-    @StepViewClassKey(UIStepView.class)
-    static AbstractShowStepViewModelFactory<?, ? extends StepView> provideUIStepVMF() {
-        return new ShowUIStepViewModelFactory<UIStepView>();
+    @StepViewClassKey(ActiveUIStepView.class)
+    static AbstractShowStepViewModelFactory<?, ? extends StepView> provideActiveUIStepVMF() {
+        return new ShowActiveUIStepViewModelFactory();
     }
 
     // TODO: rkolmos 06/01/2018 Implement a view model for FormUISteps.
@@ -80,14 +73,21 @@ public abstract class ShowStepViewModelModule {
 
     @Provides
     @IntoMap
-    @StepViewClassKey(ActiveUIStepView.class)
-    static AbstractShowStepViewModelFactory<?, ? extends StepView> provideActiveUIStepVMF() {
-        return new ShowActiveUIStepViewModelFactory();
+    @StepViewClassKey(StepView.class)
+    static AbstractShowStepViewModelFactory<?, ? extends StepView> provideGenericStepVMF() {
+        return new ShowGenericStepViewModelFactory();
     }
 
     @Provides
     static ShowStepViewModelFactory provideShowStepViewModelFactory(
             Map<Class<? extends StepView>, AbstractShowStepViewModelFactory<?, ? extends StepView>> t) {
         return new ShowStepViewModelFactory(t);
+    }
+
+    @Provides
+    @IntoMap
+    @StepViewClassKey(UIStepView.class)
+    static AbstractShowStepViewModelFactory<?, ? extends StepView> provideUIStepVMF() {
+        return new ShowUIStepViewModelFactory<UIStepView>();
     }
 }

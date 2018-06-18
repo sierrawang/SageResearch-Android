@@ -32,10 +32,14 @@
 
 package org.sagebionetworks.research.domain.result.gson;
 
+import static junit.framework.Assert.assertNotNull;
+
+import static org.junit.Assert.assertEquals;
+
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 
-import org.junit.*;
+import org.junit.Before;
 import org.sagebionetworks.research.domain.result.DaggerResultTestComponent;
 import org.sagebionetworks.research.domain.result.ResultTestComponent;
 import org.sagebionetworks.research.domain.result.interfaces.Result;
@@ -46,26 +50,12 @@ import java.io.FileReader;
 import java.io.Reader;
 import java.net.URL;
 
-import static junit.framework.Assert.assertNotNull;
-import static org.junit.Assert.assertEquals;
-
 public class IndividualResultGsonTest {
     protected ResultTestComponent resultTestComponent;
 
     @Before
     public void setup() {
         this.resultTestComponent = DaggerResultTestComponent.builder().build();
-    }
-
-    @Nullable
-    private Result readJsonFileHelper(URL url) {
-        try {
-            Reader reader = new FileReader(new File(url.getFile()));
-            Result result = this.resultTestComponent.gson().fromJson(reader, Result.class);
-            return result;
-        } catch (FileNotFoundException e) {
-            return null;
-        }
     }
 
     @NonNull
@@ -83,6 +73,17 @@ public class IndividualResultGsonTest {
         Result deserialized = this.resultTestComponent.gson().fromJson(serialized, Result.class);
         assertNotNull(deserialized);
         assertEquals(result, deserialized);
+    }
+
+    @Nullable
+    private Result readJsonFileHelper(URL url) {
+        try {
+            Reader reader = new FileReader(new File(url.getFile()));
+            Result result = this.resultTestComponent.gson().fromJson(reader, Result.class);
+            return result;
+        } catch (FileNotFoundException e) {
+            return null;
+        }
     }
 
 }

@@ -32,13 +32,13 @@
 
 package org.sagebionetworks.research.presentation.model.interfaces;
 
+import static java.lang.annotation.RetentionPolicy.SOURCE;
+
 import android.os.Parcelable;
 import android.support.annotation.IntDef;
 import android.support.annotation.NonNull;
 
 import java.lang.annotation.Retention;
-
-import static java.lang.annotation.RetentionPolicy.SOURCE;
 
 /**
  * Map a {@link Step} to a {@link StepView} when data is moving from the Domain layer to this layer.
@@ -57,3 +57,4 @@ public interface StepView extends Parcelable {
     @NavDirection
     int getNavDirection();
 }
+
