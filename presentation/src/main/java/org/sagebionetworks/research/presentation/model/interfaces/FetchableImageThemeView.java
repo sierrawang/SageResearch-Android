@@ -67,7 +67,7 @@ public abstract class FetchableImageThemeView extends ImageThemeView {
         // TODO: rkolmos 06/11/2018 fix this not to instantiate a new on every time.
         return FetchableImageThemeView.builder()
                 .setColorPlacement(imageTheme.getColorPlacement())
-                .setImageResource(new DisplayDrawable(null,
+                .setImageResource(DisplayDrawable.create(null,
                         mapper.getDrawableFromName(imageTheme.getImageResourceName())))
                 .build();
     }

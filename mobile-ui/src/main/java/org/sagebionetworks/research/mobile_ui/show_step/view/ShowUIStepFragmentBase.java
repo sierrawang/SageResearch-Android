@@ -90,15 +90,12 @@ public abstract class ShowUIStepFragmentBase<S extends UIStepView,
                     int duration = (int)((animationImageTheme.getDuration() * 1000) / drawables.size());
                     AnimationDrawable animation = new AnimationDrawable();
                     for (DisplayDrawable displayDrawable : drawables) {
-                        Drawable drawable = null;
-                        if (displayDrawable.drawableRes != null) {
-                            drawable = this.getResources().getDrawable(displayDrawable.drawableRes);
-                        } else if (displayDrawable.defaultDrawableRes != null) {
-                            drawable = this.getResources().getDrawable(displayDrawable.defaultDrawableRes);
-                        }
-
-                        if (drawable != null) {
-                            animation.addFrame(drawable, duration);
+                        Integer drawableRes = displayDrawable.getDrawable();
+                        if (drawableRes != null) {
+                            Drawable drawable = this.getResources().getDrawable(drawableRes);
+                            if (drawable != null) {
+                                animation.addFrame(drawable, duration);
+                            }
                         }
                     }
 
@@ -106,8 +103,7 @@ public abstract class ShowUIStepFragmentBase<S extends UIStepView,
                     animation.start();
                 } else if (imageTheme instanceof FetchableImageThemeView) {
                     DisplayDrawable drawable = ((FetchableImageThemeView) imageTheme).getImageResource();
-                    Integer imageResourceId = drawable.drawableRes != null ? drawable.drawableRes :
-                            drawable.defaultDrawableRes;
+                    Integer imageResourceId = drawable.getDrawable();
                     if (imageResourceId != null) {
                         imageView.setImageResource(imageResourceId);
                     } else {

@@ -35,6 +35,7 @@ package org.sagebionetworks.research.mobile_ui.show_step.view.view_binding;
 import android.animation.ObjectAnimator;
 import android.graphics.drawable.AnimationDrawable;
 import android.graphics.drawable.Drawable;
+import android.support.annotation.Nullable;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
@@ -191,20 +192,6 @@ public class UIStepViewBinding<S extends UIStepView> implements StepViewBinding<
         this.updateTextView(this.getText(), stepView.getText());
         this.updateTextView(this.getDetail(), stepView.getDetail());
         this.updateTextView(this.getFoonote(), stepView.getFootnote());
-
-        ImageView imageView = this.getImageView();
-        if (imageView != null) {
-            if (stepView.getImageTheme() != null) {
-                DisplayDrawable drawable = stepView.getImageTheme().getImageResource();
-                Integer imageResourceId = drawable.getDrawable();
-                if (imageResourceId != null) {
-                    imageView.setImageResource(imageResourceId);
-                } else {
-                    System.err.println("DisplayDrawable has null drawableRes and null defaultDrawableRes");
-                }
-            }
-        }
-
         // TODO rkolmos 05/29/2018 implement color theme update
     }
 

@@ -41,6 +41,7 @@ import org.sagebionetworks.research.domain.step.implementations.UIStepBase;
 import org.sagebionetworks.research.domain.step.interfaces.Step;
 import org.sagebionetworks.research.mpower.step.CompletionStep;
 import org.sagebionetworks.research.presentation.DisplayString;
+import org.sagebionetworks.research.presentation.mapper.DrawableMapper;
 import org.sagebionetworks.research.presentation.model.ColorThemeView;
 import org.sagebionetworks.research.presentation.model.ImageThemeView;
 import org.sagebionetworks.research.presentation.model.action.ActionView;
@@ -58,12 +59,12 @@ public class CompletionStepView extends UIStepViewBase {
         super(identifier, navDirection, actions, title, text, detail, footnote, colorTheme, imageTheme);
     }
 
-    public static CompletionStepView fromCompletionStep(Step step) {
+    public static CompletionStepView fromCompletionStep(Step step, DrawableMapper mapper) {
         if (!(step instanceof CompletionStep)) {
             throw new IllegalArgumentException("Provided step: " + step + " is not a CompletionStep.");
         }
 
-        UIStepViewBase uiStep = UIStepViewBase.fromUIStep(step);
+        UIStepViewBase uiStep = UIStepViewBase.fromUIStep(step, mapper);
         return new CompletionStepView(uiStep.getIdentifier(), uiStep.getNavDirection(), uiStep.getActions(),
                 uiStep.getTitle(), uiStep.getText(), uiStep.getDetail(), uiStep.getFootnote(), uiStep.getColorTheme(),
                 uiStep.getImageTheme());

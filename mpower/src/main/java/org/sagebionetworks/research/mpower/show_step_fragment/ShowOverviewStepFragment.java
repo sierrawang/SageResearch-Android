@@ -73,6 +73,7 @@ import org.threeten.bp.Instant;
 import org.threeten.bp.LocalDate;
 import org.threeten.bp.LocalDateTime;
 import org.threeten.bp.ZoneId;
+import org.threeten.bp.ZonedDateTime;
 import org.threeten.bp.temporal.ChronoUnit;
 import org.threeten.bp.temporal.Temporal;
 import org.threeten.bp.zone.ZoneRulesException;
@@ -127,37 +128,19 @@ public class ShowOverviewStepFragment extends
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
             Bundle savedInstanceState) {
         View returnValue = super.onCreateView(inflater, container, savedInstanceState);
-        String sharedPreferencesKey = this.performTaskViewModel.getTaskView().getIdentifier();
-        SharedPreferences sharedPreferences = getContext().getSharedPreferences(sharedPreferencesKey,
-                Context.MODE_PRIVATE);
-        Long lastRun = sharedPreferences.getLong(LAST_RUN_KEY, 0);
-        Instant now = Instant.now();
-        ZoneId zoneId = null;
-        try {
-            zoneId = ZoneId.systemDefault();
-        } catch (ZoneRulesException e) {
-            zoneId = ZoneId.of("Z"); // UTC time.
-        }
-
-        LocalDateTime nowDate = LocalDateTime.ofInstant(now, zoneId);
-        if (lastRun == 0) {
+        ZonedDateTime lastRun = this.performTaskViewModel.getLastRun();
+        if (lastRun == null) {
             this.isFirstRun = true;
         } else {
-            Instant lastRunInstant = Instant.ofEpochMilli(lastRun);
-            LocalDateTime lastRunDate = LocalDateTime.ofInstant(lastRunInstant, zoneId);
-            LocalDateTime oneMonthBeforeNow = nowDate.minusMonths(1);
-            if (oneMonthBeforeNow.compareTo(lastRunDate) > 0) {
-                this.isFirstRun = true;
-            } else {
-                this.isFirstRun = false;
-            }
+            ZoneId zone = lastRun.getZone();
+            Instant now = Instant.now();
+            ZonedDateTime nowDate = ZonedDateTime.ofInstant(now, zone);
+            ZonedDateTime oneMonthBeforeNow = nowDate.minusMonths(1);
+            // If the last run is older than one month this is a first run.
+            this.isFirstRun = lastRun.isBefore(oneMonthBeforeNow);
         }
 
-        sharedPreferences.edit().putLong(LAST_RUN_KEY, now.toEpochMilli()).apply();
-        // Add a result storing the whether or not this is a first run to the task result.
-        this.performTaskViewModel.addStepResult(new AnswerResultBase<>(FIRST_RUN_KEY,
-                now, now, this.isFirstRun, AnswerResultType.BOOLEAN));
-        return returnValue;
+       return returnValue;
     }
 
     @Override

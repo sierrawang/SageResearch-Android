@@ -66,6 +66,8 @@ import org.sagebionetworks.research.presentation.model.TaskView;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.threeten.bp.Instant;
+import org.threeten.bp.LocalDateTime;
+import org.threeten.bp.ZonedDateTime;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -121,9 +123,12 @@ public class PerformTaskViewModel extends ViewModel {
 
     private Map<Step, StepView> stepViewMapping;
 
+    private ZonedDateTime lastRun;
+
     public PerformTaskViewModel(@NonNull TaskView taskView, @NonNull UUID taskRunUUID,
             @NonNull StepNavigatorFactory stepNavigatorFactory, @NonNull TaskRepository taskRepository,
-            @NonNull TaskMapper taskMapper, StepViewFactory stepViewFactory, @NonNull DrawableMapper drawableMapper) {
+            @NonNull TaskMapper taskMapper, StepViewFactory stepViewFactory, @NonNull DrawableMapper drawableMapper,
+            @Nullable ZonedDateTime lastRun) {
         this.taskView = checkNotNull(taskView);
         this.taskRunUuid = checkNotNull(taskRunUUID);
         this.stepNavigatorFactory = checkNotNull(stepNavigatorFactory);
@@ -131,6 +136,7 @@ public class PerformTaskViewModel extends ViewModel {
         this.taskMapper = checkNotNull(taskMapper);
         this.stepViewFactory = stepViewFactory;
         this.drawableMapper = drawableMapper;
+        this.lastRun = lastRun;
 
         taskLiveData = new MutableLiveData<>();
         taskResultLiveData = new MutableLiveData<>();
@@ -146,6 +152,10 @@ public class PerformTaskViewModel extends ViewModel {
         taskViewLiveData = new MutableLiveData<>();
 
         initTaskSteps(taskView, taskRunUuid);
+    }
+
+    public ZonedDateTime getLastRun() {
+        return lastRun;
     }
 
     public void addAsyncResult(Result result) {
