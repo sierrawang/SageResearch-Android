@@ -41,6 +41,7 @@ import com.google.common.collect.ImmutableSet;
 import com.google.gson.Gson;
 import com.google.gson.TypeAdapter;
 
+import org.sagebionetworks.research.domain.result.interfaces.TaskResult;
 import org.sagebionetworks.research.presentation.model.interfaces.StepView;
 import org.sagebionetworks.research.domain.step.interfaces.Step;
 
@@ -75,6 +76,11 @@ public abstract class BaseStepView implements StepView, Parcelable {
 
     public static TypeAdapter<BaseStepView> typeAdapter(Gson gson) {
         return new AutoValue_BaseStepView.GsonTypeAdapter(gson);
+    }
+
+    @Override
+    public boolean shouldSkip(@Nullable TaskResult taskResult) {
+        return false;
     }
 
     public abstract String getIdentifier();

@@ -37,7 +37,11 @@ import android.support.annotation.Nullable;
 
 import com.google.common.collect.ImmutableMap;
 
+import org.sagebionetworks.research.domain.result.interfaces.AnswerResult;
+import org.sagebionetworks.research.domain.result.interfaces.Result;
+import org.sagebionetworks.research.domain.result.interfaces.TaskResult;
 import org.sagebionetworks.research.domain.step.interfaces.Step;
+import org.sagebionetworks.research.mpower.show_step_fragment.FirstRunHelper;
 import org.sagebionetworks.research.mpower.step.InstructionStep;
 import org.sagebionetworks.research.presentation.DisplayString;
 import org.sagebionetworks.research.presentation.mapper.DrawableMapper;
@@ -46,7 +50,12 @@ import org.sagebionetworks.research.presentation.model.ImageThemeView;
 import org.sagebionetworks.research.presentation.model.action.ActionView;
 import org.sagebionetworks.research.presentation.model.action.ActionViewBase;
 import org.sagebionetworks.research.presentation.model.implementations.ActiveUIStepViewBase;
+import org.sagebionetworks.research.presentation.perform_task.PerformTaskViewModel;
 import org.threeten.bp.Duration;
+import org.threeten.bp.Instant;
+import org.threeten.bp.ZonedDateTime;
+
+import java.util.List;
 
 public class InstructionStepView extends ActiveUIStepViewBase {
     private final boolean firstRunOnly;
@@ -84,5 +93,11 @@ public class InstructionStepView extends ActiveUIStepViewBase {
                 activeUIStepView.getDetail(), activeUIStepView.getFootnote(), activeUIStepView.getColorTheme(),
                 activeUIStepView.getImageTheme(), activeUIStepView.getDuration(),
                 activeUIStepView.isBackgroundAudioRequired(), instructionStep.isFirstRunOnly());
+    }
+
+    @Override
+    public boolean shouldSkip(@Nullable TaskResult taskResult) {
+        // If this step should only run on first runs and it is not a first run then we should skip this step.
+        return this.firstRunOnly && !FirstRunHelper.isFirstRun(taskResult);
     }
 }

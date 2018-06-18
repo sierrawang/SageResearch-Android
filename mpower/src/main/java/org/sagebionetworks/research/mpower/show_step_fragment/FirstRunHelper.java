@@ -30,40 +30,45 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.sagebionetworks.research.presentation.model.interfaces;
+package org.sagebionetworks.research.mpower.show_step_fragment;
 
-import android.os.Parcelable;
-import android.support.annotation.IntDef;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 
-import java.lang.annotation.Retention;
-
-import static java.lang.annotation.RetentionPolicy.SOURCE;
-
+import org.sagebionetworks.research.domain.result.interfaces.AnswerResult;
+import org.sagebionetworks.research.domain.result.interfaces.Result;
 import org.sagebionetworks.research.domain.result.interfaces.TaskResult;
+import org.sagebionetworks.research.presentation.perform_task.PerformTaskViewModel;
+import org.threeten.bp.Instant;
+import org.threeten.bp.ZonedDateTime;
 
-/**
- * Map a {@link Step} to a {@link StepView} when data is moving from the Domain layer to this layer.
- */
-public interface StepView extends Parcelable {
-    @Retention(SOURCE)
-    @IntDef({NavDirection.SHIFT_LEFT, NavDirection.SHIFT_RIGHT})
-    @interface NavDirection {
-        int SHIFT_LEFT = 1;
-        int SHIFT_RIGHT = -1;
+public class FirstRunHelper {
+    public static boolean isFirstRun(@Nullable TaskResult result) {
+        if (result != null && result.getResult(ShowOverviewStepFragment.INFO_TAPPED_RESULT_ID) == null) {
+            ZonedDateTime lastRunDate = getLastRunDate(result);
+            if (lastRunDate != null) {
+                Instant taskStartInstant = result.getStartTime();
+                ZonedDateTime taskStartDate = ZonedDateTime.ofInstant(taskStartInstant, lastRunDate.getZone());
+                // This is a first run if it has been at least a month since the last run.
+                return lastRunDate.isBefore(taskStartDate.minusMonths(1));
+            }
+        }
+
+        // The info button was tapped, or The task result or last run date was null making this a first run.
+        return true;
     }
 
-    @NonNull
-    String getIdentifier();
+    public static ZonedDateTime getLastRunDate(@NonNull TaskResult taskResult) {
+        for (Result result : taskResult.getAsyncResults()) {
+            if (result.getIdentifier().equals(PerformTaskViewModel.LAST_RUN_RESULT_ID) &&
+                    result instanceof AnswerResult) {
+                Object answer = ((AnswerResult)result).getAnswer();
+                if (answer instanceof ZonedDateTime) {
+                    return (ZonedDateTime)answer;
+                }
+            }
+        }
 
-    @NavDirection
-    int getNavDirection();
-
-    /**
-     * Returns true if this step view should be skipped for the given task result, false otherwise
-     * @param taskResult The task result to use to determine if this step view should be skipped
-     * @return true if this step view should be skipped, false otherwise.
-     */
-    boolean shouldSkip(@Nullable TaskResult taskResult);
+        return null;
+    }
 }

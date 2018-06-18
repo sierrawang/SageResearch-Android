@@ -65,6 +65,7 @@ import org.sagebionetworks.research.mpower.step_view.IconView;
 import org.sagebionetworks.research.mpower.step_view.OverviewStepView;
 import org.sagebionetworks.research.mpower.widget.DisablableScrollView;
 import org.sagebionetworks.research.presentation.ActionType;
+import org.sagebionetworks.research.presentation.DisplayDrawable;
 import org.sagebionetworks.research.presentation.DisplayString;
 import org.sagebionetworks.research.presentation.model.interfaces.StepView;
 import org.sagebionetworks.research.presentation.show_step.show_step_view_models.ShowUIStepViewModel;
@@ -85,8 +86,8 @@ import java.util.List;
 public class ShowOverviewStepFragment extends
         ShowUIStepFragmentBase<OverviewStepView, ShowUIStepViewModel<OverviewStepView>,
                 OverviewStepViewBinding<OverviewStepView>> {
-    public static final String LAST_RUN_KEY = "LAST_RUN";
-    public static final String FIRST_RUN_KEY = "IS_FIRST_RUN";
+    public static final String INFO_TAPPED_RESULT_ID = "infoTapped";
+
     private boolean isFirstRun;
 
     @NonNull
@@ -103,6 +104,7 @@ public class ShowOverviewStepFragment extends
         DisablableScrollView scrollView = this.stepViewBinding.getScrollView();
         if (this.isFirstRun) {
             scrollView.post(() -> scrollView.fullScroll(ScrollView.FOCUS_DOWN));
+            this.stepViewBinding.getInfoButton().setVisibility(View.GONE);
         } else {
             // Hide all the extra information when the view is created.
             scrollView.setScrollingEnabled(false);
@@ -128,19 +130,8 @@ public class ShowOverviewStepFragment extends
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
             Bundle savedInstanceState) {
         View returnValue = super.onCreateView(inflater, container, savedInstanceState);
-        ZonedDateTime lastRun = this.performTaskViewModel.getLastRun();
-        if (lastRun == null) {
-            this.isFirstRun = true;
-        } else {
-            ZoneId zone = lastRun.getZone();
-            Instant now = Instant.now();
-            ZonedDateTime nowDate = ZonedDateTime.ofInstant(now, zone);
-            ZonedDateTime oneMonthBeforeNow = nowDate.minusMonths(1);
-            // If the last run is older than one month this is a first run.
-            this.isFirstRun = lastRun.isBefore(oneMonthBeforeNow);
-        }
-
-       return returnValue;
+        this.isFirstRun = FirstRunHelper.isFirstRun(this.performTaskViewModel.getTaskResult().getValue());
+        return returnValue;
     }
 
     @Override
@@ -148,6 +139,8 @@ public class ShowOverviewStepFragment extends
         @ActionType String actionType = this.getActionTypeFromActionButton(actionButton);
         if (ActionType.INFO.equals(actionType)) {
             this.scrollToBottomAndFadeIn();
+            this.performTaskViewModel.addStepResult(new ResultBase(INFO_TAPPED_RESULT_ID, Instant.now(),
+                    Instant.now()));
         } else {
             this.showStepViewModel.handleAction(actionType);
         }
@@ -197,7 +190,7 @@ public class ShowOverviewStepFragment extends
         List<IconView> iconViews = stepView.getIconViews();
         for (int i = 0; i < iconImageViews.size(); i++) {
             IconView iconView = null;
-            if (iconViews.size() > i) {
+            if (i < iconViews.size()) {
                 iconView = iconViews.get(i);
             }
 
@@ -209,6 +202,14 @@ public class ShowOverviewStepFragment extends
                 if (titleDisplayString != null) {
                     String titleString = titleDisplayString.getString(getContext().getResources());
                     iconLabels.get(i).setText(titleString);
+                }
+
+                DisplayDrawable drawable = iconView.getIcon();
+                if (drawable != null) {
+                    Integer resId = drawable.getDrawable();
+                    if (resId != null) {
+                        iconImageViews.get(i).setImageResource(resId);
+                    }
                 }
             }
         }

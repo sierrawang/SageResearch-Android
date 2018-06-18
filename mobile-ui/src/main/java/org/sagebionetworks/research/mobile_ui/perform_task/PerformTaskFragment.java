@@ -88,7 +88,6 @@ public class PerformTaskFragment extends Fragment implements HasSupportFragmentI
     private static final String ARGUMENT_TASK_RUN_UUID = "TASK_RUN_UUID";
 
     public static final String LAST_RUN_KEY = "LAST_RUN";
-    public static final String FIRST_RUN_KEY = "IS_FIRST_RUN";
 
 
     @Inject
@@ -161,7 +160,6 @@ public class PerformTaskFragment extends Fragment implements HasSupportFragmentI
                 .of(this, taskViewModelFactory.create(taskView, taskRunParcelableUuid.getUuid(),
                         this.getLastRun()))
                 .get(PerformTaskViewModel.class);
-
         performTaskViewModel.getStepView().observe(this, this::showStep);
     }
 
@@ -217,14 +215,14 @@ public class PerformTaskFragment extends Fragment implements HasSupportFragmentI
             if (currentStepFragment != null) {
                 getChildFragmentManager().beginTransaction().remove(currentStepFragment).commit();
                 currentStepFragment = null;
-            } else {
-                // Write this date as the new last run.
-                String sharedPreferencesKey = this.taskView.getIdentifier();
-                SharedPreferences sharedPreferences = getContext().getSharedPreferences(sharedPreferencesKey,
-                        Context.MODE_PRIVATE);
-                sharedPreferences.edit().putLong(LAST_RUN_KEY, Instant.now().toEpochMilli()).apply();
-                // TODO: handle end of perform task
             }
+
+            // Write this date as the new last run.
+            String sharedPreferencesKey = this.taskView.getIdentifier();
+            SharedPreferences sharedPreferences = getContext().getSharedPreferences(sharedPreferencesKey,
+                    Context.MODE_PRIVATE);
+            sharedPreferences.edit().putLong(LAST_RUN_KEY, Instant.now().toEpochMilli()).apply();
+            // TODO handle end of perform task.
             return;
         }
 

@@ -51,20 +51,6 @@ import org.sagebionetworks.research.presentation.show_step.show_step_view_models
 public class ShowInstructionStepFragment extends
         ShowUIStepFragmentBase<InstructionStepView, ShowUIStepViewModel<InstructionStepView>,
                 UIStepViewBinding<InstructionStepView>> {
-    @Override
-    public void onStart() {
-        if (this.stepView.isFirstRunOnly()) {
-            TaskResult result = this.performTaskViewModel.getTaskResult().getValue();
-            AnswerResult<Boolean> firstRunResult = result.getAnswerResult(ShowOverviewStepFragment.FIRST_RUN_KEY);
-            if (firstRunResult != null && firstRunResult.getAnswer() != null && !firstRunResult.getAnswer()) {
-                this.performTaskViewModel.goForward();
-                return;
-            }
-        }
-
-        super.onStart();
-    }
-
     @NonNull
     public static ShowInstructionStepFragment newInstance(@NonNull StepView stepView) {
         ShowInstructionStepFragment fragment = new ShowInstructionStepFragment();

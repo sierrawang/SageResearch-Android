@@ -33,6 +33,7 @@
 package org.sagebionetworks.research.presentation.perform_task;
 
 import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 
 import org.sagebionetworks.research.domain.repository.TaskRepository;
 import org.sagebionetworks.research.domain.task.navigation.StepNavigatorFactory;
@@ -40,6 +41,7 @@ import org.sagebionetworks.research.presentation.inject.StepViewModule.StepViewF
 import org.sagebionetworks.research.presentation.mapper.DrawableMapper;
 import org.sagebionetworks.research.presentation.mapper.TaskMapper;
 import org.sagebionetworks.research.presentation.model.TaskView;
+import org.threeten.bp.ZonedDateTime;
 
 import java.util.UUID;
 import java.util.concurrent.TimeUnit;
@@ -54,8 +56,10 @@ public class PerformActiveTaskViewModel extends PerformTaskViewModel {
             @NonNull final TaskRepository taskRepository,
             @NonNull final TaskMapper taskMapper,
             @NonNull final StepViewFactory stepViewFactory,
-            @NonNull final DrawableMapper drawableMapper) {
-        super(taskView, taskRunUUID, stepNavigatorFactory, taskRepository, taskMapper, stepViewFactory, drawableMapper);
+            @NonNull final DrawableMapper drawableMapper,
+            @Nullable final ZonedDateTime lastRunDate) {
+        super(taskView, taskRunUUID, stepNavigatorFactory, taskRepository, taskMapper, stepViewFactory, drawableMapper,
+            lastRunDate);
     }
 
     public Observable<Long> getCountdown() {

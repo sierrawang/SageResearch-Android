@@ -42,6 +42,9 @@ import android.support.annotation.VisibleForTesting;
 
 import org.sagebionetworks.research.domain.presentation.model.LoadableResource;
 import org.sagebionetworks.research.domain.repository.TaskRepository;
+import org.sagebionetworks.research.domain.result.AnswerResultType;
+import org.sagebionetworks.research.domain.result.implementations.AnswerResultBase;
+import org.sagebionetworks.research.domain.result.implementations.ResultBase;
 import org.sagebionetworks.research.domain.result.implementations.TaskResultBase;
 import org.sagebionetworks.research.domain.result.interfaces.Result;
 import org.sagebionetworks.research.domain.result.interfaces.TaskResult;
@@ -86,6 +89,8 @@ import javax.inject.Inject;
 
 @MainThread
 public class PerformTaskViewModel extends ViewModel {
+    public static final String LAST_RUN_RESULT_ID = "lastRun";
+
     private static final Logger LOGGER = LoggerFactory.getLogger(PerformTaskViewModel.class);
 
     private final CompositeDisposable compositeDisposable;
@@ -109,9 +114,6 @@ public class PerformTaskViewModel extends ViewModel {
     private final StepViewFactory stepViewFactory;
 
     private final DrawableMapper drawableMapper;
-
-    @Nullable
-    private TaskResult taskResult;
 
     private final MutableLiveData<TaskResult> taskResultLiveData;
 
@@ -159,22 +161,22 @@ public class PerformTaskViewModel extends ViewModel {
     }
 
     public void addAsyncResult(Result result) {
-        checkState(taskResult != null);
+        checkState(taskResultLiveData.getValue() != null);
 
         if (LOGGER.isDebugEnabled()) {
             LOGGER.debug("addAsyncResult called with result: {}", result);
         }
 
-        taskResultLiveData.setValue(taskResult.addAsyncResult(result));
+        taskResultLiveData.setValue(taskResultLiveData.getValue().addAsyncResult(result));
     }
 
     public void addStepResult(Result result) {
-        checkState(taskResult != null);
+        checkState(taskResultLiveData.getValue() != null);
 
         if (LOGGER.isDebugEnabled()) {
             LOGGER.debug("addStepResult called with result: {}", result);
         }
-        taskResultLiveData.setValue(taskResult.addStepHistory(result));
+        taskResultLiveData.setValue(taskResultLiveData.getValue().addStepHistory(result));
     }
 
     @NonNull
@@ -214,11 +216,19 @@ public class PerformTaskViewModel extends ViewModel {
         checkState(currentStep != null);
         checkState(taskResult != null);
         Step backStep = stepNavigator.getPreviousStep(currentStep, taskResult);
-        TaskProgress backProgress = stepNavigator.getProgress(backStep, taskResult);
-        taskProgressLiveData.setValue(backProgress);
-        LOGGER.debug("Setting backStep: {}", backStep);
-        currentStepLiveData.setValue(backStep);
-        StepView stepView = this.stepViewMapping.get(backStep);
+        StepView stepView = null;
+        if (backStep != null) {
+            TaskProgress backProgress = stepNavigator.getProgress(backStep, taskResult);
+            taskProgressLiveData.setValue(backProgress);
+            LOGGER.debug("Setting backStep: {}", backStep);
+            currentStepLiveData.setValue(backStep);
+            stepView = this.stepViewMapping.get(backStep);
+            if (stepView.shouldSkip(taskResult)) {
+                this.goBack();
+                return;
+            }
+        }
+
         stepViewLiveData.setValue(stepView);
     }
 
@@ -227,11 +237,19 @@ public class PerformTaskViewModel extends ViewModel {
         Step currentStep = currentStepLiveData.getValue();
         TaskResult taskResult = taskResultLiveData.getValue();
         Step nextStep = stepNavigator.getNextStep(currentStep, taskResult);
-        TaskProgress nextProgress = stepNavigator.getProgress(nextStep, taskResult);
-        taskProgressLiveData.setValue(nextProgress);
-        LOGGER.debug("Setting forwardStep: {}", nextStep);
-        currentStepLiveData.setValue(nextStep);
-        StepView stepView = this.stepViewMapping.get(nextStep);
+        StepView stepView = null;
+        if (nextStep != null) {
+            TaskProgress nextProgress = stepNavigator.getProgress(nextStep, taskResult);
+            taskProgressLiveData.setValue(nextProgress);
+            LOGGER.debug("Setting forwardStep: {}", nextStep);
+            currentStepLiveData.setValue(nextStep);
+            stepView = this.stepViewMapping.get(nextStep);
+            if (stepView.shouldSkip(taskResult)) {
+                this.goForward();
+                return;
+            }
+        }
+
         stepViewLiveData.setValue(stepView);
     }
 
@@ -259,8 +277,12 @@ public class PerformTaskViewModel extends ViewModel {
     @VisibleForTesting
     void handleTaskResultFound(TaskResult taskResult) {
         LOGGER.debug("Loaded taskResult: {}", taskResult);
-
-        this.taskResult = taskResult;
+        if (this.lastRun != null) {
+            Result lastRunResult = new AnswerResultBase<>(LAST_RUN_RESULT_ID, Instant.now(), Instant.now(),
+                    this.lastRun,
+                    AnswerResultType.DATE);
+            taskResult = taskResult.addAsyncResult(lastRunResult);
+        }
 
         taskResultLiveData.setValue(taskResult);
     }

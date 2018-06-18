@@ -40,6 +40,7 @@ import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.ImmutableMap.Builder;
 import com.google.gson.annotations.SerializedName;
 
+import org.sagebionetworks.research.domain.result.interfaces.TaskResult;
 import org.sagebionetworks.research.domain.step.interfaces.Step;
 import org.sagebionetworks.research.domain.step.interfaces.ThemedUIStep;
 import org.sagebionetworks.research.domain.step.ui.action.implementations.SkipToStepActionBase;
@@ -211,6 +212,11 @@ public class UIStepViewBase implements UIStepView {
     public ActionView getActionFor(@ActionType final String actionType) {
         // If we have an action from the json for the given actionType we use this, otherwise we return null.
         return this.actions.get(actionType);
+    }
+
+    @Override
+    public boolean shouldSkip(@Nullable final TaskResult taskResult) {
+        return false;
     }
 
     @Override
