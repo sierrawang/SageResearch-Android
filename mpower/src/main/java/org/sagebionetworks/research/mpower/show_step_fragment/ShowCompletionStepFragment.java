@@ -30,54 +30,14 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.sagebionetworks.research.mpower.inject;
+package org.sagebionetworks.research.mpower.show_step_fragment;
 
-import org.sagebionetworks.research.domain.inject.InputFieldsModule;
-import org.sagebionetworks.research.domain.inject.StepModule;
-import org.sagebionetworks.research.domain.inject.StepModule.StepClassKey;
-import org.sagebionetworks.research.domain.step.StepType;
-import org.sagebionetworks.research.domain.step.interfaces.ActiveUIStep;
-import org.sagebionetworks.research.mpower.step.CompletionStep;
-import org.sagebionetworks.research.mpower.step.InstructionStep;
-import org.sagebionetworks.research.mpower.step.OverviewStep;
+import org.sagebionetworks.research.mobile_ui.show_step.view.ShowUIStepFragment;
+import org.sagebionetworks.research.mpower.R;
 
-import dagger.Module;
-import dagger.Provides;
-import dagger.multibindings.IntoMap;
-
-/**
- * Add app-specific steps.
- */
-@Module(includes = {InputFieldsModule.class, StepModule.class})
-public class AppStepModule {
-    /**
-     * Returns the type key for InstructionStep.class.
-     * @return the type key for InstructionStep.class.
-     */
-    @Provides
-    @IntoMap
-    @StepClassKey(InstructionStep.class)
-    static String provideInstructionStepClassInfo() {
-        return InstructionStep.TYPE_KEY;
+public class ShowCompletionStepFragment extends ShowUIStepFragment {
+    @Override
+    public int getLayoutId() {
+        return R.layout.mpower2_completion_step;
     }
-
-    /**
-     * Returns the type key for OverviewStep.class.
-     * @return the type key for OverviewStep.class.
-     */
-    @Provides
-    @IntoMap
-    @StepClassKey(OverviewStep.class)
-    static String provideOverviewStepClassInfo() {
-        return OverviewStep.TYPE_KEY;
-    }
-
-    @Provides
-    @IntoMap
-    @StepClassKey(CompletionStep.class)
-    static String provideCompletionStepClassInfo() {
-        return CompletionStep.TYPE_KEY;
-    }
-
-
 }
