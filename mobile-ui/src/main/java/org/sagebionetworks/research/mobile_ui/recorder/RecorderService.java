@@ -55,14 +55,23 @@ import java.util.Set;
 /**
  * The RecorderService handles the recorders that are needed for the task. Recorders can do things such as record
  * audio, phones motion, etc. Every recorder runs on it's own thread.
+ *
+ * This service supports both being started and bound to. Intents passed to the service should have the following
+ * extras
+ *      RECORDER_ACTION_KEY -> one of the constants in RecorderActionType corresponding to the action that should be
+ *                             performed.
+ *
+ *      RECORDER_ID_KEY -> the identifier of the recorder to perform the action on.
+ *
+ *      If starting a recorder:
+ *      RECORDER_TYPE_KEY -> one of the constants in RecorderType corresponding to the type of recorder to create
+ *                           if one is not already created.
  */
 public class RecorderService extends Service {
     public static final String RECORDER_TYPE_KEY = "RECORDER_TYPE";
     public static final String RECORDER_ID_KEY = "RECORDER_ID";
     public static final String RECORDER_ACTION_KEY = "RECORDER_ACTION";
 
-    protected Looper serviceLooper;
-    protected ServiceHandler serviceHandler;
     protected IBinder serviceBinder;
     protected Map<String, Recorder> recordersById;
 
@@ -72,14 +81,47 @@ public class RecorderService extends Service {
         return this.serviceBinder;
     }
 
-    @Override
-    public void onCreate() {
-        HandlerThread thread = new HandlerThread("RecorderService", Process.THREAD_PRIORITY_BACKGROUND);
-        thread.start();
-        this.serviceLooper = thread.getLooper();
-        this.serviceHandler = new ServiceHandler(this.serviceLooper);
-        this.serviceBinder = new RecorderBinder();
+    /**
+     * Starts the recorder with the given identifier, or a recorder with this id and type and starts it.
+     * @param identifier The identifier of the recorder to start.
+     * @param recorderType The type of th recorder to start.
+     */
+    public void startRecorder(@NonNull String identifier, @RecorderType String recorderType) {
+        Recorder recorder = this.recordersById.get(identifier);
+        if (recorder == null) {
+            recorder = createRecorder(identifier, recorderType);
+        }
+
+        recorder.start();
+
     }
+
+    /**
+     * Stops the recorder with the given identifier.
+     * @param identifier The identifier of the recorder to stop.
+     */
+    public void stopRecorder(@NonNull String identifier) {
+        Recorder recorder = this.recordersById.remove(identifier);
+        if (recorder == null) {
+            throw new IllegalArgumentException("Cannot stop recorder that isn't started.");
+        }
+
+        recorder.stop();
+    }
+
+    /**
+     * Cancels the recorder with the given identifier.
+     * @param identifier The identifier of the recorder to cancel.
+     */
+    public void cancelRecorder(@NonNull String identifier) {
+        Recorder recorder = this.recordersById.get(identifier);
+        if (recorder == null) {
+            throw new IllegalArgumentException("Cannot cancel recorder that isn't started.");
+        }
+
+        recorder.cancel();
+    }
+
 
     /**
      * Starts the command defined by the Intent with the given startId. The Intent passed to this method should have
@@ -95,14 +137,19 @@ public class RecorderService extends Service {
     public int onStartCommand(Intent intent, int flags, int startId) {
         @RecorderActionType String actionType = intent.getStringExtra(RECORDER_ACTION_KEY);
         String recorderIdentifier = intent.getStringExtra(RECORDER_ID_KEY);
-        @RecorderType String recorderType = intent.getStringExtra(RECORDER_TYPE_KEY);
-        Message message = this.serviceHandler.obtainMessage();
-        Bundle bundle = new Bundle();
-        bundle.putString(RECORDER_ACTION_KEY, actionType);
-        bundle.putString(RECORDER_ID_KEY, recorderIdentifier);
-        bundle.putString(RECORDER_TYPE_KEY, recorderType);
-        message.setData(bundle);
-        this.serviceHandler.handleMessage(message);
+        switch (actionType) {
+            case RecorderActionType.START:
+                @RecorderType String recorderType = intent.getStringExtra(RECORDER_TYPE_KEY);
+                this.startRecorder(recorderIdentifier, recorderType);
+                break;
+            case RecorderActionType.STOP:
+                this.stopRecorder(recorderIdentifier);
+                break;
+            case RecorderActionType.CANCEL:
+                this.cancelRecorder(recorderIdentifier);
+                break;
+        }
+
         return START_STICKY;
     }
 
@@ -114,7 +161,8 @@ public class RecorderService extends Service {
         return ImmutableMap.copyOf(this.recordersById);
     }
 
-    protected Recorder createRecorder(@NonNull String id, @RecorderType String type) {
+    public Recorder createRecorder(@NonNull String identifier, @RecorderType String type) {
+        // TODO rkolmos 06/20/2018 call a recorder factory here.
         Recorder recorder = new Recorder() {
             @Override
             public void start() {
@@ -149,59 +197,62 @@ public class RecorderService extends Service {
             }
         };
 
-        this.recordersById.put(id, recorder);
+        this.recordersById.put(identifier, recorder);
         return recorder;
     }
 
-    public final class RecorderBinder extends Binder {
-        public RecorderService getService() {
-            return RecorderService.this;
+    public class RecorderInstantiationException extends Exception {
+        @NonNull
+        private final String recorderId;
+        @NonNull
+        @RecorderType
+        private final String recorderType;
+        @Nullable
+        private final String message;
+
+        public RecorderInstantiationException(@NonNull String recorderId, @NonNull @RecorderType String recorderType,
+                @Nullable String message) {
+            this.recorderId = recorderId;
+            this.recorderType = recorderType;
+            this.message = message;
+        }
+
+        public RecorderInstantiationException(@NonNull String recorderId, @NonNull @RecorderType String recorderType) {
+            this(recorderId, recorderType, null);
+        }
+
+        public String toString() {
+            if (message != null) {
+                return message;
+            } else {
+                return "Failed to instantiate recorder " + this.recorderId + " of type " + this.recorderType;
+            }
+        }
+
+        @NonNull
+        public String getRecorderId() {
+            return recorderId;
+        }
+
+        @NonNull
+        @RecorderType
+        public String getRecorderType() {
+            return recorderType;
+        }
+
+        @Override
+        @Nullable
+        public String getMessage() {
+            return message;
         }
     }
 
     /**
-     * A ServiceHandler receives and handles messages from the RecorderService.
+     * Allows the RecorderService to be bound to.
      */
-    private final class ServiceHandler extends Handler {
-        public ServiceHandler(Looper looper) {
-            super(looper);
-        }
-
-        @Override
-        public void handleMessage(Message msg) {
-            Bundle bundle = msg.getData();
-            @RecorderActionType String actionType = bundle.getString(RECORDER_ACTION_KEY);
-            String recorderId = bundle.getString(RECORDER_ID_KEY);
-            if (actionType == null || recorderId == null) {
-                throw new IllegalArgumentException("Null actionType or recorderId");
-            }
-
-            Recorder recorder = recordersById.get(recorderId);
-            switch (actionType) {
-                case RecorderActionType.START:
-                    if (recorder == null) {
-                        @RecorderType String recorderType = bundle.getString(RECORDER_TYPE_KEY);
-                        recorder = createRecorder(recorderId, recorderType);
-                    }
-
-                    recorder.start();
-                    break;
-                case RecorderActionType.STOP:
-                    if (recorder == null) {
-                        throw new IllegalArgumentException("Cannot stop recorder that isn't started.");
-                    }
-
-                    recordersById.remove(recorderId);
-                    recorder.stop();
-                    break;
-                case RecorderActionType.CANCEL:
-                    if (recorder == null) {
-                        throw new IllegalArgumentException("Cannot cancel recorder that isn't started.");
-                    }
-
-                    recorder.cancel();
-                    break;
-            }
+    public final class RecorderBinder extends Binder {
+        public RecorderService getService() {
+            return RecorderService.this;
         }
     }
 }

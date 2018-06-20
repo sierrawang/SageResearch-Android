@@ -32,8 +32,11 @@
 
 package org.sagebionetworks.research.mobile_ui.recorder;
 
+import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
+import android.content.ServiceConnection;
+import android.os.IBinder;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 
@@ -42,6 +45,7 @@ import com.google.common.collect.ImmutableMap;
 import org.sagebionetworks.research.domain.async.AsyncAction;
 import org.sagebionetworks.research.domain.step.interfaces.Step;
 import org.sagebionetworks.research.domain.task.Task;
+import org.sagebionetworks.research.mobile_ui.recorder.RecorderService.RecorderBinder;
 import org.sagebionetworks.research.presentation.model.interfaces.StepView.NavDirection;
 
 import java.util.HashMap;
@@ -53,15 +57,46 @@ import java.util.Set;
  * A RecorderManager handles the work of creating recorders, and making the appropriate RecorderService calls
  * to start, stop, and cancel those recorders at the appropriate times.
  */
-public class RecorderManager {
+public class RecorderManager implements ServiceConnection {
+    /**
+     * Invariant:
+     * bound == true exactly when binder != null && service != null.
+     * binder == null exactly when service == null.
+     */
+    private boolean bound;
+    private RecorderBinder binder;
     private RecorderService service;
+
     private Context context;
     private Task task;
 
-    public RecorderManager(RecorderService service, Task task, Context context) {
-        this.service = service;
+    public RecorderManager(Task task, Context context) {
         this.context = context;
         this.task = task;
+        Intent bindIntent = new Intent(context, RecorderService.class);
+        this.bound = this.context.bindService(bindIntent, this, Context.BIND_AUTO_CREATE);
+    }
+
+    @Override
+    public void onServiceConnected(final ComponentName componentName, final IBinder iBinder) {
+        this.binder = (RecorderBinder)iBinder;
+        this.service = this.binder.getService();
+        this.bound = true;
+        // TODO rkolmos 06/20/2018 make sure the correct recorders are created.
+        Set<RecorderInfo> recorders = new HashSet<>();
+        Map<String, Recorder> activeRecorders = this.getActiveRecorders();
+        for (RecorderInfo info : recorders) {
+            if (!activeRecorders.containsKey(info.id)) {
+                this.service.createRecorder(info.id, info.type);
+            }
+        }
+    }
+
+    @Override
+    public void onServiceDisconnected(final ComponentName componentName) {
+        this.binder = null;
+        this.service = null;
+        this.bound = false;
     }
 
     /**
@@ -75,58 +110,60 @@ public class RecorderManager {
     public void onStepTransition(@Nullable Step previousStep, @Nullable Step nextStep, @NavDirection int navDirection) {
         // TODO: 06/18/2018 rkolmos get the equivalent information from the task.
         Set<RecorderInfo> recorderInfos = new HashSet<>();
+
+        Set<RecorderInfo> shouldStart = new HashSet<>();
+        Set<RecorderInfo> shouldStop = new HashSet<>();
+        Set<RecorderInfo> shouldCancel = new HashSet<>();
+
         for (RecorderInfo info : recorderInfos) {
             String startStepIdentifier = info.startStepId;
             String stopStepIdentifier = info.stopStepId;
             if (previousStep == null) {
                 if (startStepIdentifier == null) {
                     // The task has just started so the recorder should be started if it has a null startStepIdentifier.
-                    this.context.startService(RecorderManager.createRecorderIntent(info.id, RecorderActionType.START,
-                            info.type));
+                    shouldStart.add(info);
                 }
             } else if (nextStep == null) {
                 // The task has just finished so the recorder should be stopped.
-                this.context.startService(RecorderManager.createRecorderIntent(info.id, RecorderActionType.STOP, null));
+                shouldStop.add(info);
             } else if (navDirection == NavDirection.SHIFT_LEFT) {
                 String nextStepIdentifier = nextStep.getIdentifier();
                 if (startStepIdentifier.equals(nextStepIdentifier)) {
                     // The recorder should be started.
-                    this.context.startService(RecorderManager.createRecorderIntent(info.id, RecorderActionType.START,
-                            info.type));
+                    shouldStart.add(info);
                 } else if (stopStepIdentifier != null && stopStepIdentifier.equals(stopStepIdentifier)) {
                     // The recorder should be stopped.
-                    this.context.startService(RecorderManager.createRecorderIntent(info.id, RecorderActionType.STOP,
-                            null));
+                    shouldStop.add(info);
                 }
             } else if (navDirection == NavDirection.SHIFT_RIGHT) {
                 // TODO: rkolmos 06/14/2018 Figure out what should happen to recorder when the user goes back.
             }
         }
-    }
 
-    public ImmutableMap<String, Recorder> getActiveRecorders() {
-        return this.service.getActiveRecorders();
+        if (this.bound) {
+            for (RecorderInfo info : shouldStart) {
+                this.service.startRecorder(info.id, info.type);
+            }
+
+            for (RecorderInfo info : shouldStop) {
+                this.service.stopRecorder(info.id);
+            }
+
+            for (RecorderInfo info : shouldCancel) {
+                this.service.cancelRecorder(info.id);
+            }
+        } else {
+            // TODO: rkolmos 06/20/2018 handle the service being unbound
+        }
     }
 
     /**
-     * Creates and returns an Intent that can be given to the RecorderService to perform the given actionType
-     * on the given recorder.
-     * @param recorderId The identifier of the recorder to perform the given actionType on.
-     * @param actionType The type of action to perform on the given recorder.
-     * @param recorderType The type of recorder should one need to be created, null otherwise.
-     * @return an Intent that can be given to the RecorderService to perform the given actionType on the given
-     *         recorder.
+     * Returns a map of Recorder Id to Recorder containing all of the recorders that are currently active. An active
+     * recorder is any recorder that has been created and has not has stop() called on it.
+     * @return A map of Recorder Id to Recorder containing all of the active recorders.
      */
-    public static Intent createRecorderIntent(@NonNull String recorderId, @RecorderActionType String actionType,
-            @Nullable @RecorderType String recorderType) {
-        Intent intent = new Intent(RecorderService.class.getName());
-        intent.putExtra(RecorderService.RECORDER_ACTION_KEY, actionType);
-        intent.putExtra(RecorderService.RECORDER_ID_KEY, recorderId);
-        if (recorderType != null && actionType.equals(RecorderActionType.START)) {
-            intent.putExtra(RecorderService.RECORDER_TYPE_KEY, recorderType);
-        }
-
-        return intent;
+    public ImmutableMap<String, Recorder> getActiveRecorders() {
+        return this.service.getActiveRecorders();
     }
 
     /**
