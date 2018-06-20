@@ -60,16 +60,14 @@ public class PerformTaskViewModelFactory {
 
     private final StepViewFactory stepViewFactory;
 
-    private final DrawableMapper drawableMapper;
 
     @Inject
     public PerformTaskViewModelFactory(StepNavigatorFactory stepNavigatorFactory, TaskMapper taskMapper,
-            final TaskRepository taskRepository, StepViewFactory stepViewFactory, DrawableMapper drawableMapper) {
+            final TaskRepository taskRepository, StepViewFactory stepViewFactory) {
         this.stepNavigatorFactory = stepNavigatorFactory;
         this.taskMapper = taskMapper;
         this.taskRepository = taskRepository;
         this.stepViewFactory = stepViewFactory;
-        this.drawableMapper = drawableMapper;
     }
 
     public ViewModelProvider.Factory create(@NonNull TaskView taskView, @NonNull UUID taskRunUUID, ZonedDateTime
@@ -85,7 +83,7 @@ public class PerformTaskViewModelFactory {
                 if (modelClass.isAssignableFrom(PerformTaskViewModel.class)) {
                     // noinspection unchecked
                     return (T) new PerformTaskViewModel(taskView, taskRunUUID, stepNavigatorFactory,
-                            taskRepository, taskMapper, stepViewFactory, drawableMapper, lastRun);
+                            taskRepository, taskMapper, stepViewFactory, lastRun);
                 }
                 throw new IllegalArgumentException("Unknown ViewModel class");
             }

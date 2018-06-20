@@ -38,6 +38,7 @@ import org.sagebionetworks.research.mpower.step_view.CompletionStepView;
 import org.sagebionetworks.research.mpower.step_view.InstructionStepView;
 import org.sagebionetworks.research.mpower.step_view.OverviewStepView;
 import org.sagebionetworks.research.presentation.inject.StepViewModule;
+import org.sagebionetworks.research.presentation.inject.StepViewModule.InternalStepViewFactory;
 import org.sagebionetworks.research.presentation.inject.StepViewModule.StepTypeKey;
 import org.sagebionetworks.research.presentation.inject.StepViewModule.StepViewFactory;
 
@@ -53,21 +54,21 @@ public class AppStepViewModule {
     @Provides
     @IntoMap
     @StepTypeKey(StepType.INSTRUCTION)
-    static StepViewFactory provideInstructionStepViewFactory() {
+    static InternalStepViewFactory provideInstructionStepViewFactory() {
         return InstructionStepView::fromInstructionStep;
     }
 
     @Provides
     @IntoMap
     @StepTypeKey(StepType.OVERVIEW)
-    static StepViewFactory provideOverviewStepViewFactory() {
+    static InternalStepViewFactory provideOverviewStepViewFactory() {
         return OverviewStepView::fromOverviewStep;
     }
 
     @Provides
     @IntoMap
     @StepTypeKey(StepType.COMPLETION)
-    static StepViewFactory providedCompletionStepViewFactory() {
+    static InternalStepViewFactory providedCompletionStepViewFactory() {
         return CompletionStepView::fromCompletionStep;
     }
 }

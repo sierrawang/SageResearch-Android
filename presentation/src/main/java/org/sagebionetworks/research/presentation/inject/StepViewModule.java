@@ -50,7 +50,7 @@ import dagger.Provides;
 import dagger.multibindings.IntoMap;
 import dagger.multibindings.Multibinds;
 
-@Module
+@Module(includes = DrawableModule.class)
 public abstract class StepViewModule {
     // We use the return value of the getType() method on the step as the key which maps to a function that turns
     // the step into a step view.
@@ -64,39 +64,45 @@ public abstract class StepViewModule {
 
     public interface StepViewFactory {
         @Nullable
+        StepView apply(Step step);
+    }
+
+    public interface InternalStepViewFactory {
+        @Nullable
         StepView apply(Step step, DrawableMapper mapper);
     }
 
     @Provides
     @IntoMap
     @StepTypeKey(StepType.UI)
-    static StepViewFactory provideUIStepFactory() {
+    static InternalStepViewFactory provideUIStepFactory() {
         return UIStepViewBase::fromUIStep;
     }
 
     @Provides
     @IntoMap
     @StepTypeKey(StepType.ACTIVE)
-    static StepViewFactory provideActiveUIStepFactory() {
+    static InternalStepViewFactory provideActiveUIStepFactory() {
         return ActiveUIStepViewBase::fromActiveUIStep;
     }
 
     @Provides
     @IntoMap
     @StepTypeKey(StepType.FORM)
-    static StepViewFactory provideFormUIStepFactory() {
+    static InternalStepViewFactory provideFormUIStepFactory() {
         return FormUIStepViewBase::fromFormUIStep;
     }
 
     @Provides
-    static StepViewFactory provideStepViewFactory(final Map<String, StepViewFactory> stepToFactoryMap) {
-        return (final Step step, final DrawableMapper mapper) ->
+    static StepViewFactory provideStepViewFactory(final Map<String, InternalStepViewFactory> stepToFactoryMap,
+            final DrawableMapper drawableMapper) {
+        return (final Step step) ->
         {
             String type = step.getType();
             if (stepToFactoryMap.containsKey(type)) {
-                return stepToFactoryMap.get(type).apply(step, mapper);
+                return stepToFactoryMap.get(type).apply(step, drawableMapper);
             } else {
-                return UIStepViewBase.fromUIStep(step, mapper);
+                return UIStepViewBase.fromUIStep(step, drawableMapper);
             }
         };
     }

@@ -113,31 +113,28 @@ public class PerformTaskViewModel extends ViewModel {
 
     private final StepViewFactory stepViewFactory;
 
-    private final DrawableMapper drawableMapper;
-
     private final MutableLiveData<TaskResult> taskResultLiveData;
 
     private final UUID taskRunUuid;
 
     private final TaskView taskView;
 
+    private final ZonedDateTime lastRun;
+
     private final MutableLiveData<LoadableResource<TaskView>> taskViewLiveData;
 
     private Map<Step, StepView> stepViewMapping;
 
-    private ZonedDateTime lastRun;
-
     public PerformTaskViewModel(@NonNull TaskView taskView, @NonNull UUID taskRunUUID,
             @NonNull StepNavigatorFactory stepNavigatorFactory, @NonNull TaskRepository taskRepository,
-            @NonNull TaskMapper taskMapper, StepViewFactory stepViewFactory, @NonNull DrawableMapper drawableMapper,
-            @Nullable ZonedDateTime lastRun) {
+            @NonNull TaskMapper taskMapper, StepViewFactory stepViewFactory,
+            @NonNull ZonedDateTime lastRun) {
         this.taskView = checkNotNull(taskView);
         this.taskRunUuid = checkNotNull(taskRunUUID);
         this.stepNavigatorFactory = checkNotNull(stepNavigatorFactory);
         this.taskRepository = checkNotNull(taskRepository);
         this.taskMapper = checkNotNull(taskMapper);
         this.stepViewFactory = stepViewFactory;
-        this.drawableMapper = drawableMapper;
         this.lastRun = lastRun;
 
         taskLiveData = new MutableLiveData<>();
@@ -156,9 +153,6 @@ public class PerformTaskViewModel extends ViewModel {
         initTaskSteps(taskView, taskRunUuid);
     }
 
-    public ZonedDateTime getLastRun() {
-        return lastRun;
-    }
 
     public void addAsyncResult(Result result) {
         checkState(taskResultLiveData.getValue() != null);
@@ -269,7 +263,7 @@ public class PerformTaskViewModel extends ViewModel {
         for (Step step : this.stepNavigator.getSteps()) {
             // This if statement is necessary to ensure we can call stepViewFactory.apply on the step.
             if (step instanceof ThemedUIStep) {
-                this.stepViewMapping.put(step, stepViewFactory.apply(step, drawableMapper));
+                this.stepViewMapping.put(step, stepViewFactory.apply(step));
             }
         }
     }

@@ -56,9 +56,8 @@ public class PerformActiveTaskViewModel extends PerformTaskViewModel {
             @NonNull final TaskRepository taskRepository,
             @NonNull final TaskMapper taskMapper,
             @NonNull final StepViewFactory stepViewFactory,
-            @NonNull final DrawableMapper drawableMapper,
             @Nullable final ZonedDateTime lastRunDate) {
-        super(taskView, taskRunUUID, stepNavigatorFactory, taskRepository, taskMapper, stepViewFactory, drawableMapper,
+        super(taskView, taskRunUUID, stepNavigatorFactory, taskRepository, taskMapper, stepViewFactory,
             lastRunDate);
     }
 

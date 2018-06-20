@@ -62,7 +62,9 @@ import io.reactivex.Completable;
 import io.reactivex.Maybe;
 import io.reactivex.Single;
 import javax.inject.Inject;
+import javax.inject.Singleton;
 
+@Singleton
 public class ResourceTaskRepository implements TaskRepository {
     private static final Logger LOGGER = LoggerFactory.getLogger(ResourceTaskRepository.class);
 

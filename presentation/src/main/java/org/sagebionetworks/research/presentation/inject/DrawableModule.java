@@ -35,6 +35,10 @@ package org.sagebionetworks.research.presentation.inject;
 import android.support.annotation.DrawableRes;
 
 import org.sagebionetworks.research.domain.presentation.R;
+import org.sagebionetworks.research.domain.repository.TaskRepository;
+import org.sagebionetworks.research.presentation.mapper.DrawableMapper;
+
+import java.util.Map;
 
 import dagger.MapKey;
 import dagger.Module;
@@ -42,7 +46,7 @@ import dagger.Provides;
 import dagger.multibindings.IntoMap;
 
 @Module
-public abstract class DrawableModule {
+public class DrawableModule {
     @MapKey
     public @interface ResourceNameKey {
         String value();
@@ -70,5 +74,11 @@ public abstract class DrawableModule {
     @ResourceNameKey(DrawableName.INFO)
     static Integer provideInfoResource() {
         return R.drawable.rs2_info_icon;
+    }
+
+    @Provides
+    DrawableMapper provideDrawableMapper(TaskRepository taskRepository,
+            Map<String, Integer> drawableMap) {
+        return new DrawableMapper(taskRepository, drawableMap);
     }
 }
