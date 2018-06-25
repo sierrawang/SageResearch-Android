@@ -30,44 +30,20 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.sagebionetworks.research.mobile_ui.recorder;
+package org.sagebionetworks.research.domain.recorder;
 
-import android.content.Context;
-import android.support.annotation.Nullable;
+import java.util.Set;
 
-import org.sagebionetworks.research.domain.async.AsyncAction;
-
-import java.io.Serializable;
-
-/**
- * A Recorder records some sort of data about the user (e.g. phone's motion, audio, etc). Recorders are typically
- * run on a different thread than ui so implementations should be thread safe to ensure there are no concurrency
- * issues.
- * @param <E> The type of result for this recorder. It is anticipated that this will be some sort of RxJava
- *           class but this isn't strictly necessary.
- */
-public interface Recorder extends Serializable {
-    void start();
-
-    void stop();
-
-    void cancel();
-
-    boolean isRecording();
+public interface DeviceMotionRecorderConfig extends RecorderConfig {
+    /**
+     * Returns the frequency for this recorder. A value of null results in a default frequency being used.
+     * @return the frequency for this recorder.
+     */
+    Double getFrequency();
 
     /**
-     * Returns the identifier of the step to start the recorder on. If this method returns null the recorder will
-     * start when the task is started.
-     * @return the identifier of the step to start the recorder on.
+     * Returns the set of recorder types this device motion recorder will record.
+     * @return the set of recorder types this device motion recorder will record.
      */
-    @Nullable
-    String getStartStepIdentifier();
-
-    /**
-     * Returns the identifier of the step to stop the recorder on. If this method returns null the recorder will
-     * stop when the task is stopped.
-     * @return the identifier of the step to start the recorder on.
-     */
-    @Nullable
-    String getStopStepIdentifier();
+    Set<String> getRecorderTypes();
 }

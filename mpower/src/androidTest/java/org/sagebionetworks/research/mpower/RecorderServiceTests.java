@@ -32,9 +32,10 @@
 
 package org.sagebionetworks.research.mpower;
 
-import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
+import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 import android.os.IBinder;
@@ -45,83 +46,25 @@ import android.support.test.runner.AndroidJUnit4;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.sagebionetworks.research.mobile_ui.recorder.Recorder;
 import org.sagebionetworks.research.mobile_ui.recorder.RecorderActionType;
-import org.sagebionetworks.research.mobile_ui.recorder.RecorderManager;
 import org.sagebionetworks.research.mobile_ui.recorder.RecorderService;
+import org.sagebionetworks.research.mobile_ui.recorder.RecorderService.RecorderBinder;
 
+import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
 
 @RunWith(AndroidJUnit4.class)
 public class RecorderServiceTests {
-    /**
-     * Creates and returns an Intent that can be given to the RecorderService to perform the given actionType
-     * on the given recorder.
-     * @param recorder The recorder to perform the given actionType on.
-     * @param actionType The type of action to perform on the given recorder.
-     * @return an Intent that can be given to the RecorderService to perform the given actionType on the given
-     *         recorder.
-     */
-    public static Intent createRecorderIntent(Context context, Recorder recorder, @RecorderActionType String actionType) {
-        Intent intent = new Intent(context, RecorderService.class);
-        intent.putExtra(RecorderService.RECORDER_KEY, recorder);
-        intent.putExtra(RecorderService.ACTION_KEY, actionType);
-        return intent;
-    }
-
     @Rule
-    public final ServiceTestRule serviceRule = new ServiceTestRule();
+    public ServiceTestRule serviceRule = ServiceTestRule.withTimeout(60L, TimeUnit.SECONDS);
 
     @Test
-    public void testStartService() throws TimeoutException {
+    public void testBindService() throws TimeoutException {
         Context context = InstrumentationRegistry.getContext();
-        TestRecorder recorder = new TestRecorder(null, null);
-        Intent intent = createRecorderIntent(context, recorder, RecorderActionType.START);
-        this.serviceRule.startService(intent);
-    }
-
-    @Test
-    public void testStartRecorder() throws TimeoutException {
-        Context context = InstrumentationRegistry.getContext();
-        TestRecorder recorder = new TestRecorder(null, null);
-        Intent intent = createRecorderIntent(context, recorder, RecorderActionType.START);
-        this.serviceRule.startService(intent);
-        try {
-            Thread.sleep(1000);
-        } catch (InterruptedException e) {
-            // This shouldn't happen
-        }
-
-        assertTrue(recorder.isStartCalled());
-   }
-
-    @Test
-    public void testStopRecorder() throws TimeoutException {
-        Context context = InstrumentationRegistry.getContext();
-        TestRecorder recorder = new TestRecorder(null, null);
-        Intent intent = createRecorderIntent(context, recorder, RecorderActionType.STOP);
-        this.serviceRule.startService(intent);
-        try {
-            Thread.sleep(1000);
-        } catch (InterruptedException e) {
-            // This shouldn't happen
-        }
-
-        assertTrue(recorder.isStopCalled());
-    }
-
-    @Test
-    public void testCancelRecorder() throws TimeoutException {
-        Context context = InstrumentationRegistry.getContext();
-        TestRecorder recorder = new TestRecorder(null, null);
-        Intent intent = createRecorderIntent(context, recorder, RecorderActionType.CANCEL);
-        this.serviceRule.startService(intent);
-        try {
-            Thread.sleep(1000);
-        } catch (InterruptedException e) {
-            // This shouldn't happen
-        }
-
-        assertTrue(recorder.isCancelCalled());
+        Intent intent = new Intent(context, RecorderService.class);
+        RecorderBinder binder = (RecorderBinder)this.serviceRule.bindService(intent);
+        assertNotNull(binder);
+        RecorderService service = binder.getService();
+        assertNotNull(service);
     }
 }

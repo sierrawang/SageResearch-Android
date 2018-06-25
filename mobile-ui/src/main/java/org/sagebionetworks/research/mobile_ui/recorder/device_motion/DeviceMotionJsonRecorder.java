@@ -30,44 +30,34 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.sagebionetworks.research.mobile_ui.recorder;
+package org.sagebionetworks.research.mobile_ui.recorder.device_motion;
 
 import android.content.Context;
-import android.support.annotation.Nullable;
+import android.support.annotation.NonNull;
 
-import org.sagebionetworks.research.domain.async.AsyncAction;
+import com.github.pwittchen.reactivesensors.library.ReactiveSensorEvent;
 
-import java.io.Serializable;
+import org.sagebionetworks.research.mobile_ui.recorder.DataRecorder;
+import org.sagebionetworks.research.presentation.recorder.DeviceMotionRecorderConfigPresentation;
 
-/**
- * A Recorder records some sort of data about the user (e.g. phone's motion, audio, etc). Recorders are typically
- * run on a different thread than ui so implementations should be thread safe to ensure there are no concurrency
- * issues.
- * @param <E> The type of result for this recorder. It is anticipated that this will be some sort of RxJava
- *           class but this isn't strictly necessary.
- */
-public interface Recorder extends Serializable {
-    void start();
+import java.io.IOException;
 
-    void stop();
+public class DeviceMotionJsonRecorder extends DeviceMotionRecorder {
+    public DeviceMotionJsonRecorder(
+            final DeviceMotionRecorderConfigPresentation config, final Context context) throws IOException {
+        super(config, context);
+    }
 
-    void cancel();
+    @NonNull
+    @Override
+    public DataRecorder instantiateRecorder(final DeviceMotionRecorderConfigPresentation config) throws IOException {
+        // The data gets ouptut as a JsonArray starting with '[' ending with ']' with ',' used to separate elements.
+        return new DataRecorder(config.getIdentifier(), this.getOutputDirectory(), "[", "]", ",");
+    }
 
-    boolean isRecording();
-
-    /**
-     * Returns the identifier of the step to start the recorder on. If this method returns null the recorder will
-     * start when the task is started.
-     * @return the identifier of the step to start the recorder on.
-     */
-    @Nullable
-    String getStartStepIdentifier();
-
-    /**
-     * Returns the identifier of the step to stop the recorder on. If this method returns null the recorder will
-     * stop when the task is stopped.
-     * @return the identifier of the step to start the recorder on.
-     */
-    @Nullable
-    String getStopStepIdentifier();
+    @NonNull
+    @Override
+    public String getDataString(@NonNull final ReactiveSensorEvent event) {
+        return DeviceMotionJsonAdapter.createJsonObject(event).toString();
+    }
 }

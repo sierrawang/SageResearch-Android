@@ -30,44 +30,43 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.sagebionetworks.research.mobile_ui.recorder;
+package org.sagebionetworks.research.domain.recorder;
 
-import android.content.Context;
+import android.bluetooth.BluetoothClass.Device;
+import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 
-import org.sagebionetworks.research.domain.async.AsyncAction;
+import com.google.auto.value.AutoValue;
 
-import java.io.Serializable;
+import java.util.Set;
 
-/**
- * A Recorder records some sort of data about the user (e.g. phone's motion, audio, etc). Recorders are typically
- * run on a different thread than ui so implementations should be thread safe to ensure there are no concurrency
- * issues.
- * @param <E> The type of result for this recorder. It is anticipated that this will be some sort of RxJava
- *           class but this isn't strictly necessary.
- */
-public interface Recorder extends Serializable {
-    void start();
+@AutoValue
+public abstract class DeviceMotionRecorderConfigBase implements DeviceMotionRecorderConfig {
+    public static final String TYPE_KEY = RecorderType.MOTION;
 
-    void stop();
+    @AutoValue.Builder
+    public abstract static class Builder {
+        public abstract DeviceMotionRecorderConfigBase build();
 
-    void cancel();
+        public abstract Builder setIdentifier(@NonNull String identifier);
 
-    boolean isRecording();
+        public abstract Builder setStartStepIdentifier(@Nullable String startStepIdentifier);
 
-    /**
-     * Returns the identifier of the step to start the recorder on. If this method returns null the recorder will
-     * start when the task is started.
-     * @return the identifier of the step to start the recorder on.
-     */
-    @Nullable
-    String getStartStepIdentifier();
+        public abstract Builder setStopStepIdentifier(@Nullable String stopStepIdentifier);
 
-    /**
-     * Returns the identifier of the step to stop the recorder on. If this method returns null the recorder will
-     * stop when the task is stopped.
-     * @return the identifier of the step to start the recorder on.
-     */
-    @Nullable
-    String getStopStepIdentifier();
+        public abstract Builder setFrequency(@Nullable Double frequency);
+
+        public abstract Builder setRecorderTypes(@NonNull Set<String> recorderTypes);
+    }
+
+    public static Builder builder() {
+        return new AutoValue_DeviceMotionRecorderConfigBase.Builder();
+    }
+
+    @Override
+    @NonNull
+    @RecorderType
+    public String getType() {
+        return TYPE_KEY;
+    }
 }

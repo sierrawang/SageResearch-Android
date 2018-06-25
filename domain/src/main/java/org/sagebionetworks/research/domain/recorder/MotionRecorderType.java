@@ -30,7 +30,7 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.sagebionetworks.research.mobile_ui.recorder;
+package org.sagebionetworks.research.domain.recorder;
 
 import android.support.annotation.StringDef;
 
@@ -38,8 +38,15 @@ import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 
 @Retention(RetentionPolicy.SOURCE)
-@StringDef({RecorderType.GYRO, RecorderType.ACCELEROMETER})
-public @interface RecorderType {
-    String GYRO = "GYRO";
-    String ACCELEROMETER = "ACCELEROMETER";
+@StringDef({MotionRecorderType.ACCELEROMETER, MotionRecorderType.GYROSCOPE, MotionRecorderType.MAGNETOMETER,
+    MotionRecorderType.GRAVITY, MotionRecorderType.MAGNETIC_FIELD, MotionRecorderType.ROTATION_RATE,
+    MotionRecorderType.USER_ACCELERATION})
+public @interface MotionRecorderType {
+    String ACCELEROMETER = "accelerometer";
+    String GYROSCOPE = "gryo";
+    String MAGNETOMETER = "magnetometer";
+    String GRAVITY = "gravity";
+    String MAGNETIC_FIELD = "magneticField";
+    String ROTATION_RATE = "rotationRate";
+    String USER_ACCELERATION = "userAcceleration";
 }

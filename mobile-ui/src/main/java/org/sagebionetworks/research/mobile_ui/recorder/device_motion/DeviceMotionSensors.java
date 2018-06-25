@@ -30,44 +30,50 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.sagebionetworks.research.mobile_ui.recorder;
+package org.sagebionetworks.research.mobile_ui.recorder.device_motion;
 
 import android.content.Context;
+import android.hardware.SensorManager;
 import android.support.annotation.Nullable;
 
-import org.sagebionetworks.research.domain.async.AsyncAction;
+import com.github.pwittchen.reactivesensors.library.ReactiveSensorEvent;
+import com.github.pwittchen.reactivesensors.library.ReactiveSensors;
 
-import java.io.Serializable;
+import org.reactivestreams.Publisher;
+import org.reactivestreams.Subscriber;
+import org.sagebionetworks.research.presentation.recorder.DeviceMotionRecorderConfigPresentation;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Set;
+
+import io.reactivex.Flowable;
 
 /**
- * A Recorder records some sort of data about the user (e.g. phone's motion, audio, etc). Recorders are typically
- * run on a different thread than ui so implementations should be thread safe to ensure there are no concurrency
- * issues.
- * @param <E> The type of result for this recorder. It is anticipated that this will be some sort of RxJava
- *           class but this isn't strictly necessary.
+ * This class is a Wrapper around ReactiveSensors that allows subscribing to a set of sensors with a single
+ * call.
  */
-public interface Recorder extends Serializable {
-    void start();
+public class DeviceMotionSensors {
+    protected ReactiveSensors reactiveSensors;
 
-    void stop();
-
-    void cancel();
-
-    boolean isRecording();
+    public DeviceMotionSensors(Context context) {
+        this.reactiveSensors = new ReactiveSensors(context);
+    }
 
     /**
-     * Returns the identifier of the step to start the recorder on. If this method returns null the recorder will
-     * start when the task is started.
-     * @return the identifier of the step to start the recorder on.
+     * Returns a Flowable that will publish events from all of the given sensor types.
+     * @param sensorTypes The types of sensors to publish events from (e.g. Sensor.TYPE_ACCELEROMETER)
+     * @param sensorDelay The delay between sensor samples
+     * @return a Flowable that will publish evetns from all the given sensor types.
      */
-    @Nullable
-    String getStartStepIdentifier();
+    public Flowable<ReactiveSensorEvent> subscribeToSensors(Set<Integer> sensorTypes, int sensorDelay) {
+        List<Flowable<ReactiveSensorEvent>> allFlowables = new ArrayList<>();
+        for (Integer sensorType : sensorTypes) {
+            allFlowables.add(this.reactiveSensors.observeSensor(sensorType, sensorDelay));
+        }
 
-    /**
-     * Returns the identifier of the step to stop the recorder on. If this method returns null the recorder will
-     * stop when the task is stopped.
-     * @return the identifier of the step to start the recorder on.
-     */
-    @Nullable
-    String getStopStepIdentifier();
+        return Flowable.merge(allFlowables);
+    }
 }

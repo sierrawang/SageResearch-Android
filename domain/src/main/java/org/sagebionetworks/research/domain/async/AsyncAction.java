@@ -43,13 +43,20 @@ import java.time.Duration;
  */
 public interface AsyncAction {
     /**
-     * A short string that uniquely identifies the asyncronous asyncAction within the task. The identifier is reproduced in
+     * A short string that uniquely identifies the asynchronous asyncAction within the task. The identifier is reproduced in
      * the results of a async results.
      *
      * @return identifier
      */
     @NonNull
     String getIdentifier();
+
+    /**
+     * A string representing the type of AsyncAction that is being represented.
+     * @return A string representing the type of AsyncAction that is being represented.
+     */
+    @NonNull
+    String getType();
 
     /**
      * An identifier marking the step to start the asyncAction. If `null`, then the asyncAction will be started when the task is
@@ -66,5 +73,5 @@ public interface AsyncAction {
      * @return step identifier, or null
      */
     @Nullable
-    String getStopStepIDentifier();
+    String getStopStepIdentifier();
 }

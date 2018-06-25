@@ -37,18 +37,16 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.ServiceConnection;
 import android.os.IBinder;
-import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 
 import com.google.common.collect.ImmutableMap;
 
-import org.sagebionetworks.research.domain.async.AsyncAction;
+import org.sagebionetworks.research.domain.recorder.RecorderType;
 import org.sagebionetworks.research.domain.step.interfaces.Step;
 import org.sagebionetworks.research.domain.task.Task;
 import org.sagebionetworks.research.mobile_ui.recorder.RecorderService.RecorderBinder;
 import org.sagebionetworks.research.presentation.model.interfaces.StepView.NavDirection;
 
-import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
@@ -87,7 +85,7 @@ public class RecorderManager implements ServiceConnection {
         Map<String, Recorder> activeRecorders = this.getActiveRecorders();
         for (RecorderInfo info : recorders) {
             if (!activeRecorders.containsKey(info.id)) {
-                this.service.createRecorder(info.id, info.type);
+                this.service.createRecorder(this.task.getIdentifier(), info.id, info.type);
             }
         }
     }
@@ -141,16 +139,17 @@ public class RecorderManager implements ServiceConnection {
         }
 
         if (this.bound) {
+            String taskIdentifier = this.task.getIdentifier();
             for (RecorderInfo info : shouldStart) {
-                this.service.startRecorder(info.id, info.type);
+                this.service.startRecorder(taskIdentifier, info.id, info.type);
             }
 
             for (RecorderInfo info : shouldStop) {
-                this.service.stopRecorder(info.id);
+                this.service.stopRecorder(taskIdentifier, info.id);
             }
 
             for (RecorderInfo info : shouldCancel) {
-                this.service.cancelRecorder(info.id);
+                this.service.cancelRecorder(taskIdentifier, info.id);
             }
         } else {
             // TODO: rkolmos 06/20/2018 handle the service being unbound
@@ -163,7 +162,7 @@ public class RecorderManager implements ServiceConnection {
      * @return A map of Recorder Id to Recorder containing all of the active recorders.
      */
     public ImmutableMap<String, Recorder> getActiveRecorders() {
-        return this.service.getActiveRecorders();
+        return this.service.getActiveRecorders(this.task.getIdentifier());
     }
 
     /**
@@ -173,6 +172,7 @@ public class RecorderManager implements ServiceConnection {
         String startStepId;
         String stopStepId;
         String id;
-        @RecorderType String type;
+        @RecorderType
+        String type;
     }
 }

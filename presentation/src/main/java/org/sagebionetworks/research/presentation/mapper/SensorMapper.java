@@ -30,44 +30,24 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.sagebionetworks.research.mobile_ui.recorder;
+package org.sagebionetworks.research.presentation.mapper;
 
-import android.content.Context;
-import android.support.annotation.Nullable;
+import org.sagebionetworks.research.presentation.inject.SensorModule;
 
-import org.sagebionetworks.research.domain.async.AsyncAction;
+import java.util.Map;
 
-import java.io.Serializable;
+import dagger.Component;
 
-/**
- * A Recorder records some sort of data about the user (e.g. phone's motion, audio, etc). Recorders are typically
- * run on a different thread than ui so implementations should be thread safe to ensure there are no concurrency
- * issues.
- * @param <E> The type of result for this recorder. It is anticipated that this will be some sort of RxJava
- *           class but this isn't strictly necessary.
- */
-public interface Recorder extends Serializable {
-    void start();
+public class SensorMapper {
+    @Component(modules = {SensorModule.class})
+    public interface SensorComponent {
+        Map<String, Integer> getSensorMap();
+    }
 
-    void stop();
+    private static Map<String, Integer> sensorMap = DaggerSensorMapper_SensorComponent.builder().build()
+            .getSensorMap();
 
-    void cancel();
-
-    boolean isRecording();
-
-    /**
-     * Returns the identifier of the step to start the recorder on. If this method returns null the recorder will
-     * start when the task is started.
-     * @return the identifier of the step to start the recorder on.
-     */
-    @Nullable
-    String getStartStepIdentifier();
-
-    /**
-     * Returns the identifier of the step to stop the recorder on. If this method returns null the recorder will
-     * stop when the task is stopped.
-     * @return the identifier of the step to start the recorder on.
-     */
-    @Nullable
-    String getStopStepIdentifier();
+    public static Integer getSensorType(String sensor) {
+        return sensorMap.get(sensor);
+    }
 }
