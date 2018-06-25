@@ -98,15 +98,15 @@ public abstract class InstructionStep implements ActiveUIStep {
                 .setDefaultActions(ImmutableMap.of());
     }
 
+    @Override
+    public InstructionStep copyWithIdentifier(@NonNull String identifier) {
+        return null;
+    }
+
     @NonNull
     @Override
     public final String getType() {
         return StepType.INSTRUCTION;
-    }
-
-    @Override
-    public InstructionStep copyWithIdentifier(@NonNull String identifier) {
-        return null;
     }
 
     @NonNull

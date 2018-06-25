@@ -154,12 +154,6 @@ public class ResourceTaskRepository implements TaskRepository {
         return Maybe.empty();
     }
 
-    @NonNull
-    @Override
-    public Completable setTaskResult(final TaskResult taskResult) {
-        return Completable.error(new UnsupportedOperationException("Not implemented"));
-    }
-
     @Override
     @DrawableRes
     public int resolveDrawableFromString(@NonNull String name) throws NotFoundException {
@@ -170,6 +164,12 @@ public class ResourceTaskRepository implements TaskRepository {
         } else {
             return resId;
         }
+    }
+
+    @NonNull
+    @Override
+    public Completable setTaskResult(final TaskResult taskResult) {
+        return Completable.error(new UnsupportedOperationException("Not implemented"));
     }
 
     /**

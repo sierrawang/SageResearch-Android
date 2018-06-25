@@ -86,6 +86,11 @@ public class ShowOverviewStepFragment extends
     }
 
     @Override
+    public int getLayoutId() {
+        return R.layout.mpower2_overview_step;
+    }
+
+    @Override
     protected void handleActionButtonClick(@NonNull ActionButton actionButton) {
         @ActionType String actionType = this.getActionTypeFromActionButton(actionButton);
         if (ActionType.INFO.equals(actionType)) {
@@ -95,11 +100,6 @@ public class ShowOverviewStepFragment extends
         } else {
             this.showStepViewModel.handleAction(actionType);
         }
-    }
-
-    @Override
-    public int getLayoutId() {
-        return R.layout.mpower2_overview_step;
     }
 
     @NonNull

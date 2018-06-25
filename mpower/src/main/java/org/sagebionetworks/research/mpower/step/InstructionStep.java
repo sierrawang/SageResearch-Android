@@ -68,16 +68,17 @@ public class InstructionStep extends ActiveUIStepBase {
         this.firstRunOnly = firstRunOnly;
     }
 
+    @Override
+    public InstructionStep copyWithIdentifier(@NonNull String identifier) {
+        return new InstructionStep(identifier, this.getActions(), this.getTitle(), this.getText(), this.getDetail(),
+                this.getFootnote(), this.getColorTheme(), this.getImageTheme(), this.getDuration(),
+                this.isBackgroundAudioRequired(), this.firstRunOnly);
+    }
+
     @NonNull
     @Override
     public String getType() {
         return TYPE_KEY;
-    }
-
-    @Override
-    protected HashCodeHelper hashCodeHelper() {
-        return super.hashCodeHelper()
-                .addFields(this.isFirstRunOnly());
     }
 
     @Override
@@ -88,16 +89,15 @@ public class InstructionStep extends ActiveUIStepBase {
     }
 
     @Override
-    protected ToStringHelper toStringHelper() {
-        return super.toStringHelper()
-                .add("isFirstRunOnly", this.isFirstRunOnly());
+    protected HashCodeHelper hashCodeHelper() {
+        return super.hashCodeHelper()
+                .addFields(this.isFirstRunOnly());
     }
 
     @Override
-    public InstructionStep copyWithIdentifier(@NonNull String identifier) {
-        return new InstructionStep(identifier, this.getActions(), this.getTitle(), this.getText(), this.getDetail(),
-                this.getFootnote(), this.getColorTheme(), this.getImageTheme(), this.getDuration(),
-                this.isBackgroundAudioRequired(), this.firstRunOnly);
+    protected ToStringHelper toStringHelper() {
+        return super.toStringHelper()
+                .add("isFirstRunOnly", this.isFirstRunOnly());
     }
 
     public boolean isFirstRunOnly() {

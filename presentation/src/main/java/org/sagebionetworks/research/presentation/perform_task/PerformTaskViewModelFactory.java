@@ -58,7 +58,6 @@ public class PerformTaskViewModelFactory {
 
     private final TaskRepository taskRepository;
 
-
     @Inject
     public PerformTaskViewModelFactory(StepNavigatorFactory stepNavigatorFactory, TaskMapper taskMapper,
             final TaskRepository taskRepository, StepViewFactory stepViewFactory) {

@@ -78,8 +78,10 @@ public abstract class BaseStepView implements StepView, Parcelable {
         return new AutoValue_BaseStepView.GsonTypeAdapter(gson);
     }
 
+    @Nullable
     public abstract String getDetail();
 
+    @NonNull
     public abstract String getIdentifier();
 
     public abstract int getNavDirection();
@@ -89,8 +91,10 @@ public abstract class BaseStepView implements StepView, Parcelable {
         return false;
     }
 
+    @NonNull
     public abstract ImmutableSet<StepActionView> getStepActionViews();
 
+    @Nullable
     public abstract String getTitle();
 
     public abstract Builder toBuilder();
