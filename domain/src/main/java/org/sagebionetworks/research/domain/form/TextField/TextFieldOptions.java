@@ -37,26 +37,26 @@ import android.os.Parcelable;
 import com.google.auto.value.AutoValue;
 
 /**
- * A TextFieldOptions is an object which stores information about a text field's settings such
- * as the maximum number of characters it can display and whether or not it is a secure text field.
+ * A TextFieldOptions is an object which stores information about a text field's settings such as the maximum number
+ * of characters it can display and whether or not it is a secure text field.
  */
 @AutoValue
 public abstract class TextFieldOptions implements Parcelable {
-   @AutoValue.Builder
-   public static abstract class Builder {
-       public abstract TextFieldOptions build();
+    @AutoValue.Builder
+    public static abstract class Builder {
+        public abstract TextFieldOptions build();
 
-       public abstract Builder setInvalidMessage(final String invalidMessage);
+        public abstract Builder setInvalidMessage(final String invalidMessage);
 
-       public abstract Builder setMaximumLength(final int maximumLength);
+        public abstract Builder setMaximumLength(final int maximumLength);
 
-       public abstract Builder setSecureTextEntry(final boolean isSecureTextEntry);
+        public abstract Builder setSecureTextEntry(final boolean isSecureTextEntry);
 
-       public abstract Builder setTextValidator(final TextValidator textValidator);
+        public abstract Builder setTextValidator(final TextValidator textValidator);
     }
 
     public Builder builder() {
-       return new AutoValue_TextFieldOptions.Builder();
+        return new AutoValue_TextFieldOptions.Builder();
     }
 
     /**
@@ -70,12 +70,12 @@ public abstract class TextFieldOptions implements Parcelable {
     public abstract int getMaximumLength();
 
     /**
-     * @return true if this should be a secure text entry (e.g. a password field), false otherwise
-     */
-    public abstract boolean isSecureTextEntry();
-
-    /**
      * @return The text validator that corresponds to the text field.
      */
     public abstract TextValidator getTextValidator();
+
+    /**
+     * @return true if this should be a secure text entry (e.g. a password field), false otherwise
+     */
+    public abstract boolean isSecureTextEntry();
 }

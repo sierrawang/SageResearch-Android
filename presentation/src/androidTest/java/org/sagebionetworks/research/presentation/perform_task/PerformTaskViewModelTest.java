@@ -32,8 +32,6 @@
 
 package org.sagebionetworks.research.presentation.perform_task;
 
-import static org.junit.Assert.*;
-
 public class PerformTaskViewModelTest {
 
 }

@@ -33,9 +33,7 @@
 package org.sagebionetworks.research.domain.result.implementations;
 
 import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
 
-import com.google.common.base.MoreObjects;
 import com.google.common.base.MoreObjects.ToStringHelper;
 import com.google.common.base.Objects;
 
@@ -48,26 +46,30 @@ import org.threeten.bp.Instant;
 
 
 /**
- * The base class concrete implementation for all result objects. A wrapper around ResultData which
- * adds behavior and can be subclassed.
+ * The base class concrete implementation for all result objects. A wrapper around ResultData which adds behavior and
+ * can be subclassed.
  */
 public class ResultBase extends ObjectHelper implements Result {
     @ResultType
     public static final String TYPE_KEY = ResultType.BASE;
 
-    // This field is present to make gson serialize it.
-    protected final String type;
-
     // Subclasses shouldn't hide this field as doing so will result in a gson error.
     @NonNull
     protected final ResultData data;
 
+    // This field is present to make gson serialize it.
+    protected final String type;
+
     /**
-     * Constructor for subclasses to use to allow them to have the correct type. If the given type is
-     * null the type for this result is assumed to be ResultType.BASE.
-     * @param identifier The identifier of the result type.
-     * @param startTime The start Instant of this result.
-     * @param endTime The end Instant of this result.
+     * Constructor for subclasses to use to allow them to have the correct type. If the given type is null the type
+     * for this result is assumed to be ResultType.BASE.
+     *
+     * @param identifier
+     *         The identifier of the result type.
+     * @param startTime
+     *         The start Instant of this result.
+     * @param endTime
+     *         The end Instant of this result.
      */
     public ResultBase(@NonNull final String identifier,
             @NonNull final Instant startTime, @NonNull final Instant endTime) {
@@ -78,15 +80,14 @@ public class ResultBase extends ObjectHelper implements Result {
 
     @Override
     @NonNull
-    public String getIdentifier() {
-        return this.data.getIdentifier();
+    public Instant getEndTime() {
+        return this.data.getEndTime();
     }
 
     @Override
     @NonNull
-    @ResultType
-    public String getType() {
-        return TYPE_KEY;
+    public String getIdentifier() {
+        return this.data.getIdentifier();
     }
 
     @Override
@@ -97,8 +98,15 @@ public class ResultBase extends ObjectHelper implements Result {
 
     @Override
     @NonNull
-    public Instant getEndTime() {
-        return this.data.getEndTime();
+    @ResultType
+    public String getType() {
+        return TYPE_KEY;
+    }
+
+    @Override
+    protected boolean equalsHelper(Object o) {
+        ResultBase resultBase = (ResultBase) o;
+        return Objects.equal(this.data, resultBase.data);
     }
 
     @Override
@@ -111,11 +119,5 @@ public class ResultBase extends ObjectHelper implements Result {
     protected ToStringHelper toStringHelper() {
         return super.toStringHelper()
                 .add("ResultData", data);
-    }
-
-    @Override
-    protected boolean equalsHelper(Object o) {
-        ResultBase resultBase = (ResultBase) o;
-        return Objects.equal(this.data, resultBase.data);
     }
 }

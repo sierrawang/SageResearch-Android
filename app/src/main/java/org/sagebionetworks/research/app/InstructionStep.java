@@ -59,7 +59,16 @@ public abstract class InstructionStep implements ActiveUIStep {
         public abstract Builder setActions(@NonNull Map<String, Action> actions);
 
         @NonNull
+        public abstract Builder setBackgroundAudioRequired(boolean isBackgroundAudioRequired);
+
+        @NonNull
+        public abstract Builder setColorTheme(@Nullable ColorTheme colorTheme);
+
+        @NonNull
         public abstract Builder setDetail(@Nullable String detail);
+
+        @NonNull
+        public abstract Builder setDuration(@Nullable Double duration);
 
         @NonNull
         public abstract Builder setFootnote(@Nullable String footnote);
@@ -68,22 +77,13 @@ public abstract class InstructionStep implements ActiveUIStep {
         public abstract Builder setIdentifier(@NonNull String identifier);
 
         @NonNull
+        public abstract Builder setImageTheme(@Nullable ImageTheme imageTheme);
+
+        @NonNull
         public abstract Builder setText(@Nullable String text);
 
         @NonNull
         public abstract Builder setTitle(@Nullable String title);
-
-        @NonNull
-        public abstract Builder setImageTheme(@Nullable ImageTheme imageTheme);
-
-        @NonNull
-        public abstract Builder setColorTheme(@Nullable ColorTheme colorTheme);
-
-        @NonNull
-        public abstract Builder setDuration(@Nullable Double duration);
-
-        @NonNull
-        public abstract Builder setBackgroundAudioRequired(boolean isBackgroundAudioRequired);
     }
 
     public static final String TYPE_KEY = "instruction";
@@ -104,11 +104,11 @@ public abstract class InstructionStep implements ActiveUIStep {
         return StepType.INSTRUCTION;
     }
 
-    @NonNull
-    public abstract Builder toBuilder();
-
     @Override
     public InstructionStep copyWithIdentifier(@NonNull String identifier) {
         return null;
     }
+
+    @NonNull
+    public abstract Builder toBuilder();
 }

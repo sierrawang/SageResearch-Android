@@ -37,7 +37,6 @@ import android.support.annotation.Nullable;
 
 import com.google.common.collect.ImmutableMap;
 
-import org.sagebionetworks.research.domain.step.implementations.UIStepBase;
 import org.sagebionetworks.research.domain.step.interfaces.Step;
 import org.sagebionetworks.research.mpower.step.CompletionStep;
 import org.sagebionetworks.research.presentation.DisplayString;
@@ -48,17 +47,6 @@ import org.sagebionetworks.research.presentation.model.action.ActionView;
 import org.sagebionetworks.research.presentation.model.implementations.UIStepViewBase;
 
 public class CompletionStepView extends UIStepViewBase {
-    public CompletionStepView(@NonNull final String identifier, final int navDirection,
-            @NonNull final ImmutableMap<String, ActionView> actions,
-            @Nullable final DisplayString title,
-            @Nullable final DisplayString text,
-            @Nullable final DisplayString detail,
-            @Nullable final DisplayString footnote,
-            @Nullable final ColorThemeView colorTheme,
-            @Nullable final ImageThemeView imageTheme) {
-        super(identifier, navDirection, actions, title, text, detail, footnote, colorTheme, imageTheme);
-    }
-
     public static CompletionStepView fromCompletionStep(Step step, DrawableMapper mapper) {
         if (!(step instanceof CompletionStep)) {
             throw new IllegalArgumentException("Provided step: " + step + " is not a CompletionStep.");
@@ -68,5 +56,16 @@ public class CompletionStepView extends UIStepViewBase {
         return new CompletionStepView(uiStep.getIdentifier(), uiStep.getNavDirection(), uiStep.getActions(),
                 uiStep.getTitle(), uiStep.getText(), uiStep.getDetail(), uiStep.getFootnote(), uiStep.getColorTheme(),
                 uiStep.getImageTheme());
+    }
+
+    public CompletionStepView(@NonNull final String identifier, final int navDirection,
+            @NonNull final ImmutableMap<String, ActionView> actions,
+            @Nullable final DisplayString title,
+            @Nullable final DisplayString text,
+            @Nullable final DisplayString detail,
+            @Nullable final DisplayString footnote,
+            @Nullable final ColorThemeView colorTheme,
+            @Nullable final ImageThemeView imageTheme) {
+        super(identifier, navDirection, actions, title, text, detail, footnote, colorTheme, imageTheme);
     }
 }

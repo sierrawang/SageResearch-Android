@@ -32,16 +32,16 @@
 
 package org.sagebionetworks.research.presentation.model.interfaces;
 
+import static java.lang.annotation.RetentionPolicy.SOURCE;
+
 import android.os.Parcelable;
 import android.support.annotation.IntDef;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 
-import java.lang.annotation.Retention;
-
-import static java.lang.annotation.RetentionPolicy.SOURCE;
-
 import org.sagebionetworks.research.domain.result.interfaces.TaskResult;
+
+import java.lang.annotation.Retention;
 
 /**
  * Map a {@link Step} to a {@link StepView} when data is moving from the Domain layer to this layer.
@@ -62,7 +62,9 @@ public interface StepView extends Parcelable {
 
     /**
      * Returns true if this step view should be skipped for the given task result, false otherwise
-     * @param taskResult The task result to use to determine if this step view should be skipped
+     *
+     * @param taskResult
+     *         The task result to use to determine if this step view should be skipped
      * @return true if this step view should be skipped, false otherwise.
      */
     boolean shouldSkip(@Nullable TaskResult taskResult);

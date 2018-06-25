@@ -41,9 +41,13 @@ import org.sagebionetworks.research.domain.step.ui.action.implementations.Action
 import org.sagebionetworks.research.domain.step.ui.action.interfaces.Action;
 
 public class ActionBaseTests extends IndividualActionTests {
-    public static final ActionBase COMPLETE = ActionBase.builder().setButtonIconName("icon").setButtonTitle("title").build();
+    public static final ActionBase COMPLETE = ActionBase.builder().setButtonIconName("icon").setButtonTitle("title")
+            .build();
+
     public static final ActionBase NO_TITLE = ActionBase.builder().setButtonIconName("icon").build();
+
     public static final ActionBase NO_ICON = ActionBase.builder().setButtonTitle("title").build();
+
     public static final ActionBase EMPTY = ActionBase.builder().build();
 
     @Test
@@ -52,8 +56,8 @@ public class ActionBaseTests extends IndividualActionTests {
     }
 
     @Test
-    public void testActionBase_NoTitle() {
-        this.testCommon(NO_TITLE, "ActionBase_NoTitle.json");
+    public void testActionBase_Empty() {
+        this.testCommon(EMPTY, "ActionBase_Empty.json");
     }
 
     @Test
@@ -62,8 +66,8 @@ public class ActionBaseTests extends IndividualActionTests {
     }
 
     @Test
-    public void testActionBase_Empty() {
-        this.testCommon(EMPTY,  "ActionBase_Empty.json");
+    public void testActionBase_NoTitle() {
+        this.testCommon(NO_TITLE, "ActionBase_NoTitle.json");
     }
 
     private void testCommon(ActionBase expected, String filename) {

@@ -32,10 +32,12 @@
 
 package org.sagebionetworks.research.domain.step.gson;
 
+import static junit.framework.Assert.assertNotNull;
+
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 
-import org.junit.*;
+import org.junit.Before;
 import org.sagebionetworks.research.domain.step.DaggerStepTestComponent;
 import org.sagebionetworks.research.domain.step.StepTestComponent;
 import org.sagebionetworks.research.domain.step.interfaces.Step;
@@ -46,14 +48,21 @@ import java.io.FileReader;
 import java.io.Reader;
 import java.net.URL;
 
-import static junit.framework.Assert.assertNotNull;
-
 public abstract class IndividualStepGsonTest {
     protected StepTestComponent stepTestComponent;
 
     @Before
     public void setup() {
         this.stepTestComponent = DaggerStepTestComponent.builder().build();
+    }
+
+    @NonNull
+    protected Step readJsonFile(String filename) {
+        ClassLoader loader = this.getClass().getClassLoader();
+        URL url = loader.getResource("steps/" + filename);
+        Step step = this.readJsonFileHelper(url);
+        assertNotNull("Failed to read file " + filename, step);
+        return step;
     }
 
     @Nullable
@@ -65,15 +74,6 @@ public abstract class IndividualStepGsonTest {
         } catch (FileNotFoundException e) {
             return null;
         }
-    }
-
-    @NonNull
-    protected Step readJsonFile(String filename) {
-        ClassLoader loader = this.getClass().getClassLoader();
-        URL url = loader.getResource("steps/" + filename);
-        Step step = this.readJsonFileHelper(url);
-        assertNotNull("Failed to read file " + filename, step);
-        return step;
     }
 
 }

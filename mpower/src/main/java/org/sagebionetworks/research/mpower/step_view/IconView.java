@@ -49,10 +49,10 @@ public abstract class IconView {
         public abstract IconView build();
 
         @Nullable
-        public abstract Builder setTitle(@Nullable DisplayString title);
+        public abstract Builder setIcon(@Nullable DisplayDrawable icon);
 
         @Nullable
-        public abstract Builder setIcon(@Nullable DisplayDrawable icon);
+        public abstract Builder setTitle(@Nullable DisplayString title);
     }
 
     public static Builder builder() {
@@ -74,7 +74,7 @@ public abstract class IconView {
         }
     }
 
-    public abstract DisplayString getTitle();
-
     public abstract DisplayDrawable getIcon();
+
+    public abstract DisplayString getTitle();
 }

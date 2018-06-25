@@ -1,5 +1,5 @@
 {
-  "type":"base",
-  "buttonTitle":"title",
-  "buttonIcon":"icon"
+  "type": "base",
+  "buttonTitle": "title",
+  "buttonIcon": "icon"
 }

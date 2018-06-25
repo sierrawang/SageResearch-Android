@@ -58,8 +58,8 @@ public class SectionStepBase extends StepBase implements SectionStep {
 
     @NonNull
     @Override
-    public String getType() {
-        return TYPE_KEY;
+    public SectionStepBase copyWithIdentifier(String identifier) {
+        return new SectionStepBase(identifier, steps);
     }
 
     @NonNull
@@ -70,14 +70,8 @@ public class SectionStepBase extends StepBase implements SectionStep {
 
     @NonNull
     @Override
-    public SectionStepBase copyWithIdentifier(String identifier) {
-        return new SectionStepBase(identifier, steps);
-    }
-
-    @Override
-    protected HashCodeHelper hashCodeHelper() {
-        return super.hashCodeHelper()
-                .addFields(this.steps);
+    public String getType() {
+        return TYPE_KEY;
     }
 
     @Override
@@ -85,6 +79,12 @@ public class SectionStepBase extends StepBase implements SectionStep {
         SectionStepBase sectionStep = (SectionStepBase) o;
         return super.equalsHelper(o) &&
                 Objects.equal(this.getSteps(), sectionStep.getSteps());
+    }
+
+    @Override
+    protected HashCodeHelper hashCodeHelper() {
+        return super.hashCodeHelper()
+                .addFields(this.steps);
     }
 
     @Override

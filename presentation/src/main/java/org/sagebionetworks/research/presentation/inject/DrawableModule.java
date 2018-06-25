@@ -53,11 +53,9 @@ public class DrawableModule {
     }
 
     @Provides
-    @IntoMap
-    @DrawableRes
-    @ResourceNameKey(DrawableName.CANCEL)
-    static Integer provideCancelResource() {
-        return R.drawable.rs2_cancel_icon;
+    DrawableMapper provideDrawableMapper(TaskRepository taskRepository,
+            Map<String, Integer> drawableMap) {
+        return new DrawableMapper(taskRepository, drawableMap);
     }
 
     @Provides
@@ -71,14 +69,16 @@ public class DrawableModule {
     @Provides
     @IntoMap
     @DrawableRes
-    @ResourceNameKey(DrawableName.INFO)
-    static Integer provideInfoResource() {
-        return R.drawable.rs2_info_icon;
+    @ResourceNameKey(DrawableName.CANCEL)
+    static Integer provideCancelResource() {
+        return R.drawable.rs2_cancel_icon;
     }
 
     @Provides
-    DrawableMapper provideDrawableMapper(TaskRepository taskRepository,
-            Map<String, Integer> drawableMap) {
-        return new DrawableMapper(taskRepository, drawableMap);
+    @IntoMap
+    @DrawableRes
+    @ResourceNameKey(DrawableName.INFO)
+    static Integer provideInfoResource() {
+        return R.drawable.rs2_info_icon;
     }
 }

@@ -41,24 +41,18 @@ import org.sagebionetworks.research.domain.step.ui.action.interfaces.SkipToStepA
 
 @AutoValue
 public abstract class SkipToStepActionBase implements SkipToStepAction {
-    public static final String TYPE_KEY = ActionDeserializationType.SKIP;
-
     @AutoValue.Builder
     public abstract static class Builder {
         public abstract SkipToStepActionBase build();
 
-        public abstract Builder setButtonTitle(String buttonTitle);
-
         public abstract Builder setButtonIconName(String buttonIconName);
+
+        public abstract Builder setButtonTitle(String buttonTitle);
 
         public abstract Builder setSkipToStepIdentifier(String reminderIdentifier);
     }
 
-    @Override
-    @ActionDeserializationType
-    public String getType() {
-        return TYPE_KEY;
-    }
+    public static final String TYPE_KEY = ActionDeserializationType.SKIP;
 
     public static Builder builder() {
         return new AutoValue_SkipToStepActionBase.Builder();
@@ -66,6 +60,12 @@ public abstract class SkipToStepActionBase implements SkipToStepAction {
 
     public static TypeAdapter<SkipToStepActionBase> typeAdapter(Gson gson) {
         return new AutoValue_SkipToStepActionBase.GsonTypeAdapter(gson);
+    }
+
+    @Override
+    @ActionDeserializationType
+    public String getType() {
+        return TYPE_KEY;
     }
 
     public abstract Builder toBuilder();

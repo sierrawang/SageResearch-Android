@@ -18,7 +18,7 @@
       "type": "active",
       "duration": 30,
       "image": {
-        "type":"fetchable",
+        "type": "fetchable",
         "imageName": "tap_left1",
         "placementType": "fullsizeBackground"
       },

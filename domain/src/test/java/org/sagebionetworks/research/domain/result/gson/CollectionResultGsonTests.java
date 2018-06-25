@@ -32,7 +32,10 @@
 
 package org.sagebionetworks.research.domain.result.gson;
 
-import org.junit.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
+
+import org.junit.Test;
 import org.sagebionetworks.research.domain.result.implementations.CollectionResultBase;
 import org.sagebionetworks.research.domain.result.implementations.ResultBase;
 import org.sagebionetworks.research.domain.result.interfaces.CollectionResult;
@@ -42,29 +45,13 @@ import org.threeten.bp.Instant;
 import java.util.ArrayList;
 import java.util.List;
 
-import static org.junit.Assert.*;
-
 public class CollectionResultGsonTests extends IndividualResultGsonTest {
     private static final Result EMPTY = new CollectionResultBase("collectionResult",
             Instant.ofEpochSecond(20), Instant.ofEpochSecond(30), new ArrayList<Result>());
 
     private static final Result SINGLE;
-    static {
-        List<Result> expectedSubResults = new ArrayList<Result>();
-        expectedSubResults.add(new ResultBase("subResult1", Instant.ofEpochSecond(20), null));
-        SINGLE = new CollectionResultBase("collectionResult", Instant.ofEpochSecond(20),
-                Instant.ofEpochSecond(30), expectedSubResults);
-    }
 
     private static final Result DOUBLE;
-    static {
-        List<Result> expectedSubResults = new ArrayList<Result>();
-        expectedSubResults.add(new ResultBase("subResult1", Instant.ofEpochSecond(20),
-                Instant.ofEpochSecond(25)));
-        expectedSubResults.add(new ResultBase("subResult2", Instant.ofEpochSecond(25), null));
-        DOUBLE = new CollectionResultBase("collectionResult", Instant.ofEpochSecond(20),
-                Instant.ofEpochSecond(30), expectedSubResults);
-    }
 
     @Test
     public void testCollectionResult_Empty() {
@@ -100,5 +87,21 @@ public class CollectionResultGsonTests extends IndividualResultGsonTest {
         Result result = this.readJsonFile(filename);
         assertTrue(result instanceof CollectionResult);
         assertEquals(expected, result);
+    }
+
+    static {
+        List<Result> expectedSubResults = new ArrayList<Result>();
+        expectedSubResults.add(new ResultBase("subResult1", Instant.ofEpochSecond(20), null));
+        SINGLE = new CollectionResultBase("collectionResult", Instant.ofEpochSecond(20),
+                Instant.ofEpochSecond(30), expectedSubResults);
+    }
+
+    static {
+        List<Result> expectedSubResults = new ArrayList<Result>();
+        expectedSubResults.add(new ResultBase("subResult1", Instant.ofEpochSecond(20),
+                Instant.ofEpochSecond(25)));
+        expectedSubResults.add(new ResultBase("subResult2", Instant.ofEpochSecond(25), null));
+        DOUBLE = new CollectionResultBase("collectionResult", Instant.ofEpochSecond(20),
+                Instant.ofEpochSecond(30), expectedSubResults);
     }
 }

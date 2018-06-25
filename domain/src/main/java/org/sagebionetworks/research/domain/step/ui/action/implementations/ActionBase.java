@@ -43,8 +43,6 @@ import javax.annotation.Nullable;
 
 @AutoValue
 public abstract class ActionBase implements Action {
-    public static final String TYPE_KEY = ActionDeserializationType.BASE;
-
     @AutoValue.Builder
     public abstract static class Builder {
         public abstract ActionBase build();
@@ -54,11 +52,7 @@ public abstract class ActionBase implements Action {
         public abstract Builder setButtonTitle(@Nullable String buttonTitle);
     }
 
-    @Override
-    @ActionDeserializationType
-    public String getType() {
-        return TYPE_KEY;
-    }
+    public static final String TYPE_KEY = ActionDeserializationType.BASE;
 
     public static Builder builder() {
         return new AutoValue_ActionBase.Builder();
@@ -66,6 +60,12 @@ public abstract class ActionBase implements Action {
 
     public static TypeAdapter<ActionBase> typeAdapter(Gson gson) {
         return new AutoValue_ActionBase.GsonTypeAdapter(gson);
+    }
+
+    @Override
+    @ActionDeserializationType
+    public String getType() {
+        return TYPE_KEY;
     }
 
     public abstract Builder toBuilder();

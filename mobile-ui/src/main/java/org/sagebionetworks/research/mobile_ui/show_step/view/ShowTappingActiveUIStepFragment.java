@@ -35,28 +35,14 @@ package org.sagebionetworks.research.mobile_ui.show_step.view;
 import android.support.annotation.NonNull;
 import android.view.View;
 
-import org.sagebionetworks.research.domain.mobile_ui.R;
 import org.sagebionetworks.research.mobile_ui.show_step.view.view_binding.UIStepViewBinding;
 import org.sagebionetworks.research.mobile_ui.widget.ActionButton;
 import org.sagebionetworks.research.presentation.ActionType;
-import org.sagebionetworks.research.presentation.model.interfaces.StepView;
 import org.sagebionetworks.research.presentation.model.interfaces.UIStepView;
-import org.sagebionetworks.research.presentation.show_step.ShowGenericStepViewModel;
 import org.sagebionetworks.research.presentation.show_step.show_step_view_models.ShowUIStepViewModel;
 
 public class ShowTappingActiveUIStepFragment extends ShowStepFragmentBase
         <UIStepView, ShowUIStepViewModel<UIStepView>, UIStepViewBinding<UIStepView>> {
-
-    @Override
-    protected int getLayoutId() {
-        return 0;
-    }
-
-    @NonNull
-    @Override
-    protected UIStepViewBinding instantiateAndBindBinding(final View view) {
-        return null;
-    }
 
     @Override
     @ActionType
@@ -67,6 +53,17 @@ public class ShowTappingActiveUIStepFragment extends ShowStepFragmentBase
             return actionType;
         }
 
+        return null;
+    }
+
+    @Override
+    protected int getLayoutId() {
+        return 0;
+    }
+
+    @NonNull
+    @Override
+    protected UIStepViewBinding instantiateAndBindBinding(final View view) {
         return null;
     }
 }

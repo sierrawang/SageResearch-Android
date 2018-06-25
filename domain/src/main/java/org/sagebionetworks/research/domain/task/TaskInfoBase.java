@@ -67,9 +67,9 @@ public abstract class TaskInfoBase implements TaskInfo {
         return new AutoValue_TaskInfoBase.Builder();
     }
 
-    public abstract Builder toBuilder();
-
     public static TypeAdapter<TaskInfoBase> typeAdapter(Gson gson) {
         return new AutoValue_TaskInfoBase.GsonTypeAdapter(gson);
     }
+
+    public abstract Builder toBuilder();
 }

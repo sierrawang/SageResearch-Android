@@ -51,14 +51,38 @@ import java.util.Set;
 
 
 public class CollectionInputDataType extends InputDataType {
+    @Retention(RetentionPolicy.SOURCE)
+    @StringDef({CollectionType.SINGLE_CHOICE, CollectionType.MULTIPLE_CHOICE, CollectionType.MULTIPLE_COMPONENT})
+    public @interface CollectionType {
+        String SINGLE_CHOICE = "singleChoice";
+        String MULTIPLE_CHOICE = "multipleChoice";
+        String MULTIPLE_COMPONENT = "multipleComponent";
+
+        Set<String> ALL = new HashSet<String>(Arrays.asList(
+                new String[]{SINGLE_CHOICE, MULTIPLE_CHOICE, MULTIPLE_COMPONENT}));
+    }
+
     public static final String DELIMINATOR = ".";
+
+    public static final Creator<CollectionInputDataType> CREATOR = new Creator<CollectionInputDataType>() {
+        @Override
+        public CollectionInputDataType createFromParcel(Parcel source) {
+            return new CollectionInputDataType(source);
+        }
+
+        @Override
+        public CollectionInputDataType[] newArray(int size) {
+            return new CollectionInputDataType[size];
+        }
+    };
+
+    @Nullable
+    @BaseType
+    private final String baseType;
 
     @NonNull
     @CollectionType
     private final String collectionType;
-    @Nullable
-    @BaseType
-    private final String baseType;
 
     /**
      * Default initializer for gson.
@@ -82,45 +106,9 @@ public class CollectionInputDataType extends InputDataType {
         this.baseType = null;
     }
 
-    @NonNull
-    @CollectionType
-    public String getCollectionType() {
-        return this.collectionType;
-    }
-
-    @Nullable
-    @BaseType
-    public String getBaseType() {
-        return this.baseType;
-    }
-
-    @Override
-    public String toString() {
-        return this.collectionType + DELIMINATOR + this.baseType;
-    }
-
-    @Retention(RetentionPolicy.SOURCE)
-    @StringDef({CollectionType.SINGLE_CHOICE, CollectionType.MULTIPLE_CHOICE, CollectionType.MULTIPLE_COMPONENT})
-    public @interface CollectionType {
-        String SINGLE_CHOICE = "singleChoice";
-        String MULTIPLE_CHOICE = "multipleChoice";
-        String MULTIPLE_COMPONENT = "multipleComponent";
-
-        Set<String> ALL = new HashSet<String>(Arrays.asList(
-                new String[]{SINGLE_CHOICE, MULTIPLE_CHOICE, MULTIPLE_COMPONENT}));
-    }
-
-    @Override
-    protected HashCodeHelper hashCodeHelper() {
-        return super.hashCodeHelper()
-                .addFields(this.collectionType, this.baseType);
-    }
-
-    @Override
-    protected boolean equalsHelper(Object o) {
-        CollectionInputDataType collectionType = (CollectionInputDataType) o;
-        return Objects.equal(this.getCollectionType(), collectionType.getCollectionType()) &&
-                Objects.equal(this.getBaseType(), collectionType.getBaseType());
+    protected CollectionInputDataType(Parcel in) {
+        this.collectionType = in.readString();
+        this.baseType = in.readString();
     }
 
     @Override
@@ -134,20 +122,33 @@ public class CollectionInputDataType extends InputDataType {
         dest.writeString(this.baseType);
     }
 
-    protected CollectionInputDataType(Parcel in) {
-        this.collectionType = in.readString();
-        this.baseType = in.readString();
+    @Nullable
+    @BaseType
+    public String getBaseType() {
+        return this.baseType;
     }
 
-    public static final Creator<CollectionInputDataType> CREATOR = new Creator<CollectionInputDataType>() {
-        @Override
-        public CollectionInputDataType createFromParcel(Parcel source) {
-            return new CollectionInputDataType(source);
-        }
+    @NonNull
+    @CollectionType
+    public String getCollectionType() {
+        return this.collectionType;
+    }
 
-        @Override
-        public CollectionInputDataType[] newArray(int size) {
-            return new CollectionInputDataType[size];
-        }
-    };
+    @Override
+    public String toString() {
+        return this.collectionType + DELIMINATOR + this.baseType;
+    }
+
+    @Override
+    protected boolean equalsHelper(Object o) {
+        CollectionInputDataType collectionType = (CollectionInputDataType) o;
+        return Objects.equal(this.getCollectionType(), collectionType.getCollectionType()) &&
+                Objects.equal(this.getBaseType(), collectionType.getBaseType());
+    }
+
+    @Override
+    protected HashCodeHelper hashCodeHelper() {
+        return super.hashCodeHelper()
+                .addFields(this.collectionType, this.baseType);
+    }
 }

@@ -1,8 +1,16 @@
 package org.sagebionetworks.research.domain.navigation;
 
+import static junit.framework.Assert.assertEquals;
+import static junit.framework.Assert.assertFalse;
+import static junit.framework.Assert.assertNotNull;
+import static junit.framework.Assert.assertNull;
+
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
+
 import com.google.common.collect.ImmutableList;
 
-import org.junit.*;
+import org.junit.Test;
 import org.sagebionetworks.research.domain.result.interfaces.Result;
 import org.sagebionetworks.research.domain.result.interfaces.TaskResult;
 import org.sagebionetworks.research.domain.step.StepType;
@@ -14,12 +22,6 @@ import org.sagebionetworks.research.domain.task.navigation.TaskProgress;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-
-import static junit.framework.Assert.assertEquals;
-import static junit.framework.Assert.assertFalse;
-import static junit.framework.Assert.assertNotNull;
-import static junit.framework.Assert.assertNull;
-import static org.mockito.Mockito.*;
 
 public abstract class IndividualNavigatorTests {
     private static final String STEP_TYPE = "step";

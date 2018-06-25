@@ -34,13 +34,9 @@ package org.sagebionetworks.research.mpower.show_step_fragment;
 
 import android.os.Bundle;
 import android.support.annotation.NonNull;
-import android.support.v4.app.Fragment;
 import android.view.View;
 
-import org.sagebionetworks.research.domain.result.interfaces.AnswerResult;
-import org.sagebionetworks.research.domain.result.interfaces.TaskResult;
 import org.sagebionetworks.research.mobile_ui.show_step.view.ShowStepFragmentBase;
-import org.sagebionetworks.research.mobile_ui.show_step.view.ShowUIStepFragment;
 import org.sagebionetworks.research.mobile_ui.show_step.view.ShowUIStepFragmentBase;
 import org.sagebionetworks.research.mobile_ui.show_step.view.view_binding.UIStepViewBinding;
 import org.sagebionetworks.research.mpower.R;
@@ -59,14 +55,14 @@ public class ShowInstructionStepFragment extends
         return fragment;
     }
 
+    @Override
+    public int getLayoutId() {
+        return R.layout.mpower2_instruction_step;
+    }
+
     @NonNull
     @Override
     protected UIStepViewBinding<InstructionStepView> instantiateAndBindBinding(View view) {
         return new UIStepViewBinding<>(view);
-    }
-
-    @Override
-    public int getLayoutId() {
-        return R.layout.mpower2_instruction_step;
     }
 }

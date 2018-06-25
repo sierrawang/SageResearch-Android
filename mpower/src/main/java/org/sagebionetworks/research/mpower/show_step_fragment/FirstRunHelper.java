@@ -43,6 +43,20 @@ import org.threeten.bp.Instant;
 import org.threeten.bp.ZonedDateTime;
 
 public class FirstRunHelper {
+    public static ZonedDateTime getLastRunDate(@NonNull TaskResult taskResult) {
+        for (Result result : taskResult.getAsyncResults()) {
+            if (result.getIdentifier().equals(PerformTaskViewModel.LAST_RUN_RESULT_ID) &&
+                    result instanceof AnswerResult) {
+                Object answer = ((AnswerResult) result).getAnswer();
+                if (answer instanceof ZonedDateTime) {
+                    return (ZonedDateTime) answer;
+                }
+            }
+        }
+
+        return null;
+    }
+
     public static boolean isFirstRun(@Nullable TaskResult result) {
         if (result != null && result.getResult(ShowOverviewStepFragment.INFO_TAPPED_RESULT_ID) == null) {
             ZonedDateTime lastRunDate = getLastRunDate(result);
@@ -56,19 +70,5 @@ public class FirstRunHelper {
 
         // The info button was tapped, or The task result or last run date was null making this a first run.
         return true;
-    }
-
-    public static ZonedDateTime getLastRunDate(@NonNull TaskResult taskResult) {
-        for (Result result : taskResult.getAsyncResults()) {
-            if (result.getIdentifier().equals(PerformTaskViewModel.LAST_RUN_RESULT_ID) &&
-                    result instanceof AnswerResult) {
-                Object answer = ((AnswerResult)result).getAnswer();
-                if (answer instanceof ZonedDateTime) {
-                    return (ZonedDateTime)answer;
-                }
-            }
-        }
-
-        return null;
     }
 }

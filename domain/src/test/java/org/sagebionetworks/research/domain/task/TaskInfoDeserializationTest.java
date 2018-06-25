@@ -32,9 +32,11 @@
 
 package org.sagebionetworks.research.domain.task;
 
-import org.junit.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
 
-import static org.junit.Assert.*;
+import org.junit.Before;
+import org.junit.Test;
 
 public class TaskInfoDeserializationTest {
 

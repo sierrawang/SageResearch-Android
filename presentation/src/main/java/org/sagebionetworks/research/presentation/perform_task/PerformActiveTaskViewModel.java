@@ -38,7 +38,6 @@ import android.support.annotation.Nullable;
 import org.sagebionetworks.research.domain.repository.TaskRepository;
 import org.sagebionetworks.research.domain.task.navigation.StepNavigatorFactory;
 import org.sagebionetworks.research.presentation.inject.StepViewModule.StepViewFactory;
-import org.sagebionetworks.research.presentation.mapper.DrawableMapper;
 import org.sagebionetworks.research.presentation.mapper.TaskMapper;
 import org.sagebionetworks.research.presentation.model.TaskView;
 import org.threeten.bp.ZonedDateTime;
@@ -58,7 +57,7 @@ public class PerformActiveTaskViewModel extends PerformTaskViewModel {
             @NonNull final StepViewFactory stepViewFactory,
             @Nullable final ZonedDateTime lastRunDate) {
         super(taskView, taskRunUUID, stepNavigatorFactory, taskRepository, taskMapper, stepViewFactory,
-            lastRunDate);
+                lastRunDate);
     }
 
     public Observable<Long> getCountdown() {

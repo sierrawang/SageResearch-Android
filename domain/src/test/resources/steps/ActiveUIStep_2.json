@@ -1,8 +1,8 @@
 {
-  "identifier" : "testActiveUIStep2",
-  "type" : "active",
-  "title" : "title",
-  "text" : "text",
-  "detail" : "detail",
-  "footnote" : "footnote"
+  "identifier": "testActiveUIStep2",
+  "type": "active",
+  "title": "title",
+  "text": "text",
+  "detail": "detail",
+  "footnote": "footnote"
 }

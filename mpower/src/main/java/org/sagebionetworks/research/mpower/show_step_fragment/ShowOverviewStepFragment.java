@@ -33,31 +33,19 @@
 package org.sagebionetworks.research.mpower.show_step_fragment;
 
 import android.animation.ObjectAnimator;
-import android.animation.TypeEvaluator;
-import android.content.Context;
-import android.content.SharedPreferences;
-import android.content.SharedPreferences.Editor;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
-import android.util.FloatProperty;
-import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.ViewPropertyAnimator;
-import android.view.animation.Animation;
 import android.widget.ImageView;
 import android.widget.ScrollView;
 import android.widget.TextView;
 
-import org.sagebionetworks.research.domain.result.AnswerResultType;
-import org.sagebionetworks.research.domain.result.implementations.AnswerResultBase;
 import org.sagebionetworks.research.domain.result.implementations.ResultBase;
-import org.sagebionetworks.research.domain.step.ui.action.interfaces.Action;
 import org.sagebionetworks.research.mobile_ui.show_step.view.ShowStepFragmentBase;
-import org.sagebionetworks.research.mobile_ui.show_step.view.ShowUIStepFragment;
 import org.sagebionetworks.research.mobile_ui.show_step.view.ShowUIStepFragmentBase;
-import org.sagebionetworks.research.mobile_ui.show_step.view.view_binding.UIStepViewBinding;
 import org.sagebionetworks.research.mobile_ui.widget.ActionButton;
 import org.sagebionetworks.research.mpower.R;
 import org.sagebionetworks.research.mpower.step_binding.OverviewStepViewBinding;
@@ -69,18 +57,9 @@ import org.sagebionetworks.research.presentation.DisplayDrawable;
 import org.sagebionetworks.research.presentation.DisplayString;
 import org.sagebionetworks.research.presentation.model.interfaces.StepView;
 import org.sagebionetworks.research.presentation.show_step.show_step_view_models.ShowUIStepViewModel;
-import org.threeten.bp.Duration;
 import org.threeten.bp.Instant;
-import org.threeten.bp.LocalDate;
-import org.threeten.bp.LocalDateTime;
-import org.threeten.bp.ZoneId;
-import org.threeten.bp.ZonedDateTime;
-import org.threeten.bp.temporal.ChronoUnit;
-import org.threeten.bp.temporal.Temporal;
-import org.threeten.bp.zone.ZoneRulesException;
 
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 
 public class ShowOverviewStepFragment extends
@@ -96,6 +75,37 @@ public class ShowOverviewStepFragment extends
         Bundle arguments = ShowStepFragmentBase.createArguments(stepView);
         fragment.setArguments(arguments);
         return fragment;
+    }
+
+    @Override
+    public View onCreateView(LayoutInflater inflater, ViewGroup container,
+            Bundle savedInstanceState) {
+        View returnValue = super.onCreateView(inflater, container, savedInstanceState);
+        this.isFirstRun = FirstRunHelper.isFirstRun(this.performTaskViewModel.getTaskResult().getValue());
+        return returnValue;
+    }
+
+    @Override
+    protected void handleActionButtonClick(@NonNull ActionButton actionButton) {
+        @ActionType String actionType = this.getActionTypeFromActionButton(actionButton);
+        if (ActionType.INFO.equals(actionType)) {
+            this.scrollToBottomAndFadeIn();
+            this.performTaskViewModel.addStepResult(new ResultBase(INFO_TAPPED_RESULT_ID, Instant.now(),
+                    Instant.now()));
+        } else {
+            this.showStepViewModel.handleAction(actionType);
+        }
+    }
+
+    @Override
+    public int getLayoutId() {
+        return R.layout.mpower2_overview_step;
+    }
+
+    @NonNull
+    @Override
+    protected OverviewStepViewBinding<OverviewStepView> instantiateAndBindBinding(View view) {
+        return new OverviewStepViewBinding<>(view);
     }
 
     @Override
@@ -119,66 +129,6 @@ public class ShowOverviewStepFragment extends
                 iconLabel.setAlpha(0f);
             }
         }
-    }
-
-    @Override
-    public int getLayoutId() {
-        return R.layout.mpower2_overview_step;
-    }
-
-    @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
-            Bundle savedInstanceState) {
-        View returnValue = super.onCreateView(inflater, container, savedInstanceState);
-        this.isFirstRun = FirstRunHelper.isFirstRun(this.performTaskViewModel.getTaskResult().getValue());
-        return returnValue;
-    }
-
-    @Override
-    protected void handleActionButtonClick(@NonNull ActionButton actionButton) {
-        @ActionType String actionType = this.getActionTypeFromActionButton(actionButton);
-        if (ActionType.INFO.equals(actionType)) {
-            this.scrollToBottomAndFadeIn();
-            this.performTaskViewModel.addStepResult(new ResultBase(INFO_TAPPED_RESULT_ID, Instant.now(),
-                    Instant.now()));
-        } else {
-            this.showStepViewModel.handleAction(actionType);
-        }
-    }
-
-    @NonNull
-    @Override
-    protected OverviewStepViewBinding<OverviewStepView> instantiateAndBindBinding(View view) {
-        return new OverviewStepViewBinding<>(view);
-    }
-
-    protected void scrollToBottomAndFadeIn() {
-        this.stepViewBinding.getScrollView().setScrollingEnabled(true);
-        long duration = 300;
-        List<ViewPropertyAnimator> fadeInAnimators = new ArrayList<>();
-        fadeInAnimators.add(this.stepViewBinding.getTitle().animate().alpha(1f).setDuration(duration));
-        fadeInAnimators.add(this.stepViewBinding.getText().animate().alpha(1f).setDuration(duration));
-        fadeInAnimators.add(this.stepViewBinding.getOverallIconDescriptionLabel().animate().alpha(1f)
-                .setDuration(duration));
-        for (ImageView imageView : this.stepViewBinding.getIconImageViews()) {
-            fadeInAnimators.add(imageView.animate().alpha(1f).setDuration(duration));
-        }
-
-        for (TextView iconLabel : this.stepViewBinding.getIconLabels()) {
-            fadeInAnimators.add(iconLabel.animate().alpha(1f).setDuration(duration));
-        }
-
-        fadeInAnimators.add(this.stepViewBinding.getInfoButton().animate().alpha(0f).setDuration(duration));
-
-        ScrollView scrollView = this.stepViewBinding.getScrollView();
-        int bottomY = scrollView.getChildAt(0).getHeight();
-        ObjectAnimator scrollViewAnimator = ObjectAnimator.ofInt(this.stepViewBinding.getScrollView(),
-                "scrollY", bottomY).setDuration(duration);
-        for (ViewPropertyAnimator animator : fadeInAnimators) {
-            animator.start();
-        }
-
-        scrollViewAnimator.start();
     }
 
     @Override
@@ -213,5 +163,34 @@ public class ShowOverviewStepFragment extends
                 }
             }
         }
+    }
+
+    protected void scrollToBottomAndFadeIn() {
+        this.stepViewBinding.getScrollView().setScrollingEnabled(true);
+        long duration = 300;
+        List<ViewPropertyAnimator> fadeInAnimators = new ArrayList<>();
+        fadeInAnimators.add(this.stepViewBinding.getTitle().animate().alpha(1f).setDuration(duration));
+        fadeInAnimators.add(this.stepViewBinding.getText().animate().alpha(1f).setDuration(duration));
+        fadeInAnimators.add(this.stepViewBinding.getOverallIconDescriptionLabel().animate().alpha(1f)
+                .setDuration(duration));
+        for (ImageView imageView : this.stepViewBinding.getIconImageViews()) {
+            fadeInAnimators.add(imageView.animate().alpha(1f).setDuration(duration));
+        }
+
+        for (TextView iconLabel : this.stepViewBinding.getIconLabels()) {
+            fadeInAnimators.add(iconLabel.animate().alpha(1f).setDuration(duration));
+        }
+
+        fadeInAnimators.add(this.stepViewBinding.getInfoButton().animate().alpha(0f).setDuration(duration));
+
+        ScrollView scrollView = this.stepViewBinding.getScrollView();
+        int bottomY = scrollView.getChildAt(0).getHeight();
+        ObjectAnimator scrollViewAnimator = ObjectAnimator.ofInt(this.stepViewBinding.getScrollView(),
+                "scrollY", bottomY).setDuration(duration);
+        for (ViewPropertyAnimator animator : fadeInAnimators) {
+            animator.start();
+        }
+
+        scrollViewAnimator.start();
     }
 }

@@ -73,27 +73,17 @@ public class ActiveUIStepBase extends UIStepBase implements ActiveUIStep {
         this.backgroundAudioRequired = backgroundAudioRequired;
     }
 
-    @Nullable
     @Override
-    public Double getDuration() {
-        return this.duration;
-    }
-
-    @Override
-    public boolean isBackgroundAudioRequired() {
-        return this.backgroundAudioRequired;
+    public ActiveUIStepBase copyWithIdentifier(@NonNull String identifier) {
+        return new ActiveUIStepBase(identifier, this.getActions(), this.getTitle(), this.getText(), this.getDetail(),
+                this.getFootnote(), this.getColorTheme(), this.getImageTheme(), this.getDuration(),
+                this.isBackgroundAudioRequired());
     }
 
     @NonNull
     @Override
     public String getType() {
         return TYPE_KEY;
-    }
-
-    @Override
-    protected HashCodeHelper hashCodeHelper() {
-        return super.hashCodeHelper()
-                .addFields(this.duration, this.backgroundAudioRequired);
     }
 
     @Override
@@ -105,16 +95,26 @@ public class ActiveUIStepBase extends UIStepBase implements ActiveUIStep {
     }
 
     @Override
+    protected HashCodeHelper hashCodeHelper() {
+        return super.hashCodeHelper()
+                .addFields(this.duration, this.backgroundAudioRequired);
+    }
+
+    @Override
     protected ToStringHelper toStringHelper() {
         return super.toStringHelper()
                 .add("duration", this.getDuration())
                 .add("isBackgroundAudioRequired", this.isBackgroundAudioRequired());
     }
 
+    @Nullable
     @Override
-    public ActiveUIStepBase copyWithIdentifier(@NonNull String identifier) {
-        return new ActiveUIStepBase(identifier, this.getActions(), this.getTitle(), this.getText(), this.getDetail(),
-                this.getFootnote(), this.getColorTheme(), this.getImageTheme(), this.getDuration(),
-                this.isBackgroundAudioRequired());
+    public Double getDuration() {
+        return this.duration;
+    }
+
+    @Override
+    public boolean isBackgroundAudioRequired() {
+        return this.backgroundAudioRequired;
     }
 }

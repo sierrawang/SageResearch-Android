@@ -32,24 +32,6 @@
 
 package org.sagebionetworks.research.presentation.model;
 
-import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
-
-import com.google.common.collect.ImmutableMap;
-
-import org.junit.*;
-import org.sagebionetworks.research.domain.step.StepType;
-import org.sagebionetworks.research.domain.step.interfaces.ThemedUIStep;
-import org.sagebionetworks.research.domain.step.ui.action.interfaces.Action;
-import org.sagebionetworks.research.domain.step.ui.theme.ColorPlacement;
-import org.sagebionetworks.research.domain.step.ui.theme.ColorTheme;
-import org.sagebionetworks.research.domain.step.ui.theme.ImageTheme;
-import org.sagebionetworks.research.presentation.DisplayString;
-import org.sagebionetworks.research.presentation.mapper.DrawableMapper;
-import org.sagebionetworks.research.presentation.model.implementations.UIStepViewBase;
-
-import java.util.Map;
-
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
@@ -57,13 +39,52 @@ import static org.junit.Assert.assertTrue;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
+
+import com.google.common.collect.ImmutableMap;
+
+import org.junit.Test;
+import org.sagebionetworks.research.domain.step.StepType;
+import org.sagebionetworks.research.domain.step.interfaces.ThemedUIStep;
+import org.sagebionetworks.research.domain.step.ui.action.interfaces.Action;
+import org.sagebionetworks.research.domain.step.ui.theme.ColorPlacement;
+import org.sagebionetworks.research.domain.step.ui.theme.ColorTheme;
+import org.sagebionetworks.research.domain.step.ui.theme.ImageTheme;
+import org.sagebionetworks.research.presentation.DisplayString;
+import org.sagebionetworks.research.presentation.model.implementations.UIStepViewBase;
+
 public class UIStepViewTests {
     public static final ThemedUIStep MOCK_UI_STEP;
-    static {
-        ImageTheme imageTheme = mockImageTheme(ColorPlacement.HEADER, null);
-        ColorTheme colorTheme = mockColorTheme(null, true);
-        MOCK_UI_STEP = mockThemedUIStep("identifier", ImmutableMap.of(), "title", "text",
-                "detail", "footnote", colorTheme, imageTheme);
+
+    public static ColorTheme mockColorTheme(ImmutableMap<String, String> colorStyles, boolean isLightStyle) {
+        ColorTheme theme = mock(ColorTheme.class);
+        when(theme.isLightStyle()).thenReturn(isLightStyle);
+        when(theme.getColorStyles()).thenReturn(colorStyles);
+        return theme;
+    }
+
+    public static ImageTheme mockImageTheme(@ColorPlacement String colorPlacement, String imageResourceName) {
+        ImageTheme theme = mock(ImageTheme.class);
+        when(theme.getColorPlacement()).thenReturn(colorPlacement);
+        return theme;
+    }
+
+    @Test
+    public void testFromTUIStep() {
+        UIStepViewBase result = UIStepViewBase.fromUIStep(MOCK_UI_STEP, null);
+        assertNotNull(result);
+        assertEquals("identifier", result.getIdentifier());
+        assertEquals(DisplayString.create(null, "title"), result.getTitle());
+        assertEquals(DisplayString.create(null, "text"), result.getText());
+        assertEquals(DisplayString.create(null, "detail"), result.getDetail());
+        assertEquals(DisplayString.create(null, "footnote"), result.getFootnote());
+        ColorThemeView colorThemeView = result.getColorTheme();
+        assertNotNull(colorThemeView);
+        assertTrue(colorThemeView.lightStyle());
+        ImageThemeView imageThemeView = result.getImageTheme();
+        // The image theme view will be null since we have no drawable mapper.
+        assertNull(imageThemeView);
     }
 
     protected static ThemedUIStep mockThemedUIStep(@NonNull final String identifier,
@@ -85,33 +106,10 @@ public class UIStepViewTests {
         return step;
     }
 
-    public static ImageTheme mockImageTheme(@ColorPlacement String colorPlacement, String imageResourceName) {
-        ImageTheme theme = mock(ImageTheme.class);
-        when(theme.getColorPlacement()).thenReturn(colorPlacement);
-        return theme;
-    }
-
-    public static ColorTheme mockColorTheme(ImmutableMap<String, String> colorStyles, boolean isLightStyle) {
-        ColorTheme theme = mock(ColorTheme.class);
-        when(theme.isLightStyle()).thenReturn(isLightStyle);
-        when(theme.getColorStyles()).thenReturn(colorStyles);
-        return theme;
-    }
-
-    @Test
-    public void testFromTUIStep() {
-        UIStepViewBase result = UIStepViewBase.fromUIStep(MOCK_UI_STEP, null);
-        assertNotNull(result);
-        assertEquals("identifier", result.getIdentifier());
-        assertEquals(DisplayString.create(null, "title"), result.getTitle());
-        assertEquals(DisplayString.create(null, "text"), result.getText());
-        assertEquals(DisplayString.create(null, "detail"), result.getDetail());
-        assertEquals(DisplayString.create(null, "footnote"), result.getFootnote());
-        ColorThemeView colorThemeView = result.getColorTheme();
-        assertNotNull(colorThemeView);
-        assertTrue(colorThemeView.lightStyle());
-        ImageThemeView imageThemeView = result.getImageTheme();
-        // The image theme view will be null since we have no drawable mapper.
-        assertNull(imageThemeView);
+    static {
+        ImageTheme imageTheme = mockImageTheme(ColorPlacement.HEADER, null);
+        ColorTheme colorTheme = mockColorTheme(null, true);
+        MOCK_UI_STEP = mockThemedUIStep("identifier", ImmutableMap.of(), "title", "text",
+                "detail", "footnote", colorTheme, imageTheme);
     }
 }

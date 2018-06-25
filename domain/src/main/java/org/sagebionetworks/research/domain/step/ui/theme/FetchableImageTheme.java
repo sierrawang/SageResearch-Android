@@ -41,8 +41,6 @@ import javax.annotation.Nullable;
 
 @AutoValue
 public abstract class FetchableImageTheme implements ImageTheme {
-    public static final String TYPE_KEY = ImageThemeType.FETCHABLE;
-
     @AutoValue.Builder
     public abstract static class Builder {
         public abstract FetchableImageTheme build();
@@ -51,6 +49,8 @@ public abstract class FetchableImageTheme implements ImageTheme {
 
         public abstract Builder setImageResourceName(@Nullable String imageResourceName);
     }
+
+    public static final String TYPE_KEY = ImageThemeType.FETCHABLE;
 
     public static Builder builder() {
         return new AutoValue_FetchableImageTheme.Builder();

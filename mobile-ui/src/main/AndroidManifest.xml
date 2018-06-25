@@ -30,7 +30,6 @@
   ~ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
   -->
 
-<manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="org.sagebionetworks.research.domain.mobile_ui">
+<manifest package="org.sagebionetworks.research.domain.mobile_ui">
 
 </manifest>

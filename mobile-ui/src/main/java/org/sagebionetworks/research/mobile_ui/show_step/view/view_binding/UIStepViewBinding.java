@@ -32,9 +32,6 @@
 
 package org.sagebionetworks.research.mobile_ui.show_step.view.view_binding;
 
-import android.animation.ObjectAnimator;
-import android.graphics.drawable.AnimationDrawable;
-import android.graphics.drawable.Drawable;
 import android.support.annotation.Nullable;
 import android.view.View;
 import android.widget.ImageView;
@@ -42,104 +39,162 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import org.sagebionetworks.research.domain.mobile_ui.R2.id;
-import org.sagebionetworks.research.domain.step.ui.theme.FetchableImageTheme;
-import org.sagebionetworks.research.domain.step.ui.theme.ImageTheme;
 import org.sagebionetworks.research.mobile_ui.widget.ActionButton;
 import org.sagebionetworks.research.mobile_ui.widget.NavigationActionBar;
 import org.sagebionetworks.research.mobile_ui.widget.NavigationActionBar.ActionButtonClickListener;
 import org.sagebionetworks.research.mobile_ui.widget.StepHeader;
-import org.sagebionetworks.research.presentation.DisplayDrawable;
 import org.sagebionetworks.research.presentation.DisplayString;
-import org.sagebionetworks.research.presentation.model.AnimationImageThemeView;
-import org.sagebionetworks.research.presentation.model.ImageThemeView;
-import org.sagebionetworks.research.presentation.model.interfaces.FetchableImageThemeView;
 import org.sagebionetworks.research.presentation.model.interfaces.UIStepView;
-
-import java.lang.annotation.Retention;
-import java.lang.annotation.RetentionPolicy;
-import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.Unbinder;
 
 /**
- *  A UIStepViewBinding stores the various views that a step view may contain. Supported Views are:
- *      NOTE: the format for these is ID : TYPE - DESCRIPTION.
- *      - stepHeader : StepHeader - The header view for this view.
- *      - stepBody : View - The body view for this view, usually has the majority of the content.
- *      - navigationActionBar : NavigationActionBar - Contains navigation action buttons (forward, backward, skip).
- *      - imageView : ImageView - The view to display an images for the step on.
- *      - titleLabel : TextView - The view to display the title of the step on.
- *      - textLabel : TextView - The view to display the text of the step on.
- *      - detailLabel : TextView - The view to display the detail of the step on.
- *      - footnoteLabel : TextView - The view to display the footnote of the step on.
- *      - progressLabel : TextView - The view to display a String representation of the user's progress on.
- *      - progressBar : ProgressBar - The view to display a Visual representation of the user's progress on.
- *      - cancelButton : Button - The button which ends the current active task when pressed.
- *      - nextButton : Button - The button which causes the task to navigate to the next step when pressed.
- *      - backButton : Button - The button which causes the task to navigate to the previous step when pressed.
- *      - skipButton : Button - The button which causes the task to skip the current step when pressed. (Note: this
- *          button is different then the next button because no result will be created for the current step)
+ * A UIStepViewBinding stores the various views that a step view may contain. Supported Views are: NOTE: the format
+ * for these is ID : TYPE - DESCRIPTION. - stepHeader : StepHeader - The header view for this view. - stepBody : View
+ * - The body view for this view, usually has the majority of the content. - navigationActionBar : NavigationActionBar
+ * - Contains navigation action buttons (forward, backward, skip). - imageView : ImageView - The view to display an
+ * images for the step on. - titleLabel : TextView - The view to display the title of the step on. - textLabel :
+ * TextView - The view to display the text of the step on. - detailLabel : TextView - The view to display the detail
+ * of the step on. - footnoteLabel : TextView - The view to display the footnote of the step on. - progressLabel :
+ * TextView - The view to display a String representation of the user's progress on. - progressBar : ProgressBar - The
+ * view to display a Visual representation of the user's progress on. - cancelButton : Button - The button which ends
+ * the current active task when pressed. - nextButton : Button - The button which causes the task to navigate to the
+ * next step when pressed. - backButton : Button - The button which causes the task to navigate to the previous step
+ * when pressed. - skipButton : Button - The button which causes the task to skip the current step when pressed.
+ * (Note: this button is different then the next button because no result will be created for the current step)
  */
 public class UIStepViewBinding<S extends UIStepView> implements StepViewBinding<S> {
+    protected static class UIStepViewHolder {
+        /**
+         * Views can optionally have a button with the id `rs2_step_navigation_action_backward`. This button generally
+         * causes the task to navigate to the previous step when pressed.
+         */
+        @Nullable
+        @BindView(id.rs2_step_navigation_action_backward)
+        public ActionButton backButton;
+
+        /**
+         * Views can optionally have a button with the id `rs2_step_navigation_action_cancel`. This button generally
+         * ends the current active task when pressed
+         */
+        @Nullable
+        @BindView(id.rs2_step_navigation_action_cancel)
+        public ActionButton cancelButton;
+
+        /**
+         * Views can optionally have a text view with the id `rs2_detail`. This view generally displays further
+         * information related to the information displayed on the textLabel.
+         */
+        @Nullable
+        @BindView(id.rs2_detail)
+        public TextView detail;
+
+        /**
+         * Views can optionally have a text view with the id `rs2_footnote`. This view generally displays the footnote
+         * of the step that is being displayed.
+         */
+        @Nullable
+        @BindView(id.rs2_footnote)
+        public TextView footnote;
+
+        /**
+         * Views can optionally have an image view with the id `rs2_image_view`. This view generally displays and
+         * image or icon that is associated with the step.
+         */
+        @Nullable
+        @BindView(id.rs2_image_view)
+        public ImageView imageView;
+
+        /**
+         * Views can optionally have a button with the id `rs2_step_navigation_action_info`. This button generally
+         * displays more information about the step.
+         */
+        @Nullable
+        @BindView(id.rs2_step_navigation_action_info)
+        public ActionButton infoButton;
+
+        /**
+         * Views can optionally contain a NavigationActionBar to store and layout their navigation buttons.
+         */
+        @Nullable
+        @BindView(id.rs2_step_navigation_action_bar)
+        public NavigationActionBar navigationActionBar;
+
+        /**
+         * Views can optionally have a button with the id `rs2_step_navigation_action_forward`. This button generally
+         * moves on to the next step in the active task, or completes the task when pressed.
+         */
+        @Nullable
+        @BindView(id.rs2_step_navigation_action_forward)
+        public ActionButton nextButton;
+
+        /**
+         * Views can optionally have a progress bar with the id `rs2_progress_bar. This progress bar generally
+         * displays a visual indication of how much progress the user has made into the current active task. This
+         * corresponds to the string displayed on the progressLabel.
+         */
+        @Nullable
+        @BindView(id.rs2_progress_bar)
+        public ProgressBar progressBar;
+
+        /**
+         * Views can optionally have a text view with the id `rs2_progress_label`. This view generally displays a
+         * string indicating how much progress the user has made into the current active task (i.e. "STEP 1 OF 6").
+         */
+        @Nullable
+        @BindView(id.rs2_progress_label)
+        public TextView progressLabel;
+
+        /**
+         * Views can optionally have a button with the id `rs2_step_navigation_action_skip`. This button generally
+         * causes the current step to be skipped when pressed.
+         */
+        @Nullable
+        @BindView(id.rs2_step_navigation_action_skip)
+        public ActionButton skipButton;
+
+        /**
+         * Views can optionally have a body view. This view generally contains the main content for the step such as
+         * the title and text labels.
+         */
+        @Nullable
+        @BindView(id.rs2_step_body)
+        public View stepBody;
+
+        /**
+         * Views can optionally have a header view. This view generally contains the progress bar, and the cancel and
+         * = info action buttons.
+         */
+        @Nullable
+        @BindView(id.rs2_step_header)
+        public StepHeader stepHeader;
+
+        /**
+         * Views can optionally have a text view with the id `rs2_text`. This view generally displays the main content
+         * for the step in medium size font.
+         */
+        @Nullable
+        @BindView(id.rs2_text)
+        public TextView text;
+
+        /**
+         * Views can optionally have a title view with the id `rs2_title`. This view generally displays a large title
+         * consisting of a brief description of what the step represents.
+         **/
+        @Nullable
+        @BindView(id.rs2_title)
+        public TextView title;
+    }
+
     private final UIStepViewHolder uiStepViewHolder;
+
     private final Unbinder uiStepViewHolderUnbinder;
 
     public UIStepViewBinding(View view) {
         this.uiStepViewHolder = new UIStepViewHolder();
         this.uiStepViewHolderUnbinder = ButterKnife.bind(this.uiStepViewHolder, view);
-    }
-
-    // region Getters
-    @Nullable
-    public TextView getTitle() {
-        return this.uiStepViewHolder.title;
-    }
-
-    @Nullable
-    public TextView getText() {
-        return this.uiStepViewHolder.text;
-    }
-
-    @Nullable
-    public TextView getDetail() {
-        return this.uiStepViewHolder.detail;
-    }
-
-    @Nullable
-    public TextView getFoonote() {
-        return this.uiStepViewHolder.footnote;
-    }
-
-    @Nullable
-    public ProgressBar getProgressBar() {
-        return this.uiStepViewHolder.progressBar;
-    }
-
-    @Nullable
-    public TextView getProgressLabel() {
-        return this.uiStepViewHolder.progressLabel;
-    }
-
-    @Nullable
-    public StepHeader getStepHeader() {
-       return this.uiStepViewHolder.stepHeader;
-    }
-
-    @Nullable
-    public View getStepBody() {
-        return this.uiStepViewHolder.stepBody;
-    }
-
-    @Nullable
-    public NavigationActionBar getNavigationActionBar() {
-        return this.uiStepViewHolder.navigationActionBar;
-    }
-
-    @Nullable
-    public ActionButton getNextButton() {
-        return this.uiStepViewHolder.nextButton;
     }
 
     @Nullable
@@ -153,8 +208,43 @@ public class UIStepViewBinding<S extends UIStepView> implements StepViewBinding<
     }
 
     @Nullable
+    public TextView getDetail() {
+        return this.uiStepViewHolder.detail;
+    }
+
+    @Nullable
+    public TextView getFoonote() {
+        return this.uiStepViewHolder.footnote;
+    }
+
+    @Nullable
+    public ImageView getImageView() {
+        return this.uiStepViewHolder.imageView;
+    }
+
+    @Nullable
     public ActionButton getInfoButton() {
         return this.uiStepViewHolder.infoButton;
+    }
+
+    @Nullable
+    public NavigationActionBar getNavigationActionBar() {
+        return this.uiStepViewHolder.navigationActionBar;
+    }
+
+    @Nullable
+    public ActionButton getNextButton() {
+        return this.uiStepViewHolder.nextButton;
+    }
+
+    @Nullable
+    public ProgressBar getProgressBar() {
+        return this.uiStepViewHolder.progressBar;
+    }
+
+    @Nullable
+    public TextView getProgressLabel() {
+        return this.uiStepViewHolder.progressLabel;
     }
 
     @Nullable
@@ -163,14 +253,25 @@ public class UIStepViewBinding<S extends UIStepView> implements StepViewBinding<
     }
 
     @Nullable
-    public ImageView getImageView() {
-        return this.uiStepViewHolder.imageView;
+    public View getStepBody() {
+        return this.uiStepViewHolder.stepBody;
+    }
+
+    @Nullable
+    public StepHeader getStepHeader() {
+        return this.uiStepViewHolder.stepHeader;
+    }
+
+    @Nullable
+    public TextView getText() {
+        return this.uiStepViewHolder.text;
     }
     // endregion
 
-    @Override
-    public void unbind() {
-        this.uiStepViewHolderUnbinder.unbind();
+    // region Getters
+    @Nullable
+    public TextView getTitle() {
+        return this.uiStepViewHolder.title;
     }
 
     @Override
@@ -184,6 +285,11 @@ public class UIStepViewBinding<S extends UIStepView> implements StepViewBinding<
         if (stepHeader != null) {
             stepHeader.setActionButtonClickListener(actionButtonClickListener);
         }
+    }
+
+    @Override
+    public void unbind() {
+        this.uiStepViewHolderUnbinder.unbind();
     }
 
     @Override
@@ -203,127 +309,5 @@ public class UIStepViewBinding<S extends UIStepView> implements StepViewBinding<
                 view.setText(displayString.getDefaultDisplayStringRes());
             }
         }
-    }
-
-    protected static class UIStepViewHolder {
-        /**
-         * Views can optionally have a header view. This view generally contains the progress bar, and the cancel and =
-         * info action buttons.
-         */
-        @Nullable
-        @BindView(id.rs2_step_header)
-        public StepHeader stepHeader;
-
-        /**
-         * Views can optionally have a body view. This view generally contains the main content for the step such as
-         * the title and text labels.
-         */
-        @Nullable
-        @BindView(id.rs2_step_body)
-        public View stepBody;
-
-        /**
-         * Views can optionally contain a NavigationActionBar to store and layout their navigation buttons.
-         */
-        @Nullable
-        @BindView(id.rs2_step_navigation_action_bar)
-        public NavigationActionBar navigationActionBar;
-
-        /**
-         * Views can optionally have an image view with the id `rs2_image_view`. This view generally displays and image
-         * or icon that is associated with the step.
-         */
-        @Nullable
-        @BindView(id.rs2_image_view)
-        public ImageView imageView;
-
-        /**
-         * Views can optionally have a title view with the id `rs2_title`. This view generally displays a large
-         * title consisting of a brief description of what the step represents.
-         **/
-        @Nullable
-        @BindView(id.rs2_title)
-        public TextView title;
-
-        /**
-         * Views can optionally have a text view with the id `rs2_text`. This view generally displays the main
-         * content for the step in medium size font.
-         */
-        @Nullable
-        @BindView(id.rs2_text)
-        public TextView text;
-
-        /**
-         * Views can optionally have a text view with the id `rs2_detail`. This view generally displays further
-         * information related to the information displayed on the textLabel.
-         */
-        @Nullable
-        @BindView(id.rs2_detail)
-        public TextView detail;
-
-        /**
-         * Views can optionally have a text view with the id `rs2_footnote`. This view generally displays the
-         * footnote of the step that is being displayed.
-         */
-        @Nullable
-        @BindView(id.rs2_footnote)
-        public TextView footnote;
-
-        /**
-         * Views can optionally have a text view with the id `rs2_progress_label`. This view generally displays a string
-         * indicating how much progress the user has made into the current active task (i.e. "STEP 1 OF 6").
-         */
-        @Nullable
-        @BindView(id.rs2_progress_label)
-        public TextView progressLabel;
-
-        /**
-         * Views can optionally have a progress bar with the id `rs2_progress_bar. This progress bar generally displays
-         * a visual indication of how much progress the user has made into the current active task. This corresponds
-         * to the string displayed on the progressLabel.
-         */
-        @Nullable
-        @BindView(id.rs2_progress_bar)
-        public ProgressBar progressBar;
-
-        /**
-         * Views can optionally have a button with the id `rs2_step_navigation_action_cancel`. This button generally
-         * ends the current active task when pressed
-         */
-        @Nullable
-        @BindView(id.rs2_step_navigation_action_cancel)
-        public ActionButton cancelButton;
-
-        /**
-         * Views can optionally have a button with the id `rs2_step_navigation_action_forward`. This button generally
-         * moves on to the next step in the active task, or completes the task when pressed.
-         */
-        @Nullable
-        @BindView(id.rs2_step_navigation_action_forward)
-        public ActionButton nextButton;
-
-        /**
-         * Views can optionally have a button with the id `rs2_step_navigation_action_backward`. This button generally
-         * causes the task to navigate to the previous step when pressed.
-         */
-        @Nullable
-        @BindView(id.rs2_step_navigation_action_backward)
-        public ActionButton backButton;
-
-        /**
-         * Views can optionally have a button with the id `rs2_step_navigation_action_skip`. This button generally
-         * causes the current step to be skipped when pressed.
-         */
-        @Nullable
-        @BindView(id.rs2_step_navigation_action_skip)
-        public ActionButton skipButton;
-
-        /**
-         * Views can optionally have a button with the id `rs2_step_navigation_action_info`. This button generally
-         * displays more information about the step.
-         */
-        @Nullable
-        @BindView(id.rs2_step_navigation_action_info)
-        public ActionButton infoButton;
     }
 }

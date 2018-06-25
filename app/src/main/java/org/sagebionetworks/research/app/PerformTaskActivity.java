@@ -32,6 +32,8 @@
 
 package org.sagebionetworks.research.app;
 
+import static com.google.common.base.Preconditions.checkNotNull;
+
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
@@ -46,8 +48,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.util.UUID;
-
-import static com.google.common.base.Preconditions.checkNotNull;
 
 public class PerformTaskActivity extends AppCompatActivity {
     private static final Logger LOGGER = LoggerFactory.getLogger(PerformTaskActivity.class);

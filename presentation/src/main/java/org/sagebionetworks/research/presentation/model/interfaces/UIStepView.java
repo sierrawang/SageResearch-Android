@@ -37,26 +37,24 @@ import android.support.annotation.Nullable;
 
 import com.google.common.collect.ImmutableMap;
 
-import org.sagebionetworks.research.domain.result.interfaces.TaskResult;
 import org.sagebionetworks.research.presentation.ActionType;
 import org.sagebionetworks.research.presentation.DisplayString;
 import org.sagebionetworks.research.presentation.model.ColorThemeView;
 import org.sagebionetworks.research.presentation.model.ImageThemeView;
 import org.sagebionetworks.research.presentation.model.action.ActionView;
-import org.sagebionetworks.research.presentation.model.action.ActionViewBase;
 
 public interface UIStepView extends StepView {
+    /**
+     * Returns the step's ActionView for the given ActionType. Step ActionViews take priority over all other types of
+     * ActionViews and as a result the ActionView returned here will definitely change the appearance of the
+     * ActionButton corresponding to this ActionView for the step.
+     *
+     * @param actionType
+     *         The type of action to get the action view for.
+     * @return the step's ActionView for the given ActionType.
+     */
     @Nullable
-    DisplayString getTitle();
-
-    @Nullable
-    DisplayString getText();
-
-    @Nullable
-    DisplayString getDetail();
-
-    @Nullable
-    DisplayString getFootnote();
+    ActionView getActionFor(@ActionType String actionType);
 
     @NonNull
     ImmutableMap<String, ActionView> getActions();
@@ -65,15 +63,17 @@ public interface UIStepView extends StepView {
     ColorThemeView getColorTheme();
 
     @Nullable
+    DisplayString getDetail();
+
+    @Nullable
+    DisplayString getFootnote();
+
+    @Nullable
     ImageThemeView getImageTheme();
 
-    /**
-     * Returns the step's ActionView for the given ActionType. Step ActionViews take priority over all other
-     * types of ActionViews and as a result the ActionView returned here will definitely change the appearance of the
-     * ActionButton corresponding to this ActionView for the step.
-     * @param actionType The type of action to get the action view for.
-     * @return the step's ActionView for the given ActionType.
-     */
     @Nullable
-    ActionView getActionFor(@ActionType String actionType);
+    DisplayString getText();
+
+    @Nullable
+    DisplayString getTitle();
 }

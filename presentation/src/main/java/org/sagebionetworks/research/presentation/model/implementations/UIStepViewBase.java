@@ -37,13 +37,10 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 
 import com.google.common.collect.ImmutableMap;
-import com.google.common.collect.ImmutableMap.Builder;
-import com.google.gson.annotations.SerializedName;
 
 import org.sagebionetworks.research.domain.result.interfaces.TaskResult;
 import org.sagebionetworks.research.domain.step.interfaces.Step;
 import org.sagebionetworks.research.domain.step.interfaces.ThemedUIStep;
-import org.sagebionetworks.research.domain.step.ui.action.implementations.SkipToStepActionBase;
 import org.sagebionetworks.research.domain.step.ui.action.interfaces.Action;
 import org.sagebionetworks.research.domain.step.ui.action.interfaces.ReminderAction;
 import org.sagebionetworks.research.domain.step.ui.action.interfaces.SkipToStepAction;
@@ -63,28 +60,50 @@ import java.util.Map;
 import java.util.Map.Entry;
 
 public class UIStepViewBase implements UIStepView {
-    @NonNull
-    private final String identifier;
-    @NavDirection
-    private final int navDirection;
+    public static final Creator<UIStepViewBase> CREATOR = new Creator<UIStepViewBase>() {
+        @Override
+        public UIStepViewBase createFromParcel(Parcel source) {
+            return new UIStepViewBase(source);
+        }
+
+        @Override
+        public UIStepViewBase[] newArray(int size) {
+            return new UIStepViewBase[size];
+        }
+    };
+
     @NonNull
     private final ImmutableMap<String, ActionView> actions;
-    @Nullable
-    private final DisplayString title;
-    @Nullable
-    private final DisplayString text;
-    @Nullable
-    private final DisplayString detail;
-    @Nullable
-    private final DisplayString footnote;
+
     @Nullable
     private final ColorThemeView colorTheme;
+
+    @Nullable
+    private final DisplayString detail;
+
+    @Nullable
+    private final DisplayString footnote;
+
+    @NonNull
+    private final String identifier;
+
     @Nullable
     private final ImageThemeView imageTheme;
 
+    @NavDirection
+    private final int navDirection;
+
+    @Nullable
+    private final DisplayString text;
+
+    @Nullable
+    private final DisplayString title;
+
     /**
      * Factory method for creating a UIStepViewBase from a ThemedUIStep.
-     * @param step The UIStep to create the UIStepViewBase from.
+     *
+     * @param step
+     *         The UIStep to create the UIStepViewBase from.
      * @return A UIStepViewBase created from the given ThemedUIStep.
      */
     public static UIStepViewBase fromUIStep(Step step, DrawableMapper mapper) {
@@ -92,7 +111,7 @@ public class UIStepViewBase implements UIStepView {
             throw new IllegalArgumentException("Provided step: " + step + " is not a ThemedUIStep");
         }
 
-        ThemedUIStep uiStep = (ThemedUIStep)step;
+        ThemedUIStep uiStep = (ThemedUIStep) step;
         String identifier = uiStep.getIdentifier();
         // TODO: rkolmos 05/29/2018 potentially change actions.
         ImmutableMap<String, ActionView> actions = ImmutableMap.copyOf(getActionsFrom(uiStep.getActions()));
@@ -107,34 +126,25 @@ public class UIStepViewBase implements UIStepView {
                 colorTheme, imageTheme);
     }
 
-    protected static Map<String, ActionView> getActionsFrom(Map<String, Action> actions) {
-        Map<String, ActionView> returnValue = new HashMap<>();
-        for (Entry<String, Action> entry : actions.entrySet()) {
-            String key = entry.getKey();
-            Action action = entry.getValue();
-            if (action instanceof ReminderAction) {
-                returnValue.put(key, ReminderActionViewBase.fromReminderAction((ReminderAction)action));
-            } else if (action instanceof SkipToStepAction) {
-                returnValue.put(key, SkipToStepActionViewBase.fromSkipToStepAction((SkipToStepAction)action));
-            } else {
-                returnValue.put(key, ActionViewBase.fromAction(action));
-            }
-        }
-
-        return returnValue;
-    }
-
     /**
      * Constructor for creating a UIStepViewBase from the given information.
-     * @param identifier The unique identifier the UIStepViewBase should have.
-     * @param navDirection
-     * @param actions The custom UI actions for the UIStepViewBase.
-     * @param title The title the UIStepViewBase should have, fully localized.
-     * @param text The text the UIStepViewBase should have, fully localized.
-     * @param detail The detail the UIStepViewBase should have, fully localized.
-     * @param footnote The footnote the UIStepViewBase should have, fully localized.
-     * @param colorTheme The colorTheme the UIStepViewBase should use, with resources fully resolved.
-     * @param imageTheme The imageTheme the UIStepViewBase should use, with resources fully resolved.
+     *
+     * @param identifier
+     *         The unique identifier the UIStepViewBase should have.
+     * @param actions
+     *         The custom UI actions for the UIStepViewBase.
+     * @param title
+     *         The title the UIStepViewBase should have, fully localized.
+     * @param text
+     *         The text the UIStepViewBase should have, fully localized.
+     * @param detail
+     *         The detail the UIStepViewBase should have, fully localized.
+     * @param footnote
+     *         The footnote the UIStepViewBase should have, fully localized.
+     * @param colorTheme
+     *         The colorTheme the UIStepViewBase should use, with resources fully resolved.
+     * @param imageTheme
+     *         The imageTheme the UIStepViewBase should use, with resources fully resolved.
      */
     public UIStepViewBase(@NonNull final String identifier,
             final int navDirection, @NonNull final ImmutableMap<String, ActionView> actions,
@@ -153,70 +163,16 @@ public class UIStepViewBase implements UIStepView {
         this.imageTheme = imageTheme;
     }
 
-    @NonNull
-    @Override
-    public String getIdentifier() {
-        return this.identifier;
-    }
-
-
-    @Override
-    public int getNavDirection() {
-        return navDirection;
-    }
-
-    @Nullable
-    @Override
-    public DisplayString getTitle() {
-        return this.title;
-    }
-
-    @Nullable
-    @Override
-    public DisplayString getText() {
-        return this.text;
-    }
-
-    @Nullable
-    @Override
-    public DisplayString getDetail() {
-        return this.detail;
-    }
-
-    @Nullable
-    @Override
-    public DisplayString getFootnote() {
-        return this.footnote;
-    }
-
-    @NonNull
-    @Override
-    public ImmutableMap<String, ActionView> getActions() {
-        return this.actions;
-    }
-
-    @Nullable
-    @Override
-    public ColorThemeView getColorTheme() {
-        return this.colorTheme;
-    }
-
-    @Nullable
-    @Override
-    public ImageThemeView getImageTheme() {
-        return this.imageTheme;
-    }
-
-    @Nullable
-    @Override
-    public ActionView getActionFor(@ActionType final String actionType) {
-        // If we have an action from the json for the given actionType we use this, otherwise we return null.
-        return this.actions.get(actionType);
-    }
-
-    @Override
-    public boolean shouldSkip(@Nullable final TaskResult taskResult) {
-        return false;
+    protected UIStepViewBase(Parcel in) {
+        this.identifier = in.readString();
+        this.navDirection = in.readInt();
+        this.actions = (ImmutableMap<String, ActionView>) in.readSerializable();
+        this.title = in.readParcelable(DisplayString.class.getClassLoader());
+        this.text = in.readParcelable(DisplayString.class.getClassLoader());
+        this.detail = in.readParcelable(DisplayString.class.getClassLoader());
+        this.footnote = in.readParcelable(DisplayString.class.getClassLoader());
+        this.colorTheme = in.readParcelable(ColorThemeView.class.getClassLoader());
+        this.imageTheme = in.readParcelable(ImageThemeView.class.getClassLoader());
     }
 
     @Override
@@ -237,27 +193,85 @@ public class UIStepViewBase implements UIStepView {
         dest.writeParcelable(this.imageTheme, flags);
     }
 
-    protected UIStepViewBase(Parcel in) {
-        this.identifier = in.readString();
-        this.navDirection = in.readInt();
-        this.actions = (ImmutableMap<String, ActionView>) in.readSerializable();
-        this.title = in.readParcelable(DisplayString.class.getClassLoader());
-        this.text = in.readParcelable(DisplayString.class.getClassLoader());
-        this.detail = in.readParcelable(DisplayString.class.getClassLoader());
-        this.footnote = in.readParcelable(DisplayString.class.getClassLoader());
-        this.colorTheme = in.readParcelable(ColorThemeView.class.getClassLoader());
-        this.imageTheme = in.readParcelable(ImageThemeView.class.getClassLoader());
+    @Nullable
+    @Override
+    public ActionView getActionFor(@ActionType final String actionType) {
+        // If we have an action from the json for the given actionType we use this, otherwise we return null.
+        return this.actions.get(actionType);
     }
 
-    public static final Creator<UIStepViewBase> CREATOR = new Creator<UIStepViewBase>() {
-        @Override
-        public UIStepViewBase createFromParcel(Parcel source) {
-            return new UIStepViewBase(source);
+    @NonNull
+    @Override
+    public ImmutableMap<String, ActionView> getActions() {
+        return this.actions;
+    }
+
+    @Nullable
+    @Override
+    public ColorThemeView getColorTheme() {
+        return this.colorTheme;
+    }
+
+    @Nullable
+    @Override
+    public DisplayString getDetail() {
+        return this.detail;
+    }
+
+    @Nullable
+    @Override
+    public DisplayString getFootnote() {
+        return this.footnote;
+    }
+
+    @Nullable
+    @Override
+    public ImageThemeView getImageTheme() {
+        return this.imageTheme;
+    }
+
+    @Nullable
+    @Override
+    public DisplayString getText() {
+        return this.text;
+    }
+
+    @Nullable
+    @Override
+    public DisplayString getTitle() {
+        return this.title;
+    }
+
+    @NonNull
+    @Override
+    public String getIdentifier() {
+        return this.identifier;
+    }
+
+    @Override
+    public int getNavDirection() {
+        return navDirection;
+    }
+
+    @Override
+    public boolean shouldSkip(@Nullable final TaskResult taskResult) {
+        return false;
+    }
+
+    protected static Map<String, ActionView> getActionsFrom(Map<String, Action> actions) {
+        Map<String, ActionView> returnValue = new HashMap<>();
+        for (Entry<String, Action> entry : actions.entrySet()) {
+            String key = entry.getKey();
+            Action action = entry.getValue();
+            if (action instanceof ReminderAction) {
+                returnValue.put(key, ReminderActionViewBase.fromReminderAction((ReminderAction) action));
+            } else if (action instanceof SkipToStepAction) {
+                returnValue.put(key, SkipToStepActionViewBase.fromSkipToStepAction((SkipToStepAction) action));
+            } else {
+                returnValue.put(key, ActionViewBase.fromAction(action));
+            }
         }
 
-        @Override
-        public UIStepViewBase[] newArray(int size) {
-            return new UIStepViewBase[size];
-        }
-    };
+        return returnValue;
+    }
 }

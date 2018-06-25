@@ -37,8 +37,6 @@ import android.support.annotation.Nullable;
 
 import com.google.common.collect.ImmutableMap;
 
-import org.sagebionetworks.research.domain.result.interfaces.AnswerResult;
-import org.sagebionetworks.research.domain.result.interfaces.Result;
 import org.sagebionetworks.research.domain.result.interfaces.TaskResult;
 import org.sagebionetworks.research.domain.step.interfaces.Step;
 import org.sagebionetworks.research.mpower.show_step_fragment.FirstRunHelper;
@@ -48,17 +46,26 @@ import org.sagebionetworks.research.presentation.mapper.DrawableMapper;
 import org.sagebionetworks.research.presentation.model.ColorThemeView;
 import org.sagebionetworks.research.presentation.model.ImageThemeView;
 import org.sagebionetworks.research.presentation.model.action.ActionView;
-import org.sagebionetworks.research.presentation.model.action.ActionViewBase;
 import org.sagebionetworks.research.presentation.model.implementations.ActiveUIStepViewBase;
-import org.sagebionetworks.research.presentation.perform_task.PerformTaskViewModel;
 import org.threeten.bp.Duration;
-import org.threeten.bp.Instant;
-import org.threeten.bp.ZonedDateTime;
-
-import java.util.List;
 
 public class InstructionStepView extends ActiveUIStepViewBase {
     private final boolean firstRunOnly;
+
+    @NonNull
+    public static InstructionStepView fromInstructionStep(@NonNull Step step, DrawableMapper mapper) {
+        if (!(step instanceof InstructionStep)) {
+            throw new IllegalArgumentException("Provided step: " + step + " is not an InstructionStep");
+        }
+
+        InstructionStep instructionStep = (InstructionStep) step;
+        ActiveUIStepViewBase activeUIStepView = ActiveUIStepViewBase.fromActiveUIStep(step, mapper);
+        return new InstructionStepView(activeUIStepView.getIdentifier(), activeUIStepView.getNavDirection(),
+                activeUIStepView.getActions(), activeUIStepView.getTitle(), activeUIStepView.getText(),
+                activeUIStepView.getDetail(), activeUIStepView.getFootnote(), activeUIStepView.getColorTheme(),
+                activeUIStepView.getImageTheme(), activeUIStepView.getDuration(),
+                activeUIStepView.isBackgroundAudioRequired(), instructionStep.isFirstRunOnly());
+    }
 
     public InstructionStepView(@NonNull final String identifier, final int navDirection,
             @NonNull final ImmutableMap<String, ActionView> actions,
@@ -78,21 +85,6 @@ public class InstructionStepView extends ActiveUIStepViewBase {
 
     public boolean isFirstRunOnly() {
         return this.firstRunOnly;
-    }
-
-    @NonNull
-    public static InstructionStepView fromInstructionStep(@NonNull Step step, DrawableMapper mapper) {
-        if (!(step instanceof InstructionStep)) {
-            throw new IllegalArgumentException("Provided step: " + step + " is not an InstructionStep");
-        }
-
-        InstructionStep instructionStep = (InstructionStep) step;
-        ActiveUIStepViewBase activeUIStepView = ActiveUIStepViewBase.fromActiveUIStep(step, mapper);
-        return new InstructionStepView(activeUIStepView.getIdentifier(), activeUIStepView.getNavDirection(),
-                activeUIStepView.getActions(), activeUIStepView.getTitle(), activeUIStepView.getText(),
-                activeUIStepView.getDetail(), activeUIStepView.getFootnote(), activeUIStepView.getColorTheme(),
-                activeUIStepView.getImageTheme(), activeUIStepView.getDuration(),
-                activeUIStepView.isBackgroundAudioRequired(), instructionStep.isFirstRunOnly());
     }
 
     @Override

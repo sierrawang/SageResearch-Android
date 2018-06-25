@@ -35,17 +35,14 @@ package org.sagebionetworks.research.presentation.mapper;
 import android.content.res.Resources.NotFoundException;
 import android.support.annotation.DrawableRes;
 
-import org.sagebionetworks.research.domain.presentation.R;
 import org.sagebionetworks.research.domain.repository.TaskRepository;
 
 import java.util.Map;
 
-import javax.inject.Inject;
-import javax.inject.Singleton;
-
 public class DrawableMapper {
-    private TaskRepository taskRepository;
     private Map<String, Integer> drawableMap;
+
+    private TaskRepository taskRepository;
 
     public DrawableMapper(TaskRepository taskRepository, Map<String, Integer> drawableMap) {
         this.taskRepository = taskRepository;

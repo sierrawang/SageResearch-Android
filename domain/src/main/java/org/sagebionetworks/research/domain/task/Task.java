@@ -43,17 +43,17 @@ import java.util.List;
 
 public interface Task {
     @NonNull
+    Task copyWithSteps(List<Step> steps);
+
+    @NonNull
     ImmutableList<AsyncAction> getAsyncActions();
 
     @NonNull
     String getIdentifier();
 
     @NonNull
-    ImmutableList<Step> getSteps();
-
-    @NonNull
-    Task copyWithSteps(List<Step> steps);
-
-    @NonNull
     ImmutableList<String> getProgressMarkers();
+
+    @NonNull
+    ImmutableList<Step> getSteps();
 }

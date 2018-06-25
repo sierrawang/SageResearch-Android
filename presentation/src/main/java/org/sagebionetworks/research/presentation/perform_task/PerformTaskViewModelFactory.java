@@ -32,6 +32,8 @@
 
 package org.sagebionetworks.research.presentation.perform_task;
 
+import static com.google.common.base.Preconditions.checkNotNull;
+
 import android.arch.lifecycle.ViewModel;
 import android.arch.lifecycle.ViewModelProvider;
 import android.support.annotation.NonNull;
@@ -39,26 +41,22 @@ import android.support.annotation.NonNull;
 import org.sagebionetworks.research.domain.repository.TaskRepository;
 import org.sagebionetworks.research.domain.task.navigation.StepNavigatorFactory;
 import org.sagebionetworks.research.presentation.inject.StepViewModule.StepViewFactory;
-import org.sagebionetworks.research.presentation.mapper.DrawableMapper;
 import org.sagebionetworks.research.presentation.mapper.TaskMapper;
 import org.sagebionetworks.research.presentation.model.TaskView;
-import org.threeten.bp.LocalDateTime;
 import org.threeten.bp.ZonedDateTime;
 
 import java.util.UUID;
 
 import javax.inject.Inject;
 
-import static com.google.common.base.Preconditions.checkNotNull;
-
 public class PerformTaskViewModelFactory {
     private final StepNavigatorFactory stepNavigatorFactory;
+
+    private final StepViewFactory stepViewFactory;
 
     private final TaskMapper taskMapper;
 
     private final TaskRepository taskRepository;
-
-    private final StepViewFactory stepViewFactory;
 
 
     @Inject

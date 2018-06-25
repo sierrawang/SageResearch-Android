@@ -32,15 +32,15 @@
 
 package org.sagebionetworks.research.app;
 
-import org.junit.*;
+import static org.junit.Assert.assertTrue;
+
+import org.junit.Test;
 import org.sagebionetworks.research.domain.step.interfaces.ActiveUIStep;
 import org.sagebionetworks.research.domain.step.interfaces.Step;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
-
-import static org.junit.Assert.*;
 
 public class StepJsonDeserializationTest extends JsonDeserializationTestBase {
     private static final Logger LOGGER = LoggerFactory.getLogger(StepJsonDeserializationTest.class);

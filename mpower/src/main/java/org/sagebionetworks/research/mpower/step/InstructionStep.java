@@ -36,7 +36,6 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 
 import com.google.common.base.MoreObjects.ToStringHelper;
-import com.google.common.base.Objects;
 import com.google.gson.annotations.SerializedName;
 
 import org.sagebionetworks.research.domain.interfaces.HashCodeHelper;
@@ -75,13 +74,15 @@ public class InstructionStep extends ActiveUIStepBase {
         return TYPE_KEY;
     }
 
-    public boolean isFirstRunOnly() {
-        return this.firstRunOnly;
+    @Override
+    protected HashCodeHelper hashCodeHelper() {
+        return super.hashCodeHelper()
+                .addFields(this.isFirstRunOnly());
     }
 
     @Override
     protected boolean equalsHelper(Object other) {
-        InstructionStep step = (InstructionStep)other;
+        InstructionStep step = (InstructionStep) other;
         return super.equalsHelper(other) &&
                 this.isFirstRunOnly() == step.isFirstRunOnly();
     }
@@ -93,15 +94,13 @@ public class InstructionStep extends ActiveUIStepBase {
     }
 
     @Override
-    protected HashCodeHelper hashCodeHelper() {
-        return super.hashCodeHelper()
-                .addFields(this.isFirstRunOnly());
-    }
-
-    @Override
     public InstructionStep copyWithIdentifier(@NonNull String identifier) {
         return new InstructionStep(identifier, this.getActions(), this.getTitle(), this.getText(), this.getDetail(),
                 this.getFootnote(), this.getColorTheme(), this.getImageTheme(), this.getDuration(),
                 this.isBackgroundAudioRequired(), this.firstRunOnly);
+    }
+
+    public boolean isFirstRunOnly() {
+        return this.firstRunOnly;
     }
 }

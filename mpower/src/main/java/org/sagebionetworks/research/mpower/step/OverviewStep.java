@@ -63,17 +63,18 @@ public class OverviewStep extends UIStepBase {
         this.icons = ImmutableList.copyOf(icons);
     }
 
-    @Override
-    public String getType() {
-        return TYPE_KEY;
-    }
-
     /**
      * Returns the list of icons for this overview step.
+     *
      * @return the list of icons for this overview step.
      */
     public ImmutableList<Icon> getIcons() {
         return this.icons;
+    }
+
+    @Override
+    public String getType() {
+        return TYPE_KEY;
     }
 
     @Override

@@ -38,47 +38,17 @@ import android.support.annotation.Nullable;
 import com.google.common.collect.Range;
 
 import org.sagebionetworks.research.domain.form.DataTypes.InputDataType;
-import org.sagebionetworks.research.domain.form.TextField.TextFieldOptions;
 import org.sagebionetworks.research.domain.form.InputUIHint;
+import org.sagebionetworks.research.domain.form.TextField.TextFieldOptions;
 
 import java.util.List;
 
 /**
- * Describes a form input within a step. Contains information about data type and hints on how
- * the UI should be displayed.
+ * Describes a form input within a step. Contains information about data type and hints on how the UI should be
+ * displayed.
  */
 public interface InputField {
     final String KEY_TYPE = "dataType";
-
-    /**
-     * @return identifier that is unique among form items within the step
-     */
-    @Nullable
-    String getIdentifier();
-
-    /**
-     * @return short text offering hint for data to be entered
-     */
-    @Nullable
-    String getPrompt();
-
-    /**
-     * @return text for display giving additional detail about this input field.
-     */
-    @Nullable
-    String getPromptDetail();
-
-    /**
-     * @return text for display in a text field or text area to help users understand how to
-     * answer the item's question
-     */
-    @Nullable
-    String getPlaceholderText();
-
-    /**
-     * @return true if this survey option is optional, false otherwise.
-     */
-    boolean isOptional();
 
     /**
      * @return data type for this input field. The data type can have an associated ui hint
@@ -94,14 +64,33 @@ public interface InputField {
     String getFormUIHint();
 
     /**
-     * @return The text field options for this InputField or null if there are none.
+     * @return identifier that is unique among form items within the step
      */
     @Nullable
-    TextFieldOptions getTextFieldOptions();
+    String getIdentifier();
 
     /**
-     * @return The range used by dates and numbers for setting up a picker wheel, slider, or providing
-     * text input validation, or null if this is not applicable
+     * @return text for display in a text field or text area to help users understand how to answer the item's
+     * question
+     */
+    @Nullable
+    String getPlaceholderText();
+
+    /**
+     * @return short text offering hint for data to be entered
+     */
+    @Nullable
+    String getPrompt();
+
+    /**
+     * @return text for display giving additional detail about this input field.
+     */
+    @Nullable
+    String getPromptDetail();
+
+    /**
+     * @return The range used by dates and numbers for setting up a picker wheel, slider, or providing text input
+     * validation, or null if this is not applicable
      */
     @Nullable
     Range getRange();
@@ -111,4 +100,15 @@ public interface InputField {
      */
     @Nullable
     List<SurveyRule> getSurveyRules();
+
+    /**
+     * @return The text field options for this InputField or null if there are none.
+     */
+    @Nullable
+    TextFieldOptions getTextFieldOptions();
+
+    /**
+     * @return true if this survey option is optional, false otherwise.
+     */
+    boolean isOptional();
 }

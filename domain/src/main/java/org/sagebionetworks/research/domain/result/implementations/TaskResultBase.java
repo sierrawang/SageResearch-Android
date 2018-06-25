@@ -54,8 +54,8 @@ import java.util.List;
 import java.util.UUID;
 
 /**
- * The concrete implementation of the result for a Task. A wrapper around TaskResultData which adds
- * behavior and can be subclassed
+ * The concrete implementation of the result for a Task. A wrapper around TaskResultData which adds behavior and can
+ * be subclassed
  */
 public class TaskResultBase extends ResultBase implements TaskResult {
     @ResultType
@@ -78,9 +78,13 @@ public class TaskResultBase extends ResultBase implements TaskResult {
 
     /**
      * Convenience constructor for creating a TaskResultBase with fewer parameters.
-     * @param identifier The identifier of the task result base to create.
-     * @param startTime The task results start time.
-     * @param taskUUID The UUID for the task result.
+     *
+     * @param identifier
+     *         The identifier of the task result base to create.
+     * @param startTime
+     *         The task results start time.
+     * @param taskUUID
+     *         The UUID for the task result.
      */
     public TaskResultBase(@NonNull String identifier, @NonNull Instant startTime, @NonNull UUID taskUUID) {
         this(identifier, startTime, null, taskUUID, null, new ArrayList<Result>(),
@@ -88,48 +92,21 @@ public class TaskResultBase extends ResultBase implements TaskResult {
     }
 
     @NonNull
-    @ResultType
     @Override
-    public String getType() {
-        return TYPE_KEY;
+    public TaskResultBase addAsyncResult(final Result result) {
+        List<Result> asyncResults = replaceAndAppendResult(this.getAsyncResults(), result);
+        TaskResultData newData = TaskResultData
+                .create(this.getTaskUUID(), this.getSchemaInfo(), this.getStepHistory(),
+                        asyncResults);
+        return new TaskResultBase(this, newData);
     }
 
+    @NonNull
     @Override
-    public UUID getTaskUUID() {
-        return this.taskResultData.getUUID();
-    }
-
-    @Override
-    public Schema getSchemaInfo() {
-        return this.taskResultData.getSchema();
-    }
-
-    @Override
-    public List<Result> getStepHistory() {
-        return this.taskResultData.getStepHistory();
-    }
-
-    @Override
-    public List<Result> getAsyncResults() {
-        return this.taskResultData.getAsyncResults();
-    }
-
-    @Nullable
-    @Override
-    public Result getResult(final Step step) {
-        return this.getResult(step.getIdentifier());
-    }
-
-    @Nullable
-    @Override
-    public Result getResult(final String identifier) {
-         for (Result result : this.getStepHistory()) {
-             if (result.getIdentifier().equals(identifier)) {
-                 return result;
-             }
-         }
-
-         return null;
+    public TaskResultBase addStepHistory(final Result result) {
+        List<Result> stepHistory = replaceAndAppendResult(this.getStepHistory(), result);
+        TaskResultData newData = TaskResultData.create(this.taskResultData, stepHistory);
+        return new TaskResultBase(this, newData);
     }
 
     @Nullable
@@ -149,12 +126,42 @@ public class TaskResultBase extends ResultBase implements TaskResult {
         return null;
     }
 
-    @NonNull
     @Override
-    public TaskResultBase addStepHistory(final Result result) {
-        List<Result> stepHistory = replaceAndAppendResult(this.getStepHistory(), result);
-        TaskResultData newData = TaskResultData.create(this.taskResultData, stepHistory);
-        return new TaskResultBase(this, newData);
+    public List<Result> getAsyncResults() {
+        return this.taskResultData.getAsyncResults();
+    }
+
+    @Nullable
+    @Override
+    public Result getResult(final Step step) {
+        return this.getResult(step.getIdentifier());
+    }
+
+    @Nullable
+    @Override
+    public Result getResult(final String identifier) {
+        for (Result result : this.getStepHistory()) {
+            if (result.getIdentifier().equals(identifier)) {
+                return result;
+            }
+        }
+
+        return null;
+    }
+
+    @Override
+    public Schema getSchemaInfo() {
+        return this.taskResultData.getSchema();
+    }
+
+    @Override
+    public List<Result> getStepHistory() {
+        return this.taskResultData.getStepHistory();
+    }
+
+    @Override
+    public UUID getTaskUUID() {
+        return this.taskResultData.getUUID();
     }
 
     @NonNull
@@ -179,19 +186,39 @@ public class TaskResultBase extends ResultBase implements TaskResult {
     }
 
     @NonNull
+    @ResultType
     @Override
-    public TaskResultBase addAsyncResult(final Result result) {
-        List<Result> asyncResults = replaceAndAppendResult(this.getAsyncResults(), result);
-        TaskResultData newData = TaskResultData.create(this.getTaskUUID(), this.getSchemaInfo(), this.getStepHistory(),
-                asyncResults);
-        return new TaskResultBase(this, newData);
+    public String getType() {
+        return TYPE_KEY;
+    }
+
+    @Override
+    protected boolean equalsHelper(Object o) {
+        TaskResultBase taskResult = (TaskResultBase) o;
+        return super.equalsHelper(o) &&
+                Objects.equal(this.taskResultData, taskResult.taskResultData);
+    }
+
+    @Override
+    protected HashCodeHelper hashCodeHelper() {
+        return super.hashCodeHelper()
+                .addFields(this.taskResultData);
+    }
+
+    @Override
+    protected ToStringHelper toStringHelper() {
+        return super.toStringHelper()
+                .add("TaskResultData", this.taskResultData);
     }
 
     /**
      * Returns a copy of the given list with all occurrences of results with the same identifier as the given result
      * removed, and then appends the given result to the end of the given list.
-     * @param list The list of results to remove from and append to.
-     * @param result The result to remove duplicates of and then append.
+     *
+     * @param list
+     *         The list of results to remove from and append to.
+     * @param result
+     *         The result to remove duplicates of and then append.
      * @return A copy of the given list with all duplicates of the given result removed and then the result appended
      * to the end.
      */
@@ -207,24 +234,5 @@ public class TaskResultBase extends ResultBase implements TaskResult {
 
         returnValue.add(result);
         return returnValue;
-    }
-
-    @Override
-    protected HashCodeHelper hashCodeHelper() {
-        return super.hashCodeHelper()
-                .addFields(this.taskResultData);
-    }
-
-    @Override
-    protected ToStringHelper toStringHelper() {
-        return super.toStringHelper()
-                .add("TaskResultData", this.taskResultData);
-    }
-
-    @Override
-    protected boolean equalsHelper(Object o) {
-        TaskResultBase taskResult = (TaskResultBase) o;
-        return super.equalsHelper(o) &&
-                Objects.equal(this.taskResultData, taskResult.taskResultData);
     }
 }

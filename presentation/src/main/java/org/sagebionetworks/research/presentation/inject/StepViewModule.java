@@ -59,9 +59,6 @@ public abstract class StepViewModule {
         String value();
     }
 
-    @Multibinds
-    abstract Map<String, StepViewFactory> stepToFactoryMap();
-
     public interface StepViewFactory {
         @Nullable
         StepView apply(Step step);
@@ -72,12 +69,8 @@ public abstract class StepViewModule {
         StepView apply(Step step, DrawableMapper mapper);
     }
 
-    @Provides
-    @IntoMap
-    @StepTypeKey(StepType.UI)
-    static InternalStepViewFactory provideUIStepFactory() {
-        return UIStepViewBase::fromUIStep;
-    }
+    @Multibinds
+    abstract Map<String, StepViewFactory> stepToFactoryMap();
 
     @Provides
     @IntoMap
@@ -105,5 +98,12 @@ public abstract class StepViewModule {
                 return UIStepViewBase.fromUIStep(step, drawableMapper);
             }
         };
+    }
+
+    @Provides
+    @IntoMap
+    @StepTypeKey(StepType.UI)
+    static InternalStepViewFactory provideUIStepFactory() {
+        return UIStepViewBase::fromUIStep;
     }
 }
