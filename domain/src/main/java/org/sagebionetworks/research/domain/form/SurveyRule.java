@@ -40,26 +40,11 @@ import org.sagebionetworks.research.domain.result.interfaces.Result;
 
 public interface SurveyRule {
     /**
-     * For the given result, what is the next step the survey should go to.
-     * @param result The result to evaluate
-     * @return The identifier to skip to or null if this is not applicable.
-     */
-    @Nullable
-    String evaluateRule(Result result);
-
-    /**
-     * For the given result, what are the cohorts to add or remove?
-     * @param result The result to evaluate
-     * @return The cohorts to add, and remove
-     */
-    @Nullable
-    CohortResult evaluateCohorts(Result result);
-
-    /**
      * A class to store the result of a call to evaluate cohorts.
      */
     class CohortResult {
         public final ImmutableSet<String> add;
+
         public final ImmutableSet<String> remove;
 
         public CohortResult(ImmutableSet<String> add, ImmutableSet<String> remove) {
@@ -67,4 +52,24 @@ public interface SurveyRule {
             this.remove = remove;
         }
     }
+
+    /**
+     * For the given result, what are the cohorts to add or remove?
+     *
+     * @param result
+     *         The result to evaluate
+     * @return The cohorts to add, and remove
+     */
+    @Nullable
+    CohortResult evaluateCohorts(Result result);
+
+    /**
+     * For the given result, what is the next step the survey should go to.
+     *
+     * @param result
+     *         The result to evaluate
+     * @return The identifier to skip to or null if this is not applicable.
+     */
+    @Nullable
+    String evaluateRule(Result result);
 }

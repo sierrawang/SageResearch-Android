@@ -39,7 +39,9 @@ import org.sagebionetworks.research.domain.result.interfaces.Result;
 
 /**
  * A choice represents a single option in a form that allows for picking between options.
- * @param <E> The type of the answer for the choice.
+ *
+ * @param <E>
+ *         The type of the answer for the choice.
  */
 public interface Choice<E> {
     /**
@@ -47,12 +49,6 @@ public interface Choice<E> {
      */
     @NonNull
     E getAnswerValue();
-
-    /**
-     * @return the text to display for this choice.
-     */
-    @NonNull
-    String getText();
 
     /**
      * @return the text to display as the detail for this choice.
@@ -64,14 +60,22 @@ public interface Choice<E> {
     String getIconName();
 
     /**
-     * @return true if this choice is mutually exclusive (e.g. "none of the above"), false otherwise
+     * @return the text to display for this choice.
      */
-    boolean isExclusive();
+    @NonNull
+    String getText();
 
     /**
      * Return true if the given result is equal to this choice.
-     * @param result the result to test for equality.
+     *
+     * @param result
+     *         the result to test for equality.
      * @return true if the given result is equal to this choice.
      */
     boolean isEqualToResult(Result result);
+
+    /**
+     * @return true if this choice is mutually exclusive (e.g. "none of the above"), false otherwise
+     */
+    boolean isExclusive();
 }

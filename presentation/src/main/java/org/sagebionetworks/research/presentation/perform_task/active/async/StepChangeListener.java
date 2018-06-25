@@ -41,9 +41,9 @@ import org.sagebionetworks.research.domain.step.interfaces.Step;
  */
 
 public interface StepChangeListener {
-    void onShowStep(@NonNull Step step);
-
     void onCancelStep(@NonNull Step step);
 
     void onFinishStep(@NonNull Step step);
+
+    void onShowStep(@NonNull Step step);
 }

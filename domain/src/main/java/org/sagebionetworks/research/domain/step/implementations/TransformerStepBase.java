@@ -57,43 +57,6 @@ public class TransformerStepBase extends StepBase implements TransformerStep {
     @SerializedName("resourceTransformer")
     private final String resourceName;
 
-    public TransformerStepBase(@NonNull final String identifier, @NonNull final String resourceName) {
-        super(identifier);
-        this.resourceName = resourceName;
-    }
-
-    @NonNull
-    @Override
-    public String getType() {
-        return TYPE_KEY;
-    }
-
-    @NonNull
-    @Override
-    public String getResourceName() {
-        return this.resourceName;
-    }
-
-    @Override
-    protected HashCodeHelper hashCodeHelper() {
-        return super.hashCodeHelper()
-                .addFields(this.resourceName);
-    }
-
-    @Override
-    protected boolean equalsHelper(Object o) {
-        TransformerStepBase transformerStep = (TransformerStepBase) o;
-        return Objects.equal(this.getIdentifier(), transformerStep.getIdentifier()) &&
-                Objects.equal(this.getResourceName(), transformerStep.getResourceName());
-    }
-
-    @Override
-    protected ToStringHelper toStringHelper() {
-        return MoreObjects.toStringHelper(this)
-                .add("identifier", this.getIdentifier())
-                .add("resourceName", this.getResourceName());
-    }
-
     public static JsonDeserializer<TransformerStepBase> getJsonDeserializer() {
         return new JsonDeserializer<TransformerStepBase>() {
             @Override
@@ -114,9 +77,45 @@ public class TransformerStepBase extends StepBase implements TransformerStep {
                     throw new JsonParseException("Transformer steps shouldn't contain any Json arrays");
                 }
 
-
                 throw new JsonParseException("Unknown form for transformer step.");
             }
         };
+    }
+
+    public TransformerStepBase(@NonNull final String identifier, @NonNull final String resourceName) {
+        super(identifier);
+        this.resourceName = resourceName;
+    }
+
+    @NonNull
+    @Override
+    public String getResourceName() {
+        return this.resourceName;
+    }
+
+    @NonNull
+    @Override
+    public String getType() {
+        return TYPE_KEY;
+    }
+
+    @Override
+    protected boolean equalsHelper(Object o) {
+        TransformerStepBase transformerStep = (TransformerStepBase) o;
+        return Objects.equal(this.getIdentifier(), transformerStep.getIdentifier()) &&
+                Objects.equal(this.getResourceName(), transformerStep.getResourceName());
+    }
+
+    @Override
+    protected HashCodeHelper hashCodeHelper() {
+        return super.hashCodeHelper()
+                .addFields(this.resourceName);
+    }
+
+    @Override
+    protected ToStringHelper toStringHelper() {
+        return MoreObjects.toStringHelper(this)
+                .add("identifier", this.getIdentifier())
+                .add("resourceName", this.getResourceName());
     }
 }

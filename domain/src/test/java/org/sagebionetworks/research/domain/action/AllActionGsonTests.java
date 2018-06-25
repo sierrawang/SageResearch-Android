@@ -38,5 +38,5 @@ import org.junit.runners.Suite.SuiteClasses;
 
 @RunWith(Suite.class)
 @SuiteClasses({ActionBaseTests.class, ReminderActionBaseTests.class, SkipToStepActionBaseTests.class})
-public class AllActionGsonTests{
+public class AllActionGsonTests {
 }

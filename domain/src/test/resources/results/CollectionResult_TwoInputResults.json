@@ -1,27 +1,27 @@
 {
-  "type":"collection",
+  "type": "collection",
   "data": {
-    "identifier":"collectionResult",
-    "startTime":"1970-01-01T00:00:20Z",
-    "endTime":"1970-01-01T00:00:30Z"
+    "identifier": "collectionResult",
+    "startTime": "1970-01-01T00:00:20Z",
+    "endTime": "1970-01-01T00:00:30Z"
   },
   "collectionResultData": {
-  "inputResults":[
-     {
-       "type":"base",
-       "data": {
-         "identifier":"subResult1",
-         "startTime":"1970-01-01T00:00:20Z",
-         "endTime":"1970-01-01T00:00:25Z"
-       }
-     },
-     {
-       "type":"base",
-       "data": {
-         "identifier":"subResult2",
-         "startTime":"1970-01-01T00:00:25Z"
-       }
-     }
+    "inputResults": [
+      {
+        "type": "base",
+        "data": {
+          "identifier": "subResult1",
+          "startTime": "1970-01-01T00:00:20Z",
+          "endTime": "1970-01-01T00:00:25Z"
+        }
+      },
+      {
+        "type": "base",
+        "data": {
+          "identifier": "subResult2",
+          "startTime": "1970-01-01T00:00:25Z"
+        }
+      }
     ]
   }
 }

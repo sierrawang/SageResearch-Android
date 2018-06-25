@@ -39,7 +39,9 @@ import org.sagebionetworks.research.domain.result.AnswerResultType;
 
 /**
  * An AnswerResult stores some piece of data (e.g. the answer to a form question).
- * @param <T> The type of the data this AnswerResult stores.
+ *
+ * @param <T>
+ *         The type of the data this AnswerResult stores.
  */
 public interface AnswerResult<T> extends Result {
     /**

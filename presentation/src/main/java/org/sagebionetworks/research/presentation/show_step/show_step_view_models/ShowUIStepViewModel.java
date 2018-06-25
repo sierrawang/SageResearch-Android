@@ -44,8 +44,11 @@ import org.slf4j.LoggerFactory;
 
 public class ShowUIStepViewModel<S extends UIStepView> extends ShowStepViewModel<S> {
     private static final Logger LOGGER = LoggerFactory.getLogger(ShowUIStepViewModel.class);
+
     protected final PerformTaskViewModel performTaskViewModel;
+
     protected final MutableLiveData<S> showStepViewModelMutableLiveData;
+
     protected final S stepView;
 
     public ShowUIStepViewModel(PerformTaskViewModel performTaskViewModel, S stepView) {

@@ -32,9 +32,9 @@
 
 package org.sagebionetworks.research.domain;
 
-import org.junit.runner.*;
-import org.junit.runners.*;
-import org.junit.runners.Suite.*;
+import org.junit.runner.RunWith;
+import org.junit.runners.Suite;
+import org.junit.runners.Suite.SuiteClasses;
 import org.sagebionetworks.research.domain.action.AllActionGsonTests;
 import org.sagebionetworks.research.domain.navigation.AllNavigatorTests;
 import org.sagebionetworks.research.domain.result.gson.AllResultGsonTests;

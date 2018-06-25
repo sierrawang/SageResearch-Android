@@ -43,17 +43,16 @@ import org.threeten.bp.Instant;
  */
 public interface Result {
     /**
+     * @return The time this result ended.
+     */
+    @Nullable
+    Instant getEndTime();
+
+    /**
      * @return The identifier for this result.
      */
     @NonNull
     String getIdentifier();
-
-    /**
-     * @return A String representing the result type of this result.
-     */
-    @NonNull
-    @ResultType
-    String getType();
 
     /**
      * @return The time this result started.
@@ -62,8 +61,9 @@ public interface Result {
     Instant getStartTime();
 
     /**
-     * @return The time this result ended.
+     * @return A String representing the result type of this result.
      */
-    @Nullable
-    Instant getEndTime();
+    @NonNull
+    @ResultType
+    String getType();
 }

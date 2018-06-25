@@ -46,30 +46,11 @@ import butterknife.Unbinder;
 
 /**
  * An ActiveUIStepViewBinding is a view binding that has everything a UIStepViewBinding and the following optional
- * bindings
- *      countdownDial : ProgressBar - The countdown dial which indicates to the user how long they should perform the
- *          active task for.
- *      countdownLabel : TextView - The label to display the text corresponding to the countdownDial's progress on.
- *      unitLabel : TextView - The label to display the unit that the countdown is occurring in on.
+ * bindings countdownDial : ProgressBar - The countdown dial which indicates to the user how long they should perform
+ * the active task for. countdownLabel : TextView - The label to display the text corresponding to the countdownDial's
+ * progress on. unitLabel : TextView - The label to display the unit that the countdown is occurring in on.
  */
 public class ActiveUIStepViewBinding<S extends ActiveUIStepView> extends UIStepViewBinding<S> {
-    private final ActiveUIStepViewHolder activeUIStepViewHolder;
-    private final Unbinder activeUIStepViewHolderUnbinder;
-
-    public ActiveUIStepViewBinding(View view) {
-        super(view);
-        this.activeUIStepViewHolder = new ActiveUIStepViewHolder();
-        this.activeUIStepViewHolderUnbinder = ButterKnife.bind(this.activeUIStepViewHolder, view);
-    }
-
-    @Override
-    public void unbind() {
-        super.unbind();
-        this.activeUIStepViewHolderUnbinder.unbind();
-    }
-
-    // TODO rkolmos 06/10/2018 potentially override update();
-
     protected static class ActiveUIStepViewHolder {
         /**
          * The binding can optionally contain a progress bar which displays a visual representation of the progress
@@ -92,6 +73,24 @@ public class ActiveUIStepViewBinding<S extends ActiveUIStepView> extends UIStepV
          */
         @BindView(id.unitLabel)
         public TextView unitLabel;
+    }
+
+    private final ActiveUIStepViewHolder activeUIStepViewHolder;
+
+    private final Unbinder activeUIStepViewHolderUnbinder;
+
+    public ActiveUIStepViewBinding(View view) {
+        super(view);
+        this.activeUIStepViewHolder = new ActiveUIStepViewHolder();
+        this.activeUIStepViewHolderUnbinder = ButterKnife.bind(this.activeUIStepViewHolder, view);
+    }
+
+    // TODO rkolmos 06/10/2018 potentially override update();
+
+    @Override
+    public void unbind() {
+        super.unbind();
+        this.activeUIStepViewHolderUnbinder.unbind();
     }
 
     // TODO rkolmos 05/25/2018 override update to do the correct thing once the corresponding subclass of StepView is created

@@ -35,7 +35,6 @@ package org.sagebionetworks.research.mobile_ui.inject;
 import android.support.annotation.NonNull;
 
 import org.sagebionetworks.research.mobile_ui.show_step.view.ShowActiveUIStepFragment;
-import org.sagebionetworks.research.mobile_ui.show_step.view.ShowStepFragment;
 import org.sagebionetworks.research.mobile_ui.show_step.view.ShowStepFragmentBase;
 import org.sagebionetworks.research.mobile_ui.show_step.view.ShowUIStepFragment;
 import org.sagebionetworks.research.presentation.inject.DrawableModule;
@@ -65,20 +64,6 @@ public class ShowStepFragmentModule {
     }
 
     @Provides
-    @IntoMap
-    @StepViewKey(UIStepView.class)
-    static ShowStepFragmentFactory provideShowUIStepFragmentFactory() {
-        return ShowUIStepFragment::newInstance;
-    }
-
-    @Provides
-    @IntoMap
-    @StepViewKey(ActiveUIStepView.class)
-    static ShowStepFragmentFactory provideShowActiveUIStepFragmentFactory() {
-        return ShowActiveUIStepFragment::newInstance;
-    }
-
-    @Provides
     public static ShowStepFragmentFactory provideShowStepFragmentFactory(
             Map<Class<? extends StepView>, ShowStepFragmentFactory> showStepFragmentFactoryMap) {
         return (@NonNull StepView stepView) -> {
@@ -89,5 +74,19 @@ public class ShowStepFragmentModule {
             // If we don't have a factory we default to the most general ShowStepFragment.
             return ShowUIStepFragment.newInstance(stepView);
         };
+    }
+
+    @Provides
+    @IntoMap
+    @StepViewKey(ActiveUIStepView.class)
+    static ShowStepFragmentFactory provideShowActiveUIStepFragmentFactory() {
+        return ShowActiveUIStepFragment::newInstance;
+    }
+
+    @Provides
+    @IntoMap
+    @StepViewKey(UIStepView.class)
+    static ShowStepFragmentFactory provideShowUIStepFragmentFactory() {
+        return ShowUIStepFragment::newInstance;
     }
 }

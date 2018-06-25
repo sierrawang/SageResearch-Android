@@ -1,16 +1,16 @@
 package org.sagebionetworks.research.domain.navigation;
 
-import org.junit.*;
+import static junit.framework.Assert.assertEquals;
+import static junit.framework.Assert.assertNotNull;
+import static junit.framework.Assert.assertTrue;
+
+import org.junit.Test;
 import org.sagebionetworks.research.domain.result.interfaces.TaskResult;
 import org.sagebionetworks.research.domain.step.interfaces.Step;
 import org.sagebionetworks.research.domain.task.navigation.TaskProgress;
 import org.sagebionetworks.research.domain.task.navigation.TreeNavigator;
 
 import java.util.List;
-
-import static junit.framework.Assert.assertEquals;
-import static junit.framework.Assert.assertNotNull;
-import static junit.framework.Assert.assertTrue;
 
 public class TreeNavigatorTests extends IndividualNavigatorTests {
 

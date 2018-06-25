@@ -33,17 +33,11 @@
 package org.sagebionetworks.research.presentation.model;
 
 import android.os.Parcelable;
-import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 
 import com.google.auto.value.AutoValue;
-import com.google.common.collect.ImmutableMap;
 
-import org.sagebionetworks.research.domain.step.ui.theme.ColorPlacement;
-import org.sagebionetworks.research.domain.step.ui.theme.ColorStyle;
 import org.sagebionetworks.research.domain.step.ui.theme.ColorTheme;
-
-import java.util.Map;
 
 @AutoValue
 public abstract class ColorThemeView implements Parcelable {
@@ -60,12 +54,7 @@ public abstract class ColorThemeView implements Parcelable {
         return new AutoValue_ColorThemeView.Builder();
     }
 
-
     // public abstract ImmutableMap<String, String> getColorStyles();
-
-    public abstract boolean lightStyle();
-
-    public abstract Builder toBuilder();
 
     public static ColorThemeView fromColorTheme(@Nullable ColorTheme colorTheme) {
         if (colorTheme == null) {
@@ -77,4 +66,8 @@ public abstract class ColorThemeView implements Parcelable {
                 .setLightStyle(colorTheme.isLightStyle())
                 .build();
     }
+
+    public abstract boolean lightStyle();
+
+    public abstract Builder toBuilder();
 }

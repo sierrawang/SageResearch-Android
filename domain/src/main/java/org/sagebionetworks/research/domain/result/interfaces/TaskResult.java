@@ -45,20 +45,45 @@ import java.util.UUID;
  */
 public interface TaskResult extends Result {
     /**
-     * @return The UUID for the task represented by this result.
+     * Returns a new TaskResult with the given result removed from and then appended to the end of the async results.
+     *
+     * @param result
+     *         The result to append to the async results.
+     * @return a new task result with the given result appended to the async results.
      */
-    UUID getTaskUUID();
+    TaskResult addAsyncResult(Result result);
 
     /**
-     * @return The Schema info for the task represented by this result.
+     * Returns a new TaskResult with the old result removed from the step history and appended to the end.
+     *
+     * @param result
+     *         The result to append to the step history.
+     * @return a new TaskResult with the given result appended to the step history.
      */
-    Schema getSchemaInfo();
+    @Nullable
+    TaskResult addStepHistory(Result result);
 
     /**
-     * @return The list of step results that have executed up to this point in
-     * this run of the task.
+     * Convenience method for getting the result corresponding to the given step as an AnswerResult. If there is no
+     * corresponding result or the result isn't an AnswerResult returns null.
+     *
+     * @param step
+     *         The step to find the AnswerResult for.
+     * @return The AnswerResult corresponding to the given step in this.
      */
-    List<Result> getStepHistory();
+    @Nullable
+    AnswerResult getAnswerResult(Step step);
+
+    /**
+     * Convenience method for getting the result corresponding to the given identifier as an AnswerResult. If there is
+     * no corresponding result or the result isn't an AnswerResult returns null.
+     *
+     * @param identifier
+     *         The identifier to find the AnswerResult for.
+     * @return The AnswerResult corresponding to the given identifier in this.
+     */
+    @Nullable
+    AnswerResult getAnswerResult(String identifier);
 
     /**
      * @return The list of async results for this run of the task.
@@ -66,61 +91,49 @@ public interface TaskResult extends Result {
     List<Result> getAsyncResults();
 
     /**
-     * Finds and returns the result corresponding to the given step in this. If there is no result, corresponding
-     * to the given step returns null.
-     * @param step The step to find the result for.
+     * Finds and returns the result corresponding to the given step in this. If there is no result, corresponding to
+     * the given step returns null.
+     *
+     * @param step
+     *         The step to find the result for.
      * @return The result corresponding to the given step in this.
      */
     @Nullable
     Result getResult(Step step);
 
     /**
-     * Finds and returns the result with the given identifier in this. If there is no result, corresponding
-     * to the given identifier returns null.
-     * @param identifier The identifier to find the result for.
+     * Finds and returns the result with the given identifier in this. If there is no result, corresponding to the
+     * given identifier returns null.
+     *
+     * @param identifier
+     *         The identifier to find the result for.
      * @return The result corresponding to the given identifier in this.
      */
     @Nullable
     Result getResult(String identifier);
 
     /**
-     * Convenience method for getting the result corresponding to the given step as an AnswerResult. If there
-     * is no corresponding result or the result isn't an AnswerResult returns null.
-     * @param step The step to find the AnswerResult for.
-     * @return The AnswerResult corresponding to the given step in this.
+     * @return The Schema info for the task represented by this result.
      */
-    @Nullable
-    AnswerResult getAnswerResult(Step step);
+    Schema getSchemaInfo();
 
     /**
-     * Convenience method for getting the result corresponding to the given identifier as an AnswerResult. If there
-     * is no corresponding result or the result isn't an AnswerResult returns null.
-     * @param identifier The identifier to find the AnswerResult for.
-     * @return The AnswerResult corresponding to the given identifier in this.
+     * @return The list of step results that have executed up to this point in this run of the task.
      */
-    @Nullable
-    AnswerResult getAnswerResult(String identifier);
+    List<Result> getStepHistory();
 
     /**
-     * Returns a new TaskResult with the old result removed from the step history and appended to the end.
-     * @param result The result to append to the step history.
-     * @return a new TaskResult with the given result appended to the step history.
+     * @return The UUID for the task represented by this result.
      */
-    @Nullable
-    TaskResult addStepHistory(Result result);
+    UUID getTaskUUID();
 
     /**
      * Returns a new TaskResult with the given result and all results after it removed from the step history.
-     * @param result The result to begin removing results at.
+     *
+     * @param result
+     *         The result to begin removing results at.
      * @return a new TaskResult with the given result and all results after it removed from the step histroy.
      */
     @Nullable
     TaskResult removeStepHistory(Result result);
-
-    /**
-     * Returns a new TaskResult with the given result removed from and then appended to the end of the async results.
-     * @param result The result to append to the async results.
-     * @return a new task result with the given result appended to the async results.
-     */
-    TaskResult addAsyncResult(Result result);
 }

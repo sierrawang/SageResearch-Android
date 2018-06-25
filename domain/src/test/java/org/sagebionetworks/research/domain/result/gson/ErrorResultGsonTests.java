@@ -32,15 +32,15 @@
 
 package org.sagebionetworks.research.domain.result.gson;
 
-import org.junit.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
+
+import org.junit.Test;
 import org.sagebionetworks.research.domain.result.implementations.ErrorResultBase;
 import org.sagebionetworks.research.domain.result.interfaces.ErrorResult;
 import org.sagebionetworks.research.domain.result.interfaces.Result;
 import org.threeten.bp.Instant;
-
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
 
 public class ErrorResultGsonTests extends IndividualResultGsonTest {
     private static final Result FULL = new ErrorResultBase("errorResult", Instant.ofEpochSecond(20),

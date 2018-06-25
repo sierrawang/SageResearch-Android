@@ -36,7 +36,6 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.view.View;
 
-import org.sagebionetworks.research.domain.mobile_ui.R;
 import org.sagebionetworks.research.mobile_ui.show_step.view.ShowStepFragmentBase;
 import org.sagebionetworks.research.mobile_ui.show_step.view.view_binding.StepViewBinding;
 import org.sagebionetworks.research.mobile_ui.widget.ActionButton;
@@ -55,17 +54,6 @@ public class ShowTappingActiveUIStepFragment extends
         return fragment;
     }
 
-    @NonNull
-    @Override
-    protected StepViewBinding<StepView> instantiateAndBindBinding(View view) {
-        return null;
-    }
-
-    @Override
-    protected int getLayoutId() {
-        return 0;
-    }
-
     @Override
     @ActionType
     protected String getActionTypeFromActionButton(@NonNull ActionButton actionButton) {
@@ -79,6 +67,17 @@ public class ShowTappingActiveUIStepFragment extends
 //            return ActionType.RIGHT_TAP;
         }
 
+        return null;
+    }
+
+    @Override
+    protected int getLayoutId() {
+        return 0;
+    }
+
+    @NonNull
+    @Override
+    protected StepViewBinding<StepView> instantiateAndBindBinding(View view) {
         return null;
     }
 }

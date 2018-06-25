@@ -33,9 +33,14 @@
 package org.sagebionetworks.research.app;
 
 
+import static org.hamcrest.CoreMatchers.instanceOf;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertThat;
+
 import com.google.common.collect.ImmutableMap;
 
-import org.junit.*;
+import org.junit.Test;
 import org.sagebionetworks.research.domain.step.interfaces.ActiveUIStep;
 import org.sagebionetworks.research.domain.step.interfaces.FormUIStep;
 import org.sagebionetworks.research.domain.step.interfaces.Step;
@@ -44,9 +49,6 @@ import org.sagebionetworks.research.domain.task.Task;
 
 import java.io.IOException;
 import java.util.List;
-
-import static org.hamcrest.CoreMatchers.*;
-import static org.junit.Assert.*;
 
 public class FooTaskDeserializeTest extends JsonDeserializationTestBase {
     @Test

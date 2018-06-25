@@ -1,7 +1,18 @@
 package org.sagebionetworks.research.domain.navigation;
 
-import org.junit.*;
-import org.mockito.*;
+import static junit.framework.Assert.assertEquals;
+import static junit.framework.Assert.assertNotNull;
+import static junit.framework.Assert.assertNull;
+import static junit.framework.Assert.assertTrue;
+
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.argThat;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.withSettings;
+
+import org.junit.Test;
+import org.mockito.ArgumentMatcher;
 import org.sagebionetworks.research.domain.result.interfaces.Result;
 import org.sagebionetworks.research.domain.result.interfaces.TaskResult;
 import org.sagebionetworks.research.domain.step.interfaces.SectionStep;
@@ -14,14 +25,6 @@ import org.sagebionetworks.research.domain.task.navigation.strategy.StrategyBase
 
 import java.util.ArrayList;
 import java.util.List;
-
-import static junit.framework.Assert.assertEquals;
-import static junit.framework.Assert.assertNotNull;
-import static junit.framework.Assert.assertNull;
-import static junit.framework.Assert.assertTrue;
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.argThat;
-import static org.mockito.Mockito.*;
 
 public class StrategyBasedNavigatorTests extends IndividualNavigatorTests {
     private static final String SKIP_RESULT_IDENTIFIER = "skip";

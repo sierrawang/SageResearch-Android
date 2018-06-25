@@ -32,6 +32,8 @@
 
 package org.sagebionetworks.research.domain.inject;
 
+import static org.sagebionetworks.research.domain.inject.GsonModule.createPassThroughDeserializer;
+
 import com.google.gson.JsonDeserializer;
 
 import org.sagebionetworks.research.domain.inject.GsonModule.ClassKey;
@@ -42,25 +44,14 @@ import org.sagebionetworks.research.domain.task.navigation.OrderedStepNavigator;
 import org.sagebionetworks.research.domain.task.navigation.StepNavigatorFactory;
 import org.sagebionetworks.research.domain.task.navigation.TaskBase;
 
+import javax.inject.Singleton;
+
 import dagger.Module;
 import dagger.Provides;
 import dagger.multibindings.IntoMap;
-import javax.inject.Singleton;
-
-import static org.sagebionetworks.research.domain.inject.GsonModule.createPassThroughDeserializer;
 
 @Module(includes = {GsonModule.class})
 public abstract class TaskModule {
-
-    /**
-     * @return The json Deserializer for a task info.
-     */
-    @Provides
-    @IntoMap
-    @ClassKey(TaskInfo.class)
-    static JsonDeserializer<?> provideTaskInfoDeserializer() {
-        return createPassThroughDeserializer(TaskInfoBase.class);
-    }
 
     @Singleton
     @Provides
@@ -76,5 +67,15 @@ public abstract class TaskModule {
     @ClassKey(Task.class)
     static JsonDeserializer<?> provideTaskDeserializer() {
         return createPassThroughDeserializer(TaskBase.class);
+    }
+
+    /**
+     * @return The json Deserializer for a task info.
+     */
+    @Provides
+    @IntoMap
+    @ClassKey(TaskInfo.class)
+    static JsonDeserializer<?> provideTaskInfoDeserializer() {
+        return createPassThroughDeserializer(TaskInfoBase.class);
     }
 }

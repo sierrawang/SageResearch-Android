@@ -32,14 +32,13 @@
 
 package org.sagebionetworks.research.presentation.mapper;
 
-import android.support.annotation.DrawableRes;
-
 import org.sagebionetworks.research.presentation.inject.DrawableModule;
 
 import java.util.Map;
 
-import dagger.Component;
 import javax.inject.Singleton;
+
+import dagger.Component;
 
 @Component(modules = {DrawableModule.class})
 @Singleton

@@ -35,12 +35,10 @@ package org.sagebionetworks.research.mpower;
 import com.google.gson.TypeAdapterFactory;
 import com.ryanharter.auto.value.gson.GsonTypeAdapterFactory;
 
-import org.sagebionetworks.research.domain.AutoValueGson_DomainAutoValueTypeAdapterFactory;
-
 /**
-* Auto-generated TypeAdapterFactory for @AutoValue classes in the :mpower module. Due to how the auto-value-gson
-* annotationProcessor works, a separate @GsonTypeAdapterFactory is needed for each gradle module.
-*/
+ * Auto-generated TypeAdapterFactory for @AutoValue classes in the :mpower module. Due to how the auto-value-gson
+ * annotationProcessor works, a separate @GsonTypeAdapterFactory is needed for each gradle module.
+ */
 @GsonTypeAdapterFactory
 public abstract class MPowerAutoValueTypeAdapterFactory implements TypeAdapterFactory {
     //     Static factory method to access the package

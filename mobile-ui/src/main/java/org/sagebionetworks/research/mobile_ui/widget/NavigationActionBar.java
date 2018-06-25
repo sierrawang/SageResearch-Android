@@ -44,7 +44,6 @@ import android.view.View;
 
 import org.sagebionetworks.research.domain.mobile_ui.R;
 import org.sagebionetworks.research.domain.mobile_ui.R2;
-import org.sagebionetworks.research.presentation.model.interfaces.UIStepView;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -58,7 +57,7 @@ import butterknife.Unbinder;
  * A NavigationActionBar contains the standard navigation action views (backward, forward, skip, and a footer shadow).
  * It allows these buttons to be hidden and lays the buttons out in a standardized way depending on which buttons are
  * present. It also stores and forwards button presses to an ActionButtonClickListener.
- *
+ * <p>
  * Note: The primary buttons are considered to be the forward and backward buttons, By default the shadow is laid out
  * at the top of the NavigationActionBar, below it are the primary buttons spaced out evenly depending on what is
  * present, backward then forward, left to right. Below the primary buttons the skip button is centered if present.
@@ -72,16 +71,14 @@ public class NavigationActionBar extends ConstraintLayout {
     public interface ActionButtonClickListener {
         /**
          * Handles the event that the given actionButton was tapped.
-         * @param actionButton The action button that the user tapped.
+         *
+         * @param actionButton
+         *         The action button that the user tapped.
          */
         void onClick(ActionButton actionButton);
     }
 
     private static final Logger LOGGER = LoggerFactory.getLogger(NavigationActionBar.class);
-
-    @BindView(R2.id.rs2_step_navigation_primary_button_group)
-    @NonNull
-    ConstraintLayout primaryButtonGroup;
 
     @BindView(R2.id.rs2_step_navigation_action_backward)
     @NonNull
@@ -91,23 +88,35 @@ public class NavigationActionBar extends ConstraintLayout {
     @NonNull
     ActionButton forwardButton;
 
-    @BindView(R2.id.rs2_step_navigation_action_skip)
+    @BindView(R2.id.rs2_step_navigation_primary_button_group)
     @NonNull
-    ActionButton skipButton;
+    ConstraintLayout primaryButtonGroup;
 
     @BindView(R2.id.rs2_step_navigation_shadow)
     @NonNull
     View shadowView;
 
-    private boolean isBackwardHidden;
-    private boolean isForwardHidden;
-    private boolean isShadowHidden;
-    private boolean isSkipHidden;
-    private int primaryActionColor;
-    private int primaryActionTitleColor;
-    private int skipActionColor;
+    @BindView(R2.id.rs2_step_navigation_action_skip)
+    @NonNull
+    ActionButton skipButton;
+
     @NonNull
     private ActionButtonClickListener actionButtonClickListener;
+
+    private boolean isBackwardHidden;
+
+    private boolean isForwardHidden;
+
+    private boolean isShadowHidden;
+
+    private boolean isSkipHidden;
+
+    private int primaryActionColor;
+
+    private int primaryActionTitleColor;
+
+    private int skipActionColor;
+
     @NonNull
     private Unbinder unbinder;
 
@@ -128,7 +137,9 @@ public class NavigationActionBar extends ConstraintLayout {
 
     /**
      * Handles the event that the given ActionButton was clicked.
-     * @param actionButton The ActionButton that was clicked.
+     *
+     * @param actionButton
+     *         The ActionButton that was clicked.
      */
     @Optional
     @OnClick({R2.id.rs2_step_navigation_action_backward, R2.id.rs2_step_navigation_action_forward,
@@ -145,30 +156,22 @@ public class NavigationActionBar extends ConstraintLayout {
 
     /**
      * Sets the ActionButtonClickListener to the given value.
-     * @param actionButtonClickListener The new ActionClickButtonListener to use with this object.
+     *
+     * @param actionButtonClickListener
+     *         The new ActionClickButtonListener to use with this object.
      */
     public void setActionButtonClickListener(
             final ActionButtonClickListener actionButtonClickListener) {
         this.actionButtonClickListener = actionButtonClickListener;
     }
 
-    @Override
-    protected void onDetachedFromWindow() {
-        super.onDetachedFromWindow();
-        this.unbinder.unbind();
-    }
-
-    @Override
-    protected void onFinishInflate() {
-        super.onFinishInflate();
-        this.unbinder = ButterKnife.bind(this);
-        this.layoutComponents();
-    }
-
     /**
      * Helper method that performs the common initialization.
-     * @param attrs The attributed set to construct this object with or null if no such set was provided.
-     * @param defStyleAttr The defStyleAttr provided.
+     *
+     * @param attrs
+     *         The attributed set to construct this object with or null if no such set was provided.
+     * @param defStyleAttr
+     *         The defStyleAttr provided.
      */
     protected void commonInit(@Nullable AttributeSet attrs, int defStyleAttr) {
         this.getAttributes(attrs, defStyleAttr);
@@ -179,8 +182,11 @@ public class NavigationActionBar extends ConstraintLayout {
 
     /**
      * Helper method which initializes the fields corresponding to the attributes from the given AttributedSet.
-     * @param attrs The set of attributes to get this objects fields from.
-     * @param defStyleAttr The defStyleAttr provided.
+     *
+     * @param attrs
+     *         The set of attributes to get this objects fields from.
+     * @param defStyleAttr
+     *         The defStyleAttr provided.
      */
     protected void getAttributes(@Nullable AttributeSet attrs, int defStyleAttr) {
         final TypedArray a = getContext().obtainStyledAttributes(
@@ -221,10 +227,26 @@ public class NavigationActionBar extends ConstraintLayout {
         }
     }
 
+    @Override
+    protected void onDetachedFromWindow() {
+        super.onDetachedFromWindow();
+        this.unbinder.unbind();
+    }
+
+    @Override
+    protected void onFinishInflate() {
+        super.onFinishInflate();
+        this.unbinder = ButterKnife.bind(this);
+        this.layoutComponents();
+    }
+
     /**
      * Hides the given view if the given boolean is true.
-     * @param component The view to potentially hide.
-     * @param isHidden true if the view should be hidden false otherwise.
+     *
+     * @param component
+     *         The view to potentially hide.
+     * @param isHidden
+     *         true if the view should be hidden false otherwise.
      */
     private static void hideComponentIfNecessary(View component, boolean isHidden) {
         if (component != null && isHidden) {

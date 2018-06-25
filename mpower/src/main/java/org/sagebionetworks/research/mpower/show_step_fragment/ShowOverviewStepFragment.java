@@ -33,25 +33,18 @@
 package org.sagebionetworks.research.mpower.show_step_fragment;
 
 import android.animation.ObjectAnimator;
-import android.animation.TypeEvaluator;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
-import android.util.FloatProperty;
-import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.ViewPropertyAnimator;
-import android.view.animation.Animation;
 import android.widget.ImageView;
 import android.widget.ScrollView;
 import android.widget.TextView;
 
-import org.sagebionetworks.research.domain.step.ui.action.interfaces.Action;
 import org.sagebionetworks.research.mobile_ui.show_step.view.ShowStepFragmentBase;
-import org.sagebionetworks.research.mobile_ui.show_step.view.ShowUIStepFragment;
 import org.sagebionetworks.research.mobile_ui.show_step.view.ShowUIStepFragmentBase;
-import org.sagebionetworks.research.mobile_ui.show_step.view.view_binding.UIStepViewBinding;
 import org.sagebionetworks.research.mobile_ui.widget.ActionButton;
 import org.sagebionetworks.research.mpower.R;
 import org.sagebionetworks.research.mpower.step_binding.OverviewStepViewBinding;
@@ -74,11 +67,6 @@ public class ShowOverviewStepFragment extends
         Bundle arguments = ShowStepFragmentBase.createArguments(stepView);
         fragment.setArguments(arguments);
         return fragment;
-    }
-
-    @Override
-    public int getLayoutId() {
-        return R.layout.mpower2_overview_step;
     }
 
     @Override
@@ -111,10 +99,41 @@ public class ShowOverviewStepFragment extends
         }
     }
 
+    @Override
+    public int getLayoutId() {
+        return R.layout.mpower2_overview_step;
+    }
+
     @NonNull
     @Override
     protected OverviewStepViewBinding<OverviewStepView> instantiateAndBindBinding(View view) {
         return new OverviewStepViewBinding<>(view);
+    }
+
+    @Override
+    public void update(OverviewStepView stepView) {
+        super.update(stepView);
+        List<ImageView> iconImageViews = this.stepViewBinding.getIconImageViews();
+        List<TextView> iconLabels = this.stepViewBinding.getIconLabels();
+
+        List<IconView> iconViews = stepView.getIconViews();
+        for (int i = 0; i < iconImageViews.size(); i++) {
+            IconView iconView = null;
+            if (iconViews.size() > i) {
+                iconView = iconViews.get(i);
+            }
+
+            if (iconView == null) {
+                iconImageViews.get(i).setVisibility(View.GONE);
+                iconLabels.get(i).setVisibility(View.GONE);
+            } else {
+                DisplayString titleDisplayString = iconView.getTitle();
+                if (titleDisplayString != null) {
+                    String titleString = titleDisplayString.getString(getContext().getResources());
+                    iconLabels.get(i).setText(titleString);
+                }
+            }
+        }
     }
 
     protected void scrollToBottomAndFadeIn() {
@@ -144,31 +163,5 @@ public class ShowOverviewStepFragment extends
         }
 
         scrollViewAnimator.start();
-    }
-
-    @Override
-    public void update(OverviewStepView stepView) {
-        super.update(stepView);
-        List<ImageView> iconImageViews = this.stepViewBinding.getIconImageViews();
-        List<TextView> iconLabels = this.stepViewBinding.getIconLabels();
-
-        List<IconView> iconViews = stepView.getIconViews();
-        for (int i = 0; i < iconImageViews.size(); i++) {
-            IconView iconView = null;
-            if (iconViews.size() > i) {
-                iconView = iconViews.get(i);
-            }
-
-            if (iconView == null) {
-                iconImageViews.get(i).setVisibility(View.GONE);
-                iconLabels.get(i).setVisibility(View.GONE);
-            } else {
-                DisplayString titleDisplayString = iconView.getTitle();
-                if (titleDisplayString != null) {
-                    String titleString = titleDisplayString.getString(getContext().getResources());
-                    iconLabels.get(i).setText(titleString);
-                }
-            }
-        }
     }
 }

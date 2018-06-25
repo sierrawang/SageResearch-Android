@@ -35,13 +35,12 @@ package org.sagebionetworks.research.mpower.widget;
 import android.content.Context;
 import android.util.AttributeSet;
 import android.view.MotionEvent;
-import android.view.View;
 import android.widget.ScrollView;
 
 /**
- * A DisableableScrollView is a ScrollView with the added option to disable the ability to scroll. When disabled
- * the view stays at whatever position it was and user actions have no effect on it. Note: Disabling a scroll view
- * only disables user input from scrolling it, and it can still be moved in code.
+ * A DisableableScrollView is a ScrollView with the added option to disable the ability to scroll. When disabled the
+ * view stays at whatever position it was and user actions have no effect on it. Note: Disabling a scroll view only
+ * disables user input from scrolling it, and it can still be moved in code.
  */
 public class DisablableScrollView extends ScrollView {
     private boolean enabled;
@@ -61,8 +60,13 @@ public class DisablableScrollView extends ScrollView {
         this.commonInit();
     }
 
-    protected void commonInit() {
-        this.enabled = true;
+    /**
+     * Returns `true` if scrolling is allowed, `false` otherwise.
+     *
+     * @return `true` if scrolling is allowdd, `false` otherwise.
+     */
+    public boolean isScollingEnabled() {
+        return this.enabled;
     }
 
     @Override
@@ -77,17 +81,15 @@ public class DisablableScrollView extends ScrollView {
 
     /**
      * Sets whether or not scrolling is allowed on this.
-     * @param enabled `true` if scrolling should be allowed `false` otherwise.
+     *
+     * @param enabled
+     *         `true` if scrolling should be allowed `false` otherwise.
      */
     public void setScrollingEnabled(boolean enabled) {
         this.enabled = enabled;
     }
 
-    /**
-     * Returns `true` if scrolling is allowed, `false` otherwise.
-     * @return `true` if scrolling is allowdd, `false` otherwise.
-     */
-    public boolean isScollingEnabled() {
-        return this.enabled;
+    protected void commonInit() {
+        this.enabled = true;
     }
 }

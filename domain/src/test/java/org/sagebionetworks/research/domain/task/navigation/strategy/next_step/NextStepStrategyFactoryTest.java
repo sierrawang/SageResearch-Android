@@ -32,22 +32,30 @@
 
 package org.sagebionetworks.research.domain.task.navigation.strategy.next_step;
 
-import org.junit.*;
+import static org.junit.Assert.assertEquals;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
+
+import org.junit.Before;
+import org.junit.Test;
 import org.sagebionetworks.research.domain.result.interfaces.TaskResult;
 import org.sagebionetworks.research.domain.step.implementations.UIStepBase;
 import org.sagebionetworks.research.domain.step.interfaces.Step;
 import org.sagebionetworks.research.domain.task.navigation.strategy.StepNavigationStrategy.NextStepStrategy;
 
-import static org.junit.Assert.*;
-import static org.mockito.Mockito.*;
-
 public class NextStepStrategyFactoryTest {
 
     private NextStepStrategyFactory nextStepStrategyFactory;
 
-    @Before
-    public void setup() {
-        nextStepStrategyFactory = new NextStepStrategyFactory();
+    @Test
+    public void createWithNextStepIdentifier() {
+        Step step = new UIStepBase("identifier", null, null, null, null, null, null, null);
+        String nextIdentifier = "nextIdentifier";
+
+        NextStepStrategy nextStepStrategy = nextStepStrategyFactory.create(step, nextIdentifier);
+
+        assertEquals(nextIdentifier, nextStepStrategy.getNextStepIdentifier(null));
     }
 
     @Test
@@ -66,13 +74,9 @@ public class NextStepStrategyFactoryTest {
 
         verify(nextStepStrategy).getNextStepIdentifier(taskResult);
     }
-    @Test
-    public void createWithNextStepIdentifier() {
-        Step step = new UIStepBase("identifier", null, null, null, null, null, null, null);
-        String nextIdentifier = "nextIdentifier";
 
-        NextStepStrategy nextStepStrategy = nextStepStrategyFactory.create(step, nextIdentifier);
-
-        assertEquals(nextIdentifier, nextStepStrategy.getNextStepIdentifier(null));
+    @Before
+    public void setup() {
+        nextStepStrategyFactory = new NextStepStrategyFactory();
     }
 }

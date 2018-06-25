@@ -38,11 +38,11 @@
       ],
       "actions": {
         "goForward": {
-          "type":"base",
+          "type": "base",
           "buttonTitle": "Get started"
         },
         "skip": {
-          "type":"reminder",
+          "type": "reminder",
           "reminderIdentifier": "Tapping"
         }
       },
@@ -84,7 +84,7 @@
       },
       "actions": {
         "goForward": {
-          "type":"base",
+          "type": "base",
           "buttonTitle": "Got it"
         }
       }
@@ -137,7 +137,7 @@
       },
       "actions": {
         "goForward": {
-          "type":"base",
+          "type": "base",
           "buttonTitle": "Did it"
         }
       }
@@ -168,7 +168,7 @@
       },
       "actions": {
         "goForward": {
-          "type":"base",
+          "type": "base",
           "buttonTitle": "Start the test"
         }
       }
@@ -202,7 +202,7 @@
       },
       "actions": {
         "goForward": {
-          "type":"base",
+          "type": "base",
           "buttonTitle": "Done"
         }
       }

@@ -63,20 +63,6 @@ public class ActionModule {
 
     @Provides
     @IntoMap
-    @ActionKey(Action.class)
-    static String provideActionTypeKey() {
-        return ActionBase.TYPE_KEY;
-    }
-
-    @Provides
-    @IntoMap
-    @ActionKey(ReminderAction.class)
-    static String provideReminderActionTypeKey() {
-        return ReminderActionBase.TYPE_KEY;
-    }
-
-    @Provides
-    @IntoMap
     @ActionKey(SkipToStepAction.class)
     static String proivdeSkipToStepActionTypeKey() {
         return SkipToStepActionBase.TYPE_KEY;
@@ -90,20 +76,6 @@ public class ActionModule {
     }
 
     @Provides
-    @IntoMap
-    @ClassKey(ReminderAction.class)
-    static JsonDeserializer<?> provideReminderActionDeserializer() {
-        return createPassThroughDeserializer(ReminderActionBase.class);
-    }
-
-    @Provides
-    @IntoMap
-    @ClassKey(SkipToStepAction.class)
-    static JsonDeserializer<?> provideSkipToStepActionDeserializer() {
-        return createPassThroughDeserializer(SkipToStepActionBase.class);
-    }
-
-    @Provides
     @IntoSet
     static RuntimeTypeAdapterFactory provideActionTypeAdapterFactory(Map<Class<? extends Action>, String> typeMap) {
         RuntimeTypeAdapterFactory factory = RuntimeTypeAdapterFactory.of(Action.class);
@@ -113,5 +85,33 @@ public class ActionModule {
 
         factory.registerDefaultType(Action.class);
         return factory;
+    }
+
+    @Provides
+    @IntoMap
+    @ActionKey(Action.class)
+    static String provideActionTypeKey() {
+        return ActionBase.TYPE_KEY;
+    }
+
+    @Provides
+    @IntoMap
+    @ClassKey(ReminderAction.class)
+    static JsonDeserializer<?> provideReminderActionDeserializer() {
+        return createPassThroughDeserializer(ReminderActionBase.class);
+    }
+
+    @Provides
+    @IntoMap
+    @ActionKey(ReminderAction.class)
+    static String provideReminderActionTypeKey() {
+        return ReminderActionBase.TYPE_KEY;
+    }
+
+    @Provides
+    @IntoMap
+    @ClassKey(SkipToStepAction.class)
+    static JsonDeserializer<?> provideSkipToStepActionDeserializer() {
+        return createPassThroughDeserializer(SkipToStepActionBase.class);
     }
 }

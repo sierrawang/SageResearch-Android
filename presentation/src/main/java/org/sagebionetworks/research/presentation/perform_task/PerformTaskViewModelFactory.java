@@ -32,6 +32,8 @@
 
 package org.sagebionetworks.research.presentation.perform_task;
 
+import static com.google.common.base.Preconditions.checkNotNull;
+
 import android.arch.lifecycle.ViewModel;
 import android.arch.lifecycle.ViewModelProvider;
 import android.support.annotation.NonNull;
@@ -46,16 +48,14 @@ import java.util.UUID;
 
 import javax.inject.Inject;
 
-import static com.google.common.base.Preconditions.checkNotNull;
-
 public class PerformTaskViewModelFactory {
     private final StepNavigatorFactory stepNavigatorFactory;
+
+    private final StepViewFactory stepViewFactory;
 
     private final TaskMapper taskMapper;
 
     private final TaskRepository taskRepository;
-
-    private final StepViewFactory stepViewFactory;
 
     @Inject
     public PerformTaskViewModelFactory(StepNavigatorFactory stepNavigatorFactory, TaskMapper taskMapper,

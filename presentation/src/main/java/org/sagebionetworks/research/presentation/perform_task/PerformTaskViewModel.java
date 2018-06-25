@@ -32,6 +32,9 @@
 
 package org.sagebionetworks.research.presentation.perform_task;
 
+import static com.google.common.base.Preconditions.checkNotNull;
+import static com.google.common.base.Preconditions.checkState;
+
 import android.arch.lifecycle.LiveData;
 import android.arch.lifecycle.MutableLiveData;
 import android.arch.lifecycle.ViewModel;
@@ -46,20 +49,16 @@ import org.sagebionetworks.research.domain.result.implementations.TaskResultBase
 import org.sagebionetworks.research.domain.result.interfaces.Result;
 import org.sagebionetworks.research.domain.result.interfaces.TaskResult;
 import org.sagebionetworks.research.domain.step.interfaces.Step;
-import org.sagebionetworks.research.domain.step.interfaces.UIStep;
 import org.sagebionetworks.research.domain.task.Task;
 import org.sagebionetworks.research.domain.task.TaskInfo;
 import org.sagebionetworks.research.domain.task.navigation.StepNavigator;
 import org.sagebionetworks.research.domain.task.navigation.StepNavigatorFactory;
 import org.sagebionetworks.research.presentation.ActionType;
-import org.sagebionetworks.research.presentation.inject.StepViewModule;
 import org.sagebionetworks.research.presentation.inject.StepViewModule.StepViewFactory;
 import org.sagebionetworks.research.presentation.mapper.TaskMapper;
-import org.sagebionetworks.research.presentation.model.BaseStepView;
+import org.sagebionetworks.research.presentation.model.TaskView;
 import org.sagebionetworks.research.presentation.model.action.ActionView;
 import org.sagebionetworks.research.presentation.model.interfaces.StepView;
-import org.sagebionetworks.research.presentation.model.interfaces.StepView.NavDirection;
-import org.sagebionetworks.research.presentation.model.TaskView;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.threeten.bp.Instant;
@@ -68,11 +67,6 @@ import java.util.UUID;
 
 import io.reactivex.Completable;
 import io.reactivex.disposables.CompositeDisposable;
-
-import static com.google.common.base.Preconditions.checkNotNull;
-import static com.google.common.base.Preconditions.checkState;
-
-import javax.inject.Inject;
 
 @MainThread
 public class PerformTaskViewModel extends ViewModel {
@@ -86,6 +80,8 @@ public class PerformTaskViewModel extends ViewModel {
 
     private final StepNavigatorFactory stepNavigatorFactory;
 
+    private final StepViewFactory stepViewFactory;
+
     private final MutableLiveData<StepView> stepViewLiveData;
 
     private final MutableLiveData<TaskInfo> taskLiveData;
@@ -93,8 +89,6 @@ public class PerformTaskViewModel extends ViewModel {
     private final TaskMapper taskMapper;
 
     private final TaskRepository taskRepository;
-
-    private final StepViewFactory stepViewFactory;
 
     @Nullable
     private TaskResult taskResult;
@@ -149,9 +143,28 @@ public class PerformTaskViewModel extends ViewModel {
         taskResultLiveData.setValue(taskResult.addStepHistory(result));
     }
 
+    /**
+     * Returns the task's default ActionView for the given ActionType. The ActionView overrides the appearance of the
+     * actions buttons throughout the task. Note individual steps can still override their getActionFor() method and
+     * take priority over this ActionView.
+     *
+     * @param actionType
+     *         - The type of action to get the action view for.
+     * @return The default ActionView for the given ActionType.
+     */
+    @Nullable
+    public ActionView getActionFor(@ActionType String actionType) {
+        // By default we have no task default ActionViews.
+        return null;
+    }
+
     @NonNull
     public LiveData<Step> getStep() {
         return currentStepLiveData;
+    }
+
+    public StepNavigator getStepNavigator() {
+        return this.stepNavigator;
     }
 
     @NonNull
@@ -198,8 +211,22 @@ public class PerformTaskViewModel extends ViewModel {
         stepViewLiveData.setValue(stepView);
     }
 
-    public StepNavigator getStepNavigator() {
-        return this.stepNavigator;
+    /**
+     * Returns true if there is a step after the current one in the task, false otherwise.
+     *
+     * @return true if there is a step after the current one in the task, false otherwise.
+     */
+    public boolean hasNextStep() {
+        return this.stepNavigator.getNextStep(this.getStep().getValue(), this.getTaskResult().getValue()) != null;
+    }
+
+    /**
+     * Returns true if there is a step before the current one in the task, false otherwise.
+     *
+     * @return true if there is a step before the current one in the task, false otherwise.
+     */
+    public boolean hasPreviousStep() {
+        return this.stepNavigator.getPreviousStep(this.getStep().getValue(), this.getTaskResult().getValue()) != null;
     }
 
     protected void onCleared() {
@@ -245,34 +272,5 @@ public class PerformTaskViewModel extends ViewModel {
     @VisibleForTesting
     void taskInitSuccess() {
         goForward();
-    }
-
-    /**
-     * Returns true if there is a step after the current one in the task, false otherwise.
-     * @return true if there is a step after the current one in the task, false otherwise.
-     */
-    public boolean hasNextStep() {
-        return this.stepNavigator.getNextStep(this.getStep().getValue(), this.getTaskResult().getValue()) != null;
-    }
-
-    /**
-     * Returns true if there is a step before the current one in the task, false otherwise.
-     * @return true if there is a step before the current one in the task, false otherwise.
-     */
-    public boolean hasPreviousStep() {
-        return this.stepNavigator.getPreviousStep(this.getStep().getValue(), this.getTaskResult().getValue()) != null;
-    }
-
-    /**
-     * Returns the task's default ActionView for the given ActionType. The ActionView overrides the appearance of the
-     * actions buttons throughout the task. Note individual steps can still override their getActionFor() method
-     * and take priority over this ActionView.
-     * @param actionType - The type of action to get the action view for.
-     * @return The default ActionView for the given ActionType.
-     */
-    @Nullable
-    public ActionView getActionFor(@ActionType String actionType) {
-        // By default we have no task default ActionViews.
-        return null;
     }
 }

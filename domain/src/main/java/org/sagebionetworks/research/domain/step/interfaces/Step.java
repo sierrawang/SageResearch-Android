@@ -44,6 +44,7 @@ public interface Step {
 
     /**
      * Returns the unique identifier that distinguishes this step from the other steps in the task.
+     *
      * @return the unique identifier that distinguishes this step from the other steps in the task.
      */
     @NonNull
@@ -51,6 +52,7 @@ public interface Step {
 
     /**
      * Returns the type of this step.
+     *
      * @return The type of this step.
      */
     @NonNull

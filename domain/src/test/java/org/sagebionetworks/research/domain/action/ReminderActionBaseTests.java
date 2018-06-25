@@ -36,18 +36,28 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
-import org.junit.Assert;
 import org.junit.Test;
 import org.sagebionetworks.research.domain.step.ui.action.implementations.ReminderActionBase;
 import org.sagebionetworks.research.domain.step.ui.action.interfaces.Action;
 
 public class ReminderActionBaseTests extends IndividualActionTests {
-    public static final ReminderActionBase COMPLETE = ReminderActionBase.builder().setButtonIconName("icon").setButtonTitle("title")
+    public static final ReminderActionBase COMPLETE = ReminderActionBase.builder().setButtonIconName("icon")
+            .setButtonTitle("title")
             .setReminderIdentifier("reminder").build();
-    public static final ReminderActionBase NO_REMINDER = ReminderActionBase.builder().setButtonIconName("icon").setButtonTitle("title")
+
+    public static final ReminderActionBase NO_REMINDER = ReminderActionBase.builder().setButtonIconName("icon")
+            .setButtonTitle("title")
             .build();
+
     public static final ReminderActionBase NO_TITLE = ReminderActionBase.builder().setButtonIconName("icon")
             .setReminderIdentifier("reminder").build();
+
+    public void testCommon(Action expected, String filename) {
+        Action action = this.readJsonFile(filename);
+        assertNotNull(action);
+        assertTrue(action instanceof ReminderActionBase);
+        assertEquals(expected, action);
+    }
 
     @Test
     public void testReminderActionBase_Complete() {
@@ -62,12 +72,5 @@ public class ReminderActionBaseTests extends IndividualActionTests {
     @Test
     public void testReminderActionBase_NoTitle() {
         testCommon(NO_TITLE, "ReminderActionBase_NoTitle.json");
-    }
-
-    public void testCommon(Action expected, String filename) {
-        Action action = this.readJsonFile(filename);
-        assertNotNull(action);
-        assertTrue(action instanceof ReminderActionBase);
-        assertEquals(expected, action);
     }
 }

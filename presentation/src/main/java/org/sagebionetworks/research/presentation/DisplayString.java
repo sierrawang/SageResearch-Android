@@ -33,19 +33,16 @@
 package org.sagebionetworks.research.presentation;
 
 import android.content.res.Resources;
-import android.os.Parcel;
 import android.os.Parcelable;
-import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.annotation.StringRes;
 
 import com.google.auto.value.AutoValue;
-import com.google.common.base.Objects;
 
 /**
- * A DisplayString has a default string resource and an override string. When deciding which String to display
- * the override string takes precedence over the default resource. This allows for default behavior while still
- * providing the option to override this behavior.
+ * A DisplayString has a default string resource and an override string. When deciding which String to display the
+ * override string takes precedence over the default resource. This allows for default behavior while still providing
+ * the option to override this behavior.
  */
 @AutoValue
 public abstract class DisplayString implements Parcelable {
@@ -58,13 +55,6 @@ public abstract class DisplayString implements Parcelable {
         public abstract Builder setDisplayString(@Nullable String displayString);
     }
 
-    @Nullable
-    @StringRes
-    public abstract Integer getDefaultDisplayStringRes();
-
-    @Nullable
-    public abstract String getDisplayString();
-
     public static Builder builder() {
         return new AutoValue_DisplayString.Builder();
     }
@@ -76,12 +66,21 @@ public abstract class DisplayString implements Parcelable {
                 .build();
     }
 
+    @Nullable
+    @StringRes
+    public abstract Integer getDefaultDisplayStringRes();
+
+    @Nullable
+    public abstract String getDisplayString();
+
     /**
-     * Returns the String that should be displayed for this DisplayString, or null if neither the override string
-     * nor the default resource id is usable.
-     * @param resources The resources to resolve the default string res from if necessary.
-     * @return the String that should be displayed for this DisplayString. or null if neither the override string
-     * nor the defualt resource id is usable.
+     * Returns the String that should be displayed for this DisplayString, or null if neither the override string nor
+     * the default resource id is usable.
+     *
+     * @param resources
+     *         The resources to resolve the default string res from if necessary.
+     * @return the String that should be displayed for this DisplayString. or null if neither the override string nor
+     * the defualt resource id is usable.
      */
     @Nullable
     public String getString(Resources resources) {

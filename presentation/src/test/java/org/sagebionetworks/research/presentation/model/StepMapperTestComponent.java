@@ -36,6 +36,7 @@ import org.sagebionetworks.research.presentation.inject.StepViewModule;
 import org.sagebionetworks.research.presentation.inject.StepViewModule.StepViewFactory;
 
 import javax.inject.Singleton;
+
 import dagger.Component;
 
 @Component(modules = StepViewModule.class)

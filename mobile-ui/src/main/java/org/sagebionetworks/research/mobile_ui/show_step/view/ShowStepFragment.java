@@ -33,7 +33,6 @@
 package org.sagebionetworks.research.mobile_ui.show_step.view;
 
 import android.os.Bundle;
-import android.support.annotation.LayoutRes;
 import android.support.annotation.NonNull;
 import android.view.View;
 
@@ -44,8 +43,6 @@ import org.sagebionetworks.research.mobile_ui.widget.ActionButton;
 import org.sagebionetworks.research.presentation.ActionType;
 import org.sagebionetworks.research.presentation.model.interfaces.StepView;
 import org.sagebionetworks.research.presentation.show_step.ShowGenericStepViewModel;
-
-import static com.google.common.base.Preconditions.checkNotNull;
 
 /**
  * Shows a simple step.
@@ -67,11 +64,6 @@ public class ShowStepFragment extends ShowStepFragmentBase<StepView, ShowGeneric
     }
 
     @Override
-    protected UIStepViewBinding instantiateAndBindBinding(View view) {
-        return new UIStepViewBinding(view);
-    }
-
-    @Override
     protected String getActionTypeFromActionButton(@NonNull final ActionButton actionButton) {
         int actionButtonId = actionButton.getId();
 
@@ -88,5 +80,10 @@ public class ShowStepFragment extends ShowStepFragmentBase<StepView, ShowGeneric
     @Override
     protected int getLayoutId() {
         return R.layout.rs2_default_show_step_fragment_layout;
+    }
+
+    @Override
+    protected UIStepViewBinding instantiateAndBindBinding(View view) {
+        return new UIStepViewBinding(view);
     }
 }
