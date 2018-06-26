@@ -33,24 +33,17 @@
 package org.sagebionetworks.research.mobile_ui.recorder.device_motion;
 
 import android.content.Context;
-import android.hardware.SensorManager;
 import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
 
 import com.github.pwittchen.reactivesensors.library.ReactiveSensorEvent;
 import com.github.pwittchen.reactivesensors.library.ReactiveSensors;
-
-import org.reactivestreams.Publisher;
-import org.reactivestreams.Subscriber;
-import org.sagebionetworks.research.presentation.recorder.DeviceMotionRecorderConfigPresentation;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
+import io.reactivex.BackpressureStrategy;
 import io.reactivex.Flowable;
 import io.reactivex.FlowableEmitter;
 import io.reactivex.FlowableOnSubscribe;
@@ -66,9 +59,6 @@ public class DeviceMotionSensors implements FlowableOnSubscribe<ReactiveSensorEv
     @NonNull
     protected Set<Integer> sensorTypes;
     protected int sensorDelay;
-    protected boolean isStarted;
-    @NonNull
-    protected Flowable<ReactiveSensorEvent> flowable;
     protected Disposable disposable;
     @NonNull
     protected Set<FlowableEmitter<ReactiveSensorEvent>> observers;
@@ -89,7 +79,6 @@ public class DeviceMotionSensors implements FlowableOnSubscribe<ReactiveSensorEv
         this.sensorTypes = sensorTypes;
         this.sensorDelay = sensorDelay;
         this.observers = new HashSet<>();
-        this.isStarted = false;
     }
 
     @Override
@@ -101,11 +90,20 @@ public class DeviceMotionSensors implements FlowableOnSubscribe<ReactiveSensorEv
         for (FlowableEmitter<ReactiveSensorEvent> emitter : observers) {
             emitter.onComplete();
         }
+
+        this.disposable.dispose();
     }
 
     public void cancel() {
         for (FlowableEmitter<ReactiveSensorEvent> emitter : observers) {
             emitter.onError(new Throwable("Recording cancelled"));
         }
+
+        this.disposable.dispose();
+    }
+
+    @NonNull
+    public Flowable<ReactiveSensorEvent> getFlowable() {
+        return Flowable.create(this, BackpressureStrategy.BUFFER);
     }
 }

@@ -30,38 +30,46 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.sagebionetworks.research.mobile_ui.recorder.device_motion;
+package org.sagebionetworks.research.mobile_ui.recorder.distance;
 
 import android.content.Context;
+import android.location.Location;
 import android.support.annotation.NonNull;
 
-import com.github.pwittchen.reactivesensors.library.ReactiveSensorEvent;
+import com.google.gson.JsonObject;
 
+import org.sagebionetworks.research.domain.recorder.RecorderConfig;
 import org.sagebionetworks.research.mobile_ui.recorder.DataRecorder;
-import org.sagebionetworks.research.presentation.recorder.DeviceMotionRecorderConfigPresentation;
+import org.threeten.bp.Instant;
 
 import java.io.IOException;
 
-import io.reactivex.Flowable;
-
-/**
- * DeviceMotionJsonRecorder recorders the devices motion as Json into a file. It provides no summary result.
- */
-public class DeviceMotionJsonRecorder extends DeviceMotionRecorder<Void, Void> {
+public class DistanceJsonRecorder extends DistanceRecorder {
     public static final String JSON_FILE_START = "[";
     public static final String JSON_FILE_END = "]";
     public static final String JSON_OBJECT_DELIMINATOR = ",";
 
-    public DeviceMotionJsonRecorder(
-            final DeviceMotionRecorderConfigPresentation config, final Context context) throws IOException {
-        // TODO rkolmos 06/26/2018 make this recorder output to the correct file.
-        super(config, context, new DataRecorder(config.getIdentifier(), null, JSON_FILE_START,
-                JSON_FILE_END, JSON_OBJECT_DELIMINATOR), null, null);
+    protected boolean usesRelativeCoordinates;
+
+    public DistanceJsonRecorder(final RecorderConfig config, final Context context) throws IOException {
+        super(config, context, new DataRecorder(config.getIdentifier(), null,
+                JSON_FILE_START, JSON_FILE_END, JSON_OBJECT_DELIMINATOR));
+        // TODO rkolmos 06/26/2018 initalize these from config.
+        this.usesRelativeCoordinates = false;
     }
 
     @NonNull
     @Override
-    protected String getDataString(@NonNull final ReactiveSensorEvent event) {
-        return DeviceMotionJsonAdapter.createJsonObject(event).toString();
+    protected String getDataString(@NonNull final Location event) {
+        // TODO rkolmos 06/26/2018 potentially refactor start time and first location.
+        DistanceState currentState = this.getCurrentState();
+        if (currentState == null || currentState.getFirstLocation() == null) {
+            throw new IllegalStateException("Cannot get data string while not recording.");
+        }
+
+        Location firstLocation = currentState.getFirstLocation();
+        JsonObject jsonObject = DistanceJsonAdapter.getJsonObject(event, this.usesRelativeCoordinates,
+                firstLocation);
+        return jsonObject.toString();
     }
 }

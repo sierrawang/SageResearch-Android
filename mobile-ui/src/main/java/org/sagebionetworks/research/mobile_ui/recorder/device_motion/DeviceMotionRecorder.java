@@ -35,68 +35,48 @@ package org.sagebionetworks.research.mobile_ui.recorder.device_motion;
 import android.content.Context;
 import android.hardware.SensorManager;
 import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
 
 import com.github.pwittchen.reactivesensors.library.ReactiveSensorEvent;
 
-import org.sagebionetworks.research.domain.result.interfaces.FileResult;
 import org.sagebionetworks.research.mobile_ui.recorder.DataRecorder;
-import org.sagebionetworks.research.mobile_ui.recorder.Recorder;
-import org.sagebionetworks.research.mobile_ui.recorder.RecorderBase;
+import org.sagebionetworks.research.mobile_ui.recorder.ReactiveRecorder;
 import org.sagebionetworks.research.presentation.recorder.DeviceMotionRecorderConfigPresentation;
 
-import java.io.File;
-import java.io.IOException;
 import java.util.Set;
 
 import io.reactivex.BackpressureStrategy;
 import io.reactivex.Flowable;
-import io.reactivex.Observable;
-import io.reactivex.Single;
-import io.reactivex.disposables.Disposable;
-import io.reactivex.schedulers.Schedulers;
 
 /**
  * A DeviceMotionRecorder recorders a set of the device's motion sensors and provides access to a Single<FileResult>
- * which can access the data file once the recorder is complete.
+ * which can access the data file once the recorder is complete
+ * @param <S> The type of the summary for this recorder.
+ * @param <C> The type of the current state for this recorder.
  */
-public abstract class DeviceMotionRecorder extends RecorderBase {
+public abstract class DeviceMotionRecorder<S, C> extends ReactiveRecorder<S, C, ReactiveSensorEvent> {
     private static final long MICRO_SECONDS_PER_SEC = 1000000L;
 
     protected final double frequency;
     protected final DeviceMotionSensors deviceMotionSensors;
     protected final Set<Integer> sensorTypes;
-    protected final DataRecorder dataRecorder;
-    protected Disposable disposable;
 
     public DeviceMotionRecorder(DeviceMotionRecorderConfigPresentation config, Context context,
-            DataRecorder dataRecorder) {
-        super(config.getIdentifier(), config.getStartStepIdentifier(), config.getStopStepIdentifier());
+            DataRecorder dataRecorder, SummarySubscriber<S, ReactiveSensorEvent> summarySubscriber,
+            CurrentStateSubscriber<C, ReactiveSensorEvent> currentStateSubscriber) {
+        super(config.getIdentifier(), config.getStartStepIdentifier(), config.getStopStepIdentifier(), dataRecorder,
+                summarySubscriber, currentStateSubscriber);
         this.frequency = config.getFrequency();
         this.sensorTypes = config.getRecorderTypes();
         int sensorDelay = this.isManualFrequency() ? this.calculateDelayBetweenSamplesInMicroSeconds()
                 : SensorManager.SENSOR_DELAY_FASTEST;
-        this.dataRecorder = dataRecorder;
         this.deviceMotionSensors = new DeviceMotionSensors(context, this.sensorTypes, sensorDelay);
     }
 
-    /**
-     * Converts a ReactiveSensorEvent into a String that can be recorded by the DataRecorder into a file.
-     * @param event The sensor event to convert into a string.
-     * @return The string conversion of the given ReactiveSensorEvent.
-     */
-    @NonNull
-    protected abstract String getDataString(@NonNull ReactiveSensorEvent event);
-
     @Override
-    public void start() {
-        super.start();
-        Flowable.create(this.deviceMotionSensors, BackpressureStrategy.BUFFER)
-                .map(this::getDataString)
-                .subscribeOn(Schedulers.io())
-                .subscribe(this.dataRecorder);
+    @NonNull
+    public Flowable<ReactiveSensorEvent> intializeEventFlowable() {
+        return Flowable.create(this.deviceMotionSensors, BackpressureStrategy.BUFFER);
     }
-
 
     @Override
     public void stop() {
@@ -108,11 +88,6 @@ public abstract class DeviceMotionRecorder extends RecorderBase {
     public void cancel() {
         super.cancel();
         this.deviceMotionSensors.cancel();
-        this.dataRecorder.onError(new Throwable("Recorder canceled"));
-    }
-
-    public Single<FileResult> getFileResult() {
-        return Single.create(this.dataRecorder);
     }
 
     /**
