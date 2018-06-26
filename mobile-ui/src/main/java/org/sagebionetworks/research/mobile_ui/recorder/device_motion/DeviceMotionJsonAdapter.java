@@ -55,6 +55,9 @@ import java.util.Locale;
 import java.util.Map;
 import java.util.Set;
 
+/**
+ * Provides support for converting a ReactiveSensorEvent into a JsonObject.
+ */
 public class DeviceMotionJsonAdapter {
     private static final Logger LOGGER = LoggerFactory.getLogger(DeviceMotionJsonAdapter.class);
     private static long TIMESTAMP_ZERO_REFERENCE_NANOS = 0;

@@ -42,49 +42,43 @@ import com.github.pwittchen.reactivesensors.library.ReactiveSensorEvent;
 import org.sagebionetworks.research.domain.result.interfaces.FileResult;
 import org.sagebionetworks.research.mobile_ui.recorder.DataRecorder;
 import org.sagebionetworks.research.mobile_ui.recorder.Recorder;
+import org.sagebionetworks.research.mobile_ui.recorder.RecorderBase;
 import org.sagebionetworks.research.presentation.recorder.DeviceMotionRecorderConfigPresentation;
 
 import java.io.File;
 import java.io.IOException;
 import java.util.Set;
 
+import io.reactivex.BackpressureStrategy;
+import io.reactivex.Flowable;
+import io.reactivex.Observable;
 import io.reactivex.Single;
+import io.reactivex.disposables.Disposable;
 import io.reactivex.schedulers.Schedulers;
 
-public abstract class DeviceMotionRecorder implements Recorder {
-    public static final String JSON_START_DELIMINATOR = "[";
-    public static final String JSON_END_DELIMINATOR = "]";
-    public static final String JSON_OBJECT_SEPARATOR = ",";
+/**
+ * A DeviceMotionRecorder recorders a set of the device's motion sensors and provides access to a Single<FileResult>
+ * which can access the data file once the recorder is complete.
+ */
+public abstract class DeviceMotionRecorder extends RecorderBase {
     private static final long MICRO_SECONDS_PER_SEC = 1000000L;
 
     protected final double frequency;
-    protected final String identifier;
-    protected final String startStepIdentifier;
-    protected final String stopStepIdentifier;
     protected final DeviceMotionSensors deviceMotionSensors;
     protected final Set<Integer> sensorTypes;
     protected final DataRecorder dataRecorder;
-    protected boolean isRecording;
+    protected Disposable disposable;
 
-    public DeviceMotionRecorder(DeviceMotionRecorderConfigPresentation config, Context context) throws
-            IOException {
+    public DeviceMotionRecorder(DeviceMotionRecorderConfigPresentation config, Context context,
+            DataRecorder dataRecorder) {
+        super(config.getIdentifier(), config.getStartStepIdentifier(), config.getStopStepIdentifier());
         this.frequency = config.getFrequency();
-        this.identifier = config.getIdentifier();
-        this.startStepIdentifier = config.getStartStepIdentifier();
-        this.stopStepIdentifier = config.getStopStepIdentifier();
         this.sensorTypes = config.getRecorderTypes();
-        this.deviceMotionSensors = new DeviceMotionSensors(context);
-        this.dataRecorder = this.instantiateRecorder(config);
-        this.isRecording = false;
+        int sensorDelay = this.isManualFrequency() ? this.calculateDelayBetweenSamplesInMicroSeconds()
+                : SensorManager.SENSOR_DELAY_FASTEST;
+        this.dataRecorder = dataRecorder;
+        this.deviceMotionSensors = new DeviceMotionSensors(context, this.sensorTypes, sensorDelay);
     }
-
-    /**
-     * Instantiates a DataRecorder with the correct settings to log for this DeviceMotionRecorder
-     * @return A DataRecorder fully configured for this DeviceMotionRecorder
-     * @throws IOException if instantiating the DataRecorder fails with an IOException.
-     */
-    @NonNull
-    public abstract DataRecorder instantiateRecorder(DeviceMotionRecorderConfigPresentation config) throws IOException;
 
     /**
      * Converts a ReactiveSensorEvent into a String that can be recorded by the DataRecorder into a file.
@@ -92,68 +86,39 @@ public abstract class DeviceMotionRecorder implements Recorder {
      * @return The string conversion of the given ReactiveSensorEvent.
      */
     @NonNull
-    public abstract String getDataString(@NonNull ReactiveSensorEvent event);
+    protected abstract String getDataString(@NonNull ReactiveSensorEvent event);
 
     @Override
     public void start() {
-        this.isRecording = true;
-        int sensorDelay = SensorManager.SENSOR_DELAY_FASTEST;
-        if (!this.isManualFrequency()) {
-            sensorDelay = this.calculateDelayBetweenSamplesInMicroSeconds();
-        }
-
-        File outputDirectory = this.getOutputDirectory();
-        this.deviceMotionSensors.subscribeToSensors(sensorTypes, sensorDelay)
+        super.start();
+        Flowable.create(this.deviceMotionSensors, BackpressureStrategy.BUFFER)
                 .map(this::getDataString)
                 .subscribeOn(Schedulers.io())
                 .subscribe(this.dataRecorder);
     }
 
-    /**
-     * Returns the file that this recorder will output to.
-     * @return the file that this recorder will output to.
-     */
-    protected File getOutputDirectory() {
-        // TODO rkolmos 06/25/2018 implement this method.
-        return new File("");
-    }
 
     @Override
     public void stop() {
-        this.isRecording = false;
+        super.stop();
+        this.deviceMotionSensors.complete();
     }
 
     @Override
     public void cancel() {
-        this.isRecording = false;
+        super.cancel();
+        this.deviceMotionSensors.cancel();
         this.dataRecorder.onError(new Throwable("Recorder canceled"));
     }
 
-    @Override
-    public boolean isRecording() {
-        return this.isRecording;
-    }
-
-    @Nullable
-    @Override
-    public String getStartStepIdentifier() {
-        return this.startStepIdentifier;
-    }
-
-    @Nullable
-    @Override
-    public String getStopStepIdentifier() {
-        return this.stopStepIdentifier;
-    }
-
-    /**
-     * Retruns a Single that will publish the Json file result when the file is finished being written.
-     * @return a Single that will publish the Json file result when the file is finihsed being written.
-     */
-    public Single<FileResult> getJsonFileResult() {
+    public Single<FileResult> getFileResult() {
         return Single.create(this.dataRecorder);
     }
 
+    /**
+     * Calculates the delay between sensor samples in microseconds based on the frequency of this recorder.
+     * @return the delay between sensor samples in microseconds.
+     */
     protected int calculateDelayBetweenSamplesInMicroSeconds() {
         return (int)((float)MICRO_SECONDS_PER_SEC / this.frequency);
     }

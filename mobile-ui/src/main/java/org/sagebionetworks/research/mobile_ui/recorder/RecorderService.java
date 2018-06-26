@@ -189,6 +189,11 @@ public class RecorderService extends Service {
         // TODO rkolmos 06/20/2018 call a recorder factory here.
         Recorder recorder = new Recorder() {
             @Override
+            public String getIdentifier() {
+                return null;
+            }
+
+            @Override
             public void start() {
 
             }

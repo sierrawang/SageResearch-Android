@@ -43,10 +43,10 @@ import java.io.Serializable;
  * A Recorder records some sort of data about the user (e.g. phone's motion, audio, etc). Recorders are typically
  * run on a different thread than ui so implementations should be thread safe to ensure there are no concurrency
  * issues.
- * @param <E> The type of result for this recorder. It is anticipated that this will be some sort of RxJava
- *           class but this isn't strictly necessary.
  */
 public interface Recorder extends Serializable {
+    String getIdentifier();
+
     void start();
 
     void stop();

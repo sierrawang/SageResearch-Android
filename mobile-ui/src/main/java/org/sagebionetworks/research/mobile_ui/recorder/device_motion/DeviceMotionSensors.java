@@ -34,6 +34,7 @@ package org.sagebionetworks.research.mobile_ui.recorder.device_motion;
 
 import android.content.Context;
 import android.hardware.SensorManager;
+import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 
 import com.github.pwittchen.reactivesensors.library.ReactiveSensorEvent;
@@ -46,34 +47,65 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
 import io.reactivex.Flowable;
+import io.reactivex.FlowableEmitter;
+import io.reactivex.FlowableOnSubscribe;
+import io.reactivex.disposables.Disposable;
 
 /**
  * This class is a Wrapper around ReactiveSensors that allows subscribing to a set of sensors with a single
  * call.
  */
-public class DeviceMotionSensors {
+public class DeviceMotionSensors implements FlowableOnSubscribe<ReactiveSensorEvent> {
+    @NonNull
     protected ReactiveSensors reactiveSensors;
+    @NonNull
+    protected Set<Integer> sensorTypes;
+    protected int sensorDelay;
+    protected boolean isStarted;
+    @NonNull
+    protected Flowable<ReactiveSensorEvent> flowable;
+    protected Disposable disposable;
+    @NonNull
+    protected Set<FlowableEmitter<ReactiveSensorEvent>> observers;
 
-    public DeviceMotionSensors(Context context) {
+    public DeviceMotionSensors(@NonNull Context context, @NonNull Set<Integer> sensorTypes,  int sensorDelay) {
         this.reactiveSensors = new ReactiveSensors(context);
-    }
-
-    /**
-     * Returns a Flowable that will publish events from all of the given sensor types.
-     * @param sensorTypes The types of sensors to publish events from (e.g. Sensor.TYPE_ACCELEROMETER)
-     * @param sensorDelay The delay between sensor samples
-     * @return a Flowable that will publish evetns from all the given sensor types.
-     */
-    public Flowable<ReactiveSensorEvent> subscribeToSensors(Set<Integer> sensorTypes, int sensorDelay) {
         List<Flowable<ReactiveSensorEvent>> allFlowables = new ArrayList<>();
         for (Integer sensorType : sensorTypes) {
             allFlowables.add(this.reactiveSensors.observeSensor(sensorType, sensorDelay));
         }
 
-        return Flowable.merge(allFlowables);
+        this.disposable = Flowable.merge(allFlowables)
+                .doOnNext(event -> {
+                    for (FlowableEmitter<ReactiveSensorEvent> emitter : observers) {
+                        emitter.onNext(event);
+                    }
+                }).subscribe();
+        this.sensorTypes = sensorTypes;
+        this.sensorDelay = sensorDelay;
+        this.observers = new HashSet<>();
+        this.isStarted = false;
+    }
+
+    @Override
+    public void subscribe(final FlowableEmitter<ReactiveSensorEvent> emitter) throws Exception {
+        this.observers.add(emitter);
+    }
+
+    public void complete() {
+        for (FlowableEmitter<ReactiveSensorEvent> emitter : observers) {
+            emitter.onComplete();
+        }
+    }
+
+    public void cancel() {
+        for (FlowableEmitter<ReactiveSensorEvent> emitter : observers) {
+            emitter.onError(new Throwable("Recording cancelled"));
+        }
     }
 }

@@ -42,22 +42,24 @@ import org.sagebionetworks.research.presentation.recorder.DeviceMotionRecorderCo
 
 import java.io.IOException;
 
+/**
+ * DeviceMotionJsonRecorder recorders the devices motion as Json into a file. It provides no summary result.
+ */
 public class DeviceMotionJsonRecorder extends DeviceMotionRecorder {
+    public static final String JSON_FILE_START = "[";
+    public static final String JSON_FILE_END = "]";
+    public static final String JSON_OBJECT_DELIMINATOR = ",";
+
     public DeviceMotionJsonRecorder(
             final DeviceMotionRecorderConfigPresentation config, final Context context) throws IOException {
-        super(config, context);
+        // TODO rkolmos 06/26/2018 make this recorder output to the correct file.
+        super(config, context, new DataRecorder(config.getIdentifier(), null, JSON_FILE_START,
+                JSON_FILE_END, JSON_OBJECT_DELIMINATOR));
     }
 
     @NonNull
     @Override
-    public DataRecorder instantiateRecorder(final DeviceMotionRecorderConfigPresentation config) throws IOException {
-        // The data gets ouptut as a JsonArray starting with '[' ending with ']' with ',' used to separate elements.
-        return new DataRecorder(config.getIdentifier(), this.getOutputDirectory(), "[", "]", ",");
-    }
-
-    @NonNull
-    @Override
-    public String getDataString(@NonNull final ReactiveSensorEvent event) {
+    protected String getDataString(@NonNull final ReactiveSensorEvent event) {
         return DeviceMotionJsonAdapter.createJsonObject(event).toString();
     }
 }

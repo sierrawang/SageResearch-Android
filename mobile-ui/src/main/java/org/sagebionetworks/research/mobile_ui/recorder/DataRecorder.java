@@ -96,6 +96,7 @@ public class DataRecorder implements Subscriber<String>, SingleOnSubscribe<FileR
     @Override
     public void onSubscribe(final Subscription s) {
         this.startTime = Instant.now();
+        s.request(Long.MAX_VALUE);
     }
 
     @Override
