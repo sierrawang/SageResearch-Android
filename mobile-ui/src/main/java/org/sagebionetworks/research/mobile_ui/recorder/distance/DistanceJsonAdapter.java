@@ -39,11 +39,10 @@ import android.os.Build.VERSION;
 import android.os.Build.VERSION_CODES;
 import android.os.SystemClock;
 import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
 
 import com.google.gson.JsonObject;
 
-import org.sagebionetworks.research.mobile_ui.recorder.FormatHelper;
+import org.sagebionetworks.research.mobile_ui.recorder.data.FormatHelper;
 
 import java.util.Locale;
 

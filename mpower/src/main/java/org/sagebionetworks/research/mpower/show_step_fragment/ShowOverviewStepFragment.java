@@ -33,36 +33,22 @@
 package org.sagebionetworks.research.mpower.show_step_fragment;
 
 import android.animation.ObjectAnimator;
-import android.animation.TypeEvaluator;
-import android.content.ComponentName;
 import android.content.Context;
-import android.content.Intent;
-import android.content.ServiceConnection;
 import android.content.SharedPreferences;
-import android.content.SharedPreferences.Editor;
 import android.os.Bundle;
-import android.os.IBinder;
 import android.support.annotation.NonNull;
-import android.util.FloatProperty;
-import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.ViewPropertyAnimator;
-import android.view.animation.Animation;
 import android.widget.ImageView;
 import android.widget.ScrollView;
 import android.widget.TextView;
 
 import org.sagebionetworks.research.domain.result.AnswerResultType;
 import org.sagebionetworks.research.domain.result.implementations.AnswerResultBase;
-import org.sagebionetworks.research.domain.result.implementations.ResultBase;
-import org.sagebionetworks.research.domain.step.ui.action.interfaces.Action;
-import org.sagebionetworks.research.mobile_ui.recorder.RecorderService;
 import org.sagebionetworks.research.mobile_ui.show_step.view.ShowStepFragmentBase;
-import org.sagebionetworks.research.mobile_ui.show_step.view.ShowUIStepFragment;
 import org.sagebionetworks.research.mobile_ui.show_step.view.ShowUIStepFragmentBase;
-import org.sagebionetworks.research.mobile_ui.show_step.view.view_binding.UIStepViewBinding;
 import org.sagebionetworks.research.mobile_ui.widget.ActionButton;
 import org.sagebionetworks.research.mpower.R;
 import org.sagebionetworks.research.mpower.step_binding.OverviewStepViewBinding;
@@ -71,17 +57,12 @@ import org.sagebionetworks.research.mpower.widget.DisablableScrollView;
 import org.sagebionetworks.research.presentation.ActionType;
 import org.sagebionetworks.research.presentation.model.interfaces.StepView;
 import org.sagebionetworks.research.presentation.show_step.show_step_view_models.ShowUIStepViewModel;
-import org.threeten.bp.Duration;
 import org.threeten.bp.Instant;
-import org.threeten.bp.LocalDate;
 import org.threeten.bp.LocalDateTime;
 import org.threeten.bp.ZoneId;
-import org.threeten.bp.temporal.ChronoUnit;
-import org.threeten.bp.temporal.Temporal;
 import org.threeten.bp.zone.ZoneRulesException;
 
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 
 public class ShowOverviewStepFragment extends

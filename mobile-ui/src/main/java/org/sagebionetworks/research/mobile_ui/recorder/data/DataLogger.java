@@ -30,7 +30,7 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.sagebionetworks.research.mobile_ui.recorder;
+package org.sagebionetworks.research.mobile_ui.recorder.data;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 
@@ -59,7 +59,7 @@ import io.reactivex.SingleOnSubscribe;
  * The start time of the fileResult will be the time that onSubscribe was called and the end time will be the time
  * that onComplete was called.
  */
-public class DataRecorder implements Subscriber<String>, SingleOnSubscribe<FileResult> {
+public class DataLogger implements Subscriber<String>, SingleOnSubscribe<FileResult> {
     protected String identifier;
     protected final Set<SingleEmitter<FileResult>> observers;
     protected final File outputDirectory;
@@ -81,7 +81,7 @@ public class DataRecorder implements Subscriber<String>, SingleOnSubscribe<FileR
      * @param delimnator The string to separate each piece of data passed to OnNext with.
      * @throws IOException If the given outputDirectory cannot be opened or written to.
      */
-    public DataRecorder(String identifier, File outputDirectory, @Nullable String start, @Nullable String end,
+    public DataLogger(String identifier, File outputDirectory, @Nullable String start, @Nullable String end,
             @Nullable String delimnator) throws IOException {
         this.identifier = identifier;
         this.outputDirectory = outputDirectory;

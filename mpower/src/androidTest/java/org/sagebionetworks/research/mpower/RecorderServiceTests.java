@@ -35,10 +35,8 @@ package org.sagebionetworks.research.mpower;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
-import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
-import android.os.IBinder;
 import android.support.test.InstrumentationRegistry;
 import android.support.test.rule.ServiceTestRule;
 import android.support.test.runner.AndroidJUnit4;
@@ -46,9 +44,8 @@ import android.support.test.runner.AndroidJUnit4;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.sagebionetworks.research.mobile_ui.recorder.RecorderActionType;
-import org.sagebionetworks.research.mobile_ui.recorder.RecorderService;
-import org.sagebionetworks.research.mobile_ui.recorder.RecorderService.RecorderBinder;
+import org.sagebionetworks.research.mobile_ui.recorder.service.RecorderService;
+import org.sagebionetworks.research.mobile_ui.recorder.service.RecorderService.RecorderBinder;
 
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;

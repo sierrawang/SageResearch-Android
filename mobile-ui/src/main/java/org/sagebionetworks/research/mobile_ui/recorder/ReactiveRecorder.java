@@ -37,6 +37,7 @@ import android.support.annotation.Nullable;
 
 import org.reactivestreams.Subscriber;
 import org.sagebionetworks.research.domain.result.interfaces.FileResult;
+import org.sagebionetworks.research.mobile_ui.recorder.data.DataLogger;
 
 import io.reactivex.Flowable;
 import io.reactivex.Single;
@@ -44,7 +45,7 @@ import io.reactivex.schedulers.Schedulers;
 
 /**
  * A ReactiveRecorder is a recorder which records based on a stream of events, and supports maintaining a FileResult
- * via a DataRecorder, a Summary via a SummarySubscriber, and a current state, via a CurrentStateSubscriber.
+ * via a DataLogger, a Summary via a SummarySubscriber, and a current state, via a CurrentStateSubscriber.
  * @param <S> The type of summary that this recorder produces.
  * @param <C> The type of current state that this recorder produces.
  * @param <E> The type of event from the stream this recorder records based on.
@@ -55,20 +56,20 @@ public abstract class ReactiveRecorder<S, C, E> extends RecorderBase {
     @Nullable
     protected final CurrentStateSubscriber<C, E> currentStateSubscriber;
     @Nullable
-    protected final DataRecorder dataRecorder;
+    protected final DataLogger dataLogger;
     @NonNull
     protected Flowable<E> eventFlowable;
 
     public ReactiveRecorder(@NonNull final String identifier,
             @Nullable final String startStepIdentifier,
             @Nullable final String stopStepIdentifier,
-            @Nullable final DataRecorder dataRecorder,
+            @Nullable final DataLogger dataLogger,
             @Nullable final SummarySubscriber<S, E> summarySubscriber,
             @Nullable final CurrentStateSubscriber<C, E> currentStateSubscriber) {
         super(identifier, startStepIdentifier, stopStepIdentifier);
         this.summarySubscriber = summarySubscriber;
         this.currentStateSubscriber = currentStateSubscriber;
-        this.dataRecorder = dataRecorder;
+        this.dataLogger = dataLogger;
         this.eventFlowable = this.intializeEventFlowable();
 
     }
@@ -85,10 +86,10 @@ public abstract class ReactiveRecorder<S, C, E> extends RecorderBase {
             this.eventFlowable = this.eventFlowable.doOnEach(this.currentStateSubscriber);
         }
 
-        if (this.dataRecorder != null) {
+        if (this.dataLogger != null) {
             this.eventFlowable.map(this::getDataString)
                     .observeOn(Schedulers.io())
-                    .subscribe(this.dataRecorder);
+                    .subscribe(this.dataLogger);
         }
     }
 
@@ -100,8 +101,8 @@ public abstract class ReactiveRecorder<S, C, E> extends RecorderBase {
     @Override
     public void cancel() {
         super.cancel();
-        if (this.dataRecorder != null) {
-            this.dataRecorder.onError(new Throwable("Recorder Canceled"));
+        if (this.dataLogger != null) {
+            this.dataLogger.onError(new Throwable("Recorder Canceled"));
         }
     }
 
@@ -112,7 +113,7 @@ public abstract class ReactiveRecorder<S, C, E> extends RecorderBase {
      */
     @Nullable
     public Single<FileResult> getFileResult() {
-        return this.dataRecorder != null ? Single.create(this.dataRecorder) : null;
+        return this.dataLogger != null ? Single.create(this.dataLogger) : null;
     }
 
     /**
@@ -143,7 +144,7 @@ public abstract class ReactiveRecorder<S, C, E> extends RecorderBase {
     protected abstract Flowable<E> intializeEventFlowable();
 
     /**
-     * Converts an event into a String that can be recorded by the DataRecorder into a file.
+     * Converts an event into a String that can be recorded by the DataLogger into a file.
      * @param event The event to convert into a string.
      * @return The string conversion of the given event.
      */

@@ -39,7 +39,7 @@ import android.support.annotation.Nullable;
 
 import org.reactivestreams.Subscription;
 import org.sagebionetworks.research.domain.recorder.RecorderConfig;
-import org.sagebionetworks.research.mobile_ui.recorder.DataRecorder;
+import org.sagebionetworks.research.mobile_ui.recorder.data.DataLogger;
 import org.sagebionetworks.research.mobile_ui.recorder.ReactiveRecorder;
 import org.sagebionetworks.research.mobile_ui.recorder.distance.DistanceRecorder.DistanceState;
 import org.sagebionetworks.research.mobile_ui.recorder.distance.DistanceRecorder.DistanceSummary;
@@ -55,9 +55,9 @@ import io.reactivex.SingleOnSubscribe;
 public abstract class DistanceRecorder extends ReactiveRecorder<DistanceSummary, DistanceState, Location> {
     protected final Context context;
 
-    public DistanceRecorder(RecorderConfig config, Context context, @Nullable final DataRecorder dataRecorder) {
+    public DistanceRecorder(RecorderConfig config, Context context, @Nullable final DataLogger dataLogger) {
         super(config.getIdentifier(), config.getStartStepIdentifier(), config.getStopStepIdentifier(),
-                dataRecorder, new DistanceSummarySubscriber(), new DistanceStateSubscriber());
+                dataLogger, new DistanceSummarySubscriber(), new DistanceStateSubscriber());
         this.context = context;
     }
 

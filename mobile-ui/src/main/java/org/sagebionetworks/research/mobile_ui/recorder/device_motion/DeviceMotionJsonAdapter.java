@@ -45,7 +45,7 @@ import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.ImmutableSet;
 import com.google.gson.JsonObject;
 
-import org.sagebionetworks.research.mobile_ui.recorder.FormatHelper;
+import org.sagebionetworks.research.mobile_ui.recorder.data.FormatHelper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

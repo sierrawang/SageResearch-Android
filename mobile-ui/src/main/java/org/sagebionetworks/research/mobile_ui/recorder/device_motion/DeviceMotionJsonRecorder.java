@@ -37,12 +37,10 @@ import android.support.annotation.NonNull;
 
 import com.github.pwittchen.reactivesensors.library.ReactiveSensorEvent;
 
-import org.sagebionetworks.research.mobile_ui.recorder.DataRecorder;
+import org.sagebionetworks.research.mobile_ui.recorder.data.DataLogger;
 import org.sagebionetworks.research.presentation.recorder.DeviceMotionRecorderConfigPresentation;
 
 import java.io.IOException;
-
-import io.reactivex.Flowable;
 
 /**
  * DeviceMotionJsonRecorder recorders the devices motion as Json into a file. It provides no summary result.
@@ -55,7 +53,7 @@ public class DeviceMotionJsonRecorder extends DeviceMotionRecorder<Void, Void> {
     public DeviceMotionJsonRecorder(
             final DeviceMotionRecorderConfigPresentation config, final Context context) throws IOException {
         // TODO rkolmos 06/26/2018 make this recorder output to the correct file.
-        super(config, context, new DataRecorder(config.getIdentifier(), null, JSON_FILE_START,
+        super(config, context, new DataLogger(config.getIdentifier(), null, JSON_FILE_START,
                 JSON_FILE_END, JSON_OBJECT_DELIMINATOR), null, null);
     }
 

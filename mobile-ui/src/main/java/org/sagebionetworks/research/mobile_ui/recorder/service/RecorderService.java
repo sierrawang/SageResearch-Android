@@ -30,7 +30,7 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.sagebionetworks.research.mobile_ui.recorder;
+package org.sagebionetworks.research.mobile_ui.recorder.service;
 
 import android.app.Service;
 import android.content.Intent;
@@ -42,7 +42,8 @@ import android.support.annotation.Nullable;
 import com.google.common.collect.ImmutableMap;
 
 import org.sagebionetworks.research.domain.recorder.RecorderType;
-import org.sagebionetworks.research.presentation.perform_task.PerformTaskViewModel;
+import org.sagebionetworks.research.mobile_ui.recorder.Recorder;
+import org.sagebionetworks.research.mobile_ui.recorder.RecorderActionType;
 
 import java.util.HashMap;
 import java.util.Map;

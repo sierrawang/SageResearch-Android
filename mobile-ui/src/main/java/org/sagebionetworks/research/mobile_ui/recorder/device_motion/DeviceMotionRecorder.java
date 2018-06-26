@@ -38,7 +38,7 @@ import android.support.annotation.NonNull;
 
 import com.github.pwittchen.reactivesensors.library.ReactiveSensorEvent;
 
-import org.sagebionetworks.research.mobile_ui.recorder.DataRecorder;
+import org.sagebionetworks.research.mobile_ui.recorder.data.DataLogger;
 import org.sagebionetworks.research.mobile_ui.recorder.ReactiveRecorder;
 import org.sagebionetworks.research.presentation.recorder.DeviceMotionRecorderConfigPresentation;
 
@@ -61,9 +61,9 @@ public abstract class DeviceMotionRecorder<S, C> extends ReactiveRecorder<S, C, 
     protected final Set<Integer> sensorTypes;
 
     public DeviceMotionRecorder(DeviceMotionRecorderConfigPresentation config, Context context,
-            DataRecorder dataRecorder, SummarySubscriber<S, ReactiveSensorEvent> summarySubscriber,
+            DataLogger dataLogger, SummarySubscriber<S, ReactiveSensorEvent> summarySubscriber,
             CurrentStateSubscriber<C, ReactiveSensorEvent> currentStateSubscriber) {
-        super(config.getIdentifier(), config.getStartStepIdentifier(), config.getStopStepIdentifier(), dataRecorder,
+        super(config.getIdentifier(), config.getStartStepIdentifier(), config.getStopStepIdentifier(), dataLogger,
                 summarySubscriber, currentStateSubscriber);
         this.frequency = config.getFrequency();
         this.sensorTypes = config.getRecorderTypes();
