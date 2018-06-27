@@ -32,6 +32,8 @@
 
 package org.sagebionetworks.research.domain.recorder;
 
+import android.support.annotation.Nullable;
+
 import java.util.Set;
 
 public interface DeviceMotionRecorderConfig extends RecorderConfig {
@@ -40,6 +42,7 @@ public interface DeviceMotionRecorderConfig extends RecorderConfig {
      *
      * @return the frequency for this recorder.
      */
+    @Nullable
     Double getFrequency();
 
     /**

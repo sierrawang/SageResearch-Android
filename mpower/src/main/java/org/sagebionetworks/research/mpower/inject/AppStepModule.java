@@ -32,6 +32,7 @@
 
 package org.sagebionetworks.research.mpower.inject;
 
+import org.sagebionetworks.research.domain.inject.AsyncActionModule;
 import org.sagebionetworks.research.domain.inject.InputFieldsModule;
 import org.sagebionetworks.research.domain.inject.StepModule;
 import org.sagebionetworks.research.domain.inject.StepModule.StepClassKey;
@@ -46,7 +47,7 @@ import dagger.multibindings.IntoMap;
 /**
  * Add app-specific steps.
  */
-@Module(includes = {InputFieldsModule.class, StepModule.class})
+@Module(includes = {InputFieldsModule.class, StepModule.class, AsyncActionModule.class})
 public class AppStepModule {
     @Provides
     @IntoMap

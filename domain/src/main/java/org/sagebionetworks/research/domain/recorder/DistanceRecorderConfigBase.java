@@ -36,6 +36,8 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 
 import com.google.auto.value.AutoValue;
+import com.google.gson.Gson;
+import com.google.gson.TypeAdapter;
 
 @AutoValue
 public abstract class DistanceRecorderConfigBase implements DistanceRecorderConfig {
@@ -54,6 +56,10 @@ public abstract class DistanceRecorderConfigBase implements DistanceRecorderConf
 
     public static Builder builder() {
         return new AutoValue_DistanceRecorderConfigBase.Builder();
+    }
+
+    public static TypeAdapter<DistanceRecorderConfigBase> typeAdapter(Gson gson) {
+        return new AutoValue_DistanceRecorderConfigBase.GsonTypeAdapter(gson);
     }
 
     @Override
