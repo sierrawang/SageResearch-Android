@@ -35,12 +35,14 @@ package org.sagebionetworks.research.domain.form.interfaces;
 import java.util.List;
 
 /**
- * The ChoiceOptions interface is a simple interface which requires an implementing class to define
- * whether or not it is optional, and a list of choices. This is intended for use by ChoiceInputFields.
- * @param <E> The type of choices that this object stores.
+ * The ChoiceOptions interface is a simple interface which requires an implementing class to define whether or not it
+ * is optional, and a list of choices. This is intended for use by ChoiceInputFields.
+ *
+ * @param <E>
+ *         The type of choices that this object stores.
  */
 public interface ChoiceOptions<E> {
-    boolean isOptional();
-
     List<Choice<E>> getChoices();
+
+    boolean isOptional();
 }

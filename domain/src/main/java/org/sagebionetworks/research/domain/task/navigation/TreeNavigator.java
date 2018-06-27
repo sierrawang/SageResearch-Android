@@ -21,6 +21,87 @@ import java.util.concurrent.atomic.AtomicBoolean;
 
 public class TreeNavigator implements StepNavigator {
 
+    /*
+     * A class to represent a single node in the TreeNavigator
+     */
+    private static final class Node {
+        // The children if any that this node has. children.isEmpty() == false always, when
+        // children == null the node is a leaf.
+        @Nullable
+        private final ImmutableList<Node> children;
+
+        // The step that this node represents
+        @Nullable
+        private final Step step;
+
+        /**
+         * Constructs a new node from the given list of steps. This node will represent the root of a Tree in which
+         * the steps are the children.
+         *
+         * @param steps
+         *         The list of steps to construct the node from.
+         */
+        private Node(@Nullable List<Step> steps) {
+            this.step = null;
+            this.children = constructChildNodes(steps);
+        }
+
+        /**
+         * Constructs a new node corresponding to the given step.
+         *
+         * @param step
+         *         the step to construct the node from.
+         */
+        private Node(@NonNull Step step) {
+            this.step = step;
+            if (step instanceof SectionStep) {
+                this.children = constructChildNodes(((SectionStep) step).getSteps());
+            } else {
+                this.children = null;
+            }
+        }
+
+        @Override
+        public String toString() {
+            if (this.step != null) {
+                return this.step.toString() + ": " + "NODE";
+            } else {
+                return "ROOT";
+            }
+        }
+
+        /**
+         * Constructs nodes from all the steps in the given list and returns them in an ImmutableList.
+         *
+         * @param childSteps
+         *         the list of steps to construct nodes from.
+         * @return An ImmutableList of nodes constructed from the given steps.
+         */
+        private ImmutableList<Node> constructChildNodes(@Nullable List<Step> childSteps) {
+            if (childSteps != null && !childSteps.isEmpty()) {
+                List<Node> children = new ArrayList<>();
+                for (Step childStep : childSteps) {
+                    children.add(new Node(childStep));
+                }
+
+                ImmutableList.Builder<Node> builder = new ImmutableList.Builder<>();
+                builder.addAll(children);
+                return builder.build();
+            }
+
+            return null;
+        }
+
+        /**
+         * Returns true if this node is a leaf, false otherwise.
+         *
+         * @return true if this node is a leaf, false otherwise.
+         */
+        private boolean isLeaf() {
+            return this.children == null;
+        }
+    }
+
     // Stores the list of progressMarkers which are the identifiers of the steps which count
     // towards computing the progress. An empty list represents the absence of progress markers,
     // while null represents that the navigator should attempt to estimate the progress without the
@@ -36,62 +117,25 @@ public class TreeNavigator implements StepNavigator {
     @NonNull
     private final ImmutableMap<String, Step> stepsById;
 
+
     /**
      * Constructs a TreeNavigator from the given list of steps, and the given progress markers
-     * @param steps The list of steps to construct this TreeNavigator from.
-     * @param progressMarkers The list of progressMarkers to construct this TreeNavigator from.
+     *
+     * @param steps
+     *         The list of steps to construct this TreeNavigator from.
+     * @param progressMarkers
+     *         The list of progressMarkers to construct this TreeNavigator from.
      */
     public TreeNavigator(@NotNull List<Step> steps, @Nullable List<String> progressMarkers) {
-       this.root = new Node(steps);
-       if (progressMarkers == null) {
-           this.progressMarkers = null;
-       } else {
-           ImmutableList.Builder<String> builder = new ImmutableList.Builder<>();
-           builder.addAll(progressMarkers);
-           this.progressMarkers = builder.build();
-       }
-       this.stepsById = buildStepsByID(steps);
-    }
-
-
-
-    @NotNull
-    @Override
-    public List<Step> getSteps() {
-        return new ArrayList<>(this.stepsById.values());
-    }
-
-    /**
-     * Constructs and returns an ImmutableMap that maps step identifiers to steps for every step
-     * and every substep of every step recursively, in the given list of steps.
-     * @param steps The list of steps to construct the map from.
-     * @return An ImmutableMap that maps step identifiers to steps for every step and every substep
-     *         of every step recursively, in the given list of steps.
-     */
-    private static ImmutableMap<String, Step> buildStepsByID(List<Step> steps) {
-        ImmutableMap.Builder<String, Step> builder = new ImmutableMap.Builder<>();
-        for (Step step : steps) {
-            addStepToBuilderRecursively(step, builder);
-        }
-
-        return builder.build();
-    }
-
-    /**
-     * Adds the given step and all of its substeps to the given builder.
-     * @param step The step to add (along with all of its substeps) to the given builder.
-     * @param builder The builder to add the given step to.
-     */
-    private static void addStepToBuilderRecursively(Step step, ImmutableMap.Builder<String, Step> builder) {
-        if (step instanceof SectionStep) {
-            SectionStep sectionStep = (SectionStep)step;
-            builder.put(sectionStep.getIdentifier(), sectionStep);
-            for (Step childStep : sectionStep.getSteps()) {
-                addStepToBuilderRecursively(childStep, builder);
-            }
+        this.root = new Node(steps);
+        if (progressMarkers == null) {
+            this.progressMarkers = null;
         } else {
-            builder.put(step.getIdentifier(), step);
+            ImmutableList.Builder<String> builder = new ImmutableList.Builder<>();
+            builder.addAll(progressMarkers);
+            this.progressMarkers = builder.build();
         }
+        this.stepsById = buildStepsByID(steps);
     }
 
     @Nullable
@@ -106,88 +150,10 @@ public class TreeNavigator implements StepNavigator {
         return nextStepHelper(step, this.root, new AtomicBoolean(false));
     }
 
-    /**
-     * Returns the first leaf step that appears after the given initialStep, in this TreeNavigator.
-     * After is defined as the next leaf in a pre-order traversal of the tree.
-     * @param initialStep The step to find the step after.
-     * @param current The step that is being evaluated by this call to nextStepHelper().
-     * @param hasFoundInitial True if the initialStep has already been encountered by a parent
-     *                        recursive call of this call to nextStepHelper(), false otherwise.
-     * @return The first leaf step that appears after the given initialStep, or null if no such
-     *         step exists.
-     */
-    @Nullable
-    private static Step nextStepHelper(@Nullable Step initialStep, @Nullable Node current,
-                                       AtomicBoolean hasFoundInitial) {
-        if (current == null) {
-            return null;
-        }
-
-        if (current.step != null) {
-            if ((initialStep == null || hasFoundInitial.get()) && current.isLeaf()) {
-                return current.step;
-            }
-
-            if (current.step.equals(initialStep)) {
-                hasFoundInitial.set(true);
-            }
-        }
-
-        if (current.children != null) {
-            for (Node child : current.children) {
-                Step found = nextStepHelper(initialStep, child, hasFoundInitial);
-                if (found != null) {
-                    return found;
-                }
-            }
-        }
-
-        return null;
-    }
-
     @Nullable
     @Override
     public Step getPreviousStep(@NotNull Step step, @NotNull TaskResult taskResult) {
         return previousStepHelper(step, this.root, new AtomicBoolean(false));
-    }
-
-    /**
-     * Returns the first leaf step that appears before the given initialStep, in this TreeNavigator.
-     * Before is defined as the next leaf in a reverse pre-order traversal of the tree.
-     * @param initialStep The step to find the step before.
-     * @param current The step that is being evaluated by this call to previousStepHelper().
-     * @param hasFoundInitial True if the initialStep has already been encountered by a parent
-     *                        recursive call of this call to previousStepHelper(), false otherwise.
-     * @return The first leaf step that appears before the given initialStep, or null if no such
-     *         step exists.
-     */
-    @Nullable
-    private static Step previousStepHelper(@Nullable Step initialStep, @Nullable Node current,
-                                           AtomicBoolean hasFoundInitial) {
-        if (current == null) {
-            return null;
-        }
-
-        if (current.step != null) {
-            if (hasFoundInitial.get() && current.isLeaf()) {
-                return current.step;
-            }
-
-            if (current.step.equals(initialStep)) {
-                hasFoundInitial.set(true);
-            }
-        }
-
-        if (current.children != null) {
-            for (Node child : current.children.reverse()) {
-                Step found = previousStepHelper(initialStep, child, hasFoundInitial);
-                if (found != null) {
-                    return found;
-                }
-            }
-        }
-
-        return null;
     }
 
     @Nullable
@@ -230,7 +196,7 @@ public class TreeNavigator implements StepNavigator {
 
         // The union total will store the number of elements in both sets.
         int unionTotal = 0;
-        for (String stepID: finishedStepIDs) {
+        for (String stepID : finishedStepIDs) {
             if (stepIDs.contains(stepID)) {
                 unionTotal++;
             }
@@ -246,12 +212,20 @@ public class TreeNavigator implements StepNavigator {
 
     }
 
+    @NotNull
+    @Override
+    public List<Step> getSteps() {
+        return new ArrayList<>(this.stepsById.values());
+    }
+
     /**
-     * Returns the last index in the progress markers such that the given list of identifiers
-     * contains the progress marker at this index.
-     * @param identifiers The list of identifiers to check against the progress markers.
-     * @return The last index in the progress markers such that the given list of identifiers
-     * contains the progress marker at this index.
+     * Returns the last index in the progress markers such that the given list of identifiers contains the progress
+     * marker at this index.
+     *
+     * @param identifiers
+     *         The list of identifiers to check against the progress markers.
+     * @return The last index in the progress markers such that the given list of identifiers contains the progress
+     * marker at this index.
      */
     private int getLastIndexInMarkers(List<String> identifiers) {
         if (this.progressMarkers != null) {
@@ -265,79 +239,125 @@ public class TreeNavigator implements StepNavigator {
         return -1;
     }
 
-    /*
-     * A class to represent a single node in the TreeNavigator
+    /**
+     * Adds the given step and all of its substeps to the given builder.
+     *
+     * @param step
+     *         The step to add (along with all of its substeps) to the given builder.
+     * @param builder
+     *         The builder to add the given step to.
      */
-    private static final class Node {
-        // The step that this node represents
-        @Nullable
-        private final Step step;
+    private static void addStepToBuilderRecursively(Step step, ImmutableMap.Builder<String, Step> builder) {
+        if (step instanceof SectionStep) {
+            SectionStep sectionStep = (SectionStep) step;
+            builder.put(sectionStep.getIdentifier(), sectionStep);
+            for (Step childStep : sectionStep.getSteps()) {
+                addStepToBuilderRecursively(childStep, builder);
+            }
+        } else {
+            builder.put(step.getIdentifier(), step);
+        }
+    }
 
-        // The children if any that this node has. children.isEmpty() == false always, when
-        // children == null the node is a leaf.
-        @Nullable
-        private final ImmutableList<Node> children;
-
-        /**
-         * Constructs a new node from the given list of steps. This node will represent the root
-         * of a Tree in which the steps are the children.
-         * @param steps The list of steps to construct the node from.
-         */
-        private Node(@Nullable List<Step> steps) {
-            this.step = null;
-            this.children = constructChildNodes(steps);
+    /**
+     * Constructs and returns an ImmutableMap that maps step identifiers to steps for every step and every substep of
+     * every step recursively, in the given list of steps.
+     *
+     * @param steps
+     *         The list of steps to construct the map from.
+     * @return An ImmutableMap that maps step identifiers to steps for every step and every substep of every step
+     * recursively, in the given list of steps.
+     */
+    private static ImmutableMap<String, Step> buildStepsByID(List<Step> steps) {
+        ImmutableMap.Builder<String, Step> builder = new ImmutableMap.Builder<>();
+        for (Step step : steps) {
+            addStepToBuilderRecursively(step, builder);
         }
 
-        /**
-         * Constructs a new node corresponding to the given step.
-         * @param step the step to construct the node from.
-         */
-        private Node(@NonNull Step step) {
-            this.step = step;
-            if (step instanceof SectionStep) {
-                this.children = constructChildNodes(((SectionStep)step).getSteps());
-            } else {
-                this.children = null;
-            }
-        }
+        return builder.build();
+    }
 
-        /**
-         * Constructs nodes from all the steps in the given list and returns them
-         * in an ImmutableList.
-         * @param childSteps the list of steps to construct nodes from.
-         * @return An ImmutableList of nodes constructed from the given steps.
-         */
-        private ImmutableList<Node> constructChildNodes(@Nullable List<Step> childSteps) {
-            if (childSteps != null && !childSteps.isEmpty()) {
-                List<Node> children = new ArrayList<>();
-                for (Step childStep : childSteps) {
-                    children.add(new Node(childStep));
-                }
-
-                ImmutableList.Builder<Node> builder = new ImmutableList.Builder<>();
-                builder.addAll(children);
-                return builder.build();
-            }
-
+    /**
+     * Returns the first leaf step that appears after the given initialStep, in this TreeNavigator. After is defined
+     * as the next leaf in a pre-order traversal of the tree.
+     *
+     * @param initialStep
+     *         The step to find the step after.
+     * @param current
+     *         The step that is being evaluated by this call to nextStepHelper().
+     * @param hasFoundInitial
+     *         True if the initialStep has already been encountered by a parent recursive call of this call to
+     *         nextStepHelper(), false otherwise.
+     * @return The first leaf step that appears after the given initialStep, or null if no such step exists.
+     */
+    @Nullable
+    private static Step nextStepHelper(@Nullable Step initialStep, @Nullable Node current,
+            AtomicBoolean hasFoundInitial) {
+        if (current == null) {
             return null;
         }
 
+        if (current.step != null) {
+            if ((initialStep == null || hasFoundInitial.get()) && current.isLeaf()) {
+                return current.step;
+            }
 
-        /**
-         * Returns true if this node is a leaf, false otherwise.
-         * @return true if this node is a leaf, false otherwise.
-         */
-        private boolean isLeaf() {
-            return this.children == null;
-        }
-
-        @Override
-        public String toString() {
-            if (this.step != null) {
-                return this.step.toString() + ": " + "NODE";
-            } else {
-                return "ROOT";
+            if (current.step.equals(initialStep)) {
+                hasFoundInitial.set(true);
             }
         }
+
+        if (current.children != null) {
+            for (Node child : current.children) {
+                Step found = nextStepHelper(initialStep, child, hasFoundInitial);
+                if (found != null) {
+                    return found;
+                }
+            }
+        }
+
+        return null;
+    }
+
+    /**
+     * Returns the first leaf step that appears before the given initialStep, in this TreeNavigator. Before is defined
+     * as the next leaf in a reverse pre-order traversal of the tree.
+     *
+     * @param initialStep
+     *         The step to find the step before.
+     * @param current
+     *         The step that is being evaluated by this call to previousStepHelper().
+     * @param hasFoundInitial
+     *         True if the initialStep has already been encountered by a parent recursive call of this call to
+     *         previousStepHelper(), false otherwise.
+     * @return The first leaf step that appears before the given initialStep, or null if no such step exists.
+     */
+    @Nullable
+    private static Step previousStepHelper(@Nullable Step initialStep, @Nullable Node current,
+            AtomicBoolean hasFoundInitial) {
+        if (current == null) {
+            return null;
+        }
+
+        if (current.step != null) {
+            if (hasFoundInitial.get() && current.isLeaf()) {
+                return current.step;
+            }
+
+            if (current.step.equals(initialStep)) {
+                hasFoundInitial.set(true);
+            }
+        }
+
+        if (current.children != null) {
+            for (Node child : current.children.reverse()) {
+                Step found = previousStepHelper(initialStep, child, hasFoundInitial);
+                if (found != null) {
+                    return found;
+                }
+            }
+        }
+
+        return null;
     }
 }

@@ -1,5 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
-<!--
+<?xml version="1.0" encoding="utf-8"?><!--
   ~ BSD 3-Clause License
   ~
   ~ Copyright 2018  Sage Bionetworks. All rights reserved.
@@ -32,6 +31,7 @@
   -->
 
 <resources>
+
     <style name="Widget.ResearchStack.NavigationActionBar.PrimaryButton" parent="">
         <item name="android:background">@drawable/rs2_rounded_button</item>
         <item name="android:textColor">@color/appTextDark</item>
@@ -42,13 +42,11 @@
         <item name="android:minHeight">@dimen/rs2_step_navigation_primary_button_min_height</item>
     </style>
 
-    <style name="Widget.ResearchStack.NavigationActionBar.PrimaryButton.Forward"
-        parent="Widget.ResearchStack.NavigationActionBar.PrimaryButton">
+    <style name="Widget.ResearchStack.NavigationActionBar.PrimaryButton.Forward" parent="Widget.ResearchStack.NavigationActionBar.PrimaryButton">
         <item name="android:text">@string/rs2_navigation_action_forward</item>
     </style>
 
-    <style name="Widget.ResearchStack.NavigationActionBar.PrimaryButton.Backward"
-        parent="Widget.ResearchStack.NavigationActionBar.PrimaryButton">
+    <style name="Widget.ResearchStack.NavigationActionBar.PrimaryButton.Backward" parent="Widget.ResearchStack.NavigationActionBar.PrimaryButton">
         <item name="android:text">@string/rs2_navigation_action_backward</item>
     </style>
 
@@ -65,7 +63,7 @@
         <item name="android:background">@drawable/scroll_view_shadow</item>
     </style>
 
-    <style name="Widget.ResearchStack.NavigationActionBar" parent = "">
+    <style name="Widget.ResearchStack.NavigationActionBar" parent="">
         <item name="isBackwardHidden">false</item>
         <item name="isForwardHidden">false</item>
         <item name="isSkipHidden">false</item>
@@ -76,27 +74,23 @@
         <item name="skipActionColor">@color/royal500</item>
     </style>
 
-    <style name="Widget.ResearchStack.NavigationActionBar.Instruction"
-        parent="Widget.ResearchStack.NavigationActionBar">
+    <style name="Widget.ResearchStack.NavigationActionBar.Instruction" parent="Widget.ResearchStack.NavigationActionBar">
         <item name="isBackwardHidden">true</item>
         <item name="isSkipHidden">true</item>
     </style>
 
-    <style name="Widget.ResearchStack.NavigationActionBar.Overview"
-        parent="Widget.ResearchStack.NavigationActionBar">
+    <style name="Widget.ResearchStack.NavigationActionBar.Overview" parent="Widget.ResearchStack.NavigationActionBar">
         <item name="isBackwardHidden">true</item>
         <item name="isSkipAllowed">false</item>
     </style>
 
-    <style name="Widget.ResearchStack.NavigationActionBar.Completion"
-        parent="Widget.ResearchStack.NavigationActionBar">
+    <style name="Widget.ResearchStack.NavigationActionBar.Completion" parent="Widget.ResearchStack.NavigationActionBar">
         <item name="isBackwardHidden">true</item>
         <item name="isSkipHidden">true</item>
         <item name="isShadowHidden">true</item>
     </style>
 
-    <style name="Widget.ResearchStack.NavigationActionBar.Active"
-        parent="Widget.ResearchStack.NavigationActionBar">
+    <style name="Widget.ResearchStack.NavigationActionBar.Active" parent="Widget.ResearchStack.NavigationActionBar">
         <item name="isBackwardHidden">true</item>
         <item name="isShadowHidden">true</item>
         <item name="android:background">@color/transparent</item>

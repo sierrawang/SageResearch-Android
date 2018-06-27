@@ -52,20 +52,36 @@ import java.util.Map;
 import java.util.Set;
 
 /**
- * A RecorderManager handles the work of creating recorders, and making the appropriate RecorderService calls
- * to start, stop, and cancel those recorders at the appropriate times.
+ * A RecorderManager handles the work of creating recorders, and making the appropriate RecorderService calls to
+ * start, stop, and cancel those recorders at the appropriate times.
  */
 public class RecorderManager implements ServiceConnection {
     /**
-     * Invariant:
-     * bound == true exactly when binder != null && service != null.
-     * binder == null exactly when service == null.
+     * TODO rkolmos 06/18/2018 remove this class and get this info from the task.
+     */
+    private static final class RecorderInfo {
+        String id;
+
+        String startStepId;
+
+        String stopStepId;
+
+        @RecorderType
+        String type;
+    }
+
+    private RecorderBinder binder;
+
+    /**
+     * Invariant: bound == true exactly when binder != null && service != null. binder == null exactly when service ==
+     * null.
      */
     private boolean bound;
-    private RecorderBinder binder;
-    private RecorderService service;
 
     private Context context;
+
+    private RecorderService service;
+
     private Task task;
 
     public RecorderManager(Task task, Context context) {
@@ -75,9 +91,19 @@ public class RecorderManager implements ServiceConnection {
         this.bound = this.context.bindService(bindIntent, this, Context.BIND_AUTO_CREATE);
     }
 
+    /**
+     * Returns a map of Recorder Id to Recorder containing all of the recorders that are currently active. An active
+     * recorder is any recorder that has been created and has not has stop() called on it.
+     *
+     * @return A map of Recorder Id to Recorder containing all of the active recorders.
+     */
+    public ImmutableMap<String, Recorder> getActiveRecorders() {
+        return this.service.getActiveRecorders(this.task.getIdentifier());
+    }
+
     @Override
     public void onServiceConnected(final ComponentName componentName, final IBinder iBinder) {
-        this.binder = (RecorderBinder)iBinder;
+        this.binder = (RecorderBinder) iBinder;
         this.service = this.binder.getService();
         this.bound = true;
         // TODO rkolmos 06/20/2018 make sure the correct recorders are created.
@@ -98,14 +124,18 @@ public class RecorderManager implements ServiceConnection {
     }
 
     /**
-     * Starts, stops, and cancels the appropriate recorders in response to the step transition from previousStep
-     * to nextStep in navDirection.
-     * @param previousStep The step that has just been transitioned away from, null indicates that nextStep is the first
-     *                     step.
-     * @param nextStep The step that has just been transition to, null indicates that previousStep is the last step.
-     * @param navDirection The direction in which the transition from previousStep to nextStep occurred in.
+     * Starts, stops, and cancels the appropriate recorders in response to the step transition from previousStep to
+     * nextStep in navDirection.
+     *
+     * @param previousStep
+     *         The step that has just been transitioned away from, null indicates that nextStep is the first step.
+     * @param nextStep
+     *         The step that has just been transition to, null indicates that previousStep is the last step.
+     * @param navDirection
+     *         The direction in which the transition from previousStep to nextStep occurred in.
      */
-    public void onStepTransition(@Nullable Step previousStep, @Nullable Step nextStep, @NavDirection int navDirection) {
+    public void onStepTransition(@Nullable Step previousStep, @Nullable Step nextStep,
+            @NavDirection int navDirection) {
         // TODO: 06/18/2018 rkolmos get the equivalent information from the task.
         Set<RecorderInfo> recorderInfos = new HashSet<>();
 
@@ -154,25 +184,5 @@ public class RecorderManager implements ServiceConnection {
         } else {
             // TODO: rkolmos 06/20/2018 handle the service being unbound
         }
-    }
-
-    /**
-     * Returns a map of Recorder Id to Recorder containing all of the recorders that are currently active. An active
-     * recorder is any recorder that has been created and has not has stop() called on it.
-     * @return A map of Recorder Id to Recorder containing all of the active recorders.
-     */
-    public ImmutableMap<String, Recorder> getActiveRecorders() {
-        return this.service.getActiveRecorders(this.task.getIdentifier());
-    }
-
-    /**
-     * TODO rkolmos 06/18/2018 remove this class and get this info from the task.
-     */
-    private static final class RecorderInfo {
-        String startStepId;
-        String stopStepId;
-        String id;
-        @RecorderType
-        String type;
     }
 }

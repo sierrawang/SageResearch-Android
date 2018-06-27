@@ -60,193 +60,57 @@ import java.util.Set;
  */
 public class DeviceMotionJsonAdapter {
     private static final Logger LOGGER = LoggerFactory.getLogger(DeviceMotionJsonAdapter.class);
+
     private static long TIMESTAMP_ZERO_REFERENCE_NANOS = 0;
 
     // Constants for writing to JSON
     public static final Map<Integer, String> SENSOR_TYPE_TO_DATA_TYPE;
+
     public static final Set<Integer> ROTATION_VECTOR_TYPES;
-    public static final String X_KEY    = "x";
-    public static final String Y_KEY    = "y";
-    public static final String Z_KEY    = "z";
-    public static final String W_KEY    = "w";
+
+    public static final String X_KEY = "x";
+
+    public static final String Y_KEY = "y";
+
+    public static final String Z_KEY = "z";
+
+    public static final String W_KEY = "w";
+
     public static final String ACCURACY_KEY = "estimatedAccuracy";
-    public static final String X_UNCALIBRATED_KEY   = "xUncalibrated";
-    public static final String Y_UNCALIBRATED_KEY   = "yUncalibrated";
-    public static final String Z_UNCALIBRATED_KEY   = "zUncalibrated";
-    public static final String X_BIAS_KEY           = "xBias";
-    public static final String Y_BIAS_KEY           = "yBias";
-    public static final String Z_BIAS_KEY           = "zBias";
+
+    public static final String X_UNCALIBRATED_KEY = "xUncalibrated";
+
+    public static final String Y_UNCALIBRATED_KEY = "yUncalibrated";
+
+    public static final String Z_UNCALIBRATED_KEY = "zUncalibrated";
+
+    public static final String X_BIAS_KEY = "xBias";
+
+    public static final String Y_BIAS_KEY = "yBias";
+
+    public static final String Z_BIAS_KEY = "zBias";
+
     public static final float GRAVITY_SI_CONVERSION = SensorManager.GRAVITY_EARTH;
+
     public static final String SENSOR_DATA_TYPE_KEY = "sensorType";
+
     public static final String SENSOR_DATA_SUBTYPE_KEY = "sensorAndroidType";
+
     public static final String SENSOR_EVENT_ACCURACY_KEY = "eventAccuracy";
+
     public static final String ROTATION_REFERENCE_COORDINATE_KEY = "referenceCoordinate";
+
     public static final String TIMESTAMP_IN_SECONDS_KEY = "timestamp";
+
     public static final String UPTIME_IN_SECONDS_KEY = "uptime";
+
     public static final String TIMESTAMP_DATE_KEY = "timestampDate";
-    static {
-        // build mapping for sensor type and its data type value
-        ImmutableMap.Builder<Integer, String>  sensorTypeMapBuilder = ImmutableMap.builder();
-        // rotation/gyroscope
-        sensorTypeMapBuilder.put(Sensor.TYPE_GYROSCOPE, "rotationRate");
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR2) {
-            sensorTypeMapBuilder.put(Sensor.TYPE_GYROSCOPE_UNCALIBRATED, "rotationRateUncalibrated");
-        }
-
-        // accelerometer
-        sensorTypeMapBuilder.put(Sensor.TYPE_ACCELEROMETER, "acceleration");
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            sensorTypeMapBuilder.put(
-                    Sensor.TYPE_ACCELEROMETER_UNCALIBRATED, "accelerationUncalibrated");
-        }
-
-        // gravity
-        sensorTypeMapBuilder.put(Sensor.TYPE_GRAVITY, "gravity");
-
-        // acceleration without gravity
-        sensorTypeMapBuilder.put(Sensor.TYPE_LINEAR_ACCELERATION, "userAcceleration");
-
-        // magnetic field
-        sensorTypeMapBuilder.put(Sensor.TYPE_MAGNETIC_FIELD, "magneticField");
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR2) {
-            sensorTypeMapBuilder.put(
-                    Sensor.TYPE_MAGNETIC_FIELD_UNCALIBRATED, "magneticFieldUncalibrated");
-        }
-
-        // attitude
-        sensorTypeMapBuilder.put(Sensor.TYPE_ROTATION_VECTOR, "attitude");
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR2) {
-            sensorTypeMapBuilder.put(Sensor.TYPE_GAME_ROTATION_VECTOR, "attitude");
-        }
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
-            sensorTypeMapBuilder.put(Sensor.TYPE_GEOMAGNETIC_ROTATION_VECTOR, "attitude");
-        }
-        SENSOR_TYPE_TO_DATA_TYPE = sensorTypeMapBuilder.build();
-
-        // build mappint for rotation type
-        ImmutableSet.Builder<Integer> rotationTypeBuilder =ImmutableSet.builder();
-        rotationTypeBuilder.add(Sensor.TYPE_ROTATION_VECTOR);
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR2) {
-            rotationTypeBuilder.add(Sensor.TYPE_GAME_ROTATION_VECTOR);
-        }
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
-            rotationTypeBuilder.add(Sensor.TYPE_GEOMAGNETIC_ROTATION_VECTOR);
-        }
-        ROTATION_VECTOR_TYPES = rotationTypeBuilder.build();
-    }
-
-    /**
-     * @see <a href="https://source.android.com/devices/sensors/sensor-types#accelerometer">
-     *     Sensor Types: Accelerometer</a>
-     */
-    @VisibleForTesting
-    static void recordAccelerometerEvent(SensorEvent sensorEvent, JsonObject jsonObject) {
-        jsonObject.addProperty(X_KEY, sensorEvent.values[0] / GRAVITY_SI_CONVERSION);
-        jsonObject.addProperty(Y_KEY, sensorEvent.values[1] / GRAVITY_SI_CONVERSION);
-        jsonObject.addProperty(Z_KEY, sensorEvent.values[2] / GRAVITY_SI_CONVERSION);
-    }
-
-    /**
-     * @see <a href="https://source.android.com/devices/sensors/sensor-types#linear_acceleration">
-     *     Sensor Types: Accelerometer</a>
-     */
-    @VisibleForTesting
-    static void recordLinearAccelerometerEvent(SensorEvent sensorEvent, JsonObject jsonObject) {
-        // acceleration = gravity + linear-acceleration
-        jsonObject.addProperty(X_KEY, sensorEvent.values[0] / GRAVITY_SI_CONVERSION);
-        jsonObject.addProperty(Y_KEY, sensorEvent.values[1] / GRAVITY_SI_CONVERSION);
-        jsonObject.addProperty(Z_KEY, sensorEvent.values[2] / GRAVITY_SI_CONVERSION);
-    }
-
-    /**
-     * Direction and magnitude of gravity.
-     * @see <a href="https://source.android.com/devices/sensors/sensor-types#gravity">
-     *     Sensor Types: Gravity </a>
-     */
-    @VisibleForTesting
-    static void recordGravityEvent(SensorEvent sensorEvent, JsonObject jsonObject) {
-        jsonObject.addProperty(X_KEY, sensorEvent.values[0] / GRAVITY_SI_CONVERSION);
-        jsonObject.addProperty(Y_KEY, sensorEvent.values[1] / GRAVITY_SI_CONVERSION);
-        jsonObject.addProperty(Z_KEY, sensorEvent.values[2] / GRAVITY_SI_CONVERSION);
-    }
-    /**
-     * Sensor.TYPE_ROTATION_VECTOR relative to East-North-Up coordinate frame.
-     * Sensor.TYPE_GAME_ROTATION_VECTOR  no magnetometer
-     * Sensor.TYPE_GEOMAGNETIC_ROTATION_VECTOR similar to a rotation vector sensor but using a
-     *  magnetometer and no gyroscope
-     *
-     * @see <a href="https://source.android.com/devices/sensors/sensor-types#attitude_composite_sensors">
-     *     https://source.android.com/devices/sensors/sensor-types#rotation_vector
-     *      https://source.android.com/devices/sensors/sensor-types#game_rotation_vector
-     *     https://source.android.com/devices/sensors/sensor-types#geomagnetic_rotation_vector
-     */
-    @VisibleForTesting
-    static void recordRotationVectorEvent(SensorEvent sensorEvent, JsonObject jsonObject) {
-        // indicate android sensor subtype
-        int sensorType = sensorEvent.sensor.getType();
-        if (Sensor.TYPE_ROTATION_VECTOR == sensorType) {
-            jsonObject.addProperty(SENSOR_DATA_SUBTYPE_KEY, "rotationVector");
-            jsonObject.addProperty(ROTATION_REFERENCE_COORDINATE_KEY, "East-Up-North");
-        } else if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR2
-                && Sensor.TYPE_GAME_ROTATION_VECTOR == sensorType) {
-            jsonObject.addProperty(SENSOR_DATA_SUBTYPE_KEY, "gameRotationVector");
-            jsonObject.addProperty(ROTATION_REFERENCE_COORDINATE_KEY, "zUp");
-        } else if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT
-                && Sensor.TYPE_GEOMAGNETIC_ROTATION_VECTOR == sensorType) {
-            jsonObject.addProperty(SENSOR_DATA_SUBTYPE_KEY, "geomagneticRotationVector");
-            jsonObject.addProperty(ROTATION_REFERENCE_COORDINATE_KEY, "East-Up-North");
-        }
-
-        // x = rot_axis.y * sin(theta/2)
-        jsonObject.addProperty(X_KEY, sensorEvent.values[0]);
-        // y = rot_axis.y * sin(theta/2)
-        jsonObject.addProperty(Y_KEY, sensorEvent.values[1]);
-        // z = rot_axis.z * sin(theta/2)
-        jsonObject.addProperty(Z_KEY, sensorEvent.values[2]);
-
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR2) {
-            // w = cos(theta/2)
-            jsonObject.addProperty(W_KEY, sensorEvent.values[3]);
-
-            // game rotation vector never provides accuracy, always returns zero
-            if (Sensor.TYPE_GAME_ROTATION_VECTOR!= sensorType) {
-                // estimated accuracy in radians, or -1 if unavailable
-                jsonObject.addProperty(ACCURACY_KEY, sensorEvent.values[4]);
-            }
-        } else if (sensorEvent.values.length > 3) {
-            // this value was optional before SDK Level 18
-            // w = cos(theta/2)
-            jsonObject.addProperty(W_KEY, sensorEvent.values[3]);
-        }
-    }
-
-    static void recordGyroscopeEvent(SensorEvent sensorEvent, JsonObject jsonObject) {
-        jsonObject.addProperty(X_KEY, sensorEvent.values[0]);
-        jsonObject.addProperty(Y_KEY, sensorEvent.values[1]);
-        jsonObject.addProperty(Z_KEY, sensorEvent.values[2]);
-    }
-
-    // used for uncalibrated gyroscope, uncalibrated accelerometer, and uncalibrated magnetic field
-    static void recordUncalibratedEvent(SensorEvent sensorEvent, JsonObject jsonObject) {
-        // conceptually: _uncalibrated = _calibrated + _bias.
-        jsonObject.addProperty(X_UNCALIBRATED_KEY, sensorEvent.values[0]);
-        jsonObject.addProperty(Y_UNCALIBRATED_KEY, sensorEvent.values[1]);
-        jsonObject.addProperty(Z_UNCALIBRATED_KEY, sensorEvent.values[2]);
-
-        jsonObject.addProperty(X_BIAS_KEY, sensorEvent.values[3]);
-        jsonObject.addProperty(Y_BIAS_KEY, sensorEvent.values[4]);
-        jsonObject.addProperty(Z_BIAS_KEY, sensorEvent.values[5]);
-    }
-
-    static void recordMagneticFieldEvent(SensorEvent sensorEvent, JsonObject jsonObject) {
-        jsonObject.addProperty(X_KEY, sensorEvent.values[0]);
-        jsonObject.addProperty(Y_KEY, sensorEvent.values[1]);
-        jsonObject.addProperty(Z_KEY, sensorEvent.values[2]);
-    }
 
     /**
      * Creates and returns a JsonObject which stores the information about the given ReactiveSensorEvent.
-     * @param event The event to create a JsonObject from.
+     *
+     * @param event
+     *         The event to create a JsonObject from.
      * @return A JsonObject storing all the information from event.
      */
     public static JsonObject createJsonObject(ReactiveSensorEvent event) {
@@ -286,9 +150,120 @@ public class DeviceMotionJsonAdapter {
     }
 
     /**
+     * @see <a href="https://source.android.com/devices/sensors/sensor-types#accelerometer"> Sensor Types:
+     * Accelerometer</a>
+     */
+    @VisibleForTesting
+    static void recordAccelerometerEvent(SensorEvent sensorEvent, JsonObject jsonObject) {
+        jsonObject.addProperty(X_KEY, sensorEvent.values[0] / GRAVITY_SI_CONVERSION);
+        jsonObject.addProperty(Y_KEY, sensorEvent.values[1] / GRAVITY_SI_CONVERSION);
+        jsonObject.addProperty(Z_KEY, sensorEvent.values[2] / GRAVITY_SI_CONVERSION);
+    }
+
+    /**
+     * Direction and magnitude of gravity.
+     *
+     * @see <a href="https://source.android.com/devices/sensors/sensor-types#gravity"> Sensor Types: Gravity </a>
+     */
+    @VisibleForTesting
+    static void recordGravityEvent(SensorEvent sensorEvent, JsonObject jsonObject) {
+        jsonObject.addProperty(X_KEY, sensorEvent.values[0] / GRAVITY_SI_CONVERSION);
+        jsonObject.addProperty(Y_KEY, sensorEvent.values[1] / GRAVITY_SI_CONVERSION);
+        jsonObject.addProperty(Z_KEY, sensorEvent.values[2] / GRAVITY_SI_CONVERSION);
+    }
+
+    static void recordGyroscopeEvent(SensorEvent sensorEvent, JsonObject jsonObject) {
+        jsonObject.addProperty(X_KEY, sensorEvent.values[0]);
+        jsonObject.addProperty(Y_KEY, sensorEvent.values[1]);
+        jsonObject.addProperty(Z_KEY, sensorEvent.values[2]);
+    }
+
+    /**
+     * @see <a href="https://source.android.com/devices/sensors/sensor-types#linear_acceleration"> Sensor Types:
+     * Accelerometer</a>
+     */
+    @VisibleForTesting
+    static void recordLinearAccelerometerEvent(SensorEvent sensorEvent, JsonObject jsonObject) {
+        // acceleration = gravity + linear-acceleration
+        jsonObject.addProperty(X_KEY, sensorEvent.values[0] / GRAVITY_SI_CONVERSION);
+        jsonObject.addProperty(Y_KEY, sensorEvent.values[1] / GRAVITY_SI_CONVERSION);
+        jsonObject.addProperty(Z_KEY, sensorEvent.values[2] / GRAVITY_SI_CONVERSION);
+    }
+
+    static void recordMagneticFieldEvent(SensorEvent sensorEvent, JsonObject jsonObject) {
+        jsonObject.addProperty(X_KEY, sensorEvent.values[0]);
+        jsonObject.addProperty(Y_KEY, sensorEvent.values[1]);
+        jsonObject.addProperty(Z_KEY, sensorEvent.values[2]);
+    }
+
+    /**
+     * Sensor.TYPE_ROTATION_VECTOR relative to East-North-Up coordinate frame. Sensor.TYPE_GAME_ROTATION_VECTOR  no
+     * magnetometer Sensor.TYPE_GEOMAGNETIC_ROTATION_VECTOR similar to a rotation vector sensor but using a
+     * magnetometer and no gyroscope
+     *
+     * @see <a href="https://source.android.com/devices/sensors/sensor-types#attitude_composite_sensors">
+     * https://source.android.com/devices/sensors/sensor-types#rotation_vector https://source.android.com/devices/sensors/sensor-types#game_rotation_vector
+     * https://source.android.com/devices/sensors/sensor-types#geomagnetic_rotation_vector
+     */
+    @VisibleForTesting
+    static void recordRotationVectorEvent(SensorEvent sensorEvent, JsonObject jsonObject) {
+        // indicate android sensor subtype
+        int sensorType = sensorEvent.sensor.getType();
+        if (Sensor.TYPE_ROTATION_VECTOR == sensorType) {
+            jsonObject.addProperty(SENSOR_DATA_SUBTYPE_KEY, "rotationVector");
+            jsonObject.addProperty(ROTATION_REFERENCE_COORDINATE_KEY, "East-Up-North");
+        } else if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR2
+                && Sensor.TYPE_GAME_ROTATION_VECTOR == sensorType) {
+            jsonObject.addProperty(SENSOR_DATA_SUBTYPE_KEY, "gameRotationVector");
+            jsonObject.addProperty(ROTATION_REFERENCE_COORDINATE_KEY, "zUp");
+        } else if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT
+                && Sensor.TYPE_GEOMAGNETIC_ROTATION_VECTOR == sensorType) {
+            jsonObject.addProperty(SENSOR_DATA_SUBTYPE_KEY, "geomagneticRotationVector");
+            jsonObject.addProperty(ROTATION_REFERENCE_COORDINATE_KEY, "East-Up-North");
+        }
+
+        // x = rot_axis.y * sin(theta/2)
+        jsonObject.addProperty(X_KEY, sensorEvent.values[0]);
+        // y = rot_axis.y * sin(theta/2)
+        jsonObject.addProperty(Y_KEY, sensorEvent.values[1]);
+        // z = rot_axis.z * sin(theta/2)
+        jsonObject.addProperty(Z_KEY, sensorEvent.values[2]);
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR2) {
+            // w = cos(theta/2)
+            jsonObject.addProperty(W_KEY, sensorEvent.values[3]);
+
+            // game rotation vector never provides accuracy, always returns zero
+            if (Sensor.TYPE_GAME_ROTATION_VECTOR != sensorType) {
+                // estimated accuracy in radians, or -1 if unavailable
+                jsonObject.addProperty(ACCURACY_KEY, sensorEvent.values[4]);
+            }
+        } else if (sensorEvent.values.length > 3) {
+            // this value was optional before SDK Level 18
+            // w = cos(theta/2)
+            jsonObject.addProperty(W_KEY, sensorEvent.values[3]);
+        }
+    }
+
+    // used for uncalibrated gyroscope, uncalibrated accelerometer, and uncalibrated magnetic field
+    static void recordUncalibratedEvent(SensorEvent sensorEvent, JsonObject jsonObject) {
+        // conceptually: _uncalibrated = _calibrated + _bias.
+        jsonObject.addProperty(X_UNCALIBRATED_KEY, sensorEvent.values[0]);
+        jsonObject.addProperty(Y_UNCALIBRATED_KEY, sensorEvent.values[1]);
+        jsonObject.addProperty(Z_UNCALIBRATED_KEY, sensorEvent.values[2]);
+
+        jsonObject.addProperty(X_BIAS_KEY, sensorEvent.values[3]);
+        jsonObject.addProperty(Y_BIAS_KEY, sensorEvent.values[4]);
+        jsonObject.addProperty(Z_BIAS_KEY, sensorEvent.values[5]);
+    }
+
+    /**
      * Records all the properties that are common across all SensorEvent's json representations.
-     * @param sensorEvent The SensorEvent to record the properties from.
-     * @param jsonObject The json object to record the properties in.
+     *
+     * @param sensorEvent
+     *         The SensorEvent to record the properties from.
+     * @param jsonObject
+     *         The json object to record the properties in.
      */
     private static void recordCommonElements(SensorEvent sensorEvent, JsonObject jsonObject) {
         if (TIMESTAMP_ZERO_REFERENCE_NANOS <= 0) {
@@ -325,5 +300,56 @@ public class DeviceMotionJsonAdapter {
 
         jsonObject.addProperty(SENSOR_DATA_TYPE_KEY, sensorTypeKey);
         jsonObject.addProperty(SENSOR_EVENT_ACCURACY_KEY, sensorEvent.accuracy);
+    }
+
+    static {
+        // build mapping for sensor type and its data type value
+        ImmutableMap.Builder<Integer, String> sensorTypeMapBuilder = ImmutableMap.builder();
+        // rotation/gyroscope
+        sensorTypeMapBuilder.put(Sensor.TYPE_GYROSCOPE, "rotationRate");
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR2) {
+            sensorTypeMapBuilder.put(Sensor.TYPE_GYROSCOPE_UNCALIBRATED, "rotationRateUncalibrated");
+        }
+
+        // accelerometer
+        sensorTypeMapBuilder.put(Sensor.TYPE_ACCELEROMETER, "acceleration");
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            sensorTypeMapBuilder.put(
+                    Sensor.TYPE_ACCELEROMETER_UNCALIBRATED, "accelerationUncalibrated");
+        }
+
+        // gravity
+        sensorTypeMapBuilder.put(Sensor.TYPE_GRAVITY, "gravity");
+
+        // acceleration without gravity
+        sensorTypeMapBuilder.put(Sensor.TYPE_LINEAR_ACCELERATION, "userAcceleration");
+
+        // magnetic field
+        sensorTypeMapBuilder.put(Sensor.TYPE_MAGNETIC_FIELD, "magneticField");
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR2) {
+            sensorTypeMapBuilder.put(
+                    Sensor.TYPE_MAGNETIC_FIELD_UNCALIBRATED, "magneticFieldUncalibrated");
+        }
+
+        // attitude
+        sensorTypeMapBuilder.put(Sensor.TYPE_ROTATION_VECTOR, "attitude");
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR2) {
+            sensorTypeMapBuilder.put(Sensor.TYPE_GAME_ROTATION_VECTOR, "attitude");
+        }
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
+            sensorTypeMapBuilder.put(Sensor.TYPE_GEOMAGNETIC_ROTATION_VECTOR, "attitude");
+        }
+        SENSOR_TYPE_TO_DATA_TYPE = sensorTypeMapBuilder.build();
+
+        // build mappint for rotation type
+        ImmutableSet.Builder<Integer> rotationTypeBuilder = ImmutableSet.builder();
+        rotationTypeBuilder.add(Sensor.TYPE_ROTATION_VECTOR);
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR2) {
+            rotationTypeBuilder.add(Sensor.TYPE_GAME_ROTATION_VECTOR);
+        }
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
+            rotationTypeBuilder.add(Sensor.TYPE_GEOMAGNETIC_ROTATION_VECTOR);
+        }
+        ROTATION_VECTOR_TYPES = rotationTypeBuilder.build();
     }
 }

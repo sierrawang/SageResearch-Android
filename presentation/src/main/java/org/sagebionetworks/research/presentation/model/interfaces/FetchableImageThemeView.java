@@ -32,9 +32,7 @@
 
 package org.sagebionetworks.research.presentation.model.interfaces;
 
-import android.graphics.drawable.Drawable;
 import android.support.annotation.Nullable;
-import android.view.Display;
 
 import com.google.auto.value.AutoValue;
 
@@ -55,9 +53,6 @@ public abstract class FetchableImageThemeView extends ImageThemeView {
         public abstract Builder setImageResource(@Nullable DisplayDrawable imageResource);
     }
 
-    @Nullable
-    public abstract DisplayDrawable getImageResource();
-
     public static Builder builder() {
         return new AutoValue_FetchableImageThemeView.Builder();
     }
@@ -67,8 +62,11 @@ public abstract class FetchableImageThemeView extends ImageThemeView {
         // TODO: rkolmos 06/11/2018 fix this not to instantiate a new on every time.
         return FetchableImageThemeView.builder()
                 .setColorPlacement(imageTheme.getColorPlacement())
-                .setImageResource(new DisplayDrawable(null,
+                .setImageResource(DisplayDrawable.create(null,
                         mapper.getDrawableFromName(imageTheme.getImageResourceName())))
                 .build();
     }
+
+    @Nullable
+    public abstract DisplayDrawable getImageResource();
 }

@@ -46,7 +46,6 @@ import org.sagebionetworks.research.presentation.mapper.DrawableMapper;
 import org.sagebionetworks.research.presentation.model.ColorThemeView;
 import org.sagebionetworks.research.presentation.model.ImageThemeView;
 import org.sagebionetworks.research.presentation.model.action.ActionView;
-import org.sagebionetworks.research.presentation.model.action.ActionViewBase;
 import org.sagebionetworks.research.presentation.model.form.InputFieldView;
 import org.sagebionetworks.research.presentation.model.form.InputFieldViewBase;
 import org.sagebionetworks.research.presentation.model.interfaces.FormUIStepView;
@@ -55,7 +54,36 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class FormUIStepViewBase extends UIStepViewBase implements FormUIStepView {
+    public static final Creator<FormUIStepViewBase> CREATOR = new Creator<FormUIStepViewBase>() {
+        @Override
+        public FormUIStepViewBase createFromParcel(Parcel source) {
+            return new FormUIStepViewBase(source);
+        }
+
+        @Override
+        public FormUIStepViewBase[] newArray(int size) {
+            return new FormUIStepViewBase[size];
+        }
+    };
+
     private final List<InputFieldView> inputFields;
+
+    public static FormUIStepViewBase fromFormUIStep(Step step, DrawableMapper mapper) {
+        if (!(step instanceof FormUIStep)) {
+            throw new IllegalArgumentException("Provided step: " + step + " is not a FormUIStep.");
+        }
+
+        FormUIStep formUIStep = (FormUIStep) step;
+        UIStepViewBase uiStepView = UIStepViewBase.fromUIStep(formUIStep, mapper);
+        List<InputFieldView> inputFields = new ArrayList<>();
+        for (InputField field : formUIStep.getInputFields()) {
+            inputFields.add(InputFieldViewBase.fromInputField(field));
+        }
+
+        return new FormUIStepViewBase(uiStepView.getIdentifier(), uiStepView.getNavDirection(),
+                uiStepView.getActions(), uiStepView.getTitle(), uiStepView.getText(), uiStepView.getDetail(),
+                uiStepView.getFootnote(), uiStepView.getColorTheme(), uiStepView.getImageTheme(), inputFields);
+    }
 
     public FormUIStepViewBase(@NonNull final String identifier,
             @NavDirection final int navDirection,
@@ -71,32 +99,15 @@ public class FormUIStepViewBase extends UIStepViewBase implements FormUIStepView
         this.inputFields = inputFields;
     }
 
-    public static FormUIStepViewBase fromFormUIStep(Step step, DrawableMapper mapper) {
-        if (!(step instanceof FormUIStep)) {
-            throw new IllegalArgumentException("Provided step: " + step + " is not a FormUIStep.");
-        }
-
-        FormUIStep formUIStep = (FormUIStep)step;
-        UIStepViewBase uiStepView = UIStepViewBase.fromUIStep(formUIStep, mapper);
-        List<InputFieldView> inputFields = new ArrayList<>();
-        for (InputField field : formUIStep.getInputFields()) {
-            inputFields.add(InputFieldViewBase.fromInputField(field));
-        }
-
-        return new FormUIStepViewBase(uiStepView.getIdentifier(), uiStepView.getNavDirection(),
-                uiStepView.getActions(), uiStepView.getTitle(), uiStepView.getText(), uiStepView.getDetail(),
-                uiStepView.getFootnote(), uiStepView.getColorTheme(), uiStepView.getImageTheme(), inputFields);
+    protected FormUIStepViewBase(Parcel in) {
+        super(in);
+        this.inputFields = new ArrayList<InputFieldView>();
+        in.readList(this.inputFields, InputFieldView.class.getClassLoader());
     }
 
     @Override
     public int describeContents() {
         return 0;
-    }
-
-    @NonNull
-    @Override
-    public List<InputFieldView> getInputFields() {
-        return inputFields;
     }
 
     @Override
@@ -105,21 +116,9 @@ public class FormUIStepViewBase extends UIStepViewBase implements FormUIStepView
         dest.writeList(this.inputFields);
     }
 
-    protected FormUIStepViewBase(Parcel in) {
-        super(in);
-        this.inputFields = new ArrayList<InputFieldView>();
-        in.readList(this.inputFields, InputFieldView.class.getClassLoader());
+    @NonNull
+    @Override
+    public List<InputFieldView> getInputFields() {
+        return inputFields;
     }
-
-    public static final Creator<FormUIStepViewBase> CREATOR = new Creator<FormUIStepViewBase>() {
-        @Override
-        public FormUIStepViewBase createFromParcel(Parcel source) {
-            return new FormUIStepViewBase(source);
-        }
-
-        @Override
-        public FormUIStepViewBase[] newArray(int size) {
-            return new FormUIStepViewBase[size];
-        }
-    };
 }

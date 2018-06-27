@@ -32,7 +32,6 @@
 
 package org.sagebionetworks.research.domain.step.ui.theme;
 
-import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 
 import com.google.auto.value.AutoValue;

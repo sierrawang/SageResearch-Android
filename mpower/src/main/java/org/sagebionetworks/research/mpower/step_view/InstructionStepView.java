@@ -37,39 +37,20 @@ import android.support.annotation.Nullable;
 
 import com.google.common.collect.ImmutableMap;
 
+import org.sagebionetworks.research.domain.result.interfaces.TaskResult;
 import org.sagebionetworks.research.domain.step.interfaces.Step;
+import org.sagebionetworks.research.mpower.show_step_fragment.FirstRunHelper;
 import org.sagebionetworks.research.mpower.step.InstructionStep;
 import org.sagebionetworks.research.presentation.DisplayString;
 import org.sagebionetworks.research.presentation.mapper.DrawableMapper;
 import org.sagebionetworks.research.presentation.model.ColorThemeView;
 import org.sagebionetworks.research.presentation.model.ImageThemeView;
 import org.sagebionetworks.research.presentation.model.action.ActionView;
-import org.sagebionetworks.research.presentation.model.action.ActionViewBase;
 import org.sagebionetworks.research.presentation.model.implementations.ActiveUIStepViewBase;
 import org.threeten.bp.Duration;
 
 public class InstructionStepView extends ActiveUIStepViewBase {
-    private final boolean firstRunOnly;
-
-    public InstructionStepView(@NonNull final String identifier, final int navDirection,
-            @NonNull final ImmutableMap<String, ActionView> actions,
-            @Nullable final DisplayString title,
-            @Nullable final DisplayString text,
-            @Nullable final DisplayString detail,
-            @Nullable final DisplayString footnote,
-            @Nullable final ColorThemeView colorTheme,
-            @Nullable final ImageThemeView imageTheme,
-            @NonNull final Duration duration,
-            final boolean isBackgroundAudioRequired,
-            final boolean isFirstRunOnly) {
-        super(identifier, navDirection, actions, title, text, detail, footnote, colorTheme, imageTheme, duration,
-                isBackgroundAudioRequired);
-        this.firstRunOnly = isFirstRunOnly;
-    }
-
-    public boolean isFirstRunOnly() {
-        return this.firstRunOnly;
-    }
+    private final boolean isFirstRunOnly;
 
     @NonNull
     public static InstructionStepView fromInstructionStep(@NonNull Step step, DrawableMapper mapper) {
@@ -84,5 +65,31 @@ public class InstructionStepView extends ActiveUIStepViewBase {
                 activeUIStepView.getDetail(), activeUIStepView.getFootnote(), activeUIStepView.getColorTheme(),
                 activeUIStepView.getImageTheme(), activeUIStepView.getDuration(),
                 activeUIStepView.isBackgroundAudioRequired(), instructionStep.isFirstRunOnly());
+    }
+
+    public InstructionStepView(@NonNull final String identifier, final int navDirection,
+            @NonNull final ImmutableMap<String, ActionView> actions,
+            @Nullable final DisplayString title,
+            @Nullable final DisplayString text,
+            @Nullable final DisplayString detail,
+            @Nullable final DisplayString footnote,
+            @Nullable final ColorThemeView colorTheme,
+            @Nullable final ImageThemeView imageTheme,
+            @NonNull final Duration duration,
+            final boolean isBackgroundAudioRequired,
+            final boolean isFirstRunOnly) {
+        super(identifier, navDirection, actions, title, text, detail, footnote, colorTheme, imageTheme, duration,
+                isBackgroundAudioRequired);
+        this.isFirstRunOnly = isFirstRunOnly;
+    }
+
+    public boolean isFirstRunOnly() {
+        return this.isFirstRunOnly;
+    }
+
+    @Override
+    public boolean shouldSkip(@Nullable TaskResult taskResult) {
+        // If this step should only run on first runs and it is not a first run then we should skip this step.
+        return this.isFirstRunOnly && !FirstRunHelper.isFirstRun(taskResult);
     }
 }

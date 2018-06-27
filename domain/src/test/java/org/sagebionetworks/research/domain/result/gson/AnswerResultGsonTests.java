@@ -32,14 +32,16 @@
 
 package org.sagebionetworks.research.domain.result.gson;
 
-import org.junit.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
+
+import org.junit.Test;
 import org.sagebionetworks.research.domain.result.AnswerResultType;
 import org.sagebionetworks.research.domain.result.implementations.AnswerResultBase;
 import org.sagebionetworks.research.domain.result.interfaces.AnswerResult;
 import org.sagebionetworks.research.domain.result.interfaces.Result;
 import org.threeten.bp.Instant;
-
-import static org.junit.Assert.*;
 
 public class AnswerResultGsonTests extends IndividualResultGsonTest {
     private static final Result INTEGER = new AnswerResultBase<>("answerResult", Instant.ofEpochSecond(20),
@@ -55,16 +57,6 @@ public class AnswerResultGsonTests extends IndividualResultGsonTest {
             Instant.ofEpochSecond(30), 2.0, AnswerResultType.DECIMAL);
 
     @Test
-    public void testAnswerResult_Integer() {
-        testCommon(INTEGER, "AnswerResult_Integer.json");
-    }
-
-    @Test
-    public void testAnswerResult_String() {
-        testCommon(STRING, "AnswerResult_String.json");
-    }
-
-    @Test
     public void testAnswerResult_Boolean() {
         testCommon(BOOLEAN, "AnswerResult_Boolean.json");
     }
@@ -75,13 +67,13 @@ public class AnswerResultGsonTests extends IndividualResultGsonTest {
     }
 
     @Test
-    public void testSerializationDeserializationIntegration_Integer() {
-        testSerializationThenDeserialization(INTEGER);
+    public void testAnswerResult_Integer() {
+        testCommon(INTEGER, "AnswerResult_Integer.json");
     }
 
     @Test
-    public void testSerializationDeserializationIntegration_String() {
-        testSerializationThenDeserialization(STRING);
+    public void testAnswerResult_String() {
+        testCommon(STRING, "AnswerResult_String.json");
     }
 
     @Test
@@ -92,6 +84,16 @@ public class AnswerResultGsonTests extends IndividualResultGsonTest {
     @Test
     public void testSerializationDeserializationIntegration_Double() {
         testSerializationThenDeserialization(DOUBLE);
+    }
+
+    @Test
+    public void testSerializationDeserializationIntegration_Integer() {
+        testSerializationThenDeserialization(INTEGER);
+    }
+
+    @Test
+    public void testSerializationDeserializationIntegration_String() {
+        testSerializationThenDeserialization(STRING);
     }
 
     private void testCommon(Result expected, String filename) {

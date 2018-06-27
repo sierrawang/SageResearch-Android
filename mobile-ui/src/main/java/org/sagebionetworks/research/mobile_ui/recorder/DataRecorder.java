@@ -31,10 +31,8 @@
  */
 
 package org.sagebionetworks.research.mobile_ui.recorder;
-import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
 
-import com.google.gson.JsonObject;
+import android.support.annotation.Nullable;
 
 import org.reactivestreams.Subscriber;
 import org.reactivestreams.Subscription;
@@ -55,31 +53,46 @@ import io.reactivex.SingleOnSubscribe;
  * A JsonArrayDataRecorder subscribes to a source of JsonObjects and writes them out to a file. It is also a single
  * source the provides the file result it writes to on success, or the throwable that occurred if there is an error
  * anywhere in it's source of JsonObjects.
- *
+ * <p>
  * The start time of the fileResult will be the time that onSubscribe was called and the end time will be the time
  * that onComplete was called.
  */
 public class DataRecorder implements Subscriber<String>, SingleOnSubscribe<FileResult> {
-    protected String identifier;
-    protected final Set<SingleEmitter<FileResult>> observers;
-    protected final File outputDirectory;
-    protected final PrintStream outputStream;
-    protected final String start;
-    protected final String end;
     protected final String deliminator;
 
-    protected boolean isFirstJsonObject;
-    protected Instant startTime;
+    protected final String end;
+
     protected Instant endTime;
+
+    protected String identifier;
+
+    protected boolean isFirstJsonObject;
+
+    protected final Set<SingleEmitter<FileResult>> observers;
+
+    protected final File outputDirectory;
+
+    protected final PrintStream outputStream;
+
+    protected final String start;
+
+    protected Instant startTime;
 
     /**
      * Creates a new Data Recorder with the given information.
-     * @param identifier The identifier of the recorder, will also be used as the identifier of the file result.
-     * @param outputDirectory The file to output data to.
-     * @param start The string to start the output with, null will result in no prefix being added to the data.
-     * @param end The string to end the output with, null will result in no suffix being added to the data.
-     * @param delimnator The string to separate each piece of data passed to OnNext with.
-     * @throws IOException If the given outputDirectory cannot be opened or written to.
+     *
+     * @param identifier
+     *         The identifier of the recorder, will also be used as the identifier of the file result.
+     * @param outputDirectory
+     *         The file to output data to.
+     * @param start
+     *         The string to start the output with, null will result in no prefix being added to the data.
+     * @param end
+     *         The string to end the output with, null will result in no suffix being added to the data.
+     * @param delimnator
+     *         The string to separate each piece of data passed to OnNext with.
+     * @throws IOException
+     *         If the given outputDirectory cannot be opened or written to.
      */
     public DataRecorder(String identifier, File outputDirectory, @Nullable String start, @Nullable String end,
             @Nullable String delimnator) throws IOException {

@@ -38,8 +38,8 @@ import org.sagebionetworks.research.domain.step.ui.theme.ColorTheme;
 import org.sagebionetworks.research.domain.step.ui.theme.ImageTheme;
 
 /**
- * A ThemedUIStep is a step which also has options for how it gets displayed such as the color and image
- * themes to use. Useful when it is important that a step looks a certain way.
+ * A ThemedUIStep is a step which also has options for how it gets displayed such as the color and image themes to
+ * use. Useful when it is important that a step looks a certain way.
  */
 public interface ThemedUIStep extends UIStep {
     @Nullable

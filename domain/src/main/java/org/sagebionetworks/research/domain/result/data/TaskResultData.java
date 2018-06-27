@@ -54,13 +54,21 @@ public abstract class TaskResultData {
     public abstract static class Builder {
         public abstract TaskResultData build();
 
-        public abstract Builder setUUID(UUID taskUUID);
+        public abstract Builder setAsyncResults(List<Result> asyncResults);
 
         public abstract Builder setSchema(Schema schema);
 
         public abstract Builder setStepHistory(List<Result> stepHistory);
 
-        public abstract Builder setAsyncResults(List<Result> asyncResults);
+        public abstract Builder setUUID(UUID taskUUID);
+    }
+
+    public static Builder builder() {
+        return new AutoValue_TaskResultData.Builder();
+    }
+
+    public static TaskResultData create(@NonNull final TaskResultData data, @NonNull final List<Result> stepHistory) {
+        return TaskResultData.create(data.getUUID(), data.getSchema(), stepHistory, data.getAsyncResults());
     }
 
     public static TaskResultData create(@NonNull final UUID taskUUID, @Nullable final Schema schema,
@@ -73,26 +81,18 @@ public abstract class TaskResultData {
                 .build();
     }
 
-    public static TaskResultData create(@NonNull final TaskResultData data, @NonNull final List<Result> stepHistory) {
-        return TaskResultData.create(data.getUUID(), data.getSchema(), stepHistory, data.getAsyncResults());
-    }
-
     public static TypeAdapter<TaskResultData> typeAdapter(Gson gson) {
         return new AutoValue_TaskResultData.GsonTypeAdapter(gson);
     }
 
-    public static Builder builder() {
-        return new AutoValue_TaskResultData.Builder();
-    }
-
-    public abstract Builder toBuilder();
-
-    public abstract UUID getUUID();
+    public abstract List<Result> getAsyncResults();
 
     @Nullable
     public abstract Schema getSchema();
 
     public abstract List<Result> getStepHistory();
 
-    public abstract List<Result> getAsyncResults();
+    public abstract UUID getUUID();
+
+    public abstract Builder toBuilder();
 }

@@ -37,8 +37,10 @@ public class LoadableResource<T> {
         LOADING, SUCCESS, ERROR
     }
 
-    public final String errorMessage;
     public final T data;
+
+    public final String errorMessage;
+
     public final State status;
 
     public LoadableResource(String errorMessage, T data, State status) {

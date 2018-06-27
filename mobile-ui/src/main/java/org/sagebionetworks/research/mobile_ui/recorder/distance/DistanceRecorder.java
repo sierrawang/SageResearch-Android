@@ -53,24 +53,13 @@ import io.reactivex.SingleEmitter;
 import io.reactivex.SingleOnSubscribe;
 
 public abstract class DistanceRecorder extends ReactiveRecorder<DistanceSummary, DistanceState, Location> {
-    protected final Context context;
-
-    public DistanceRecorder(RecorderConfig config, Context context, @Nullable final DataRecorder dataRecorder) {
-        super(config.getIdentifier(), config.getStartStepIdentifier(), config.getStopStepIdentifier(),
-                dataRecorder, new DistanceSummarySubscriber(), new DistanceStateSubscriber());
-        this.context = context;
-    }
-
-    @Override
-    @NonNull
-    public Flowable<Location> intializeEventFlowable() {
-        return LocationSensor.getLocation(this.context);
-    }
-
     public static class DistanceState {
         private float currentTotalDistance;
-        private float lastDistanceChange;
+
         private Location firstLocation;
+
+        private float lastDistanceChange;
+
         private Location lastLocation;
 
         public DistanceState() {
@@ -78,6 +67,18 @@ public abstract class DistanceRecorder extends ReactiveRecorder<DistanceSummary,
             this.firstLocation = null;
             this.currentTotalDistance = 0;
             this.lastDistanceChange = 0;
+        }
+
+        public Location getFirstLocation() {
+            return this.firstLocation;
+        }
+
+        public float getLastDistanceChange() {
+            return this.lastDistanceChange;
+        }
+
+        public float getTotalDistance() {
+            return this.currentTotalDistance;
         }
 
         public void update(Location nextLocation) {
@@ -90,23 +91,12 @@ public abstract class DistanceRecorder extends ReactiveRecorder<DistanceSummary,
 
             this.lastLocation = nextLocation;
         }
-
-        public float getTotalDistance() {
-            return this.currentTotalDistance;
-        }
-
-        public float getLastDistanceChange() {
-            return this.lastDistanceChange;
-        }
-
-        public Location getFirstLocation() {
-            return this.firstLocation;
-        }
     }
 
     public static class DistanceSummary {
-        private float totalDistance;
         private Location lastLocation;
+
+        private float totalDistance;
 
         public DistanceSummary() {
             this.lastLocation = null;
@@ -125,6 +115,7 @@ public abstract class DistanceRecorder extends ReactiveRecorder<DistanceSummary,
     protected static class DistanceSummarySubscriber implements SummarySubscriber<DistanceSummary, Location>,
             SingleOnSubscribe<DistanceSummary> {
         protected Set<SingleEmitter<DistanceSummary>> observers;
+
         protected DistanceSummary result;
 
         public DistanceSummarySubscriber() {
@@ -143,6 +134,9 @@ public abstract class DistanceRecorder extends ReactiveRecorder<DistanceSummary,
         }
 
         @Override
+        public void subscribe(final SingleEmitter<DistanceSummary> emitter) throws Exception {
+            this.observers.add(emitter);
+        }        @Override
         public void onNext(final Location location) {
             this.result.update(location);
         }
@@ -161,10 +155,7 @@ public abstract class DistanceRecorder extends ReactiveRecorder<DistanceSummary,
             }
         }
 
-        @Override
-        public void subscribe(final SingleEmitter<DistanceSummary> emitter) throws Exception {
-            this.observers.add(emitter);
-        }
+
     }
 
     protected static class DistanceStateSubscriber implements CurrentStateSubscriber<DistanceState, Location> {
@@ -199,5 +190,19 @@ public abstract class DistanceRecorder extends ReactiveRecorder<DistanceSummary,
             // After the recorder completes the result of the state is null.
             this.result = null;
         }
+    }
+
+    protected final Context context;
+
+    public DistanceRecorder(RecorderConfig config, Context context, @Nullable final DataRecorder dataRecorder) {
+        super(config.getIdentifier(), config.getStartStepIdentifier(), config.getStopStepIdentifier(),
+                dataRecorder, new DistanceSummarySubscriber(), new DistanceStateSubscriber());
+        this.context = context;
+    }
+
+    @Override
+    @NonNull
+    public Flowable<Location> intializeEventFlowable() {
+        return LocationSensor.getLocation(this.context);
     }
 }

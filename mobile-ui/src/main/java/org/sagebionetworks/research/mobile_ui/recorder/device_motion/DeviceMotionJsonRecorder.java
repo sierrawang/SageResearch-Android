@@ -42,14 +42,14 @@ import org.sagebionetworks.research.presentation.recorder.DeviceMotionRecorderCo
 
 import java.io.IOException;
 
-import io.reactivex.Flowable;
-
 /**
  * DeviceMotionJsonRecorder recorders the devices motion as Json into a file. It provides no summary result.
  */
 public class DeviceMotionJsonRecorder extends DeviceMotionRecorder<Void, Void> {
     public static final String JSON_FILE_START = "[";
+
     public static final String JSON_FILE_END = "]";
+
     public static final String JSON_OBJECT_DELIMINATOR = ",";
 
     public DeviceMotionJsonRecorder(

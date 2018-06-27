@@ -49,15 +49,15 @@ public abstract class DeviceMotionRecorderConfigPresentationBase implements Devi
     public abstract static class Builder {
         public abstract DeviceMotionRecorderConfigPresentationBase build();
 
+        public abstract Builder setFrequency(double frequency);
+
         public abstract Builder setIdentifier(@NonNull String identifier);
+
+        public abstract Builder setRecorderTypes(@NonNull Set<Integer> recorderTypes);
 
         public abstract Builder setStartStepIdentifier(@Nullable String startStepIdentifier);
 
         public abstract Builder setStopStepIdentifier(@Nullable String stopStepIdentifier);
-
-        public abstract Builder setFrequency(double frequency);
-
-        public abstract Builder setRecorderTypes(@NonNull Set<Integer> recorderTypes);
     }
 
     public static Builder builder() {
@@ -66,7 +66,8 @@ public abstract class DeviceMotionRecorderConfigPresentationBase implements Devi
 
     public static DeviceMotionRecorderConfigPresentationBase fromDeviceMotionRecorderConfig(DeviceMotionRecorderConfig
             config) {
-        double frequency = config.getFrequency() != null ? config.getFrequency() : 0; // TODO rkolmos 06/25/2018use a default value here
+        double frequency = config.getFrequency() != null ? config.getFrequency()
+                : 0; // TODO rkolmos 06/25/2018use a default value here
         Set<Integer> recorderTypes = new HashSet<>();
         for (String sensor : config.getRecorderTypes()) {
             Integer sensorType = SensorMapper.getSensorType(sensor);

@@ -1,5 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
-<!--
+<?xml version="1.0" encoding="utf-8"?><!--
   ~ BSD 3-Clause License
   ~
   ~ Copyright 2018  Sage Bionetworks. All rights reserved.
@@ -33,7 +32,8 @@
 
 <resources>
     <!-- We use rs2_generic_step for all the layouts by default -->
-    <item type="layout" name="rs2_default_show_step_fragment_layout">@layout/rs2_generic_step</item>
-    <item type="layout" name="rs2_show_ui_step_fragment_layout">@layout/rs2_default_show_step_fragment_layout</item>
-    <item type="layout" name="rs2_show_active_ui_step_fragment_layout">@layout/rs2_default_show_step_fragment_layout</item>
+    <item name="rs2_default_show_step_fragment_layout" type="layout">@layout/rs2_generic_step</item>
+    <item name="rs2_show_ui_step_fragment_layout" type="layout">@layout/rs2_default_show_step_fragment_layout</item>
+    <item name="rs2_show_active_ui_step_fragment_layout" type="layout">@layout/rs2_default_show_step_fragment_layout
+    </item>
 </resources>

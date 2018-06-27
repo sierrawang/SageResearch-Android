@@ -32,7 +32,6 @@
 
 package org.sagebionetworks.research.domain.recorder;
 
-import android.bluetooth.BluetoothClass.Device;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 
@@ -42,22 +41,22 @@ import java.util.Set;
 
 @AutoValue
 public abstract class DeviceMotionRecorderConfigBase implements DeviceMotionRecorderConfig {
-    public static final String TYPE_KEY = RecorderType.MOTION;
-
     @AutoValue.Builder
     public abstract static class Builder {
         public abstract DeviceMotionRecorderConfigBase build();
 
+        public abstract Builder setFrequency(@Nullable Double frequency);
+
         public abstract Builder setIdentifier(@NonNull String identifier);
+
+        public abstract Builder setRecorderTypes(@NonNull Set<String> recorderTypes);
 
         public abstract Builder setStartStepIdentifier(@Nullable String startStepIdentifier);
 
         public abstract Builder setStopStepIdentifier(@Nullable String stopStepIdentifier);
-
-        public abstract Builder setFrequency(@Nullable Double frequency);
-
-        public abstract Builder setRecorderTypes(@NonNull Set<String> recorderTypes);
     }
+
+    public static final String TYPE_KEY = RecorderType.MOTION;
 
     public static Builder builder() {
         return new AutoValue_DeviceMotionRecorderConfigBase.Builder();

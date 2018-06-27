@@ -45,12 +45,13 @@ import org.sagebionetworks.research.domain.result.interfaces.ErrorResult;
 import org.threeten.bp.Instant;
 
 /**
- * The concrete implementation of a result for an Error. A wrapper around ErrorResultData which adds
- * behavior and can be subclassed.
+ * The concrete implementation of a result for an Error. A wrapper around ErrorResultData which adds behavior and can
+ * be subclassed.
  */
 public class ErrorResultBase extends ResultBase implements ErrorResult {
     @ResultType
     public static final String TYPE_KEY = ResultType.ERROR;
+
     // Subclasses shouldn't hide this field as doing so will result in a gson error.
     protected final ErrorResultData errorResultData;
 
@@ -59,13 +60,6 @@ public class ErrorResultBase extends ResultBase implements ErrorResult {
             @Nullable final Throwable throwable) {
         super(identifier, startTime, endTime);
         this.errorResultData = ErrorResultData.create(errorDescription, throwable);
-    }
-
-    @NonNull
-    @ResultType
-    @Override
-    public String getType() {
-        return TYPE_KEY;
     }
 
     @NonNull
@@ -80,6 +74,20 @@ public class ErrorResultBase extends ResultBase implements ErrorResult {
         return this.errorResultData.getThrowable();
     }
 
+    @NonNull
+    @ResultType
+    @Override
+    public String getType() {
+        return TYPE_KEY;
+    }
+
+    @Override
+    protected boolean equalsHelper(Object o) {
+        ErrorResultBase errorResult = (ErrorResultBase) o;
+        return super.equalsHelper(o) &&
+                Objects.equal(this.errorResultData, errorResult.errorResultData);
+    }
+
     @Override
     protected HashCodeHelper hashCodeHelper() {
         return super.hashCodeHelper()
@@ -90,12 +98,5 @@ public class ErrorResultBase extends ResultBase implements ErrorResult {
     protected ToStringHelper toStringHelper() {
         return super.toStringHelper()
                 .add("TaskResultData", this.errorResultData);
-    }
-
-    @Override
-    protected boolean equalsHelper(Object o) {
-        ErrorResultBase errorResult = (ErrorResultBase) o;
-        return super.equalsHelper(o) &&
-                Objects.equal(this.errorResultData, errorResult.errorResultData);
     }
 }

@@ -53,14 +53,14 @@ import java.util.Map;
 public class FormUIStepBase extends UIStepBase implements FormUIStep {
     public static final String TYPE_KEY = StepType.FORM;
 
+    @NonNull
+    private final List<InputField> inputFields;
+
     // Gson initialize defaults
     FormUIStepBase() {
         super();
         inputFields = Collections.emptyList();
     }
-
-    @NonNull
-    private final List<InputField> inputFields;
 
     public FormUIStepBase(@NonNull final String identifier, @NonNull Map<String, Action> actions,
             @Nullable final String title, @Nullable final String text, @Nullable final String detail,
@@ -70,22 +70,16 @@ public class FormUIStepBase extends UIStepBase implements FormUIStep {
         this.inputFields = inputFields;
     }
 
-    @NonNull
     @Override
-    public List<InputField> getInputFields() {
-        return this.inputFields;
+    public FormUIStepBase copyWithIdentifier(@NonNull String identifier) {
+        return new FormUIStepBase(identifier, this.getActions(), this.getTitle(), this.getText(), this.getDetail(),
+                this.getFootnote(), this.getColorTheme(), this.getImageTheme(), this.inputFields);
     }
 
     @NonNull
     @Override
     public String getType() {
         return TYPE_KEY;
-    }
-
-    @Override
-    protected HashCodeHelper hashCodeHelper() {
-        return super.hashCodeHelper()
-                .addFields(this.inputFields);
     }
 
     @Override
@@ -96,14 +90,20 @@ public class FormUIStepBase extends UIStepBase implements FormUIStep {
     }
 
     @Override
+    protected HashCodeHelper hashCodeHelper() {
+        return super.hashCodeHelper()
+                .addFields(this.inputFields);
+    }
+
+    @Override
     protected ToStringHelper toStringHelper() {
         return super.toStringHelper()
                 .add("inputFields", this.getInputFields());
     }
 
+    @NonNull
     @Override
-    public FormUIStepBase copyWithIdentifier(@NonNull String identifier) {
-        return new FormUIStepBase(identifier, this.getActions(), this.getTitle(), this.getText(), this.getDetail(),
-                this.getFootnote(), this.getColorTheme(), this.getImageTheme(), this.inputFields);
+    public List<InputField> getInputFields() {
+        return this.inputFields;
     }
 }

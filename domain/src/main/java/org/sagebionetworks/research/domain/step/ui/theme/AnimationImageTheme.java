@@ -43,18 +43,18 @@ import java.util.List;
 
 @AutoValue
 public abstract class AnimationImageTheme implements ImageTheme {
-    public static final String TYPE_KEY = ImageThemeType.ANIMATION;
-
     @AutoValue.Builder
     public abstract static class Builder {
         public abstract AnimationImageTheme build();
 
         public abstract Builder setColorPlacement(@Nullable @ColorPlacement String colorPlacement);
 
-        public abstract Builder setImageResourceNames(@Nullable List<String> imageResourceNames);
-
         public abstract Builder setDuration(@Nullable Double duration);
+
+        public abstract Builder setImageResourceNames(@Nullable List<String> imageResourceNames);
     }
+
+    public static final String TYPE_KEY = ImageThemeType.ANIMATION;
 
     public static Builder builder() {
         return new AutoValue_AnimationImageTheme.Builder();
@@ -65,12 +65,12 @@ public abstract class AnimationImageTheme implements ImageTheme {
     }
 
     @Nullable
-    @SerializedName("imageNames")
-    public abstract List<String> getImageResourceNames();
-
-    @Nullable
     @SerializedName("animationDuration")
     public abstract Double getDuration();
+
+    @Nullable
+    @SerializedName("imageNames")
+    public abstract List<String> getImageResourceNames();
 
     @Override
     @ImageThemeType

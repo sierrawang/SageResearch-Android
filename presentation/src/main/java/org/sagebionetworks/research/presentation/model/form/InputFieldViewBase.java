@@ -50,27 +50,65 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class InputFieldViewBase implements InputFieldView, Parcelable {
-    @Nullable
-    private final String identifier;
-    @Nullable
-    private final DisplayString prompt;
-    @Nullable
-    private final DisplayString promptDetail;
-    @Nullable
-    private final DisplayString placeholderText;
-    @Nullable
-    private final boolean isOptional;
+    public static final Creator<InputFieldViewBase> CREATOR = new Creator<InputFieldViewBase>() {
+        @Override
+        public InputFieldViewBase createFromParcel(Parcel source) {
+            return new InputFieldViewBase(source);
+        }
+
+        @Override
+        public InputFieldViewBase[] newArray(int size) {
+            return new InputFieldViewBase[size];
+        }
+    };
+
     @NonNull
     private final InputDataType formDataType;
+
+    @Nullable
+    private final String identifier;
+
+    @Nullable
+    private final boolean isOptional;
+
+    @Nullable
+    private final DisplayString placeholderText;
+
+    @Nullable
+    private final DisplayString prompt;
+
+    @Nullable
+    private final DisplayString promptDetail;
+
+    @Nullable
+    private final Range range;
+
+    @Nullable
+    private final List<SurveyRule> surveyRules;
+
+    @Nullable
+    private final TextFieldOptions textFieldOptions;
+
     @Nullable
     @InputUIHint
     private final String uiHint;
-    @Nullable
-    private final TextFieldOptions textFieldOptions;
-    @Nullable
-    private final Range range;
-    @Nullable
-    private final List<SurveyRule> surveyRules;
+
+    public static InputFieldViewBase fromInputField(InputField inputField) {
+        String identifier = inputField.getIdentifier();
+        boolean isOptional = inputField.isOptional();
+        InputDataType formDataType = inputField.getFormDataType();
+        @InputUIHint String uiHint = inputField.getFormUIHint();
+        TextFieldOptions textFieldOptions = inputField.getTextFieldOptions();
+        Range range = inputField.getRange();
+        List<SurveyRule> surveyRules = inputField.getSurveyRules();
+        // TODO rkolmos 05/30/2018 do the correct thing with these strings
+        DisplayString prompt = DisplayString.create(0, inputField.getPrompt());
+        DisplayString promptDetail = DisplayString.create(0, inputField.getPromptDetail());
+        DisplayString placeholderText = DisplayString.create(0, inputField.getPlaceholderText());
+
+        return new InputFieldViewBase(identifier, prompt, promptDetail, placeholderText, isOptional, formDataType,
+                uiHint, textFieldOptions, range, surveyRules);
+    }
 
     public InputFieldViewBase(@Nullable final String identifier, @Nullable final DisplayString prompt,
             @Nullable final DisplayString promptDetail, @Nullable final DisplayString placeholderText,
@@ -89,81 +127,18 @@ public class InputFieldViewBase implements InputFieldView, Parcelable {
         this.surveyRules = surveyRules;
     }
 
-    public static InputFieldViewBase fromInputField(InputField inputField) {
-        String identifier = inputField.getIdentifier();
-        boolean isOptional = inputField.isOptional();
-        InputDataType formDataType = inputField.getFormDataType();
-        @InputUIHint String uiHint = inputField.getFormUIHint();
-        TextFieldOptions textFieldOptions = inputField.getTextFieldOptions();
-        Range range = inputField.getRange();
-        List<SurveyRule> surveyRules = inputField.getSurveyRules();
-        // TODO rkolmos 05/30/2018 do the correct thing with these strings
-        DisplayString prompt = new DisplayString(0, inputField.getPrompt());
-        DisplayString promptDetail = new DisplayString(0, inputField.getPromptDetail());
-        DisplayString placeholderText = new DisplayString(0, inputField.getPlaceholderText());
-
-        return new InputFieldViewBase(identifier, prompt, promptDetail, placeholderText, isOptional, formDataType,
-                uiHint, textFieldOptions, range, surveyRules);
-    }
-
-    @Override
-    @Nullable
-    public String getIdentifier() {
-        return identifier;
-    }
-
-    @Override
-    @Nullable
-    public DisplayString getPrompt() {
-        return prompt;
-    }
-
-    @Override
-    @Nullable
-    public DisplayString getPromptDetail() {
-        return promptDetail;
-    }
-
-    @Override
-    @Nullable
-    public DisplayString getPlaceholderText() {
-        return placeholderText;
-    }
-
-    @Override
-    @Nullable
-    public boolean isOptional() {
-        return isOptional;
-    }
-
-    @Override
-    @NonNull
-    public InputDataType getFormDataType() {
-        return formDataType;
-    }
-
-    @Override
-    @Nullable
-    public String getFormUIHint() {
-        return uiHint;
-    }
-
-    @Override
-    @Nullable
-    public TextFieldOptions getTextFieldOptions() {
-        return textFieldOptions;
-    }
-
-    @Override
-    @Nullable
-    public Range getRange() {
-        return range;
-    }
-
-    @Override
-    @Nullable
-    public List<SurveyRule> getSurveyRules() {
-        return surveyRules;
+    protected InputFieldViewBase(Parcel in) {
+        this.identifier = in.readString();
+        this.prompt = in.readParcelable(DisplayString.class.getClassLoader());
+        this.promptDetail = in.readParcelable(DisplayString.class.getClassLoader());
+        this.placeholderText = in.readParcelable(DisplayString.class.getClassLoader());
+        this.isOptional = in.readByte() != 0;
+        this.formDataType = in.readParcelable(InputDataType.class.getClassLoader());
+        this.uiHint = in.readString();
+        this.textFieldOptions = in.readParcelable(TextFieldOptions.class.getClassLoader());
+        this.range = (Range) in.readSerializable();
+        this.surveyRules = new ArrayList<SurveyRule>();
+        in.readList(this.surveyRules, SurveyRule.class.getClassLoader());
     }
 
     @Override
@@ -185,29 +160,63 @@ public class InputFieldViewBase implements InputFieldView, Parcelable {
         dest.writeList(this.surveyRules);
     }
 
-    protected InputFieldViewBase(Parcel in) {
-        this.identifier = in.readString();
-        this.prompt = in.readParcelable(DisplayString.class.getClassLoader());
-        this.promptDetail = in.readParcelable(DisplayString.class.getClassLoader());
-        this.placeholderText = in.readParcelable(DisplayString.class.getClassLoader());
-        this.isOptional = in.readByte() != 0;
-        this.formDataType = in.readParcelable(InputDataType.class.getClassLoader());
-        this.uiHint = in.readString();
-        this.textFieldOptions = in.readParcelable(TextFieldOptions.class.getClassLoader());
-        this.range = (Range) in.readSerializable();
-        this.surveyRules = new ArrayList<SurveyRule>();
-        in.readList(this.surveyRules, SurveyRule.class.getClassLoader());
+    @Override
+    @NonNull
+    public InputDataType getFormDataType() {
+        return formDataType;
     }
 
-    public static final Creator<InputFieldViewBase> CREATOR = new Creator<InputFieldViewBase>() {
-        @Override
-        public InputFieldViewBase createFromParcel(Parcel source) {
-            return new InputFieldViewBase(source);
-        }
+    @Override
+    @Nullable
+    public String getFormUIHint() {
+        return uiHint;
+    }
 
-        @Override
-        public InputFieldViewBase[] newArray(int size) {
-            return new InputFieldViewBase[size];
-        }
-    };
+    @Override
+    @Nullable
+    public String getIdentifier() {
+        return identifier;
+    }
+
+    @Override
+    @Nullable
+    public DisplayString getPlaceholderText() {
+        return placeholderText;
+    }
+
+    @Override
+    @Nullable
+    public DisplayString getPrompt() {
+        return prompt;
+    }
+
+    @Override
+    @Nullable
+    public DisplayString getPromptDetail() {
+        return promptDetail;
+    }
+
+    @Override
+    @Nullable
+    public Range getRange() {
+        return range;
+    }
+
+    @Override
+    @Nullable
+    public List<SurveyRule> getSurveyRules() {
+        return surveyRules;
+    }
+
+    @Override
+    @Nullable
+    public TextFieldOptions getTextFieldOptions() {
+        return textFieldOptions;
+    }
+
+    @Override
+    @Nullable
+    public boolean isOptional() {
+        return isOptional;
+    }
 }

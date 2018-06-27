@@ -50,7 +50,9 @@ import java.util.List;
 
 /**
  * This class is the concrete implementation of an input field that has multiple choices for the user to select.
- * @param <E> The type of the choices that the user may select.
+ *
+ * @param <E>
+ *         The type of the choices that the user may select.
  */
 public class ChoiceInputField<E> extends InputFieldBase implements ChoiceOptions<E> {
     @NonNull
@@ -101,6 +103,14 @@ public class ChoiceInputField<E> extends InputFieldBase implements ChoiceOptions
     }
 
     @Override
+    protected boolean equalsHelper(Object o) {
+        ChoiceInputField<?> inputField = (ChoiceInputField<?>) o;
+        return super.equalsHelper(o) &&
+                Objects.equal(this.getChoices(), inputField.getChoices()) &&
+                Objects.equal(this.getDefaultAnswer(), inputField.getDefaultAnswer());
+    }
+
+    @Override
     protected HashCodeHelper hashCodeHelper() {
         return super.hashCodeHelper()
                 .addFields(this.choices, this.defaultAnswer);
@@ -111,13 +121,5 @@ public class ChoiceInputField<E> extends InputFieldBase implements ChoiceOptions
         return super.toStringHelper()
                 .add("choices", choices)
                 .add("defaultAnswer", defaultAnswer);
-    }
-
-    @Override
-    protected boolean equalsHelper(Object o) {
-        ChoiceInputField<?> inputField = (ChoiceInputField<?>) o;
-        return super.equalsHelper(o) &&
-                Objects.equal(this.getChoices(), inputField.getChoices()) &&
-                Objects.equal(this.getDefaultAnswer(), inputField.getDefaultAnswer());
     }
 }

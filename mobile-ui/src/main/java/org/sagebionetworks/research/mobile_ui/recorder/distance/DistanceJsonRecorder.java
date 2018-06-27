@@ -40,13 +40,14 @@ import com.google.gson.JsonObject;
 
 import org.sagebionetworks.research.domain.recorder.RecorderConfig;
 import org.sagebionetworks.research.mobile_ui.recorder.DataRecorder;
-import org.threeten.bp.Instant;
 
 import java.io.IOException;
 
 public class DistanceJsonRecorder extends DistanceRecorder {
     public static final String JSON_FILE_START = "[";
+
     public static final String JSON_FILE_END = "]";
+
     public static final String JSON_OBJECT_DELIMINATOR = ",";
 
     protected boolean usesRelativeCoordinates;

@@ -32,12 +32,12 @@
 
 package org.sagebionetworks.research.domain.task.navigation.strategy.next_step;
 
-import org.junit.*;
+import static org.junit.Assert.assertEquals;
+import static org.mockito.Mockito.mock;
+
+import org.junit.Test;
 import org.sagebionetworks.research.domain.result.interfaces.TaskResult;
 import org.sagebionetworks.research.domain.task.navigation.strategy.StepNavigationStrategy.NextStepStrategy;
-
-import static org.junit.Assert.*;
-import static org.mockito.Mockito.*;
 
 public class ConstantNextStepStrategyTest {
 

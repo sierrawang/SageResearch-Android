@@ -58,11 +58,14 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
+import javax.inject.Inject;
+import javax.inject.Singleton;
+
 import io.reactivex.Completable;
 import io.reactivex.Maybe;
 import io.reactivex.Single;
-import javax.inject.Inject;
 
+@Singleton
 public class ResourceTaskRepository implements TaskRepository {
     private static final Logger LOGGER = LoggerFactory.getLogger(ResourceTaskRepository.class);
 
@@ -74,6 +77,52 @@ public class ResourceTaskRepository implements TaskRepository {
     public ResourceTaskRepository(Context context, Gson gson) {
         this.context = context;
         this.gson = gson;
+    }
+
+    /**
+     * Returns and InputStreamReader corresponding to the given task asset.
+     *
+     * @param assetName
+     *         The name of the asset to get.
+     * @return An InputStreamReader corresponding to the Task asset with the given name.
+     * @throws IOException
+     *         If the asset of the given name cannot be opened.
+     */
+    @NonNull
+    public InputStreamReader getJsonTaskAsset(String assetName) throws IOException {
+        String assetPath = "task/" + assetName + ".json";
+        return this.getAsset(assetPath);
+    }
+
+    /**
+     * Returns an InputStreamReader that corresponds to the given taskInfo asset.
+     *
+     * @param assetName
+     *         The name of the asset to get.
+     * @return An InputStreamReader corresponding to the taskInfo asset with the given name.
+     * @throws IOException
+     *         If the asset of the given name cannot be opened.
+     */
+    @NonNull
+    public InputStreamReader getJsonTaskInfoAsset(String assetName) throws IOException {
+        String assetPath = "task/info/" + assetName + ".json";
+        return this.getAsset(assetPath);
+
+    }
+
+    /**
+     * Returns an InputStreamReader that corresponds to the given Transformer asset.
+     *
+     * @param assetName
+     *         The name of the asset to get.
+     * @return An InputStreamReader corresponding to the Transformer asset with the given name.
+     * @throws IOException
+     *         If the asset of the given name cannot be opened.
+     */
+    @NonNull
+    public InputStreamReader getJsonTransformerAsset(String assetName) throws IOException {
+        String assetPath = "task/transformer/" + assetName;
+        return this.getAsset(assetPath);
     }
 
     @NonNull
@@ -91,6 +140,20 @@ public class ResourceTaskRepository implements TaskRepository {
         });
     }
 
+    @NonNull
+    @Override
+    public Single<TaskInfo> getTaskInfo(final String taskIdentifier) {
+        return Single.fromCallable(() ->
+                gson.fromJson(this.getJsonTaskInfoAsset(taskIdentifier), TaskInfo.class));
+    }
+
+    @NonNull
+    @Override
+    public Maybe<TaskResult> getTaskResult(final UUID taskRunUUID) {
+        LOGGER.warn("Always returning no task result");
+        return Maybe.empty();
+    }
+
     @Override
     @DrawableRes
     public int resolveDrawableFromString(@NonNull String name) throws NotFoundException {
@@ -103,13 +166,37 @@ public class ResourceTaskRepository implements TaskRepository {
         }
     }
 
+    @NonNull
+    @Override
+    public Completable setTaskResult(final TaskResult taskResult) {
+        return Completable.error(new UnsupportedOperationException("Not implemented"));
+    }
+
     /**
-     * Returns the given step with all of the transformers that are substeps of it, recursively
-     * replaced with the result of getting their resource and creating a SectionStep from it.
-     * @param step The step to replace all the transformer substeps of.
+     * Returns an InputStreamReader for the given asset path.
+     *
+     * @param assetPath
+     *         The path to the asset to open.
+     * @return An InputStreamReader for the given asset path.
+     * @throws IOException
+     *         if the given assetPath cannot be opened.
+     */
+    @NonNull
+    private InputStreamReader getAsset(String assetPath) throws IOException {
+        AssetManager assetManager = context.getAssets();
+        return new InputStreamReader(assetManager.open(assetPath));
+    }
+
+    /**
+     * Returns the given step with all of the transformers that are substeps of it, recursively replaced with the
+     * result of getting their resource and creating a SectionStep from it.
+     *
+     * @param step
+     *         The step to replace all the transformer substeps of.
      * @return The givne step with all the transformer substeps replaced with the result of turning their resources
      * into section steps.
-     * @throws IOException If any of the transformer steps has a resource that cannot be opened.
+     * @throws IOException
+     *         If any of the transformer steps has a resource that cannot be opened.
      */
     private Step resolveTransformers(Step step, String prefix) throws IOException {
         if (step instanceof TransformerStep) {
@@ -131,74 +218,5 @@ public class ResourceTaskRepository implements TaskRepository {
         } else {
             return step.copyWithIdentifier(prefix + step.getIdentifier());
         }
-    }
-
-    /**
-     * Returns an InputStreamReader for the given asset path.
-     * @param assetPath The path to the asset to open.
-     * @return An InputStreamReader for the given asset path.
-     * @throws IOException if the given assetPath cannot be opened.
-     */
-    @NonNull
-    private InputStreamReader getAsset(String assetPath) throws IOException {
-        AssetManager assetManager = context.getAssets();
-        return new InputStreamReader(assetManager.open(assetPath));
-    }
-
-    /**
-     * Returns and InputStreamReader corresponding to the given task asset.
-     * @param assetName The name of the asset to get.
-     * @return An InputStreamReader corresponding to the Task asset with the given name.
-     * @throws IOException If the asset of the given name cannot be opened.
-     */
-    @NonNull
-    public InputStreamReader getJsonTaskAsset(String assetName) throws IOException {
-        String assetPath = "task/" + assetName + ".json";
-        return this.getAsset(assetPath);
-    }
-
-    /**
-     * Returns an InputStreamReader that corresponds to the given taskInfo asset.
-     * @param assetName The name of the asset to get.
-     * @return An InputStreamReader corresponding to the taskInfo asset with the given name.
-     * @throws IOException If the asset of the given name cannot be opened.
-     */
-    @NonNull
-    public InputStreamReader getJsonTaskInfoAsset(String assetName) throws IOException {
-        String assetPath = "task/info/" + assetName + ".json";
-        return this.getAsset(assetPath);
-
-    }
-
-    /**
-     * Returns an InputStreamReader that corresponds to the given Transformer asset.
-     * @param assetName The name of the asset to get.
-     * @return An InputStreamReader corresponding to the Transformer asset with the given name.
-     * @throws IOException If the asset of the given name cannot be opened.
-     */
-    @NonNull
-    public InputStreamReader getJsonTransformerAsset(String assetName) throws IOException {
-        String assetPath = "task/transformer/" + assetName;
-        return this.getAsset(assetPath);
-    }
-
-    @NonNull
-    @Override
-    public Single<TaskInfo> getTaskInfo(final String taskIdentifier) {
-        return Single.fromCallable(() ->
-                gson.fromJson(this.getJsonTaskInfoAsset(taskIdentifier), TaskInfo.class));
-    }
-
-    @NonNull
-    @Override
-    public Maybe<TaskResult> getTaskResult(final UUID taskRunUUID) {
-        LOGGER.warn("Always returning no task result");
-        return Maybe.empty();
-    }
-
-    @NonNull
-    @Override
-    public Completable setTaskResult(final TaskResult taskResult) {
-        return Completable.error(new UnsupportedOperationException("Not implemented"));
     }
 }

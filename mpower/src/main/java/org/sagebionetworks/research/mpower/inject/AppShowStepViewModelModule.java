@@ -35,13 +35,9 @@ package org.sagebionetworks.research.mpower.inject;
 import org.sagebionetworks.research.mpower.step_view.InstructionStepView;
 import org.sagebionetworks.research.mpower.step_view.OverviewStepView;
 import org.sagebionetworks.research.presentation.inject.ShowStepViewModelModule.StepViewClassKey;
-import org.sagebionetworks.research.presentation.model.interfaces.ActiveUIStepView;
 import org.sagebionetworks.research.presentation.model.interfaces.StepView;
 import org.sagebionetworks.research.presentation.show_step.show_step_view_model_factories.AbstractShowStepViewModelFactory;
-import org.sagebionetworks.research.presentation.show_step.show_step_view_model_factories.ShowActiveUIStepViewModelFactory;
-import org.sagebionetworks.research.presentation.show_step.show_step_view_model_factories.ShowStepViewModelFactory;
 import org.sagebionetworks.research.presentation.show_step.show_step_view_model_factories.ShowUIStepViewModelFactory;
-import java.util.Map;
 
 import dagger.Module;
 import dagger.Provides;
@@ -51,15 +47,15 @@ import dagger.multibindings.IntoMap;
 public class AppShowStepViewModelModule {
     @Provides
     @IntoMap
-    @StepViewClassKey(OverviewStepView.class)
-    static AbstractShowStepViewModelFactory<?, ? extends StepView> provideOverviewStepVMF() {
-        return new ShowUIStepViewModelFactory<OverviewStepView>();
+    @StepViewClassKey(InstructionStepView.class)
+    static AbstractShowStepViewModelFactory<?, ? extends StepView> provideInstructionStepVMF() {
+        return new ShowUIStepViewModelFactory<InstructionStepView>();
     }
 
     @Provides
     @IntoMap
-    @StepViewClassKey(InstructionStepView.class)
-    static AbstractShowStepViewModelFactory<?, ? extends StepView> provideInstructionStepVMF() {
-        return new ShowUIStepViewModelFactory<InstructionStepView>();
+    @StepViewClassKey(OverviewStepView.class)
+    static AbstractShowStepViewModelFactory<?, ? extends StepView> provideOverviewStepVMF() {
+        return new ShowUIStepViewModelFactory<OverviewStepView>();
     }
 }

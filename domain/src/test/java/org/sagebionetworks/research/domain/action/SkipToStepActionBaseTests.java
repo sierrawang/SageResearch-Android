@@ -43,6 +43,7 @@ import org.sagebionetworks.research.domain.step.ui.action.interfaces.Action;
 public class SkipToStepActionBaseTests extends IndividualActionTests {
     public static final SkipToStepActionBase COMPLETE = SkipToStepActionBase.builder().setButtonIconName("icon")
             .setButtonTitle("title").setSkipToStepIdentifier("skipTo").build();
+
     public static final SkipToStepActionBase NO_SKIP_TO = SkipToStepActionBase.builder().setButtonIconName("icon")
             .setButtonTitle("title").build();
 

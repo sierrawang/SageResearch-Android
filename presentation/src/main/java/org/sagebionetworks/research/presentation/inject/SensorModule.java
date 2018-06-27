@@ -52,6 +52,13 @@ public class SensorModule {
 
     @Provides
     @IntoMap
+    @StringKey(MotionRecorderType.GRAVITY)
+    static Integer provideGravityRateType() {
+        return Sensor.TYPE_GRAVITY;
+    }
+
+    @Provides
+    @IntoMap
     @StringKey(MotionRecorderType.GYROSCOPE)
     static Integer provideGyroscopeRecorderType() {
         return Sensor.TYPE_GYROSCOPE;
@@ -62,15 +69,6 @@ public class SensorModule {
     @StringKey(MotionRecorderType.MAGNETIC_FIELD)
     static Integer provideMageneticFieldType() {
         return Sensor.TYPE_MAGNETIC_FIELD;
-    }
-
-    @Provides
-    @IntoMap
-    @StringKey(MotionRecorderType.USER_ACCELERATION)
-    static Integer provideUserAccelerometerRecorderType() {
-        // This key is included to mirror iOS however there isn't an android user acceleration sensor so it maps
-        // to the accelerometer.
-        return Sensor.TYPE_ACCELEROMETER;
     }
 
     @Provides
@@ -91,8 +89,10 @@ public class SensorModule {
 
     @Provides
     @IntoMap
-    @StringKey(MotionRecorderType.GRAVITY)
-    static Integer provideGravityRateType() {
-        return Sensor.TYPE_GRAVITY;
+    @StringKey(MotionRecorderType.USER_ACCELERATION)
+    static Integer provideUserAccelerometerRecorderType() {
+        // This key is included to mirror iOS however there isn't an android user acceleration sensor so it maps
+        // to the accelerometer.
+        return Sensor.TYPE_ACCELEROMETER;
     }
 }

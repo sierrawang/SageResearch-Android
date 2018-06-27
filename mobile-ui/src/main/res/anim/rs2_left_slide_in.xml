@@ -32,8 +32,12 @@
   ~ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
   -->
 <set xmlns:android="http://schemas.android.com/apk/res/android">
-    <translate android:fromXDelta="-100%p" android:toXDelta="0"
-        android:duration="@integer/rs2_step_horizontal_slide_anim_duration_ms"/>
-    <alpha android:fromAlpha="0.0" android:toAlpha="1.0"
-        android:duration="@integer/rs2_step_horizontal_slide_anim_duration_ms" />
+    <translate
+        android:duration="@integer/rs2_step_horizontal_slide_anim_duration_ms"
+        android:fromXDelta="-100%p"
+        android:toXDelta="0" />
+    <alpha
+        android:duration="@integer/rs2_step_horizontal_slide_anim_duration_ms"
+        android:fromAlpha="0.0"
+        android:toAlpha="1.0" />
 </set>

@@ -55,12 +55,13 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
 
+import javax.inject.Singleton;
+
 import dagger.MapKey;
 import dagger.Module;
 import dagger.Provides;
 import dagger.multibindings.IntoSet;
 import dagger.multibindings.Multibinds;
-import javax.inject.Singleton;
 
 @Module
 public abstract class GsonModule {
@@ -108,10 +109,10 @@ public abstract class GsonModule {
     abstract Map<Class<?>, JsonDeserializer<?>> provideJsonDeserializerMap();
 
     @Multibinds
-    abstract Map<Class<?>, JsonSerializer<?>> provideJsonSerializerMap();
+    abstract Set<TypeAdapter> provideJsonDeserializers();
 
     @Multibinds
-    abstract Set<TypeAdapter> provideJsonDeserializers();
+    abstract Map<Class<?>, JsonSerializer<?>> provideJsonSerializerMap();
 
     @Multibinds
     abstract Set<RuntimeTypeAdapterFactory> provideRuntimeTypeAdapterFactories();

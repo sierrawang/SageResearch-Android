@@ -33,6 +33,7 @@
 package org.sagebionetworks.research.domain.async;
 
 import android.support.annotation.Nullable;
+
 import org.threeten.bp.Duration;
 
 /**
@@ -41,17 +42,9 @@ import org.threeten.bp.Duration;
 
 public interface Request extends AsyncAction {
     /**
-     * An identifier marking a step to wait to display until the asyncAction is completed. This is only valid for actions
-     * that are single result actions and not continuous recorders.
-     *
-     * @return step identifier, or null
-     */
-    @Nullable
-    String getWaitStepIdentifier();
-
-    /**
-     * A time interval after which the asyncAction should be reset. For example, if the asyncAction queries a weather service and
-     * the user backgrounds the app for more than the reset time, then the weather service should be queried again.
+     * A time interval after which the asyncAction should be reset. For example, if the asyncAction queries a weather
+     * service and the user backgrounds the app for more than the reset time, then the weather service should be
+     * queried again.
      *
      * @return duration, or null if action will never reset
      */
@@ -65,4 +58,13 @@ public interface Request extends AsyncAction {
      */
     @Nullable
     Duration getTimeoutTimeInterval();
+
+    /**
+     * An identifier marking a step to wait to display until the asyncAction is completed. This is only valid for
+     * actions that are single result actions and not continuous recorders.
+     *
+     * @return step identifier, or null
+     */
+    @Nullable
+    String getWaitStepIdentifier();
 }

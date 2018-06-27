@@ -32,51 +32,62 @@
 
 package org.sagebionetworks.research.presentation;
 
-import android.os.Parcel;
 import android.os.Parcelable;
 import android.support.annotation.DrawableRes;
 import android.support.annotation.Nullable;
 
-public class DisplayDrawable implements Parcelable {
+import com.google.auto.value.AutoValue;
+
+/**
+ * A DisplayDrawable has two Drawable resources, a default and an override. When deciding which to display the
+ * override takes presedence over the default. This allows for default behavior while still allowing this to get
+ * overriden.
+ */
+@AutoValue
+public abstract class DisplayDrawable implements Parcelable {
+    @AutoValue.Builder
+    public abstract static class Builder {
+        public abstract DisplayDrawable build();
+
+        public abstract Builder setDefaultDrawableRes(@Nullable @DrawableRes Integer defaultDrawableRes);
+
+        public abstract Builder setDrawableRes(@Nullable @DrawableRes Integer drawableRes);
+    }
+
+    public static Builder builder() {
+        return new AutoValue_DisplayDrawable.Builder();
+    }
+
+    public static DisplayDrawable create(@Nullable @DrawableRes Integer defaultDrawableRes,
+            @Nullable @DrawableRes Integer drawableRes) {
+        return DisplayDrawable.builder()
+                .setDefaultDrawableRes(defaultDrawableRes)
+                .setDrawableRes(drawableRes)
+                .build();
+    }
+
+    @Nullable
+    @DrawableRes
+    public abstract Integer getDefaultDrawableRes();
+
+    /**
+     * Returns the reference to the drawable that should be displayed for this DisplayDrawable, or null if no
+     * reference could be resolved.
+     *
+     * @return the reference to the drawable that should be displayed for this DisplayDrawable, or null if no
+     * reference could be resolved.
+     */
     @DrawableRes
     @Nullable
-    public final Integer defaultDrawableRes;
+    public Integer getDrawable() {
+        if (this.getDrawableRes() != null) {
+            return this.getDrawableRes();
+        } else {
+            return this.getDefaultDrawableRes();
+        }
+    }
 
-    @DrawableRes
     @Nullable
-    public final Integer drawableRes;
-
-
-    public DisplayDrawable(@Nullable final Integer defaultDrawableRes, @Nullable final Integer drawableRes) {
-        this.defaultDrawableRes = defaultDrawableRes;
-        this.drawableRes = drawableRes;
-    }
-
-    @Override
-    public int describeContents() {
-        return 0;
-    }
-
-    @Override
-    public void writeToParcel(Parcel dest, int flags) {
-        dest.writeValue(this.drawableRes);
-        dest.writeValue(this.defaultDrawableRes);
-    }
-
-    protected DisplayDrawable(Parcel in) {
-        this.drawableRes = (Integer) in.readValue(Integer.class.getClassLoader());
-        this.defaultDrawableRes = (Integer) in.readValue(Integer.class.getClassLoader());
-    }
-
-    public static final Creator<DisplayDrawable> CREATOR = new Creator<DisplayDrawable>() {
-        @Override
-        public DisplayDrawable createFromParcel(Parcel source) {
-            return new DisplayDrawable(source);
-        }
-
-        @Override
-        public DisplayDrawable[] newArray(int size) {
-            return new DisplayDrawable[size];
-        }
-    };
+    @DrawableRes
+    public abstract Integer getDrawableRes();
 }

@@ -49,10 +49,10 @@ public abstract class IconView {
         public abstract IconView build();
 
         @Nullable
-        public abstract Builder setTitle(@Nullable DisplayString title);
+        public abstract Builder setIcon(@Nullable DisplayDrawable icon);
 
         @Nullable
-        public abstract Builder setIcon(@Nullable DisplayDrawable icon);
+        public abstract Builder setTitle(@Nullable DisplayString title);
     }
 
     public static Builder builder() {
@@ -62,19 +62,19 @@ public abstract class IconView {
     @NonNull
     public static IconView fromIcon(@NonNull Icon icon, DrawableMapper mapper) {
         String title = icon.getTitle();
-        DisplayDrawable iconDrawable = new DisplayDrawable(null, mapper.getDrawableFromName(
+        DisplayDrawable iconDrawable = DisplayDrawable.create(null, mapper.getDrawableFromName(
                 icon.getIcon()));
         if (title != null) {
             return IconView.builder()
-                    .setTitle(new DisplayString(null, title))
                     .setIcon(iconDrawable)
+                    .setTitle(DisplayString.create(null, title))
                     .build();
         } else {
             return null;
         }
     }
 
-    public abstract DisplayString getTitle();
-
     public abstract DisplayDrawable getIcon();
+
+    public abstract DisplayString getTitle();
 }

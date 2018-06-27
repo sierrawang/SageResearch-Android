@@ -32,6 +32,8 @@
 
 package org.sagebionetworks.research.domain.task.navigation;
 
+import static com.google.common.base.Preconditions.checkNotNull;
+
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 
@@ -46,8 +48,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.util.List;
-
-import static com.google.common.base.Preconditions.checkNotNull;
 
 /**
  * The OrderedStepNavigator moves through a linear series of steps.

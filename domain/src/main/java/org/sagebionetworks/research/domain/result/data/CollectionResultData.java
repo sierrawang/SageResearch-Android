@@ -48,19 +48,23 @@ import java.util.List;
 public abstract class CollectionResultData {
     @AutoValue.Builder
     public abstract static class Builder {
-        public abstract CollectionResultData build();
+        public Builder addAllInputResults(Iterable<? extends Result> collection) {
+            inputResultsBuilder().addAll(collection);
+            return this;
+        }
 
         public Builder addInputResult(Result result) {
             inputResultsBuilder().add(result);
             return this;
         }
 
-        public Builder addAllInputResults(Iterable<? extends Result> collection) {
-            inputResultsBuilder().addAll(collection);
-            return this;
-        }
+        public abstract CollectionResultData build();
 
         abstract ImmutableList.Builder<Result> inputResultsBuilder();
+    }
+
+    public static Builder builder() {
+        return new AutoValue_CollectionResultData.Builder();
     }
 
     public static CollectionResultData create(List<Result> inputResults) {
@@ -69,15 +73,11 @@ public abstract class CollectionResultData {
                 .build();
     }
 
-    public static Builder builder() {
-        return new AutoValue_CollectionResultData.Builder();
-    }
-
-    public abstract ImmutableList<Result> getInputResults();
-
     public static TypeAdapter<CollectionResultData> typeAdapter(Gson gson) {
         return new AutoValue_CollectionResultData.GsonTypeAdapter(gson);
     }
+
+    public abstract ImmutableList<Result> getInputResults();
 
     public abstract Builder toBuilder();
 }

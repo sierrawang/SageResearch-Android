@@ -34,17 +34,16 @@ package org.sagebionetworks.research.domain.async;
 
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
-import java.time.Duration;
 
 /**
  * Defines general configuration for asynchronous asyncAction that should be run in the background. Depending upon the
- * parameters and how the asyncAction is setup, this could be something that is run continuously or else is paused or reset
- * based on a timeout interval.
+ * parameters and how the asyncAction is setup, this could be something that is run continuously or else is paused or
+ * reset based on a timeout interval.
  */
 public interface AsyncAction {
     /**
-     * A short string that uniquely identifies the asynchronous asyncAction within the task. The identifier is reproduced in
-     * the results of a async results.
+     * A short string that uniquely identifies the asyncronous asyncAction within the task. The identifier is
+     * reproduced in the results of a async results.
      *
      * @return identifier
      */
@@ -52,26 +51,24 @@ public interface AsyncAction {
     String getIdentifier();
 
     /**
-     * A string representing the type of AsyncAction that is being represented.
-     * @return A string representing the type of AsyncAction that is being represented.
-     */
-    @NonNull
-    String getType();
-
-    /**
-     * An identifier marking the step to start the asyncAction. If `null`, then the asyncAction will be started when the task is
-     * started.
-     *
      * @return step identifier, or null
      */
     @Nullable
     String getStartStepIdentifier();
 
     /**
-     * An idetnifier marking the step to stop hte asyncAction. If `null`, then the asyncAction will be stopped when the
-     * task is stopped.
+     * An idetnifier marking the step to stop hte asyncAction. If `null`, then the asyncAction will be stopped when
+     * the task is stopped.
+     *
      * @return step identifier, or null
      */
     @Nullable
     String getStopStepIdentifier();
+
+    /**
+     * An identifier marking the step to start the asyncAction. If `null`, then the asyncAction will be started when
+     * the task is started.
+     */
+    @NonNull
+    String getType();
 }

@@ -39,8 +39,9 @@ import org.sagebionetworks.research.domain.inject.GsonModule;
 import org.sagebionetworks.research.domain.inject.InputFieldsModule;
 import org.sagebionetworks.research.domain.inject.StepModule;
 
-import dagger.Component;
 import javax.inject.Singleton;
+
+import dagger.Component;
 
 @Component(modules = {StepModule.class, InputFieldsModule.class, ActionModule.class, GsonModule.class})
 @Singleton

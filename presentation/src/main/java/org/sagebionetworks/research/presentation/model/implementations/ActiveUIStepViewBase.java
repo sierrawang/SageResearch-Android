@@ -45,14 +45,43 @@ import org.sagebionetworks.research.presentation.mapper.DrawableMapper;
 import org.sagebionetworks.research.presentation.model.ColorThemeView;
 import org.sagebionetworks.research.presentation.model.ImageThemeView;
 import org.sagebionetworks.research.presentation.model.action.ActionView;
-import org.sagebionetworks.research.presentation.model.action.ActionViewBase;
 import org.sagebionetworks.research.presentation.model.interfaces.ActiveUIStepView;
 import org.threeten.bp.Duration;
 
 public class ActiveUIStepViewBase extends UIStepViewBase implements ActiveUIStepView {
+    public static final Creator<ActiveUIStepViewBase> CREATOR = new Creator<ActiveUIStepViewBase>() {
+        @Override
+        public ActiveUIStepViewBase createFromParcel(Parcel source) {
+            return new ActiveUIStepViewBase(source);
+        }
+
+        @Override
+        public ActiveUIStepViewBase[] newArray(int size) {
+            return new ActiveUIStepViewBase[size];
+        }
+    };
+
     @NonNull
     private final Duration duration;
+
     private final boolean isBackgroundAudioRequired;
+
+    public static ActiveUIStepViewBase fromActiveUIStep(@NonNull Step step, DrawableMapper mapper) {
+        if (!(step instanceof ActiveUIStep)) {
+            throw new IllegalArgumentException("Provided step: " + step + " is not an ActiveUIStep.");
+        }
+
+        ActiveUIStep activeUIStep = (ActiveUIStep) step;
+        UIStepViewBase uiStepView = UIStepViewBase.fromUIStep(activeUIStep, mapper);
+        // The duration from the ActiveUIStep is a Double in seconds, we convert this to a long of milliseconds and
+        // round off any extra precision.
+        Double millis = (activeUIStep.getDuration() != null ? activeUIStep.getDuration() : 0D) * 1000;
+        Duration duration = Duration.ofMillis(millis.longValue());
+        return new ActiveUIStepViewBase(uiStepView.getIdentifier(), uiStepView.getNavDirection(),
+                uiStepView.getActions(), uiStepView.getTitle(), uiStepView.getText(), uiStepView.getDetail(),
+                uiStepView.getFootnote(), uiStepView.getColorTheme(), uiStepView.getImageTheme(), duration,
+                activeUIStep.isBackgroundAudioRequired());
+    }
 
     public ActiveUIStepViewBase(@NonNull final String identifier, final int navDirection,
             @NonNull final ImmutableMap<String, ActionView> actions,
@@ -68,32 +97,10 @@ public class ActiveUIStepViewBase extends UIStepViewBase implements ActiveUIStep
         this.isBackgroundAudioRequired = isBackgroundAudioRequired;
     }
 
-    public static ActiveUIStepViewBase fromActiveUIStep(@NonNull Step step, DrawableMapper mapper) {
-        if (!(step instanceof ActiveUIStep)) {
-            throw new IllegalArgumentException("Provided step: " + step + " is not an ActiveUIStep.");
-        }
-
-        ActiveUIStep activeUIStep = (ActiveUIStep)step;
-        UIStepViewBase uiStepView = UIStepViewBase.fromUIStep(activeUIStep, mapper);
-        // The duration from the ActiveUIStep is a Double in seconds, we convert this to a long of milliseconds and
-        // round off any extra precision.
-        Double millis = (activeUIStep.getDuration() != null ? activeUIStep.getDuration() : 0D) * 1000;
-        Duration duration = Duration.ofMillis(millis.longValue());
-        return new ActiveUIStepViewBase(uiStepView.getIdentifier(), uiStepView.getNavDirection(),
-                uiStepView.getActions(), uiStepView.getTitle(), uiStepView.getText(), uiStepView.getDetail(),
-                uiStepView.getFootnote(), uiStepView.getColorTheme(), uiStepView.getImageTheme(), duration,
-                activeUIStep.isBackgroundAudioRequired());
-    }
-
-    @Override
-    @NonNull
-    public Duration getDuration() {
-        return duration;
-    }
-
-    @Override
-    public boolean isBackgroundAudioRequired() {
-        return isBackgroundAudioRequired;
+    protected ActiveUIStepViewBase(Parcel in) {
+        super(in);
+        this.duration = (Duration) in.readSerializable();
+        this.isBackgroundAudioRequired = in.readByte() != 0;
     }
 
     @Override
@@ -108,21 +115,14 @@ public class ActiveUIStepViewBase extends UIStepViewBase implements ActiveUIStep
         dest.writeByte(this.isBackgroundAudioRequired ? (byte) 1 : (byte) 0);
     }
 
-    protected ActiveUIStepViewBase(Parcel in) {
-        super(in);
-        this.duration = (Duration) in.readSerializable();
-        this.isBackgroundAudioRequired = in.readByte() != 0;
+    @Override
+    @NonNull
+    public Duration getDuration() {
+        return duration;
     }
 
-    public static final Creator<ActiveUIStepViewBase> CREATOR = new Creator<ActiveUIStepViewBase>() {
-        @Override
-        public ActiveUIStepViewBase createFromParcel(Parcel source) {
-            return new ActiveUIStepViewBase(source);
-        }
-
-        @Override
-        public ActiveUIStepViewBase[] newArray(int size) {
-            return new ActiveUIStepViewBase[size];
-        }
-    };
+    @Override
+    public boolean isBackgroundAudioRequired() {
+        return isBackgroundAudioRequired;
+    }
 }

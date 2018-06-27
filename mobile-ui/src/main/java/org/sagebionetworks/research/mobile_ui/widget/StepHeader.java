@@ -38,9 +38,7 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.constraint.ConstraintLayout;
 import android.util.AttributeSet;
-import android.view.Gravity;
 import android.view.View;
-import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
@@ -50,7 +48,6 @@ import org.sagebionetworks.research.domain.mobile_ui.R2.id;
 import org.sagebionetworks.research.mobile_ui.widget.NavigationActionBar.ActionButtonClickListener;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.w3c.dom.Text;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -60,35 +57,46 @@ import butterknife.Unbinder;
 
 public class StepHeader extends ConstraintLayout {
     private static final Logger LOGGER = LoggerFactory.getLogger(StepHeader.class);
-    private boolean isInfoButtonHidden;
-    private boolean isProgressLabelHidden;
-    private boolean isProgressBarHidden;
-    private boolean isCancelButtonHidden;
-    private boolean usesFloatingProgressBar;
 
-    @BindView(id.rs2_step_navigation_action_cancel)
-    @NonNull
-    ActionButton cancelButton;
-    @BindView(id.rs2_step_navigation_action_info)
-    @NonNull
-    ActionButton infoButton;
-    @BindView(R2.id.rs2_progress_label)
-    @NonNull
-    TextView progressLabel;
-    @BindView(R2.id.rs2_progress_bar)
-    @NonNull
-    ProgressBar progressBar;
-    @BindView(R2.id.rs2_progress_bar_floating)
-    @NonNull
-    ProgressBar progressBarFloating;
     @BindView(R2.id.rs2_step_header_action_button_group)
     @NonNull
     ConstraintLayout actionButtonGroup;
 
+    @BindView(id.rs2_step_navigation_action_cancel)
     @NonNull
-    private Unbinder unbinder;
+    ActionButton cancelButton;
+
+    @BindView(id.rs2_step_navigation_action_info)
+    @NonNull
+    ActionButton infoButton;
+
+    @BindView(R2.id.rs2_progress_bar)
+    @NonNull
+    ProgressBar progressBar;
+
+    @BindView(R2.id.rs2_progress_bar_floating)
+    @NonNull
+    ProgressBar progressBarFloating;
+
+    @BindView(R2.id.rs2_progress_label)
+    @NonNull
+    TextView progressLabel;
+
     @Nullable
     private ActionButtonClickListener actionButtonClickListener;
+
+    private boolean isCancelButtonHidden;
+
+    private boolean isInfoButtonHidden;
+
+    private boolean isProgressBarHidden;
+
+    private boolean isProgressLabelHidden;
+
+    @NonNull
+    private Unbinder unbinder;
+
+    private boolean usesFloatingProgressBar;
 
     public StepHeader(final Context context) {
         super(context);
@@ -105,16 +113,6 @@ public class StepHeader extends ConstraintLayout {
         this.commonInit(attrs);
     }
 
-    protected void commonInit(@Nullable final AttributeSet attrs) {
-        this.getAttributes(attrs);
-        inflate(this.getContext(), R.layout.rs2_step_header, this);
-        this.onFinishInflate();
-    }
-
-    public void setActionButtonClickListener(ActionButtonClickListener listener) {
-        this.actionButtonClickListener = listener;
-    }
-
     @Optional
     @OnClick({id.rs2_step_navigation_action_cancel, id.rs2_step_navigation_action_info})
     public void onActionButtonClick(@NonNull ActionButton actionButton) {
@@ -128,16 +126,36 @@ public class StepHeader extends ConstraintLayout {
     }
 
     @Override
+    public void onDetachedFromWindow() {
+        super.onDetachedFromWindow();
+        this.unbinder.unbind();
+    }
+
+    @Override
     public void onFinishInflate() {
         super.onFinishInflate();
         this.unbinder = ButterKnife.bind(this);
         this.layoutComponents();
     }
 
-    @Override
-    public void onDetachedFromWindow() {
-        super.onDetachedFromWindow();
-        this.unbinder.unbind();
+    public void setActionButtonClickListener(ActionButtonClickListener listener) {
+        this.actionButtonClickListener = listener;
+    }
+
+    protected void commonInit(@Nullable final AttributeSet attrs) {
+        this.getAttributes(attrs);
+        inflate(this.getContext(), R.layout.rs2_step_header, this);
+        this.onFinishInflate();
+    }
+
+    protected void getAttributes(@Nullable final AttributeSet attrs) {
+        TypedArray a = this.getContext().obtainStyledAttributes(attrs, R.styleable.StepHeader);
+        this.isInfoButtonHidden = a.getBoolean(R.styleable.StepHeader_isInfoButtonHidden, false);
+        this.isProgressBarHidden = a.getBoolean(R.styleable.StepHeader_isProgressBarHidden, false);
+        this.isProgressLabelHidden = a.getBoolean(R.styleable.StepHeader_isProgressLabelHidden, false);
+        this.isCancelButtonHidden = a.getBoolean(R.styleable.StepHeader_isCancelButtonHidden, false);
+        this.usesFloatingProgressBar = a.getBoolean(R.styleable.StepHeader_usesFloatingProgressBar, false);
+        a.recycle();
     }
 
     protected void layoutComponents() {
@@ -170,15 +188,5 @@ public class StepHeader extends ConstraintLayout {
                 this.actionButtonGroup.setVisibility(View.GONE);
             }
         }
-    }
-
-    protected void getAttributes(@Nullable final AttributeSet attrs) {
-        TypedArray a = this.getContext().obtainStyledAttributes(attrs, R.styleable.StepHeader);
-        this.isInfoButtonHidden = a.getBoolean(R.styleable.StepHeader_isInfoButtonHidden, false);
-        this.isProgressBarHidden = a.getBoolean(R.styleable.StepHeader_isProgressBarHidden, false);
-        this.isProgressLabelHidden = a.getBoolean(R.styleable.StepHeader_isProgressLabelHidden, false);
-        this.isCancelButtonHidden = a.getBoolean(R.styleable.StepHeader_isCancelButtonHidden, false);
-        this.usesFloatingProgressBar = a.getBoolean(R.styleable.StepHeader_usesFloatingProgressBar, false);
-        a.recycle();
     }
 }

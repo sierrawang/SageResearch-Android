@@ -45,19 +45,66 @@ import io.reactivex.schedulers.Schedulers;
 /**
  * A ReactiveRecorder is a recorder which records based on a stream of events, and supports maintaining a FileResult
  * via a DataRecorder, a Summary via a SummarySubscriber, and a current state, via a CurrentStateSubscriber.
- * @param <S> The type of summary that this recorder produces.
- * @param <C> The type of current state that this recorder produces.
- * @param <E> The type of event from the stream this recorder records based on.
+ *
+ * @param <S>
+ *         The type of summary that this recorder produces.
+ * @param <C>
+ *         The type of current state that this recorder produces.
+ * @param <E>
+ *         The type of event from the stream this recorder records based on.
  */
 public abstract class ReactiveRecorder<S, C, E> extends RecorderBase {
-    @Nullable
-    protected final SummarySubscriber<S, E> summarySubscriber;
+    /**
+     * Subscribes to the same set of ReactiveSensorEvents provided to the DeviceMotionRecorder, and maintains a
+     * summary result that becomes available after the recorder has finished. This is useful when wanting to display a
+     * summary result to the UI later in the task without having to wait for or parse the FileResult.
+     *
+     * @param <S>
+     *         The type of the summary result.
+     * @param <E>
+     *         The type of the event that the subscriber subscribes to.
+     */
+    public interface SummarySubscriber<S, E> extends Subscriber<E> {
+        /**
+         * Returns a Single that when completed provides the summary result for this recorder. It is expected that the
+         * single will complete at the same time as the recorder completes.
+         *
+         * @return a Single that when completed provides the summary result for this recorder.
+         */
+        Single<S> getSummary();
+    }
+
+    /**
+     * Subscribes to the same set of ReactiveSensorEvents provided to the DeviceMotionRecorder, and maintains a
+     * representation of the current state of this recorder. This is useful when wanting to display  information about
+     * the recorders current readings while the recorder is running (e.g. if the user were to measure their heart rate
+     * and the UI wanted to display this in real time.
+     *
+     * @param <C>
+     *         The type of the representation of the recorders current state.
+     * @param <E>
+     *         The type of the event that the subscriber subscribes to.
+     */
+    public interface CurrentStateSubscriber<C, E> extends Subscriber<E> {
+        /**
+         * Returns a representation of the current state of this recorder.
+         *
+         * @return a representation the current state of this recorder.
+         */
+        C getCurrentState();
+    }
+
     @Nullable
     protected final CurrentStateSubscriber<C, E> currentStateSubscriber;
+
     @Nullable
     protected final DataRecorder dataRecorder;
+
     @NonNull
     protected Flowable<E> eventFlowable;
+
+    @Nullable
+    protected final SummarySubscriber<S, E> summarySubscriber;
 
     public ReactiveRecorder(@NonNull final String identifier,
             @Nullable final String startStepIdentifier,
@@ -71,6 +118,14 @@ public abstract class ReactiveRecorder<S, C, E> extends RecorderBase {
         this.dataRecorder = dataRecorder;
         this.eventFlowable = this.intializeEventFlowable();
 
+    }
+
+    @Override
+    public void cancel() {
+        super.cancel();
+        if (this.dataRecorder != null) {
+            this.dataRecorder.onError(new Throwable("Recorder Canceled"));
+        }
     }
 
     @Override
@@ -92,22 +147,26 @@ public abstract class ReactiveRecorder<S, C, E> extends RecorderBase {
         }
     }
 
+    /**
+     * Returns a representation of the current state of this recorder. IF there is no CurrentStateSubscriber this
+     * method will return null.
+     *
+     * @return a representation of the current state of this recorder.
+     */
+    @Nullable
+    public C getCurrentState() {
+        return this.currentStateSubscriber != null ? this.currentStateSubscriber.getCurrentState() : null;
+    }
+
     @NonNull
     public Flowable<E> getEventFlowable() {
         return this.eventFlowable;
     }
 
-    @Override
-    public void cancel() {
-        super.cancel();
-        if (this.dataRecorder != null) {
-            this.dataRecorder.onError(new Throwable("Recorder Canceled"));
-        }
-    }
-
     /**
      * Returns a single that when complete will contain the FileResult with the full data this recorder recorded. If
      * there is no data recorder for this recorder this method will return null.
+     *
      * @return a single that when complete will contain the FileResult with the full data this recorder recorded.
      */
     @Nullable
@@ -116,8 +175,9 @@ public abstract class ReactiveRecorder<S, C, E> extends RecorderBase {
     }
 
     /**
-     * Returns a single that when complete will contain a summary of the data this recorder recorded. If there is
-     * no SummarySubscriber for this recorder this method will return null.
+     * Returns a single that when complete will contain a summary of the data this recorder recorded. If there is no
+     * SummarySubscriber for this recorder this method will return null.
+     *
      * @return a single that when complete will contain a summary of the data this recorder recorded.
      */
     @Nullable
@@ -126,59 +186,20 @@ public abstract class ReactiveRecorder<S, C, E> extends RecorderBase {
     }
 
     /**
-     * Returns a representation of the current state of this recorder. IF there is no CurrentStateSubscriber this
-     * method will return null.
-     * @return a representation of the current state of this recorder.
-     */
-    @Nullable
-    public C getCurrentState() {
-        return this.currentStateSubscriber != null ? this.currentStateSubscriber.getCurrentState() : null;
-    }
-
-    /**
-     * Initializes the Flowable that the events will come from for this recorder.
-     * @return the Flowable that the events will come from for this recorder.
-     */
-    @NonNull
-    protected abstract Flowable<E> intializeEventFlowable();
-
-    /**
      * Converts an event into a String that can be recorded by the DataRecorder into a file.
-     * @param event The event to convert into a string.
+     *
+     * @param event
+     *         The event to convert into a string.
      * @return The string conversion of the given event.
      */
     @NonNull
     protected abstract String getDataString(@NonNull E event);
 
     /**
-     * Subscribes to the same set of ReactiveSensorEvents provided to the DeviceMotionRecorder, and maintains a
-     * summary result that becomes available after the recorder has finished. This is useful when wanting to display
-     * a summary result to the UI later in the task without having to wait for or parse the FileResult.
-     * @param <S> The type of the summary result.
-     * @param <E> The type of the event that the subscriber subscribes to.
+     * Initializes the Flowable that the events will come from for this recorder.
+     *
+     * @return the Flowable that the events will come from for this recorder.
      */
-    public interface SummarySubscriber<S, E> extends Subscriber<E> {
-        /**
-         * Returns a Single that when completed provides the summary result for this recorder. It is expected that
-         * the single will complete at the same time as the recorder completes.
-         * @return a Single that when completed provides the summary result for this recorder.
-         */
-        Single<S> getSummary();
-    }
-
-    /**
-     * Subscribes to the same set of ReactiveSensorEvents provided to the DeviceMotionRecorder, and maintains a
-     * representation of the current state of this recorder. This is useful when wanting to display  information
-     * about the recorders current readings while the recorder is running (e.g. if the user were to measure their
-     * heart rate and the UI wanted to display this in real time.
-     * @param <C> The type of the representation of the recorders current state.
-     * @param <E> The type of the event that the subscriber subscribes to.
-     */
-    public interface CurrentStateSubscriber<C, E> extends Subscriber<E> {
-        /**
-         * Returns a representation of the current state of this recorder.
-         * @return a representation the current state of this recorder.
-         */
-        C getCurrentState();
-    }
+    @NonNull
+    protected abstract Flowable<E> intializeEventFlowable();
 }

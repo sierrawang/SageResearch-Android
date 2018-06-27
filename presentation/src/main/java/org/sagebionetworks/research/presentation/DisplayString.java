@@ -32,72 +32,64 @@
 
 package org.sagebionetworks.research.presentation;
 
-import android.os.Parcel;
+import android.content.res.Resources;
 import android.os.Parcelable;
 import android.support.annotation.Nullable;
 import android.support.annotation.StringRes;
 
-import com.google.common.base.Objects;
+import com.google.auto.value.AutoValue;
 
+/**
+ * A DisplayString has a default string resource and an override string. When deciding which String to display the
+ * override string takes precedence over the default resource. This allows for default behavior while still providing
+ * the option to override this behavior.
+ */
+@AutoValue
+public abstract class DisplayString implements Parcelable {
+    @AutoValue.Builder
+    public abstract static class Builder {
+        public abstract DisplayString build();
 
-public class DisplayString implements Parcelable {
-    // resource id for string to display
+        public abstract Builder setDefaultDisplayStringRes(@Nullable @StringRes Integer defaultDisplayStringRes);
+
+        public abstract Builder setDisplayString(@Nullable String displayString);
+    }
+
+    public static Builder builder() {
+        return new AutoValue_DisplayString.Builder();
+    }
+
+    public static DisplayString create(@Nullable @StringRes Integer defaultRes, @Nullable String displayString) {
+        return DisplayString.builder()
+                .setDefaultDisplayStringRes(defaultRes)
+                .setDisplayString(displayString)
+                .build();
+    }
+
+    @Nullable
     @StringRes
+    public abstract Integer getDefaultDisplayStringRes();
+
     @Nullable
-    public final Integer defaultDisplayStringRes;
+    public abstract String getDisplayString();
 
-    // string to display, overrides defaultDisplayStringRes
+    /**
+     * Returns the String that should be displayed for this DisplayString, or null if neither the override string nor
+     * the default resource id is usable.
+     *
+     * @param resources
+     *         The resources to resolve the default string res from if necessary.
+     * @return the String that should be displayed for this DisplayString. or null if neither the override string nor
+     * the defualt resource id is usable.
+     */
     @Nullable
-    public final String displayString;
-
-    public DisplayString(@StringRes final Integer defaultDisplayStringRes, @Nullable final String displayString) {
-        this.defaultDisplayStringRes = defaultDisplayStringRes;
-        this.displayString = displayString;
-    }
-
-    protected DisplayString(Parcel in) {
-        defaultDisplayStringRes = in.readInt();
-        displayString = in.readString();
-    }
-
-    @Override
-    public boolean equals(final Object o) {
-        if (this == o) {
-            return true;
-        }
-        if (o == null || getClass() != o.getClass()) {
-            return false;
-        }
-        final DisplayString that = (DisplayString) o;
-        return Objects.equal(defaultDisplayStringRes, that.defaultDisplayStringRes) &&
-                Objects.equal(displayString, that.displayString);
-    }
-
-    @Override
-    public int hashCode() {
-        return Objects.hashCode(defaultDisplayStringRes, displayString);
-    }
-
-    @Override
-    public void writeToParcel(Parcel dest, int flags) {
-        dest.writeInt(defaultDisplayStringRes);
-        dest.writeString(displayString);
-    }
-
-    @Override
-    public int describeContents() {
-        return 0;
-    }
-
-    public static final Creator<DisplayString> CREATOR = new Creator<DisplayString>() {
-        @Override
-        public DisplayString createFromParcel(Parcel in) {
-            return new DisplayString(in);
+    public String getString(Resources resources) {
+        if (this.getDisplayString() != null) {
+            return this.getDisplayString();
+        } else if (this.getDefaultDisplayStringRes() != null) {
+            return resources.getString(this.getDefaultDisplayStringRes());
         }
 
-        @Override
-        public DisplayString[] newArray(int size) {
-            return new DisplayString[size];
-        }
-    };
+        return null;
+    }
 }

@@ -39,15 +39,12 @@ import android.location.LocationListener;
 import android.location.LocationManager;
 import android.os.Bundle;
 
-import org.reactivestreams.Subscriber;
-
 import io.reactivex.BackpressureStrategy;
 import io.reactivex.Flowable;
-import io.reactivex.FlowableEmitter;
-import io.reactivex.FlowableOnSubscribe;
 
 public class LocationSensor {
     public static final long MIN_TIME = 0L;
+
     public static final float MIN_DISTANCE = 0f;
 
     public static Flowable<Location> getLocation(final Context context) {
@@ -63,16 +60,19 @@ public class LocationSensor {
                         }
 
                         @Override
-                        public void onStatusChanged(final String s, final int i, final Bundle bundle) {}
+                        public void onStatusChanged(final String s, final int i, final Bundle bundle) {
+                        }
 
                         @Override
-                        public void onProviderEnabled(final String s) {}
+                        public void onProviderEnabled(final String s) {
+                        }
 
                         @Override
-                        public void onProviderDisabled(final String s) {}
+                        public void onProviderDisabled(final String s) {
+                        }
                     };
 
-                    LocationManager manager = (LocationManager)context.getSystemService(Context.LOCATION_SERVICE);
+                    LocationManager manager = (LocationManager) context.getSystemService(Context.LOCATION_SERVICE);
                     try {
                         if (manager != null) {
                             manager.requestLocationUpdates(LocationManager.GPS_PROVIDER, MIN_TIME, MIN_DISTANCE,
@@ -82,6 +82,6 @@ public class LocationSensor {
                         emitter.onError(e);
                     }
 
-                    }, BackpressureStrategy.BUFFER);
+                }, BackpressureStrategy.BUFFER);
     }
 }

@@ -39,7 +39,6 @@ import android.os.Build.VERSION;
 import android.os.Build.VERSION_CODES;
 import android.os.SystemClock;
 import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
 
 import com.google.gson.JsonObject;
 
@@ -49,18 +48,31 @@ import java.util.Locale;
 
 public class DistanceJsonAdapter {
     private static final String SHARED_PREFS_KEY = "LocationRecorder";
+
     private static final String LAST_RECORDED_DIST_KEY = "LastRecordedTotalDistance";
-    public static final String COORDINATE_KEY  = "coordinate";
-    public static final String LONGITUDE_KEY   = "longitude";
-    public static final String LATITUDE_KEY    = "latitude";
-    public static final String ALTITUDE_KEY    = "altitude";
-    public static final String ACCURACY_KEY    = "accuracy";
-    public static final String COURSE_KEY      = "course";
+
+    public static final String COORDINATE_KEY = "coordinate";
+
+    public static final String LONGITUDE_KEY = "longitude";
+
+    public static final String LATITUDE_KEY = "latitude";
+
+    public static final String ALTITUDE_KEY = "altitude";
+
+    public static final String ACCURACY_KEY = "accuracy";
+
+    public static final String COURSE_KEY = "course";
+
     public static final String RELATIVE_LATITUDE_KEY = "relativeLatitude";
+
     public static final String RELATIVE_LONGITUDE_KEY = "relativeLongitude";
-    public static final String SPEED_KEY       = "speed";
+
+    public static final String SPEED_KEY = "speed";
+
     public static final String TIMESTAMP_DATE_KEY = "timestampDate";
+
     public static final String TIMESTAMP_IN_SECONDS_KEY = "timestamp";
+
     public static final String UPTIME_IN_SECONDS_KEY = "uptime";
 
     @NonNull
@@ -81,8 +93,9 @@ public class DistanceJsonAdapter {
         // getElapsedRealtimeNanos(), divided by a billion.)
         jsonObject.addProperty(TIMESTAMP_IN_SECONDS_KEY, (locationNanos - startTimeNanos) * 1e-9);
         jsonObject.addProperty(UPTIME_IN_SECONDS_KEY, locationNanos * 1e-9);
-        JsonObject coordinateJsonObject = DistanceJsonAdapter.getCoordinateJsonObject(location, usesRelativeCoordinates,
-                firstLocation);
+        JsonObject coordinateJsonObject = DistanceJsonAdapter
+                .getCoordinateJsonObject(location, usesRelativeCoordinates,
+                        firstLocation);
         jsonObject.add(COORDINATE_KEY, coordinateJsonObject);
         if (location.hasAccuracy()) {
             jsonObject.addProperty(ACCURACY_KEY, location.getAccuracy());
@@ -103,6 +116,17 @@ public class DistanceJsonAdapter {
         return jsonObject;
     }
 
+    // Wrapper method which encapsulates getting the elapsed realtime nanos, or falls back to elasped realtime (millis)
+    // for older OS versions.
+    // Package-scoped so this can be mocked for unit tests.
+    static long getElapsedNanosSinceBootFromLocation(Location location) {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR1) {
+            return location.getElapsedRealtimeNanos();
+        } else {
+            return (long) (SystemClock.elapsedRealtime() * 1e6); // millis to nanos
+        }
+    }
+
     private static JsonObject getCoordinateJsonObject(Location location, boolean usesRelativeCoordinates,
             Location firstLocation) {
         JsonObject coordinateJsonObject = new JsonObject();
@@ -120,17 +144,5 @@ public class DistanceJsonAdapter {
         }
 
         return coordinateJsonObject;
-    }
-
-
-    // Wrapper method which encapsulates getting the elapsed realtime nanos, or falls back to elasped realtime (millis)
-    // for older OS versions.
-    // Package-scoped so this can be mocked for unit tests.
-    static long getElapsedNanosSinceBootFromLocation(Location location) {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR1) {
-            return location.getElapsedRealtimeNanos();
-        } else {
-            return (long) (SystemClock.elapsedRealtime() * 1e6); // millis to nanos
-        }
     }
 }

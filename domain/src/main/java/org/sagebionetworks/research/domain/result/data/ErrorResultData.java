@@ -54,6 +54,10 @@ public abstract class ErrorResultData {
         public abstract Builder setThrowable(@Nullable final Throwable throwable);
     }
 
+    public static Builder builder() {
+        return new AutoValue_ErrorResultData.Builder();
+    }
+
     public static ErrorResultData create(final String errorDescription, final Throwable throwable) {
         return ErrorResultData.builder()
                 .setErrorDescription(errorDescription)
@@ -61,21 +65,9 @@ public abstract class ErrorResultData {
                 .build();
     }
 
-    public static Builder builder() {
-        return new AutoValue_ErrorResultData.Builder();
-    }
-
-    public abstract Builder toBuilder();
-
     public static TypeAdapter<ErrorResultData> typeAdapter(Gson gson) {
         return new AutoValue_ErrorResultData.GsonTypeAdapter(gson);
     }
-
-    @NonNull
-    public abstract String getErrorDescription();
-
-    @Nullable
-    public abstract Throwable getThrowable();
 
     @Override
     public boolean equals(Object o) {
@@ -88,4 +80,12 @@ public abstract class ErrorResultData {
         // undesired results.
         return Objects.equal(this.getErrorDescription(), errorResult.getErrorDescription());
     }
+
+    @NonNull
+    public abstract String getErrorDescription();
+
+    @Nullable
+    public abstract Throwable getThrowable();
+
+    public abstract Builder toBuilder();
 }

@@ -1,5 +1,4 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<!--
+<?xml version="1.0" encoding="UTF-8"?><!--
   ~ BSD 3-Clause License
   ~
   ~ Copyright 2018  Sage Bionetworks. All rights reserved.
@@ -34,12 +33,12 @@
 <lint>
     <issue id="InvalidPackage">
         <!-- Ignore okio not found - OKHTTP doesn't use okio if it isn't available: https://github.com/square/okio/issues/60 -->
-        <ignore regexp="okio-*.jar"/>
-        <ignore regexp="retrofit-*.jar"/>
-        <ignore regexp="pkix-1.54.0.0.jar"/>
-        <ignore regexp="bcpkix-jdk15on-1.58.0.0.jar"/>
+        <ignore regexp="okio-*.jar" />
+        <ignore regexp="retrofit-*.jar" />
+        <ignore regexp="pkix-1.54.0.0.jar" />
+        <ignore regexp="bcpkix-jdk15on-1.58.0.0.jar" />
         <!-- Ignore javax.mail from logback https://github.com/tony19/logback-android/issues/140-->
-        <ignore regexp="logback-android-core-1.1.1-6.jar"/>
-        <ignore regexp="junit-4.12.jar"/>
+        <ignore regexp="logback-android-core-1.1.1-6.jar" />
+        <ignore regexp="junit-4.12.jar" />
     </issue>
 </lint>

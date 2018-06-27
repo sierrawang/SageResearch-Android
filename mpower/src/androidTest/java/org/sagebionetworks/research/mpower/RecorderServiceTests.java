@@ -33,12 +33,9 @@
 package org.sagebionetworks.research.mpower;
 
 import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
 
-import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
-import android.os.IBinder;
 import android.support.test.InstrumentationRegistry;
 import android.support.test.rule.ServiceTestRule;
 import android.support.test.runner.AndroidJUnit4;
@@ -46,7 +43,6 @@ import android.support.test.runner.AndroidJUnit4;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.sagebionetworks.research.mobile_ui.recorder.RecorderActionType;
 import org.sagebionetworks.research.mobile_ui.recorder.RecorderService;
 import org.sagebionetworks.research.mobile_ui.recorder.RecorderService.RecorderBinder;
 
@@ -62,7 +58,7 @@ public class RecorderServiceTests {
     public void testBindService() throws TimeoutException {
         Context context = InstrumentationRegistry.getContext();
         Intent intent = new Intent(context, RecorderService.class);
-        RecorderBinder binder = (RecorderBinder)this.serviceRule.bindService(intent);
+        RecorderBinder binder = (RecorderBinder) this.serviceRule.bindService(intent);
         assertNotNull(binder);
         RecorderService service = binder.getService();
         assertNotNull(service);

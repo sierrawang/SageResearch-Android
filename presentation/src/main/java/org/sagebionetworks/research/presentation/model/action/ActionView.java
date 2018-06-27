@@ -37,8 +37,6 @@ import android.os.Parcelable;
 import org.sagebionetworks.research.presentation.DisplayDrawable;
 import org.sagebionetworks.research.presentation.DisplayString;
 
-import java.io.Serializable;
-
 import javax.annotation.Nullable;
 
 public interface ActionView extends Parcelable {

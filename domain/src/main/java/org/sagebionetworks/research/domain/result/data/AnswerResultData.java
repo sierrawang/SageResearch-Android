@@ -41,7 +41,9 @@ import org.sagebionetworks.research.domain.result.AnswerResultType;
 
 /**
  * An AnswerResultData stores the state unique to an answer result.
- * @param <T> The type of the answer that the result stores.
+ *
+ * @param <T>
+ *         The type of the answer that the result stores.
  */
 @AutoValue
 public abstract class AnswerResultData<T> {
@@ -54,18 +56,16 @@ public abstract class AnswerResultData<T> {
         public abstract Builder<T> setAnswerResultType(@AnswerResultType final String answerResultType);
     }
 
+    public static <T> Builder<T> builder(T answer) {
+        return new AutoValue_AnswerResultData.Builder<T>();
+    }
+
     public static <T> AnswerResultData<T> create(final T answer, @AnswerResultType final String answerResultType) {
         return AnswerResultData.builder(answer)
                 .setAnswer(answer)
                 .setAnswerResultType(answerResultType)
                 .build();
     }
-
-    public static <T> Builder<T> builder(T answer) {
-        return new AutoValue_AnswerResultData.Builder<T>();
-    }
-
-    public abstract Builder<T> toBuilder();
 
     public static <T> TypeAdapter<AnswerResultData<T>> typeAdapter(Gson gson,
             TypeToken<? extends AnswerResultData<T>> token) {
@@ -75,4 +75,6 @@ public abstract class AnswerResultData<T> {
     public abstract T getAnswer();
 
     public abstract String getAnswerResultType();
+
+    public abstract Builder<T> toBuilder();
 }

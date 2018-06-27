@@ -32,42 +32,40 @@
 
 package org.sagebionetworks.research.mobile_ui.recorder;
 
-import android.content.Context;
 import android.support.annotation.Nullable;
-
-import org.sagebionetworks.research.domain.async.AsyncAction;
 
 import java.io.Serializable;
 
 /**
- * A Recorder records some sort of data about the user (e.g. phone's motion, audio, etc). Recorders are typically
- * run on a different thread than ui so implementations should be thread safe to ensure there are no concurrency
- * issues.
+ * A Recorder records some sort of data about the user (e.g. phone's motion, audio, etc). Recorders are typically run
+ * on a different thread than ui so implementations should be thread safe to ensure there are no concurrency issues.
  */
 public interface Recorder extends Serializable {
-    String getIdentifier();
-
-    void start();
-
-    void stop();
-
     void cancel();
 
-    boolean isRecording();
+    String getIdentifier();
 
     /**
      * Returns the identifier of the step to start the recorder on. If this method returns null the recorder will
      * start when the task is started.
+     *
      * @return the identifier of the step to start the recorder on.
      */
     @Nullable
     String getStartStepIdentifier();
 
     /**
-     * Returns the identifier of the step to stop the recorder on. If this method returns null the recorder will
-     * stop when the task is stopped.
+     * Returns the identifier of the step to stop the recorder on. If this method returns null the recorder will stop
+     * when the task is stopped.
+     *
      * @return the identifier of the step to start the recorder on.
      */
     @Nullable
     String getStopStepIdentifier();
+
+    boolean isRecording();
+
+    void start();
+
+    void stop();
 }

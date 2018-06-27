@@ -32,40 +32,46 @@
 
 package org.sagebionetworks.research.mobile_ui.recorder;
 
-import android.content.Context;
-
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Locale;
 
 public class FormatHelper {
 
-    private static final String COUNTRY_US      = "US";
+    private static final String COUNTRY_US = "US";
+
     private static final String COUNTRY_LIBERIA = "LR";
-    private static final String COUNTRY_BURMA   = "MM";
+
+    private static final String COUNTRY_BURMA = "MM";
 
     private static final double FEET_PER_METER = 3.28084;
 
     public static final int NONE = -1;
+
     public static final String DATE_FORMAT_ISO_8601 = "yyyy-MM-dd'T'HH:mm:ss.SSSZ";
+
     public static final SimpleDateFormat DEFAULT_FORMAT = new SimpleDateFormat(FormatHelper.DATE_FORMAT_ISO_8601,
             Locale.getDefault());
+
     public static final String DATE_FORMAT_SIMPLE_DATE = "yyyy-MM-dd";
+
     public static final SimpleDateFormat SIMPLE_FORMAT_DATE = new SimpleDateFormat(
             DATE_FORMAT_SIMPLE_DATE,
             Locale.getDefault());
+
     public static final String TIME_FORMAT_SIMPLE_DATE = "HH:mm:ss.sss";
+
     public static final SimpleDateFormat SIMPLE_FORMAT_TIME = new SimpleDateFormat(
             TIME_FORMAT_SIMPLE_DATE,
             Locale.getDefault());
-    private FormatHelper() {
-    }
 
     /**
      * Returns a DateFormat object based on the dateStyle and timeStyle params
      *
-     * @param dateStyle style for the date defined by static constants within {@link DateFormat}
-     * @param timeStyle style for the time defined by static constants within {@link DateFormat}
+     * @param dateStyle
+     *         style for the date defined by static constants within {@link DateFormat}
+     * @param timeStyle
+     *         style for the time defined by static constants within {@link DateFormat}
      * @return DateFormat object
      */
     public static DateFormat getFormat(int dateStyle, int timeStyle) {
@@ -92,5 +98,8 @@ public class FormatHelper {
 
     public static boolean isStyle(int style) {
         return style >= DateFormat.FULL && style <= DateFormat.SHORT;
+    }
+
+    private FormatHelper() {
     }
 }

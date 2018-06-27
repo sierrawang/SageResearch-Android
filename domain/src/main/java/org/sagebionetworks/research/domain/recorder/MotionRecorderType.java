@@ -39,8 +39,8 @@ import java.lang.annotation.RetentionPolicy;
 
 @Retention(RetentionPolicy.SOURCE)
 @StringDef({MotionRecorderType.ACCELEROMETER, MotionRecorderType.GYROSCOPE, MotionRecorderType.MAGNETOMETER,
-    MotionRecorderType.GRAVITY, MotionRecorderType.MAGNETIC_FIELD, MotionRecorderType.ROTATION_RATE,
-    MotionRecorderType.USER_ACCELERATION})
+        MotionRecorderType.GRAVITY, MotionRecorderType.MAGNETIC_FIELD, MotionRecorderType.ROTATION_RATE,
+        MotionRecorderType.USER_ACCELERATION})
 public @interface MotionRecorderType {
     String ACCELEROMETER = "accelerometer";
     String GYROSCOPE = "gryo";

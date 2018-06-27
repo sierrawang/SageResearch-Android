@@ -32,16 +32,17 @@
 
 package org.sagebionetworks.research.domain.result.gson;
 
-import org.junit.*;
+import static org.junit.Assert.assertEquals;
+
+import org.junit.Test;
 import org.sagebionetworks.research.domain.result.implementations.ResultBase;
 import org.sagebionetworks.research.domain.result.interfaces.Result;
 import org.threeten.bp.Instant;
 
-import static org.junit.Assert.*;
-
 public class ResultGsonTests extends IndividualResultGsonTest {
     private static final Result FULL = new ResultBase("result", Instant.ofEpochSecond(20),
             Instant.ofEpochSecond(30));
+
     private static final Result NO_END_TIME = new ResultBase("result", Instant.ofEpochSecond(10), null);
 
     @Test
@@ -56,7 +57,7 @@ public class ResultGsonTests extends IndividualResultGsonTest {
 
     @Test
     public void testSerializeDeserializeIntegration_FULL() {
-         testSerializationThenDeserialization(FULL);
+        testSerializationThenDeserialization(FULL);
     }
 
     @Test

@@ -41,21 +41,23 @@ import com.google.common.collect.ImmutableList;
  */
 
 /**
- * Defines a logical subgrouping of steps. Examples would be a section in a longer survey or an
- * active step that includes an instruction step, countdown step, and activity step.
+ * Defines a logical subgrouping of steps. Examples would be a section in a longer survey or an active step that
+ * includes an instruction step, countdown step, and activity step.
  */
 public interface SectionStep extends Step {
+    /**
+     * Returns a copy of this section step, with the identifier changed to the given identifier
+     *
+     * @param identifier
+     *         The identifier for the new step to create.
+     * @return A copy of this section step, with the identifier changed to the given identifier.
+     */
+    @NonNull
+    SectionStep copyWithIdentifier(String identifier);
+
     /**
      * @return list of the steps in the subgrouping
      */
     @NonNull
     ImmutableList<Step> getSteps();
-
-    /**
-     * Returns a copy of this section step, with the identifier changed to the given identifier
-     * @param identifier The identifier for the new step to create.
-     * @return A copy of this section step, with the identifier changed to the given identifier.
-     */
-    @NonNull
-    SectionStep copyWithIdentifier(String identifier);
 }

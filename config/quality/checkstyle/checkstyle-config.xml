@@ -105,11 +105,6 @@
         </module>
         <module name="OverloadMethodsDeclarationOrder" />
         <module name="VariableDeclarationUsageDistance" />
-        <module name="CustomImportOrder">
-            <property name="sortImportsInGroupAlphabetically" value="false" />
-            <property name="separateLineBetweenGroups" value="true" />
-            <property name="customImportOrderRules" value="THIRD_PARTY_PACKAGE###STATIC" />
-        </module>
         <module name="MethodParamPad" />
         <module name="NoFinalizer" />
         <module name="OneStatementPerLine" />
@@ -141,12 +136,12 @@
         <!--willing to contribute a PR...). Our IDE do a good job of giving us-->
         <!--reasonable indentation anyway.-->
         <!--<module name="Indentation">-->
-            <!--<property name="basicOffset" value="4" />-->
-            <!--<property name="braceAdjustment" value="0" />-->
-            <!--<property name="caseIndent" value="4" />-->
-            <!--<property name="throwsIndent" value="4" />-->
-            <!--<property name="lineWrappingIndentation" value="8" />-->
-            <!--<property name="arrayInitIndent" value="2" />-->
+        <!--<property name="basicOffset" value="4" />-->
+        <!--<property name="braceAdjustment" value="0" />-->
+        <!--<property name="caseIndent" value="4" />-->
+        <!--<property name="throwsIndent" value="4" />-->
+        <!--<property name="lineWrappingIndentation" value="8" />-->
+        <!--<property name="arrayInitIndent" value="2" />-->
         <!--</module>-->
 
         <!-- White Space -->

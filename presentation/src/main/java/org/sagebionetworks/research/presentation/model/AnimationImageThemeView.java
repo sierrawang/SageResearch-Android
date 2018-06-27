@@ -52,14 +52,10 @@ public abstract class AnimationImageThemeView extends ImageThemeView {
 
         public abstract Builder setColorPlacement(@ColorPlacement String colorPlacement);
 
-        public abstract Builder setImageResources(@Nullable List<DisplayDrawable> imageResources);
-
         public abstract Builder setDuration(@Nullable Double duration);
+
+        public abstract Builder setImageResources(@Nullable List<DisplayDrawable> imageResources);
     }
-
-    public abstract List<DisplayDrawable> getImageResources();
-
-    public abstract Double getDuration();
 
     public static Builder builder() {
         return new AutoValue_AnimationImageThemeView.Builder();
@@ -69,7 +65,7 @@ public abstract class AnimationImageThemeView extends ImageThemeView {
             DrawableMapper mapper) {
         List<DisplayDrawable> imageResources = new ArrayList<>();
         for (String id : imageTheme.getImageResourceNames()) {
-            imageResources.add(new DisplayDrawable(null, mapper.getDrawableFromName(id)));
+            imageResources.add(DisplayDrawable.create(null, mapper.getDrawableFromName(id)));
         }
 
         return AnimationImageThemeView.builder()
@@ -79,4 +75,8 @@ public abstract class AnimationImageThemeView extends ImageThemeView {
                 .build();
 
     }
+
+    public abstract Double getDuration();
+
+    public abstract List<DisplayDrawable> getImageResources();
 }
