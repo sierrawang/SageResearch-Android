@@ -46,10 +46,18 @@ import io.reactivex.Flowable;
 import io.reactivex.FlowableEmitter;
 import io.reactivex.FlowableOnSubscribe;
 
+/**
+ * Tracks the user's location as a stream of Location objects.
+ */
 public class LocationSensor {
     public static final long MIN_TIME = 0L;
     public static final float MIN_DISTANCE = 0f;
 
+    /**
+     * Returns a Flowable that represents the user's location as a stream of Location objects.
+     * @param context The context to use to get the location sensor.
+     * @return a Flowable that represents the user's location as a stream of Location objects.
+     */
     public static Flowable<Location> getLocation(final Context context) {
         return Flowable.create(
                 emitter -> {

@@ -41,8 +41,8 @@ import org.reactivestreams.Subscription;
 import org.sagebionetworks.research.domain.recorder.RecorderConfig;
 import org.sagebionetworks.research.mobile_ui.recorder.data.DataLogger;
 import org.sagebionetworks.research.mobile_ui.recorder.ReactiveRecorder;
-import org.sagebionetworks.research.mobile_ui.recorder.distance.DistanceRecorder.DistanceState;
-import org.sagebionetworks.research.mobile_ui.recorder.distance.DistanceRecorder.DistanceSummary;
+import org.sagebionetworks.research.mobile_ui.recorder.distance.DistanceRecorder.CurrentDistanceInfo;
+import org.sagebionetworks.research.mobile_ui.recorder.distance.DistanceRecorder.DistanceInfo;
 
 import java.util.HashSet;
 import java.util.Set;
@@ -52,7 +52,10 @@ import io.reactivex.Single;
 import io.reactivex.SingleEmitter;
 import io.reactivex.SingleOnSubscribe;
 
-public abstract class DistanceRecorder extends ReactiveRecorder<DistanceSummary, DistanceState, Location> {
+/**
+ * Records the user's location and distance travelled via a Stream of Location's that the user is measured at.
+ */
+public abstract class DistanceRecorder extends ReactiveRecorder<DistanceInfo, CurrentDistanceInfo, Location> {
     protected final Context context;
 
     public DistanceRecorder(RecorderConfig config, Context context, @Nullable final DataLogger dataLogger) {
@@ -67,23 +70,34 @@ public abstract class DistanceRecorder extends ReactiveRecorder<DistanceSummary,
         return LocationSensor.getLocation(this.context);
     }
 
-    public static class DistanceState {
-        private float currentTotalDistance;
+    /**
+     * Represents the of the measurements of a DistanceRecorder. Provides access to
+     * the total distance traveled thus far, the first location the user was at, and the most recent location the
+     * user has been at.
+     */
+    public static class DistanceInfo {
+        private float totalDistance;
+        private long totalTime;
         private float lastDistanceChange;
         private Location firstLocation;
         private Location lastLocation;
 
-        public DistanceState() {
+        public DistanceInfo() {
             this.lastLocation = null;
             this.firstLocation = null;
-            this.currentTotalDistance = 0;
+            this.totalDistance = 0;
+            this.totalTime = 0;
             this.lastDistanceChange = 0;
         }
 
+        /**
+         * Updates this DistanceState provided the user has just been measured at the given location.
+         * @param nextLocation The location the user has just been measured at.
+         */
         public void update(Location nextLocation) {
             if (this.lastLocation != null) {
                 this.lastDistanceChange = this.lastLocation.distanceTo(nextLocation);
-                this.currentTotalDistance += this.lastDistanceChange;
+                this.totalDistance += this.lastDistanceChange;
             } else {
                 this.firstLocation = nextLocation;
             }
@@ -91,49 +105,107 @@ public abstract class DistanceRecorder extends ReactiveRecorder<DistanceSummary,
             this.lastLocation = nextLocation;
         }
 
+        /**
+         * Returns the total distance the user has traveled since the recorder was started in meters.
+         * @return the total distance the user has traveled since the recorder was started in meters.
+         */
         public float getTotalDistance() {
-            return this.currentTotalDistance;
+            return this.totalDistance;
         }
 
-        public float getLastDistanceChange() {
-            return this.lastDistanceChange;
+        /**
+         * Returns the total time between when the user was measured at the first location and when they were
+         * measured at the last location, in microseconds.
+         * @return the total time between when the user was measured at the first location and when they were
+         * measured at the last location, in microseconds.
+         */
+        public long getTotalTime() {
+            return this.lastLocation != null && this.firstLocation != null ?
+                    this.lastLocation.getTime() - this.firstLocation.getTime() : 0;
         }
 
+        /**
+         * Returns the average speed of the user during the recorders run in meters per second.
+         * @return the average speed of the user during the recorders run in meters per second.
+         */
+        public double getAverageSpeed() {
+            return this.totalDistance / (this.getTotalTime() * 1e-6);
+        }
+
+        /**
+         * Returns the first location the user was recorded at by the recorder.
+         * @return the first location the user was recorded at by the recorder.
+         */
         public Location getFirstLocation() {
             return this.firstLocation;
         }
-    }
 
-    public static class DistanceSummary {
-        private float totalDistance;
-        private Location lastLocation;
-
-        public DistanceSummary() {
-            this.lastLocation = null;
-            this.totalDistance = 0;
-        }
-
-        public void update(Location nextLocation) {
-            if (this.lastLocation != null) {
-                this.totalDistance += this.lastLocation.distanceTo(nextLocation);
-            }
-
-            this.lastLocation = nextLocation;
+        /**
+         * Returns the location the user finished their recording at.
+         * @return the location the user finished their recording at.
+         */
+        public Location getLastLocation() {
+            return this.lastLocation;
         }
     }
 
-    protected static class DistanceSummarySubscriber implements SummarySubscriber<DistanceSummary, Location>,
-            SingleOnSubscribe<DistanceSummary> {
-        protected Set<SingleEmitter<DistanceSummary>> observers;
-        protected DistanceSummary result;
+    /**
+     * Adds information that is only relevant to the CurrentState of the recorder to DistanceInfo.
+     */
+    public static class CurrentDistanceInfo extends DistanceInfo {
+        private double currentSpeed;
 
-        public DistanceSummarySubscriber() {
-            this.observers = new HashSet<>();
-            this.result = new DistanceSummary();
+        public CurrentDistanceInfo() {
+            super();
+            this.currentSpeed = 0;
+        }
+
+        /**
+         * Returns the most recently measured location of the user.
+         * @return the most recently measured location of the user.
+         */
+        public Location getCurrentLocation() {
+            // When the recorder is running the last is the most recent location the user was measured at.
+            return this.getLastLocation();
         }
 
         @Override
-        public Single<DistanceSummary> getSummary() {
+        public void update(Location nextLocation) {
+            if (this.getLastLocation() != null) {
+                long timeChangeMicros = nextLocation.getTime() - this.getLastLocation().getTime();
+                float distanceChangeMeters = this.getLastLocation().distanceTo(nextLocation);
+                this.currentSpeed = distanceChangeMeters / (timeChangeMicros * 1e-6);
+            }
+
+            super.update(nextLocation);
+        }
+
+        /**
+         * Returns the most recently measured speed of the user.
+         * @return the most recently measured speed of the user.
+         */
+        public double getCurrentSpeed() {
+            return this.currentSpeed;
+        }
+    }
+
+    /**
+     * Subscribes to the same Location stream as the DistanceRecorder and maintains a Summary of the recorder's
+     * recordings that will complete when the recorder is finished. This class should be used when the recorder's
+     * findings are only needed after the recorder is done recording.
+     */
+    protected static class DistanceSummarySubscriber implements SummarySubscriber<DistanceInfo, Location>,
+            SingleOnSubscribe<DistanceInfo> {
+        protected Set<SingleEmitter<DistanceInfo>> observers;
+        protected DistanceInfo result;
+
+        public DistanceSummarySubscriber() {
+            this.observers = new HashSet<>();
+            this.result = new DistanceInfo();
+        }
+
+        @Override
+        public Single<DistanceInfo> getSummary() {
             return Single.create(this);
         }
 
@@ -149,33 +221,37 @@ public abstract class DistanceRecorder extends ReactiveRecorder<DistanceSummary,
 
         @Override
         public void onError(final Throwable t) {
-            for (SingleEmitter<DistanceSummary> emitter : this.observers) {
+            for (SingleEmitter<DistanceInfo> emitter : this.observers) {
                 emitter.onError(t);
             }
         }
 
         @Override
         public void onComplete() {
-            for (SingleEmitter<DistanceSummary> emitter : this.observers) {
+            for (SingleEmitter<DistanceInfo> emitter : this.observers) {
                 emitter.onSuccess(this.result);
             }
         }
 
         @Override
-        public void subscribe(final SingleEmitter<DistanceSummary> emitter) throws Exception {
+        public void subscribe(final SingleEmitter<DistanceInfo> emitter) throws Exception {
             this.observers.add(emitter);
         }
     }
 
-    protected static class DistanceStateSubscriber implements CurrentStateSubscriber<DistanceState, Location> {
-        protected DistanceState result;
+    /**
+     * Subscribes to the same Location stream as the DistanceRecorder and maintains and provides access to the current
+     * state of the recorder. This class should be used when the recorders readings are needed in real time.
+     */
+    protected static class DistanceStateSubscriber implements CurrentStateSubscriber<CurrentDistanceInfo, Location> {
+        protected CurrentDistanceInfo result;
 
         public DistanceStateSubscriber() {
-            this.result = new DistanceState();
+            this.result = new CurrentDistanceInfo();
         }
 
         @Override
-        public DistanceState getCurrentState() {
+        public CurrentDistanceInfo getCurrentState() {
             return this.result;
         }
 

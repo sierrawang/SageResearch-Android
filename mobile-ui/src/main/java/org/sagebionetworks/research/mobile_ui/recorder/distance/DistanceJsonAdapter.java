@@ -46,6 +46,9 @@ import org.sagebionetworks.research.mobile_ui.recorder.data.FormatHelper;
 
 import java.util.Locale;
 
+/**
+ * Helper to convert Location's measured by a DistanceRecorder into JsonObjects for writing to a file.
+ */
 public class DistanceJsonAdapter {
     private static final String SHARED_PREFS_KEY = "LocationRecorder";
     private static final String LAST_RECORDED_DIST_KEY = "LastRecordedTotalDistance";
@@ -62,6 +65,15 @@ public class DistanceJsonAdapter {
     public static final String TIMESTAMP_IN_SECONDS_KEY = "timestamp";
     public static final String UPTIME_IN_SECONDS_KEY = "uptime";
 
+    /**
+     * Returns a JsonObject that represents the given location.
+     * @param location The location to represent in Json.
+     * @param usesRelativeCoordinates `true` if coordinates relative to the first location should be used.
+     *                               `false` if absolute longitude and latitude should be used.
+     * @param firstLocation The first location this distance recorder measured. Even if absolute coordinates are being
+     *                      used this shouldn't be null as the timestamp is also used.
+     * @return a JsonObject that represents the given location.
+     */
     @NonNull
     public static JsonObject getJsonObject(@NonNull Location location,
             boolean usesRelativeCoordinates, @NonNull Location firstLocation) {
@@ -102,6 +114,14 @@ public class DistanceJsonAdapter {
         return jsonObject;
     }
 
+    /**
+     * Returns a JsonObject storing the coordinates of the given location.
+     * @param location The location to get a coordinate json object for.
+     * @param usesRelativeCoordinates `true` if the coordinates are relative to the first location, `false` if they
+     *                                are absolute longitude and latitude.
+     * @param firstLocation The first location the recorder recorded.
+     * @return a JsonObject storing the coordinates of the given location.
+     */
     private static JsonObject getCoordinateJsonObject(Location location, boolean usesRelativeCoordinates,
             Location firstLocation) {
         JsonObject coordinateJsonObject = new JsonObject();

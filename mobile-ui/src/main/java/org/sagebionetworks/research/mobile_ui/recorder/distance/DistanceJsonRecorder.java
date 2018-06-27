@@ -43,6 +43,10 @@ import org.sagebionetworks.research.mobile_ui.recorder.data.DataLogger;
 
 import java.io.IOException;
 
+/**
+ * Recorders the user's distance travelled an location in Json to a file, and provides access later in the application
+ * to the FileResult, Summary, and Current State of this recorder.
+ */
 public class DistanceJsonRecorder extends DistanceRecorder {
     public static final String JSON_FILE_START = "[";
     public static final String JSON_FILE_END = "]";
