@@ -30,58 +30,36 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.sagebionetworks.research.presentation.recorder;
+package org.sagebionetworks.research.domain.recorder;
 
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 
 import com.google.auto.value.AutoValue;
 
-import org.sagebionetworks.research.domain.recorder.DeviceMotionRecorderConfig;
-import org.sagebionetworks.research.presentation.mapper.SensorMapper;
-
-import java.util.HashSet;
-import java.util.Set;
-
 @AutoValue
-public abstract class DeviceMotionRecorderConfigPresentationBase implements DeviceMotionRecorderConfigPresentation {
-    // TODO rkolmos 06/27/2018 change this name
+public abstract class DistanceRecorderConfigBase implements DistanceRecorderConfig {
+    public static final String TYPE_KEY = RecorderType.DISTANCE;
+
     @AutoValue.Builder
     public abstract static class Builder {
-        public abstract DeviceMotionRecorderConfigPresentationBase build();
+        public abstract DistanceRecorderConfigBase build();
 
         public abstract Builder setIdentifier(@NonNull String identifier);
 
         public abstract Builder setStartStepIdentifier(@Nullable String startStepIdentifier);
 
         public abstract Builder setStopStepIdentifier(@Nullable String stopStepIdentifier);
-
-        public abstract Builder setFrequency(double frequency);
-
-        public abstract Builder setRecorderTypes(@NonNull Set<Integer> recorderTypes);
     }
 
     public static Builder builder() {
-        return new AutoValue_DeviceMotionRecorderConfigPresentationBase.Builder();
+        return new AutoValue_DistanceRecorderConfigBase.Builder();
     }
 
-    public static DeviceMotionRecorderConfigPresentationBase fromDeviceMotionRecorderConfig(DeviceMotionRecorderConfig
-            config) {
-        double frequency = config.getFrequency() != null ? config.getFrequency() : 0; // 0 is the default value.
-        Set<Integer> recorderTypes = new HashSet<>();
-        for (String sensor : config.getRecorderTypes()) {
-            Integer sensorType = SensorMapper.getSensorType(sensor);
-            if (sensorType != null) {
-                recorderTypes.add(sensorType);
-            }
-        }
-
-        return DeviceMotionRecorderConfigPresentationBase.builder()
-                .setIdentifier(config.getIdentifier())
-                .setStartStepIdentifier(config.getStartStepIdentifier())
-                .setStopStepIdentifier(config.getStopStepIdentifier())
-                .setFrequency(frequency)
-                .setRecorderTypes(recorderTypes)
-                .build();
+    @Override
+    @NonNull
+    @RecorderType
+    public String getType() {
+        return TYPE_KEY;
     }
 }

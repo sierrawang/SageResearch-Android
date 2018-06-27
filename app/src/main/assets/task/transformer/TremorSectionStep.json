@@ -8,6 +8,7 @@
       "title":"Hold the phone with your %@ hand",
       "text":"With your hand in your lap, hold your phone still with the screen facing up.",
       "image":{
+        "type":"fetchable",
         "imageName":"HoldPhone-Left",
         "placementType":"topMarginBackground"
       },
@@ -24,6 +25,7 @@
       },
       "actions":{
         "goForward":{
+          "type":"base",
           "buttonTitle":"Hold phone"
         }
       }
@@ -33,6 +35,7 @@
       "type":"active",
       "duration":30,
       "image":{
+        "type":"fetchable",
         "imageName":"HoldPhone-Left",
         "placementType":"fullsizeBackground"
       },
@@ -46,6 +49,7 @@
       "commands":["transitionAutomatically", "shouldDisableIdleTimer", "vibrate", "playSound"],
       "actions":{
         "skip":{
+          "type":"skip",
           "skipToIdentifier":"countdown",
           "buttonTitle": "Restart test"
         }

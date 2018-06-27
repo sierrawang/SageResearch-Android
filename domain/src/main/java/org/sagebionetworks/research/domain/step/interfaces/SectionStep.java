@@ -36,6 +36,8 @@ import android.support.annotation.NonNull;
 
 import com.google.common.collect.ImmutableList;
 
+import org.sagebionetworks.research.domain.async.AsyncAction;
+
 /**
  * Created by liujoshua on 10/4/2017.
  */
@@ -57,5 +59,12 @@ public interface SectionStep extends Step {
      * @return A copy of this section step, with the identifier changed to the given identifier.
      */
     @NonNull
-    SectionStep copyWithIdentifier(String identifier);
+    SectionStep copyWithIdentifier(@NonNull String identifier);
+
+    /**
+     * Returns the list of AsyncActions for this section step.
+     * @return the list of AsyncActions for this section step.
+     */
+    @NonNull
+    ImmutableList<AsyncAction> getAsyncActions();
 }

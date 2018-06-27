@@ -51,6 +51,7 @@ import org.sagebionetworks.research.presentation.model.interfaces.StepView.NavDi
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
+import java.util.UUID;
 
 /**
  * A RecorderManager handles the work of creating recorders, and making the appropriate RecorderService calls
@@ -68,6 +69,7 @@ public class RecorderManager implements ServiceConnection {
 
     private Context context;
     private Task task;
+    private UUID taskRunUUID;
 
     public RecorderManager(Task task, Context context) {
         this.context = context;
@@ -86,7 +88,7 @@ public class RecorderManager implements ServiceConnection {
         Map<String, Recorder> activeRecorders = this.getActiveRecorders();
         for (RecorderInfo info : recorders) {
             if (!activeRecorders.containsKey(info.id)) {
-                this.service.createRecorder(this.task.getIdentifier(), info.id, info.type);
+                this.service.createRecorder(this.taskRunUUID, info.id, info.type);
             }
         }
     }
@@ -140,17 +142,16 @@ public class RecorderManager implements ServiceConnection {
         }
 
         if (this.bound) {
-            String taskIdentifier = this.task.getIdentifier();
             for (RecorderInfo info : shouldStart) {
-                this.service.startRecorder(taskIdentifier, info.id, info.type);
+                this.service.startRecorder(this.taskRunUUID, info.id, info.type);
             }
 
             for (RecorderInfo info : shouldStop) {
-                this.service.stopRecorder(taskIdentifier, info.id);
+                this.service.stopRecorder(this.taskRunUUID, info.id);
             }
 
             for (RecorderInfo info : shouldCancel) {
-                this.service.cancelRecorder(taskIdentifier, info.id);
+                this.service.cancelRecorder(this.taskRunUUID, info.id);
             }
         } else {
             // TODO: rkolmos 06/20/2018 handle the service being unbound
@@ -163,7 +164,7 @@ public class RecorderManager implements ServiceConnection {
      * @return A map of Recorder Id to Recorder containing all of the active recorders.
      */
     public ImmutableMap<String, Recorder> getActiveRecorders() {
-        return this.service.getActiveRecorders(this.task.getIdentifier());
+        return this.service.getActiveRecorders(this.taskRunUUID);
     }
 
     /**

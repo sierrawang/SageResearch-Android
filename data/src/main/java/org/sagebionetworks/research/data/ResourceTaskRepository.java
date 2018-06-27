@@ -127,7 +127,7 @@ public class ResourceTaskRepository implements TaskRepository {
                 builder.add(resolveTransformers(innerStep, prefix + section.getIdentifier() + "."));
             }
 
-            return new SectionStepBase(section.getIdentifier(), builder.build());
+            return new SectionStepBase(section.getIdentifier(), builder.build(), section.getAsyncActions());
         } else {
             return step.copyWithIdentifier(prefix + step.getIdentifier());
         }

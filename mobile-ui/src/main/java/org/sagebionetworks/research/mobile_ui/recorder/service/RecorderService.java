@@ -47,6 +47,7 @@ import org.sagebionetworks.research.mobile_ui.recorder.RecorderActionType;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.UUID;
 
 /**
  * The RecorderService handles the recorders that are needed for the task. Recorders can do things such as record
@@ -57,7 +58,7 @@ import java.util.Map;
  *      RECORDER_ACTION_KEY -> one of the constants in RecorderActionType corresponding to the action that should be
  *                             performed.
  *
- *      TASK_ID_KEY -> the identifier of the task the recorder is contained within.
+ *      TASK_ID_KEY -> the UUID of the task.
  *
  *      RECORDER_ID_KEY -> the identifier of the recorder to perform the action on.
  *
@@ -73,7 +74,7 @@ public class RecorderService extends Service {
 
     protected IBinder serviceBinder;
     // Maps Task Id to a Map of Recorder Id to Recorder.
-    protected Map<String, Map<String, Recorder>> recorderMapping;
+    protected Map<UUID, Map<String, Recorder>> recorderMapping;
 
     public RecorderService() {
         super();
@@ -98,7 +99,7 @@ public class RecorderService extends Service {
      * @param recorderIdentifier The identifier of the recorder to start.
      * @param recorderType The type of th recorder to start.
      */
-    public void startRecorder(@NonNull String taskIdentifier, @NonNull String recorderIdentifier,
+    public void startRecorder(@NonNull UUID taskIdentifier, @NonNull String recorderIdentifier,
             @RecorderType String recorderType) {
         Recorder recorder = this.getRecorder(taskIdentifier, recorderIdentifier);
         if (recorder == null) {
@@ -113,7 +114,7 @@ public class RecorderService extends Service {
      * @param taskIdentifier The identifier of the task the recorder belongs to.
      * @param recorderIdentifier The identifier of the recorder to stop.
      */
-    public void stopRecorder(@NonNull String taskIdentifier, @NonNull String recorderIdentifier) {
+    public void stopRecorder(@NonNull UUID taskIdentifier, @NonNull String recorderIdentifier) {
         Recorder recorder = this.getRecorder(taskIdentifier, recorderIdentifier);
         if (recorder == null) {
             throw new IllegalArgumentException("Cannot stop recorder that isn't started.");
@@ -127,7 +128,7 @@ public class RecorderService extends Service {
      * @param taskIdentifier The identifier of the task the recorder belongs to.
      * @param recorderIdentifier The identifier of the recorder to cancel.
      */
-    public void cancelRecorder(@NonNull String taskIdentifier, @NonNull String recorderIdentifier) {
+    public void cancelRecorder(@NonNull UUID taskIdentifier, @NonNull String recorderIdentifier) {
         Recorder recorder = this.getRecorder(taskIdentifier, recorderIdentifier);
         if (recorder == null) {
             throw new IllegalArgumentException("Cannot cancel recorder that isn't started.");
@@ -136,7 +137,7 @@ public class RecorderService extends Service {
         recorder.cancel();
     }
 
-    private Recorder getRecorder(@NonNull String taskIdentifier, @NonNull String recorderIdentifier) {
+    private Recorder getRecorder(@NonNull UUID taskIdentifier, @NonNull String recorderIdentifier) {
         Map<String, Recorder> taskRecorderMap = this.recorderMapping.get(taskIdentifier);
         if (taskRecorderMap == null) {
             return null;
@@ -159,7 +160,7 @@ public class RecorderService extends Service {
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
         @RecorderActionType String actionType = intent.getStringExtra(RECORDER_ACTION_KEY);
-        String taskIdentifier = intent.getStringExtra(TASK_ID_KEY);
+        UUID taskIdentifier = (UUID)intent.getSerializableExtra(TASK_ID_KEY);
         String recorderIdentifier = intent.getStringExtra(RECORDER_ID_KEY);
         switch (actionType) {
             case RecorderActionType.START:
@@ -181,11 +182,11 @@ public class RecorderService extends Service {
      * Returns an immutable map containing the active recorders keyed by their identifiers.
      * @return an immutable map containing the active recorders keyed by their identifiers.
      */
-    public ImmutableMap<String, Recorder> getActiveRecorders(@NonNull String taskIdentifier) {
+    public ImmutableMap<String, Recorder> getActiveRecorders(@NonNull UUID taskIdentifier) {
         return ImmutableMap.copyOf(this.recorderMapping.get(taskIdentifier));
     }
 
-    public Recorder createRecorder(@NonNull String taskIdentifier, @NonNull String recorderIdentifier,
+    public Recorder createRecorder(@NonNull UUID taskIdentifier, @NonNull String recorderIdentifier,
             @RecorderType String type) {
         // TODO rkolmos 06/20/2018 call a recorder factory here.
         Recorder recorder = new Recorder() {
@@ -198,6 +199,8 @@ public class RecorderService extends Service {
             public void start() {
 
             }
+
+
 
             @Override
             public void stop() {
