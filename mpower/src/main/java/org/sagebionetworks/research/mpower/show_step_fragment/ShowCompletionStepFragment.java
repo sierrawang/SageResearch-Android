@@ -30,52 +30,14 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.sagebionetworks.research.domain.inject;
+package org.sagebionetworks.research.mpower.show_step_fragment;
 
-import static org.sagebionetworks.research.domain.inject.GsonModule.createPassThroughDeserializer;
+import org.sagebionetworks.research.mobile_ui.show_step.view.ShowUIStepFragment;
+import org.sagebionetworks.research.mpower.R;
 
-import com.google.gson.JsonDeserializer;
-
-import org.sagebionetworks.research.domain.inject.GsonModule.ClassKey;
-import org.sagebionetworks.research.domain.task.Task;
-import org.sagebionetworks.research.domain.task.TaskInfo;
-import org.sagebionetworks.research.domain.task.TaskInfoBase;
-import org.sagebionetworks.research.domain.task.navigation.StepNavigatorFactory;
-import org.sagebionetworks.research.domain.task.navigation.TaskBase;
-import org.sagebionetworks.research.domain.task.navigation.strategy.StrategyBasedNavigator;
-
-import javax.inject.Singleton;
-
-import dagger.Module;
-import dagger.Provides;
-import dagger.multibindings.IntoMap;
-
-@Module(includes = {GsonModule.class})
-public abstract class TaskModule {
-
-    @Singleton
-    @Provides
-    static StepNavigatorFactory provideStepNavigatorFactory() {
-        return new StrategyBasedNavigator.Factory();
-    }
-
-    /**
-     * @return The json Deserializer for a task.
-     */
-    @Provides
-    @IntoMap
-    @ClassKey(Task.class)
-    static JsonDeserializer<?> provideTaskDeserializer() {
-        return createPassThroughDeserializer(TaskBase.class);
-    }
-
-    /**
-     * @return The json Deserializer for a task info.
-     */
-    @Provides
-    @IntoMap
-    @ClassKey(TaskInfo.class)
-    static JsonDeserializer<?> provideTaskInfoDeserializer() {
-        return createPassThroughDeserializer(TaskInfoBase.class);
+public class ShowCompletionStepFragment extends ShowUIStepFragment {
+    @Override
+    public int getLayoutId() {
+        return R.layout.mpower2_completion_step;
     }
 }

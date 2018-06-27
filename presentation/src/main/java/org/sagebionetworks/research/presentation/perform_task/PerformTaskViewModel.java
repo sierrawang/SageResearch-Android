@@ -45,14 +45,18 @@ import android.support.annotation.VisibleForTesting;
 
 import org.sagebionetworks.research.domain.presentation.model.LoadableResource;
 import org.sagebionetworks.research.domain.repository.TaskRepository;
+import org.sagebionetworks.research.domain.result.AnswerResultType;
+import org.sagebionetworks.research.domain.result.implementations.AnswerResultBase;
 import org.sagebionetworks.research.domain.result.implementations.TaskResultBase;
 import org.sagebionetworks.research.domain.result.interfaces.Result;
 import org.sagebionetworks.research.domain.result.interfaces.TaskResult;
 import org.sagebionetworks.research.domain.step.interfaces.Step;
+import org.sagebionetworks.research.domain.step.interfaces.ThemedUIStep;
 import org.sagebionetworks.research.domain.task.Task;
 import org.sagebionetworks.research.domain.task.TaskInfo;
 import org.sagebionetworks.research.domain.task.navigation.StepNavigator;
 import org.sagebionetworks.research.domain.task.navigation.StepNavigatorFactory;
+import org.sagebionetworks.research.domain.task.navigation.TaskProgress;
 import org.sagebionetworks.research.presentation.ActionType;
 import org.sagebionetworks.research.presentation.inject.StepViewModule.StepViewFactory;
 import org.sagebionetworks.research.presentation.mapper.TaskMapper;
@@ -62,7 +66,10 @@ import org.sagebionetworks.research.presentation.model.interfaces.StepView;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.threeten.bp.Instant;
+import org.threeten.bp.ZonedDateTime;
 
+import java.util.HashMap;
+import java.util.Map;
 import java.util.UUID;
 
 import io.reactivex.Completable;
@@ -70,11 +77,15 @@ import io.reactivex.disposables.CompositeDisposable;
 
 @MainThread
 public class PerformTaskViewModel extends ViewModel {
+    public static final String LAST_RUN_RESULT_ID = "lastRun";
+
     private static final Logger LOGGER = LoggerFactory.getLogger(PerformTaskViewModel.class);
 
     private final CompositeDisposable compositeDisposable;
 
     private final MutableLiveData<Step> currentStepLiveData;
+
+    private final ZonedDateTime lastRun;
 
     private StepNavigator stepNavigator;
 
@@ -84,14 +95,15 @@ public class PerformTaskViewModel extends ViewModel {
 
     private final MutableLiveData<StepView> stepViewLiveData;
 
+    private Map<Step, StepView> stepViewMapping;
+
     private final MutableLiveData<TaskInfo> taskLiveData;
 
     private final TaskMapper taskMapper;
 
-    private final TaskRepository taskRepository;
+    private final MutableLiveData<TaskProgress> taskProgressLiveData;
 
-    @Nullable
-    private TaskResult taskResult;
+    private final TaskRepository taskRepository;
 
     private final MutableLiveData<TaskResult> taskResultLiveData;
 
@@ -103,16 +115,21 @@ public class PerformTaskViewModel extends ViewModel {
 
     public PerformTaskViewModel(@NonNull TaskView taskView, @NonNull UUID taskRunUUID,
             @NonNull StepNavigatorFactory stepNavigatorFactory, @NonNull TaskRepository taskRepository,
-            @NonNull TaskMapper taskMapper, StepViewFactory stepViewFactory) {
+            @NonNull TaskMapper taskMapper, StepViewFactory stepViewFactory,
+            @NonNull ZonedDateTime lastRun) {
         this.taskView = checkNotNull(taskView);
         this.taskRunUuid = checkNotNull(taskRunUUID);
         this.stepNavigatorFactory = checkNotNull(stepNavigatorFactory);
         this.taskRepository = checkNotNull(taskRepository);
         this.taskMapper = checkNotNull(taskMapper);
         this.stepViewFactory = stepViewFactory;
+        this.lastRun = lastRun;
 
         taskLiveData = new MutableLiveData<>();
         taskResultLiveData = new MutableLiveData<>();
+
+        taskProgressLiveData = new MutableLiveData<>();
+        taskProgressLiveData.setValue(null);
 
         currentStepLiveData = new MutableLiveData<>();
         currentStepLiveData.setValue(null);
@@ -124,23 +141,24 @@ public class PerformTaskViewModel extends ViewModel {
         initTaskSteps(taskView, taskRunUuid);
     }
 
+
     public void addAsyncResult(Result result) {
-        checkState(taskResult != null);
+        checkState(taskResultLiveData.getValue() != null);
 
         if (LOGGER.isDebugEnabled()) {
             LOGGER.debug("addAsyncResult called with result: {}", result);
         }
 
-        taskResultLiveData.setValue(taskResult.addAsyncResult(result));
+        taskResultLiveData.setValue(taskResultLiveData.getValue().addAsyncResult(result));
     }
 
     public void addStepResult(Result result) {
-        checkState(taskResult != null);
+        checkState(taskResultLiveData.getValue() != null);
 
         if (LOGGER.isDebugEnabled()) {
             LOGGER.debug("addStepResult called with result: {}", result);
         }
-        taskResultLiveData.setValue(taskResult.addStepHistory(result));
+        taskResultLiveData.setValue(taskResultLiveData.getValue().addStepHistory(result));
     }
 
     /**
@@ -178,6 +196,11 @@ public class PerformTaskViewModel extends ViewModel {
     }
 
     @NonNull
+    public LiveData<TaskProgress> getTaskProgress() {
+        return taskProgressLiveData;
+    }
+
+    @NonNull
     public LiveData<TaskResult> getTaskResult() {
         return taskResultLiveData;
     }
@@ -194,9 +217,19 @@ public class PerformTaskViewModel extends ViewModel {
         checkState(currentStep != null);
         checkState(taskResult != null);
         Step backStep = stepNavigator.getPreviousStep(currentStep, taskResult);
-        LOGGER.debug("Setting backStep: {}", backStep);
-        currentStepLiveData.setValue(backStep);
-        StepView stepView = stepViewFactory.apply(backStep);
+        StepView stepView = null;
+        if (backStep != null) {
+            TaskProgress backProgress = stepNavigator.getProgress(backStep, taskResult);
+            taskProgressLiveData.setValue(backProgress);
+            LOGGER.debug("Setting backStep: {}", backStep);
+            currentStepLiveData.setValue(backStep);
+            stepView = this.stepViewMapping.get(backStep);
+            if (stepView.shouldSkip(taskResult)) {
+                this.goBack();
+                return;
+            }
+        }
+
         stepViewLiveData.setValue(stepView);
     }
 
@@ -205,9 +238,19 @@ public class PerformTaskViewModel extends ViewModel {
         Step currentStep = currentStepLiveData.getValue();
         TaskResult taskResult = taskResultLiveData.getValue();
         Step nextStep = stepNavigator.getNextStep(currentStep, taskResult);
-        LOGGER.debug("Setting forwardStep: {}", nextStep);
-        currentStepLiveData.setValue(nextStep);
-        StepView stepView = stepViewFactory.apply(nextStep);
+        StepView stepView = null;
+        if (nextStep != null) {
+            TaskProgress nextProgress = stepNavigator.getProgress(nextStep, taskResult);
+            taskProgressLiveData.setValue(nextProgress);
+            LOGGER.debug("Setting forwardStep: {}", nextStep);
+            currentStepLiveData.setValue(nextStep);
+            stepView = this.stepViewMapping.get(nextStep);
+            if (stepView.shouldSkip(taskResult)) {
+                this.goForward();
+                return;
+            }
+        }
+
         stepViewLiveData.setValue(stepView);
     }
 
@@ -236,14 +279,25 @@ public class PerformTaskViewModel extends ViewModel {
     @VisibleForTesting
     void handleTaskLoad(Task task) {
         LOGGER.debug("Loaded task: {}", task);
-        stepNavigator = stepNavigatorFactory.create(task.getSteps());
+        stepNavigator = stepNavigatorFactory.create(task.getSteps(), task.getProgressMarkers());
+        this.stepViewMapping = new HashMap<>();
+        for (Step step : this.stepNavigator.getSteps()) {
+            // This if statement is necessary to ensure we can call stepViewFactory.apply on the step.
+            if (step instanceof ThemedUIStep) {
+                this.stepViewMapping.put(step, stepViewFactory.apply(step));
+            }
+        }
     }
 
     @VisibleForTesting
     void handleTaskResultFound(TaskResult taskResult) {
         LOGGER.debug("Loaded taskResult: {}", taskResult);
-
-        this.taskResult = taskResult;
+        if (this.lastRun != null) {
+            Result lastRunResult = new AnswerResultBase<>(LAST_RUN_RESULT_ID, Instant.now(), Instant.now(),
+                    this.lastRun,
+                    AnswerResultType.DATE);
+            taskResult = taskResult.addAsyncResult(lastRunResult);
+        }
 
         taskResultLiveData.setValue(taskResult);
     }

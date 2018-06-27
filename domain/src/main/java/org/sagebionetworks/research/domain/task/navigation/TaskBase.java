@@ -57,6 +57,8 @@ public abstract class TaskBase implements Task {
 
         public abstract Builder setIdentifier(@NonNull String identifier);
 
+        public abstract Builder setProgressMarkers(@NonNull List<String> progressMarkers);
+
         public abstract Builder setSteps(@NonNull List<Step> steps);
     }
 
@@ -68,6 +70,7 @@ public abstract class TaskBase implements Task {
     public static TypeAdapter<TaskBase> typeAdapter(Gson gson) {
         return new AutoValue_TaskBase.GsonTypeAdapter(gson)
                 .setDefaultSteps(ImmutableList.<Step>of())
+                .setDefaultProgressMarkers(ImmutableList.<String>of())
                 .setDefaultAsyncActions(ImmutableList.<AsyncAction>of());
     }
 
@@ -78,6 +81,7 @@ public abstract class TaskBase implements Task {
                 .setIdentifier(this.getIdentifier())
                 .setAsyncActions(this.getAsyncActions())
                 .setSteps(steps)
+                .setProgressMarkers(this.getProgressMarkers())
                 .build();
     }
 }

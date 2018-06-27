@@ -89,6 +89,12 @@ public class TransformerStepBase extends StepBase implements TransformerStep {
 
     @NonNull
     @Override
+    public TransformerStep copyWithIdentifier(@NonNull final String identifier) {
+        throw new UnsupportedOperationException("Transformer steps cannot be copied");
+    }
+
+    @NonNull
+    @Override
     public String getResourceName() {
         return this.resourceName;
     }

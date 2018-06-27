@@ -30,52 +30,43 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.sagebionetworks.research.domain.inject;
+package org.sagebionetworks.research.domain.step.ui.theme;
 
-import static org.sagebionetworks.research.domain.inject.GsonModule.createPassThroughDeserializer;
+import com.google.auto.value.AutoValue;
+import com.google.gson.Gson;
+import com.google.gson.TypeAdapter;
+import com.google.gson.annotations.SerializedName;
 
-import com.google.gson.JsonDeserializer;
+import javax.annotation.Nullable;
 
-import org.sagebionetworks.research.domain.inject.GsonModule.ClassKey;
-import org.sagebionetworks.research.domain.task.Task;
-import org.sagebionetworks.research.domain.task.TaskInfo;
-import org.sagebionetworks.research.domain.task.TaskInfoBase;
-import org.sagebionetworks.research.domain.task.navigation.StepNavigatorFactory;
-import org.sagebionetworks.research.domain.task.navigation.TaskBase;
-import org.sagebionetworks.research.domain.task.navigation.strategy.StrategyBasedNavigator;
+@AutoValue
+public abstract class FetchableImageTheme implements ImageTheme {
+    @AutoValue.Builder
+    public abstract static class Builder {
+        public abstract FetchableImageTheme build();
 
-import javax.inject.Singleton;
+        public abstract Builder setColorPlacement(@Nullable @ColorPlacement String colorPlacement);
 
-import dagger.Module;
-import dagger.Provides;
-import dagger.multibindings.IntoMap;
-
-@Module(includes = {GsonModule.class})
-public abstract class TaskModule {
-
-    @Singleton
-    @Provides
-    static StepNavigatorFactory provideStepNavigatorFactory() {
-        return new StrategyBasedNavigator.Factory();
+        public abstract Builder setImageResourceName(@Nullable String imageResourceName);
     }
 
-    /**
-     * @return The json Deserializer for a task.
-     */
-    @Provides
-    @IntoMap
-    @ClassKey(Task.class)
-    static JsonDeserializer<?> provideTaskDeserializer() {
-        return createPassThroughDeserializer(TaskBase.class);
+    public static final String TYPE_KEY = ImageThemeType.FETCHABLE;
+
+    public static Builder builder() {
+        return new AutoValue_FetchableImageTheme.Builder();
     }
 
-    /**
-     * @return The json Deserializer for a task info.
-     */
-    @Provides
-    @IntoMap
-    @ClassKey(TaskInfo.class)
-    static JsonDeserializer<?> provideTaskInfoDeserializer() {
-        return createPassThroughDeserializer(TaskInfoBase.class);
+    public static TypeAdapter<FetchableImageTheme> typeAdapter(Gson gson) {
+        return new AutoValue_FetchableImageTheme.GsonTypeAdapter(gson);
+    }
+
+    @Nullable
+    @SerializedName("imageName")
+    public abstract String getImageResourceName();
+
+    @Override
+    @ImageThemeType
+    public String getType() {
+        return TYPE_KEY;
     }
 }

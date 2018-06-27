@@ -63,6 +63,17 @@ public class OverviewStep extends UIStepBase {
         this.icons = ImmutableList.copyOf(icons);
     }
 
+    @Override
+    public OverviewStep copyWithIdentifier(@NonNull String identifier) {
+        return new OverviewStep(identifier, this.getActions(), this.getTitle(), this.getText(), this.getDetail(),
+                this.getFootnote(), this.getColorTheme(), this.getImageTheme(), this.icons);
+    }
+
+    @Override
+    public String getType() {
+        return TYPE_KEY;
+    }
+
     /**
      * Returns the list of icons for this overview step.
      *
@@ -70,10 +81,5 @@ public class OverviewStep extends UIStepBase {
      */
     public ImmutableList<Icon> getIcons() {
         return this.icons;
-    }
-
-    @Override
-    public String getType() {
-        return TYPE_KEY;
     }
 }

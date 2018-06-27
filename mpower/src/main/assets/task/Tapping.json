@@ -23,16 +23,17 @@
         }
       ],
       "image": {
+        "type": "animation",
         "imageNames": [
-          "TapLeft1",
-          "TapLeft2"
+          "tap_left1",
+          "tap_left2"
         ],
         "placementType": "topBackground",
         "animationDuration": 1
       },
       "icons": [
         {
-          "icon": "FlatSurface",
+          "icon": "icon_flat_surface",
           "title": "A FLAT SURFACE"
         }
       ],
@@ -64,9 +65,10 @@
       "title": "You will finger tap for 30 seconds with each hand",
       "text": "Speed of finger tapping can reflect severity of motor symptoms in Parkinson’s disease. This activity measures your tapping speed for each hand. Your medical provider may measure this differently.",
       "image": {
+        "type": "animation",
         "imageNames": [
-          "TapLeft1",
-          "TapLeft2"
+          "tap_left1",
+          "tap_left2"
         ],
         "placementType": "topBackground",
         "animationDuration": 1
@@ -116,10 +118,11 @@
       "title": "Put the phone on a table",
       "text": "Place your phone on a flat surface such as a table before you begin the activity.",
       "image": {
+        "type": "animation",
         "imageNames": [
-          "F-FlatSurface",
-          "PlacePhone",
-          "PhoneOnSurface"
+          "f_flat_surface",
+          "place_phone",
+          "phone_on_surface"
         ],
         "animationDuration": 3.0,
         "placementType": "topBackground"
@@ -148,9 +151,10 @@
       "title": "First, tap with your %@ hand",
       "text": "Alternate tapping the buttons that appear with your index and middle finger of your %@ HAND. Keep tapping for 30 seconds for as fast as you can.",
       "image": {
+        "type": "animation",
         "imageNames": [
-          "TapLeft1",
-          "TapLeft2"
+          "tap_left1",
+          "tap_left2"
         ],
         "animationDuration": 1.0,
         "placementType": "topBackground"
@@ -193,7 +197,8 @@
       "title": "Great job!",
       "text": "You just completed",
       "image": {
-        "imageName": "Completion-FingerTapping",
+        "type": "fetchable",
+        "imageName": "completion_finger_tapping",
         "placementType": "topBackground"
       },
       "viewTheme": {

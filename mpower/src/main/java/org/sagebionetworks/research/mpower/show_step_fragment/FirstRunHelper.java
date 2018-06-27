@@ -30,38 +30,45 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.sagebionetworks.research.presentation.perform_task;
+package org.sagebionetworks.research.mpower.show_step_fragment;
 
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 
-import org.sagebionetworks.research.domain.repository.TaskRepository;
-import org.sagebionetworks.research.domain.task.navigation.StepNavigatorFactory;
-import org.sagebionetworks.research.presentation.inject.StepViewModule.StepViewFactory;
-import org.sagebionetworks.research.presentation.mapper.TaskMapper;
-import org.sagebionetworks.research.presentation.model.TaskView;
+import org.sagebionetworks.research.domain.result.interfaces.AnswerResult;
+import org.sagebionetworks.research.domain.result.interfaces.Result;
+import org.sagebionetworks.research.domain.result.interfaces.TaskResult;
+import org.sagebionetworks.research.presentation.perform_task.PerformTaskViewModel;
+import org.threeten.bp.Instant;
 import org.threeten.bp.ZonedDateTime;
 
-import java.util.UUID;
-import java.util.concurrent.TimeUnit;
+public class FirstRunHelper {
+    public static ZonedDateTime getLastRunDate(@NonNull TaskResult taskResult) {
+        for (Result result : taskResult.getAsyncResults()) {
+            if (result.getIdentifier().equals(PerformTaskViewModel.LAST_RUN_RESULT_ID) &&
+                    result instanceof AnswerResult) {
+                Object answer = ((AnswerResult) result).getAnswer();
+                if (answer instanceof ZonedDateTime) {
+                    return (ZonedDateTime) answer;
+                }
+            }
+        }
 
-import io.reactivex.Observable;
-
-public class PerformActiveTaskViewModel extends PerformTaskViewModel {
-
-    public PerformActiveTaskViewModel(@NonNull final TaskView taskView,
-            @NonNull final UUID taskRunUUID,
-            @NonNull final StepNavigatorFactory stepNavigatorFactory,
-            @NonNull final TaskRepository taskRepository,
-            @NonNull final TaskMapper taskMapper,
-            @NonNull final StepViewFactory stepViewFactory,
-            @Nullable final ZonedDateTime lastRunDate) {
-        super(taskView, taskRunUUID, stepNavigatorFactory, taskRepository, taskMapper, stepViewFactory,
-                lastRunDate);
+        return null;
     }
 
-    public Observable<Long> getCountdown() {
-        return Observable.intervalRange(10, 1, 1, 10, TimeUnit.SECONDS)
-                .map(i -> 10 - i);
+    public static boolean isFirstRun(@Nullable TaskResult result) {
+        if (result != null && result.getResult(ShowOverviewStepFragment.INFO_TAPPED_RESULT_ID) == null) {
+            ZonedDateTime lastRunDate = getLastRunDate(result);
+            if (lastRunDate != null) {
+                Instant taskStartInstant = result.getStartTime();
+                ZonedDateTime taskStartDate = ZonedDateTime.ofInstant(taskStartInstant, lastRunDate.getZone());
+                // This is a first run if it has been at least a month since the last run.
+                return lastRunDate.isBefore(taskStartDate.minusMonths(1));
+            }
+        }
+
+        // The info button was tapped, or The task result or last run date was null making this a first run.
+        return true;
     }
 }

@@ -30,18 +30,12 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.sagebionetworks.research.presentation.mapper;
+package org.sagebionetworks.research.domain.step.ui.theme;
 
-import org.sagebionetworks.research.presentation.inject.DrawableModule;
+import android.support.annotation.StringDef;
 
-import java.util.Map;
-
-import javax.inject.Singleton;
-
-import dagger.Component;
-
-@Component(modules = {DrawableModule.class})
-@Singleton
-public interface DrawableComponent {
-    Map<String, Integer> drawableMap();
+@StringDef({ImageThemeType.ANIMATION, ImageThemeType.FETCHABLE})
+public @interface ImageThemeType {
+    String ANIMATION = "animation";
+    String FETCHABLE = "fetchable";
 }

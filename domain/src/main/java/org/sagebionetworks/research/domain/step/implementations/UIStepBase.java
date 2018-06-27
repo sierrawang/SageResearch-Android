@@ -38,6 +38,7 @@ import android.support.annotation.Nullable;
 import com.google.common.base.MoreObjects.ToStringHelper;
 import com.google.common.base.Objects;
 import com.google.common.collect.ImmutableMap;
+import com.google.gson.annotations.SerializedName;
 
 import org.sagebionetworks.research.domain.interfaces.HashCodeHelper;
 import org.sagebionetworks.research.domain.step.StepType;
@@ -64,6 +65,7 @@ public class UIStepBase extends StepBase implements ThemedUIStep {
     private final String footnote;
 
     @Nullable
+    @SerializedName("image")
     private final ImageTheme imageTheme;
 
     @Nullable
@@ -101,6 +103,13 @@ public class UIStepBase extends StepBase implements ThemedUIStep {
         this.text = text;
         this.detail = detail;
         this.footnote = footnote;
+    }
+
+    @NonNull
+    @Override
+    public UIStepBase copyWithIdentifier(@NonNull final String identifier) {
+        return new UIStepBase(identifier, this.getActions(), this.getTitle(), this.getText(), this.getDetail(),
+                this.getFootnote(), this.getColorTheme(), this.getImageTheme());
     }
 
     @NonNull

@@ -75,7 +75,7 @@ public class ActiveUIStepViewTests {
 
     @Test
     public void testFromActiveUIStep() {
-        ActiveUIStepViewBase result = ActiveUIStepViewBase.fromActiveUIStep(MOCK_ACTIVE_UI_STEP);
+        ActiveUIStepViewBase result = ActiveUIStepViewBase.fromActiveUIStep(MOCK_ACTIVE_UI_STEP, null);
         assertNotNull(result);
         assertEquals("identifier", result.getIdentifier());
         assertEquals(DisplayString.create(null, "title"), result.getTitle());
@@ -86,10 +86,8 @@ public class ActiveUIStepViewTests {
         assertNotNull(colorThemeView);
         assertTrue(colorThemeView.lightStyle());
         ImageThemeView imageThemeView = result.getImageTheme();
-        assertNotNull(imageThemeView);
-        assertNotNull(imageThemeView.getColorPlacement());
-        assertEquals(ColorPlacement.HEADER, imageThemeView.getColorPlacement());
-        assertNull(imageThemeView.getImageResource().getDrawable());
+        // The imageThemeView will be null since we have a null drawable mapper.
+        assertNull(imageThemeView);
         assertEquals(Duration.ofMillis(5000), result.getDuration());
         assertTrue(result.isBackgroundAudioRequired());
     }

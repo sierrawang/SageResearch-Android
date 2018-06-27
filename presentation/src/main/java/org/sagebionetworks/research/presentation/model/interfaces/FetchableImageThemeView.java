@@ -30,40 +30,43 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.sagebionetworks.research.presentation.model;
+package org.sagebionetworks.research.presentation.model.interfaces;
 
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
+import android.support.annotation.Nullable;
 
-import org.junit.Before;
-import org.junit.Test;
-import org.sagebionetworks.research.presentation.model.interfaces.ActiveUIStepView;
-import org.sagebionetworks.research.presentation.model.interfaces.StepView;
-import org.sagebionetworks.research.presentation.model.interfaces.UIStepView;
+import com.google.auto.value.AutoValue;
 
-public class StepMapperTests {
-    public StepMapperTestComponent component;
+import org.sagebionetworks.research.domain.step.ui.theme.ColorPlacement;
+import org.sagebionetworks.research.domain.step.ui.theme.FetchableImageTheme;
+import org.sagebionetworks.research.presentation.DisplayDrawable;
+import org.sagebionetworks.research.presentation.mapper.DrawableMapper;
+import org.sagebionetworks.research.presentation.model.ImageThemeView;
 
-    @Before
-    public void setup() {
-        this.component = DaggerStepMapperTestComponent.builder().build();
+@AutoValue
+public abstract class FetchableImageThemeView extends ImageThemeView {
+    @AutoValue.Builder
+    public abstract static class Builder {
+        public abstract FetchableImageThemeView build();
+
+        public abstract Builder setColorPlacement(@ColorPlacement String colorPlacement);
+
+        public abstract Builder setImageResource(@Nullable DisplayDrawable imageResource);
     }
 
-    @Test
-    public void testMap_ActiveStep() {
-        StepView result = component.stepViewFactory().apply(ActiveUIStepViewTests.MOCK_ACTIVE_UI_STEP);
-        assertNotNull(result);
-        assertTrue(result instanceof ActiveUIStepView);
-        // We leave it up to ActiveUIStepViewTests to make sure that the ActiveUIStepView here is correct. For here the fact that
-        // the correct type is returned is sufficient.
+    public static Builder builder() {
+        return new AutoValue_FetchableImageThemeView.Builder();
     }
 
-    @Test
-    public void testMap_UIStep() {
-        StepView result = component.stepViewFactory().apply(UIStepViewTests.MOCK_UI_STEP);
-        assertNotNull(result);
-        assertTrue(result instanceof UIStepView);
-        // We leave it up to UIStepViewTests to make sure that the UIStepView here is correct. For here the fact that
-        // the correct type is returned is sufficient.
+    public static FetchableImageThemeView fromFetchableImageTheme(FetchableImageTheme imageTheme,
+            DrawableMapper mapper) {
+        // TODO: rkolmos 06/11/2018 fix this not to instantiate a new on every time.
+        return FetchableImageThemeView.builder()
+                .setColorPlacement(imageTheme.getColorPlacement())
+                .setImageResource(DisplayDrawable.create(null,
+                        mapper.getDrawableFromName(imageTheme.getImageResourceName())))
+                .build();
     }
+
+    @Nullable
+    public abstract DisplayDrawable getImageResource();
 }

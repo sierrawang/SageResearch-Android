@@ -32,7 +32,9 @@
 
 package org.sagebionetworks.research.domain.repository;
 
+import android.content.res.Resources.NotFoundException;
 import android.support.annotation.CheckResult;
+import android.support.annotation.DrawableRes;
 import android.support.annotation.NonNull;
 
 import org.sagebionetworks.research.domain.result.interfaces.TaskResult;
@@ -75,6 +77,18 @@ public interface TaskRepository {
      */
     @NonNull
     Maybe<TaskResult> getTaskResult(UUID taskRunUUID);
+
+    /**
+     * Finds and returns the drawable resource with the given identifier, or throws a NotFoundException()
+     *
+     * @param name
+     *         - the identifier of the drawable to find.
+     * @return the drawable resource with the given identifier.
+     * @throws NotFoundException
+     *         if the given resource identifier cannot be resolved as a drawable.
+     */
+    @DrawableRes
+    int resolveDrawableFromString(@NonNull String name) throws NotFoundException;
 
     @NonNull
     @CheckResult

@@ -41,6 +41,7 @@ import com.google.common.collect.ImmutableMap;
 import org.sagebionetworks.research.domain.step.interfaces.ActiveUIStep;
 import org.sagebionetworks.research.domain.step.interfaces.Step;
 import org.sagebionetworks.research.presentation.DisplayString;
+import org.sagebionetworks.research.presentation.mapper.DrawableMapper;
 import org.sagebionetworks.research.presentation.model.ColorThemeView;
 import org.sagebionetworks.research.presentation.model.ImageThemeView;
 import org.sagebionetworks.research.presentation.model.action.ActionView;
@@ -65,13 +66,13 @@ public class ActiveUIStepViewBase extends UIStepViewBase implements ActiveUIStep
 
     private final boolean isBackgroundAudioRequired;
 
-    public static ActiveUIStepViewBase fromActiveUIStep(@NonNull Step step) {
+    public static ActiveUIStepViewBase fromActiveUIStep(@NonNull Step step, DrawableMapper mapper) {
         if (!(step instanceof ActiveUIStep)) {
             throw new IllegalArgumentException("Provided step: " + step + " is not an ActiveUIStep.");
         }
 
         ActiveUIStep activeUIStep = (ActiveUIStep) step;
-        UIStepViewBase uiStepView = UIStepViewBase.fromUIStep(activeUIStep);
+        UIStepViewBase uiStepView = UIStepViewBase.fromUIStep(activeUIStep, mapper);
         // The duration from the ActiveUIStep is a Double in seconds, we convert this to a long of milliseconds and
         // round off any extra precision.
         Double millis = (activeUIStep.getDuration() != null ? activeUIStep.getDuration() : 0D) * 1000;

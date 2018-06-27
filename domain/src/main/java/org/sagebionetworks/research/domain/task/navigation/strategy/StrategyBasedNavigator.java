@@ -35,10 +35,12 @@ package org.sagebionetworks.research.domain.task.navigation.strategy;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 
+import org.jetbrains.annotations.NotNull;
 import org.sagebionetworks.research.domain.result.interfaces.Result;
 import org.sagebionetworks.research.domain.result.interfaces.TaskResult;
 import org.sagebionetworks.research.domain.step.interfaces.Step;
 import org.sagebionetworks.research.domain.task.navigation.StepNavigator;
+import org.sagebionetworks.research.domain.task.navigation.StepNavigatorFactory;
 import org.sagebionetworks.research.domain.task.navigation.TaskProgress;
 import org.sagebionetworks.research.domain.task.navigation.TreeNavigator;
 import org.sagebionetworks.research.domain.task.navigation.strategy.StepNavigationStrategy.BackStepStrategy;
@@ -48,6 +50,13 @@ import org.sagebionetworks.research.domain.task.navigation.strategy.StepNavigati
 import java.util.List;
 
 public class StrategyBasedNavigator implements StepNavigator {
+    public static class Factory implements StepNavigatorFactory {
+        @Override
+        public StepNavigator create(final List<Step> steps, final List<String> progressMarkers) {
+            return new StrategyBasedNavigator(steps, progressMarkers);
+        }
+    }
+
     // The tree navigator that backs up this StrategyBasedNavigator whenever the various navigation rules aren't
     // applicable.
     @NonNull
@@ -132,5 +141,11 @@ public class StrategyBasedNavigator implements StepNavigator {
     @Override
     public TaskProgress getProgress(@NonNull final Step step, @NonNull TaskResult taskResult) {
         return this.treeNavigator.getProgress(step, taskResult);
+    }
+
+    @NotNull
+    @Override
+    public List<Step> getSteps() {
+        return this.treeNavigator.getSteps();
     }
 }

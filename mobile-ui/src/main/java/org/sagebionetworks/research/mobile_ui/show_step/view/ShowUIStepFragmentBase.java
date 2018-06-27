@@ -32,18 +32,29 @@
 
 package org.sagebionetworks.research.mobile_ui.show_step.view;
 
+import android.graphics.drawable.AnimationDrawable;
+import android.graphics.drawable.Drawable;
 import android.view.View;
+import android.widget.ImageView;
+import android.widget.ProgressBar;
+import android.widget.TextView;
 
 import org.sagebionetworks.research.domain.mobile_ui.R;
+import org.sagebionetworks.research.domain.task.navigation.TaskProgress;
 import org.sagebionetworks.research.mobile_ui.show_step.view.view_binding.UIStepViewBinding;
 import org.sagebionetworks.research.mobile_ui.widget.ActionButton;
 import org.sagebionetworks.research.presentation.ActionType;
 import org.sagebionetworks.research.presentation.DisplayDrawable;
 import org.sagebionetworks.research.presentation.DisplayString;
+import org.sagebionetworks.research.presentation.model.AnimationImageThemeView;
+import org.sagebionetworks.research.presentation.model.ImageThemeView;
 import org.sagebionetworks.research.presentation.model.action.ActionView;
 import org.sagebionetworks.research.presentation.model.action.ActionViewBase;
+import org.sagebionetworks.research.presentation.model.interfaces.FetchableImageThemeView;
 import org.sagebionetworks.research.presentation.model.interfaces.UIStepView;
 import org.sagebionetworks.research.presentation.show_step.show_step_view_models.ShowUIStepViewModel;
+
+import java.util.List;
 
 public abstract class ShowUIStepFragmentBase<S extends UIStepView,
         VM extends ShowUIStepViewModel<S>, SB extends UIStepViewBinding<S>> extends
@@ -133,6 +144,53 @@ public abstract class ShowUIStepFragmentBase<S extends UIStepView,
     protected void update(S stepView) {
         super.update(stepView);
         this.updateNavigationButtons(stepView);
+        TaskProgress progress = this.performTaskViewModel.getTaskProgress().getValue();
+        if (progress != null) {
+            ProgressBar progressBar = this.stepViewBinding.getProgressBar();
+            if (progressBar != null) {
+                progressBar.setMax(progress.getTotal());
+                progressBar.setProgress(progress.getProgress());
+            }
+
+            TextView progressLabel = this.stepViewBinding.getProgressLabel();
+            if (progressLabel != null) {
+                String progressString = "STEP " + progress.getProgress() + " OF " + progress.getTotal();
+                progressLabel.setText(progressString);
+            }
+        }
+
+        ImageView imageView = this.stepViewBinding.getImageView();
+        if (imageView != null) {
+            ImageThemeView imageTheme = stepView.getImageTheme();
+            if (imageTheme != null) {
+                if (imageTheme instanceof AnimationImageThemeView) {
+                    AnimationImageThemeView animationImageTheme = ((AnimationImageThemeView) imageTheme);
+                    List<DisplayDrawable> drawables = animationImageTheme.getImageResources();
+                    int duration = (int) ((animationImageTheme.getDuration() * 1000) / drawables.size());
+                    AnimationDrawable animation = new AnimationDrawable();
+                    for (DisplayDrawable displayDrawable : drawables) {
+                        Integer drawableRes = displayDrawable.getDrawable();
+                        if (drawableRes != null) {
+                            Drawable drawable = this.getResources().getDrawable(drawableRes);
+                            if (drawable != null) {
+                                animation.addFrame(drawable, duration);
+                            }
+                        }
+                    }
+
+                    imageView.setImageDrawable(animation);
+                    animation.start();
+                } else if (imageTheme instanceof FetchableImageThemeView) {
+                    DisplayDrawable drawable = ((FetchableImageThemeView) imageTheme).getImageResource();
+                    Integer imageResourceId = drawable.getDrawable();
+                    if (imageResourceId != null) {
+                        imageView.setImageResource(imageResourceId);
+                    } else {
+                        System.err.println("DisplayDrawable has null drawableRes and null defaultDrawableRes");
+                    }
+                }
+            }
+        }
     }
 
     protected void updateButtonFromActionView(ActionButton button, ActionView actionView) {

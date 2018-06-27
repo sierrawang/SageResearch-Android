@@ -32,13 +32,33 @@
 
 package org.sagebionetworks.research.presentation.mapper;
 
+import android.content.res.Resources.NotFoundException;
 import android.support.annotation.DrawableRes;
 
+import org.sagebionetworks.research.domain.repository.TaskRepository;
+
+import java.util.Map;
+
 public class DrawableMapper {
-    private static final DrawableComponent drawableComponent = DaggerDrawableComponent.builder().build();
+    private Map<String, Integer> drawableMap;
+
+    private TaskRepository taskRepository;
+
+    public DrawableMapper(TaskRepository taskRepository, Map<String, Integer> drawableMap) {
+        this.taskRepository = taskRepository;
+        this.drawableMap = drawableMap;
+    }
 
     @DrawableRes
-    public static Integer getDrawableFromName(String name) {
-        return drawableComponent.drawableMap().get(name);
+    public Integer getDrawableFromName(String name) throws NotFoundException {
+        if (name == null) {
+            throw new NotFoundException("Attempted to find drawable with null identifier");
+        }
+
+        if (drawableMap.containsKey(name)) {
+            return drawableMap.get(name);
+        }
+
+        return taskRepository.resolveDrawableFromString(name);
     }
 }

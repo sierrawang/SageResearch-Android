@@ -32,15 +32,51 @@
 
 package org.sagebionetworks.research.presentation.model;
 
-import org.sagebionetworks.research.presentation.inject.StepViewModule;
-import org.sagebionetworks.research.presentation.inject.StepViewModule.StepViewFactory;
+import android.support.annotation.Nullable;
 
-import javax.inject.Singleton;
+import com.google.auto.value.AutoValue;
 
-import dagger.Component;
+import org.sagebionetworks.research.domain.step.ui.theme.AnimationImageTheme;
+import org.sagebionetworks.research.domain.step.ui.theme.ColorPlacement;
+import org.sagebionetworks.research.presentation.DisplayDrawable;
+import org.sagebionetworks.research.presentation.mapper.DrawableMapper;
 
-@Component(modules = StepViewModule.class)
-@Singleton
-public interface StepMapperTestComponent {
-    StepViewFactory stepViewFactory();
+import java.util.ArrayList;
+import java.util.List;
+
+@AutoValue
+public abstract class AnimationImageThemeView extends ImageThemeView {
+    @AutoValue.Builder
+    public abstract static class Builder {
+        public abstract AnimationImageThemeView build();
+
+        public abstract Builder setColorPlacement(@ColorPlacement String colorPlacement);
+
+        public abstract Builder setDuration(@Nullable Double duration);
+
+        public abstract Builder setImageResources(@Nullable List<DisplayDrawable> imageResources);
+    }
+
+    public static Builder builder() {
+        return new AutoValue_AnimationImageThemeView.Builder();
+    }
+
+    public static AnimationImageThemeView fromAnimationImageTheme(AnimationImageTheme imageTheme,
+            DrawableMapper mapper) {
+        List<DisplayDrawable> imageResources = new ArrayList<>();
+        for (String id : imageTheme.getImageResourceNames()) {
+            imageResources.add(DisplayDrawable.create(null, mapper.getDrawableFromName(id)));
+        }
+
+        return AnimationImageThemeView.builder()
+                .setColorPlacement(imageTheme.getColorPlacement())
+                .setDuration(imageTheme.getDuration())
+                .setImageResources(imageResources)
+                .build();
+
+    }
+
+    public abstract Double getDuration();
+
+    public abstract List<DisplayDrawable> getImageResources();
 }

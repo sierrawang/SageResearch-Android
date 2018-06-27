@@ -59,11 +59,13 @@ import java.util.List;
 import java.util.UUID;
 
 import javax.inject.Inject;
+import javax.inject.Singleton;
 
 import io.reactivex.Completable;
 import io.reactivex.Maybe;
 import io.reactivex.Single;
 
+@Singleton
 public class ResourceTaskRepository implements TaskRepository {
     private static final Logger LOGGER = LoggerFactory.getLogger(ResourceTaskRepository.class);
 
@@ -131,7 +133,7 @@ public class ResourceTaskRepository implements TaskRepository {
             ImmutableList<Step> taskSteps = task.getSteps();
             List<Step> steps = new ArrayList<>();
             for (Step step : taskSteps) {
-                steps.add(resolveTransformers(step));
+                steps.add(resolveTransformers(step, ""));
             }
 
             return task.copyWithSteps(steps);
@@ -152,21 +154,7 @@ public class ResourceTaskRepository implements TaskRepository {
         return Maybe.empty();
     }
 
-    @NonNull
     @Override
-    public Completable setTaskResult(final TaskResult taskResult) {
-        return Completable.error(new UnsupportedOperationException("Not implemented"));
-    }
-
-    /**
-     * Finds and returns the drawable resource with the given identifier, or throws a NotFoundException()
-     *
-     * @param name
-     *         - the identifier of the drawable to find.
-     * @return the drawable resource with the given identifier.
-     * @throws NotFoundException
-     *         if the given resource identifier cannot be resolved as a drawable.
-     */
     @DrawableRes
     public int resolveDrawableFromString(@NonNull String name) throws NotFoundException {
         int resId = context.getResources().getIdentifier(name, "drawable", context.getPackageName());
@@ -176,6 +164,12 @@ public class ResourceTaskRepository implements TaskRepository {
         } else {
             return resId;
         }
+    }
+
+    @NonNull
+    @Override
+    public Completable setTaskResult(final TaskResult taskResult) {
+        return Completable.error(new UnsupportedOperationException("Not implemented"));
     }
 
     /**
@@ -204,25 +198,25 @@ public class ResourceTaskRepository implements TaskRepository {
      * @throws IOException
      *         If any of the transformer steps has a resource that cannot be opened.
      */
-    private Step resolveTransformers(Step step) throws IOException {
+    private Step resolveTransformers(Step step, String prefix) throws IOException {
         if (step instanceof TransformerStep) {
             TransformerStep transformer = (TransformerStep) step;
             // For now the transformer only supports SectionSteps.
             SectionStep result = gson.fromJson(
                     this.getJsonTransformerAsset(transformer.getResourceName()), SectionStep.class);
             result = result.copyWithIdentifier(transformer.getIdentifier());
-            return resolveTransformers(result);
+            return resolveTransformers(result, prefix);
         } else if (step instanceof SectionStep) {
             SectionStep section = (SectionStep) step;
             ImmutableList<Step> steps = section.getSteps();
             ImmutableList.Builder<Step> builder = new ImmutableList.Builder<>();
             for (Step innerStep : steps) {
-                builder.add(resolveTransformers(innerStep));
+                builder.add(resolveTransformers(innerStep, prefix + section.getIdentifier() + "."));
             }
 
             return new SectionStepBase(section.getIdentifier(), builder.build());
         } else {
-            return step;
+            return step.copyWithIdentifier(prefix + step.getIdentifier());
         }
     }
 }

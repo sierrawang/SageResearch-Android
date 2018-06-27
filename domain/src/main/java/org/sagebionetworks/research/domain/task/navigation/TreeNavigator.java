@@ -117,6 +117,7 @@ public class TreeNavigator implements StepNavigator {
     @NonNull
     private final ImmutableMap<String, Step> stepsById;
 
+
     /**
      * Constructs a TreeNavigator from the given list of steps, and the given progress markers
      *
@@ -211,6 +212,12 @@ public class TreeNavigator implements StepNavigator {
 
     }
 
+    @NotNull
+    @Override
+    public List<Step> getSteps() {
+        return new ArrayList<>(this.stepsById.values());
+    }
+
     /**
      * Returns the last index in the progress markers such that the given list of identifiers contains the progress
      * marker at this index.
@@ -291,7 +298,7 @@ public class TreeNavigator implements StepNavigator {
         }
 
         if (current.step != null) {
-            if (hasFoundInitial.get() && current.isLeaf()) {
+            if ((initialStep == null || hasFoundInitial.get()) && current.isLeaf()) {
                 return current.step;
             }
 

@@ -37,5 +37,5 @@ import org.sagebionetworks.research.domain.step.interfaces.Step;
 import java.util.List;
 
 public interface StepNavigatorFactory {
-    StepNavigator create(List<Step> steps);
+    StepNavigator create(List<Step> steps, List<String> progressMarkers);
 }

@@ -42,6 +42,7 @@ import org.sagebionetworks.research.domain.step.interfaces.Step;
 import org.sagebionetworks.research.mpower.step.Icon;
 import org.sagebionetworks.research.mpower.step.OverviewStep;
 import org.sagebionetworks.research.presentation.DisplayString;
+import org.sagebionetworks.research.presentation.mapper.DrawableMapper;
 import org.sagebionetworks.research.presentation.model.ColorThemeView;
 import org.sagebionetworks.research.presentation.model.ImageThemeView;
 import org.sagebionetworks.research.presentation.model.action.ActionView;
@@ -55,16 +56,16 @@ public class OverviewStepView extends UIStepViewBase {
     private final ImmutableList<IconView> iconViews;
 
     @NonNull
-    public static OverviewStepView fromOverviewStep(@NonNull Step step) {
+    public static OverviewStepView fromOverviewStep(@NonNull Step step, DrawableMapper mapper) {
         if (!(step instanceof OverviewStep)) {
             throw new IllegalArgumentException("Provided step: " + step + " is not an OverviewStep");
         }
 
-        UIStepView uiStepView = UIStepViewBase.fromUIStep(step);
+        UIStepView uiStepView = UIStepViewBase.fromUIStep(step, mapper);
         OverviewStep overviewStep = (OverviewStep) step;
         List<IconView> iconViews = new ArrayList<>();
         for (Icon icon : overviewStep.getIcons()) {
-            iconViews.add(IconView.fromIcon(icon));
+            iconViews.add(IconView.fromIcon(icon, mapper));
         }
 
         return new OverviewStepView(uiStepView.getIdentifier(), uiStepView.getNavDirection(), uiStepView.getActions(),

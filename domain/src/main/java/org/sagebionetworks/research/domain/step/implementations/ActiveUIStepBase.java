@@ -73,15 +73,11 @@ public class ActiveUIStepBase extends UIStepBase implements ActiveUIStep {
         this.backgroundAudioRequired = backgroundAudioRequired;
     }
 
-    @Nullable
     @Override
-    public Double getDuration() {
-        return this.duration;
-    }
-
-    @Override
-    public boolean isBackgroundAudioRequired() {
-        return this.backgroundAudioRequired;
+    public ActiveUIStepBase copyWithIdentifier(@NonNull String identifier) {
+        return new ActiveUIStepBase(identifier, this.getActions(), this.getTitle(), this.getText(), this.getDetail(),
+                this.getFootnote(), this.getColorTheme(), this.getImageTheme(), this.getDuration(),
+                this.isBackgroundAudioRequired());
     }
 
     @NonNull
@@ -109,5 +105,16 @@ public class ActiveUIStepBase extends UIStepBase implements ActiveUIStep {
         return super.toStringHelper()
                 .add("duration", this.getDuration())
                 .add("isBackgroundAudioRequired", this.isBackgroundAudioRequired());
+    }
+
+    @Nullable
+    @Override
+    public Double getDuration() {
+        return this.duration;
+    }
+
+    @Override
+    public boolean isBackgroundAudioRequired() {
+        return this.backgroundAudioRequired;
     }
 }

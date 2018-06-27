@@ -65,7 +65,7 @@
             android:paddingBottom="20dp">
 
             <ImageView
-                android:id="@+id/imageView"
+                android:id="@id/rs2_image_view"
                 android:layout_width="0dp"
                 android:layout_height="0dp"
                 android:scaleType="fitXY"
@@ -84,10 +84,10 @@
                 app:isInfoButtonHidden="true"
                 app:isProgressBarHidden="false"
                 app:isProgressLabelHidden="false"
-                app:layout_constraintBottom_toBottomOf="@id/imageView"
-                app:layout_constraintEnd_toEndOf="@id/imageView"
-                app:layout_constraintStart_toStartOf="@id/imageView"
-                app:layout_constraintTop_toTopOf="@id/imageView"
+                app:layout_constraintBottom_toBottomOf="@id/rs2_image_view"
+                app:layout_constraintEnd_toEndOf="@id/rs2_image_view"
+                app:layout_constraintStart_toStartOf="@id/rs2_image_view"
+                app:layout_constraintTop_toTopOf="@id/rs2_image_view"
                 app:usesFloatingProgressBar="false" />
 
             <include
@@ -100,7 +100,7 @@
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/imageView" />
+                app:layout_constraintTop_toBottomOf="@id/rs2_image_view" />
         </android.support.constraint.ConstraintLayout>
     </ScrollView>
 

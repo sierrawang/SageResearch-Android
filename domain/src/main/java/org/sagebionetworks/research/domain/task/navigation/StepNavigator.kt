@@ -79,4 +79,10 @@ interface StepNavigator {
      * @return progress within the task
      */
     fun getProgress(step: Step, taskResult: TaskResult): TaskProgress?
+
+    /**
+     * Return the list of steps that are part of this task. Not necessarily in order.
+     * @retrun the list of steps that are part of this task not necessarily in order.
+     */
+    fun getSteps(): List<Step>
 }

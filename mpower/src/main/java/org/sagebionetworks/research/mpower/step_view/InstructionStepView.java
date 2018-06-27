@@ -37,9 +37,12 @@ import android.support.annotation.Nullable;
 
 import com.google.common.collect.ImmutableMap;
 
+import org.sagebionetworks.research.domain.result.interfaces.TaskResult;
 import org.sagebionetworks.research.domain.step.interfaces.Step;
+import org.sagebionetworks.research.mpower.show_step_fragment.FirstRunHelper;
 import org.sagebionetworks.research.mpower.step.InstructionStep;
 import org.sagebionetworks.research.presentation.DisplayString;
+import org.sagebionetworks.research.presentation.mapper.DrawableMapper;
 import org.sagebionetworks.research.presentation.model.ColorThemeView;
 import org.sagebionetworks.research.presentation.model.ImageThemeView;
 import org.sagebionetworks.research.presentation.model.action.ActionView;
@@ -47,21 +50,7 @@ import org.sagebionetworks.research.presentation.model.implementations.ActiveUIS
 import org.threeten.bp.Duration;
 
 public class InstructionStepView extends ActiveUIStepViewBase {
-    // TODO rkolmos 06/01/2018 for now an instruction step view adds no functionality to ActiveUIStepView
-
-    @NonNull
-    public static InstructionStepView fromInstructionStep(@NonNull Step step) {
-        if (!(step instanceof InstructionStep)) {
-            throw new IllegalArgumentException("Provided step: " + step + " is not an InstructionStep");
-        }
-
-        ActiveUIStepViewBase activeUIStepView = ActiveUIStepViewBase.fromActiveUIStep(step);
-        return new InstructionStepView(activeUIStepView.getIdentifier(), activeUIStepView.getNavDirection(),
-                activeUIStepView.getActions(), activeUIStepView.getTitle(), activeUIStepView.getText(),
-                activeUIStepView.getDetail(), activeUIStepView.getFootnote(), activeUIStepView.getColorTheme(),
-                activeUIStepView.getImageTheme(), activeUIStepView.getDuration(),
-                activeUIStepView.isBackgroundAudioRequired());
-    }
+    private final boolean isFirstRunOnly;
 
     public InstructionStepView(@NonNull final String identifier, final int navDirection,
             @NonNull final ImmutableMap<String, ActionView> actions,
@@ -72,8 +61,35 @@ public class InstructionStepView extends ActiveUIStepViewBase {
             @Nullable final ColorThemeView colorTheme,
             @Nullable final ImageThemeView imageTheme,
             @NonNull final Duration duration,
-            final boolean isBackgroundAudioRequired) {
+            final boolean isBackgroundAudioRequired,
+            final boolean isFirstRunOnly) {
         super(identifier, navDirection, actions, title, text, detail, footnote, colorTheme, imageTheme, duration,
                 isBackgroundAudioRequired);
+        this.isFirstRunOnly = isFirstRunOnly;
+    }
+
+    public boolean isFirstRunOnly() {
+        return this.isFirstRunOnly;
+    }
+
+    @NonNull
+    public static InstructionStepView fromInstructionStep(@NonNull Step step, DrawableMapper mapper) {
+        if (!(step instanceof InstructionStep)) {
+            throw new IllegalArgumentException("Provided step: " + step + " is not an InstructionStep");
+        }
+
+        InstructionStep instructionStep = (InstructionStep) step;
+        ActiveUIStepViewBase activeUIStepView = ActiveUIStepViewBase.fromActiveUIStep(step, mapper);
+        return new InstructionStepView(activeUIStepView.getIdentifier(), activeUIStepView.getNavDirection(),
+                activeUIStepView.getActions(), activeUIStepView.getTitle(), activeUIStepView.getText(),
+                activeUIStepView.getDetail(), activeUIStepView.getFootnote(), activeUIStepView.getColorTheme(),
+                activeUIStepView.getImageTheme(), activeUIStepView.getDuration(),
+                activeUIStepView.isBackgroundAudioRequired(), instructionStep.isFirstRunOnly());
+    }
+
+    @Override
+    public boolean shouldSkip(@Nullable TaskResult taskResult) {
+        // If this step should only run on first runs and it is not a first run then we should skip this step.
+        return this.isFirstRunOnly && !FirstRunHelper.isFirstRun(taskResult);
     }
 }

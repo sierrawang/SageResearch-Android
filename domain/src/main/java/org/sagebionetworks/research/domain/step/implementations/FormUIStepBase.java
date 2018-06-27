@@ -70,10 +70,10 @@ public class FormUIStepBase extends UIStepBase implements FormUIStep {
         this.inputFields = inputFields;
     }
 
-    @NonNull
     @Override
-    public List<InputField> getInputFields() {
-        return this.inputFields;
+    public FormUIStepBase copyWithIdentifier(@NonNull String identifier) {
+        return new FormUIStepBase(identifier, this.getActions(), this.getTitle(), this.getText(), this.getDetail(),
+                this.getFootnote(), this.getColorTheme(), this.getImageTheme(), this.inputFields);
     }
 
     @NonNull
@@ -99,5 +99,11 @@ public class FormUIStepBase extends UIStepBase implements FormUIStep {
     protected ToStringHelper toStringHelper() {
         return super.toStringHelper()
                 .add("inputFields", this.getInputFields());
+    }
+
+    @NonNull
+    @Override
+    public List<InputField> getInputFields() {
+        return this.inputFields;
     }
 }

@@ -33,31 +33,16 @@
 package org.sagebionetworks.research.presentation.model;
 
 import android.os.Parcelable;
-import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 
-import com.google.auto.value.AutoValue;
-
+import org.sagebionetworks.research.domain.step.ui.theme.AnimationImageTheme;
 import org.sagebionetworks.research.domain.step.ui.theme.ColorPlacement;
+import org.sagebionetworks.research.domain.step.ui.theme.FetchableImageTheme;
 import org.sagebionetworks.research.domain.step.ui.theme.ImageTheme;
-import org.sagebionetworks.research.presentation.DisplayDrawable;
 import org.sagebionetworks.research.presentation.mapper.DrawableMapper;
+import org.sagebionetworks.research.presentation.model.interfaces.FetchableImageThemeView;
 
-@AutoValue
 public abstract class ImageThemeView implements Parcelable {
-    @AutoValue.Builder
-    public abstract static class Builder {
-        public abstract ImageThemeView build();
-
-        public abstract Builder setColorPlacement(@Nullable @ColorPlacement String colorPlacement);
-
-        public abstract Builder setImageResource(@NonNull DisplayDrawable imageResource);
-    }
-
-    public static Builder builder() {
-        return new AutoValue_ImageThemeView.Builder();
-    }
-
     /**
      * Creates an ImageThemeView from an ImageTheme.
      *
@@ -65,24 +50,20 @@ public abstract class ImageThemeView implements Parcelable {
      *         The image theme to create this imageThemeView from.
      * @return an ImageThemeView created from the given ImageTheme.
      */
-    public static ImageThemeView fromImageTheme(@Nullable ImageTheme imageTheme) {
-        if (imageTheme == null) {
+    public static ImageThemeView fromImageTheme(@Nullable ImageTheme imageTheme, DrawableMapper mapper) {
+        if (mapper == null) {
             return null;
         }
 
-        String imageName = imageTheme.getImageResourceName();
-        return ImageThemeView.builder()
-                .setColorPlacement(imageTheme.getColorPlacement())
-                // There is no default image for the one displayed on the step's image view.
-                .setImageResource(DisplayDrawable.create(null,
-                        DrawableMapper.getDrawableFromName(imageName)))
-                .build();
+        if (imageTheme instanceof AnimationImageTheme) {
+            return AnimationImageThemeView.fromAnimationImageTheme((AnimationImageTheme) imageTheme, mapper);
+        } else if (imageTheme instanceof FetchableImageTheme) {
+            return FetchableImageThemeView.fromFetchableImageTheme((FetchableImageTheme) imageTheme, mapper);
+        } else {
+            return null;
+        }
     }
 
-    @Nullable
     @ColorPlacement
     public abstract String getColorPlacement();
-
-    @NonNull
-    public abstract DisplayDrawable getImageResource();
 }

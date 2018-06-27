@@ -52,5 +52,8 @@ public interface Task {
     String getIdentifier();
 
     @NonNull
+    ImmutableList<String> getProgressMarkers();
+
+    @NonNull
     ImmutableList<Step> getSteps();
 }

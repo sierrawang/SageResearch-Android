@@ -42,6 +42,7 @@ import org.sagebionetworks.research.domain.form.interfaces.InputField;
 import org.sagebionetworks.research.domain.step.interfaces.FormUIStep;
 import org.sagebionetworks.research.domain.step.interfaces.Step;
 import org.sagebionetworks.research.presentation.DisplayString;
+import org.sagebionetworks.research.presentation.mapper.DrawableMapper;
 import org.sagebionetworks.research.presentation.model.ColorThemeView;
 import org.sagebionetworks.research.presentation.model.ImageThemeView;
 import org.sagebionetworks.research.presentation.model.action.ActionView;
@@ -67,13 +68,13 @@ public class FormUIStepViewBase extends UIStepViewBase implements FormUIStepView
 
     private final List<InputFieldView> inputFields;
 
-    public static FormUIStepViewBase fromFormUIStep(Step step) {
+    public static FormUIStepViewBase fromFormUIStep(Step step, DrawableMapper mapper) {
         if (!(step instanceof FormUIStep)) {
             throw new IllegalArgumentException("Provided step: " + step + " is not a FormUIStep.");
         }
 
         FormUIStep formUIStep = (FormUIStep) step;
-        UIStepViewBase uiStepView = UIStepViewBase.fromUIStep(formUIStep);
+        UIStepViewBase uiStepView = UIStepViewBase.fromUIStep(formUIStep, mapper);
         List<InputFieldView> inputFields = new ArrayList<>();
         for (InputField field : formUIStep.getInputFields()) {
             inputFields.add(InputFieldViewBase.fromInputField(field));

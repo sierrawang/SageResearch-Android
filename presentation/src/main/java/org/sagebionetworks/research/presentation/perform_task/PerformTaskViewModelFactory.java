@@ -43,6 +43,7 @@ import org.sagebionetworks.research.domain.task.navigation.StepNavigatorFactory;
 import org.sagebionetworks.research.presentation.inject.StepViewModule.StepViewFactory;
 import org.sagebionetworks.research.presentation.mapper.TaskMapper;
 import org.sagebionetworks.research.presentation.model.TaskView;
+import org.threeten.bp.ZonedDateTime;
 
 import java.util.UUID;
 
@@ -66,7 +67,8 @@ public class PerformTaskViewModelFactory {
         this.stepViewFactory = stepViewFactory;
     }
 
-    public ViewModelProvider.Factory create(@NonNull TaskView taskView, @NonNull UUID taskRunUUID) {
+    public ViewModelProvider.Factory create(@NonNull TaskView taskView, @NonNull UUID taskRunUUID, ZonedDateTime
+            lastRun) {
         checkNotNull(taskView);
         checkNotNull(taskRunUUID);
 
@@ -78,7 +80,7 @@ public class PerformTaskViewModelFactory {
                 if (modelClass.isAssignableFrom(PerformTaskViewModel.class)) {
                     // noinspection unchecked
                     return (T) new PerformTaskViewModel(taskView, taskRunUUID, stepNavigatorFactory,
-                            taskRepository, taskMapper, stepViewFactory);
+                            taskRepository, taskMapper, stepViewFactory, lastRun);
                 }
                 throw new IllegalArgumentException("Unknown ViewModel class");
             }

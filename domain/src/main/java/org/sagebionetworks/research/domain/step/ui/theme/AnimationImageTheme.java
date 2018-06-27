@@ -30,52 +30,51 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.sagebionetworks.research.domain.inject;
+package org.sagebionetworks.research.domain.step.ui.theme;
 
-import static org.sagebionetworks.research.domain.inject.GsonModule.createPassThroughDeserializer;
+import android.support.annotation.Nullable;
 
-import com.google.gson.JsonDeserializer;
+import com.google.auto.value.AutoValue;
+import com.google.gson.Gson;
+import com.google.gson.TypeAdapter;
+import com.google.gson.annotations.SerializedName;
 
-import org.sagebionetworks.research.domain.inject.GsonModule.ClassKey;
-import org.sagebionetworks.research.domain.task.Task;
-import org.sagebionetworks.research.domain.task.TaskInfo;
-import org.sagebionetworks.research.domain.task.TaskInfoBase;
-import org.sagebionetworks.research.domain.task.navigation.StepNavigatorFactory;
-import org.sagebionetworks.research.domain.task.navigation.TaskBase;
-import org.sagebionetworks.research.domain.task.navigation.strategy.StrategyBasedNavigator;
+import java.util.List;
 
-import javax.inject.Singleton;
+@AutoValue
+public abstract class AnimationImageTheme implements ImageTheme {
+    @AutoValue.Builder
+    public abstract static class Builder {
+        public abstract AnimationImageTheme build();
 
-import dagger.Module;
-import dagger.Provides;
-import dagger.multibindings.IntoMap;
+        public abstract Builder setColorPlacement(@Nullable @ColorPlacement String colorPlacement);
 
-@Module(includes = {GsonModule.class})
-public abstract class TaskModule {
+        public abstract Builder setDuration(@Nullable Double duration);
 
-    @Singleton
-    @Provides
-    static StepNavigatorFactory provideStepNavigatorFactory() {
-        return new StrategyBasedNavigator.Factory();
+        public abstract Builder setImageResourceNames(@Nullable List<String> imageResourceNames);
     }
 
-    /**
-     * @return The json Deserializer for a task.
-     */
-    @Provides
-    @IntoMap
-    @ClassKey(Task.class)
-    static JsonDeserializer<?> provideTaskDeserializer() {
-        return createPassThroughDeserializer(TaskBase.class);
+    public static final String TYPE_KEY = ImageThemeType.ANIMATION;
+
+    public static Builder builder() {
+        return new AutoValue_AnimationImageTheme.Builder();
     }
 
-    /**
-     * @return The json Deserializer for a task info.
-     */
-    @Provides
-    @IntoMap
-    @ClassKey(TaskInfo.class)
-    static JsonDeserializer<?> provideTaskInfoDeserializer() {
-        return createPassThroughDeserializer(TaskInfoBase.class);
+    public static TypeAdapter<AnimationImageTheme> typeAdapter(Gson gson) {
+        return new AutoValue_AnimationImageTheme.GsonTypeAdapter(gson);
+    }
+
+    @Nullable
+    @SerializedName("animationDuration")
+    public abstract Double getDuration();
+
+    @Nullable
+    @SerializedName("imageNames")
+    public abstract List<String> getImageResourceNames();
+
+    @Override
+    @ImageThemeType
+    public String getType() {
+        return TYPE_KEY;
     }
 }

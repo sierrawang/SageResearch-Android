@@ -67,13 +67,12 @@ public class UIStepViewTests {
     public static ImageTheme mockImageTheme(@ColorPlacement String colorPlacement, String imageResourceName) {
         ImageTheme theme = mock(ImageTheme.class);
         when(theme.getColorPlacement()).thenReturn(colorPlacement);
-        when(theme.getImageResourceName()).thenReturn(imageResourceName);
         return theme;
     }
 
     @Test
     public void testFromTUIStep() {
-        UIStepViewBase result = UIStepViewBase.fromUIStep(MOCK_UI_STEP);
+        UIStepViewBase result = UIStepViewBase.fromUIStep(MOCK_UI_STEP, null);
         assertNotNull(result);
         assertEquals("identifier", result.getIdentifier());
         assertEquals(DisplayString.create(null, "title"), result.getTitle());
@@ -84,10 +83,8 @@ public class UIStepViewTests {
         assertNotNull(colorThemeView);
         assertTrue(colorThemeView.lightStyle());
         ImageThemeView imageThemeView = result.getImageTheme();
-        assertNotNull(imageThemeView);
-        assertNotNull(imageThemeView.getColorPlacement());
-        assertEquals(ColorPlacement.HEADER, imageThemeView.getColorPlacement());
-        assertNull(imageThemeView.getImageResource().getDrawable());
+        // The image theme view will be null since we have no drawable mapper.
+        assertNull(imageThemeView);
     }
 
     protected static ThemedUIStep mockThemedUIStep(@NonNull final String identifier,

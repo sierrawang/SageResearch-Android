@@ -35,6 +35,10 @@ package org.sagebionetworks.research.mpower.step;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 
+import com.google.common.base.MoreObjects.ToStringHelper;
+import com.google.gson.annotations.SerializedName;
+
+import org.sagebionetworks.research.domain.interfaces.HashCodeHelper;
 import org.sagebionetworks.research.domain.step.StepType;
 import org.sagebionetworks.research.domain.step.implementations.ActiveUIStepBase;
 import org.sagebionetworks.research.domain.step.ui.action.interfaces.Action;
@@ -46,7 +50,8 @@ import java.util.Map;
 public class InstructionStep extends ActiveUIStepBase {
     public static final String TYPE_KEY = StepType.INSTRUCTION;
 
-    // TODO: rkolmos 06/01/2018 for now an instruction step adds no functionality to a ActiveUIStep.
+    @SerializedName("isFirstRunOnly")
+    private final boolean firstRunOnly;
 
     public InstructionStep(@NonNull final String identifier,
             @NonNull final Map<String, Action> actions,
@@ -56,14 +61,46 @@ public class InstructionStep extends ActiveUIStepBase {
             @Nullable final String footnote,
             @Nullable final ColorTheme colorTheme,
             @Nullable final ImageTheme imageTheme,
-            @Nullable final Double duration, final boolean backgroundAudioRequired) {
+            @Nullable final Double duration, final boolean backgroundAudioRequired,
+            final boolean firstRunOnly) {
         super(identifier, actions, title, text, detail, footnote, colorTheme, imageTheme, duration,
                 backgroundAudioRequired);
+        this.firstRunOnly = firstRunOnly;
+    }
+
+    @Override
+    public InstructionStep copyWithIdentifier(@NonNull String identifier) {
+        return new InstructionStep(identifier, this.getActions(), this.getTitle(), this.getText(), this.getDetail(),
+                this.getFootnote(), this.getColorTheme(), this.getImageTheme(), this.getDuration(),
+                this.isBackgroundAudioRequired(), this.firstRunOnly);
     }
 
     @NonNull
     @Override
     public String getType() {
         return TYPE_KEY;
+    }
+
+    @Override
+    protected boolean equalsHelper(Object other) {
+        InstructionStep step = (InstructionStep) other;
+        return super.equalsHelper(other) &&
+                this.isFirstRunOnly() == step.isFirstRunOnly();
+    }
+
+    @Override
+    protected HashCodeHelper hashCodeHelper() {
+        return super.hashCodeHelper()
+                .addFields(this.isFirstRunOnly());
+    }
+
+    @Override
+    protected ToStringHelper toStringHelper() {
+        return super.toStringHelper()
+                .add("isFirstRunOnly", this.isFirstRunOnly());
+    }
+
+    public boolean isFirstRunOnly() {
+        return this.firstRunOnly;
     }
 }

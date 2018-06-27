@@ -95,7 +95,9 @@ public class TaskResultBase extends ResultBase implements TaskResult {
     @Override
     public TaskResultBase addAsyncResult(final Result result) {
         List<Result> asyncResults = replaceAndAppendResult(this.getAsyncResults(), result);
-        TaskResultData newData = TaskResultData.create(this.taskResultData, asyncResults);
+        TaskResultData newData = TaskResultData
+                .create(this.getTaskUUID(), this.getSchemaInfo(), this.getStepHistory(),
+                        asyncResults);
         return new TaskResultBase(this, newData);
     }
 
