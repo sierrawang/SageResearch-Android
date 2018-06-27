@@ -45,14 +45,35 @@ import java.io.Serializable;
  * issues.
  */
 public interface Recorder extends Serializable {
+    /**
+     * Returns an identifier for this recorder that is unique among the recorders in it's task.
+     * @return an identifier for this recorder that is unique among the recorders in it's task.
+     */
     String getIdentifier();
 
+    /**
+     * Starts this recorder. This method should notify the recorder to start and then return immediately without
+     * blocking or performing the recording on the UI thread. In most cases this means the recorder will need to
+     * manage it's own threading.
+     */
     void start();
 
+    /**
+     * Indicates that this recorder is done recording and should save it's results. This method should notify
+     * the recorder to stop and then return immediately without blocking.
+     */
     void stop();
 
+    /**
+     * Indicates that this recorder should stop recording and should discard it's results. This method should
+     * notify the recorder to cancel and then return immediately without blocking.
+     */
     void cancel();
 
+    /**
+     * Returns `true` if this recorder is currently recording, and `false` otherwise.
+     * @return `true` if this recorder is currently recording, and `false` otherwise.
+     */
     boolean isRecording();
 
     /**

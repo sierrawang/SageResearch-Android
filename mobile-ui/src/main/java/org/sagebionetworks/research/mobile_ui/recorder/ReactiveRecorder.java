@@ -46,6 +46,10 @@ import io.reactivex.schedulers.Schedulers;
 /**
  * A ReactiveRecorder is a recorder which records based on a stream of events, and supports maintaining a FileResult
  * via a DataLogger, a Summary via a SummarySubscriber, and a current state, via a CurrentStateSubscriber.
+ *
+ * This class is intended to make making recorders from anything that can be turned into a stream of events easier,
+ * and more convenient.
+ *
  * @param <S> The type of summary that this recorder produces.
  * @param <C> The type of current state that this recorder produces.
  * @param <E> The type of event from the stream this recorder records based on.
