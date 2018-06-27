@@ -39,8 +39,6 @@ import com.google.common.base.Objects;
 
 import org.sagebionetworks.research.domain.interfaces.HashCodeHelper;
 
-import org.sagebionetworks.research.domain.interfaces.HashCodeHelper;
-
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.util.Arrays;
@@ -48,6 +46,36 @@ import java.util.HashSet;
 import java.util.Set;
 
 public class BaseInputDataType extends InputDataType {
+    @Retention(RetentionPolicy.SOURCE)
+    @StringDef({BaseType.BOOLEAN, BaseType.DATE, BaseType.DECIMAL, BaseType.DURATION, BaseType.FRACTION,
+            BaseType.INTEGER, BaseType.STRING, BaseType.YEAR})
+    public @interface BaseType {
+        String BOOLEAN = "boolean";
+        String DATE = "date";
+        String DECIMAL = "decimal";
+        String DURATION = "duration";
+        String FRACTION = "fraction";
+        String INTEGER = "integer";
+        String STRING = "string";
+        String YEAR = "year";
+
+        Set<String> ALL = new HashSet<String>(
+                Arrays.asList(BOOLEAN, DATE, DECIMAL, DURATION, FRACTION, INTEGER, STRING,
+                        YEAR));
+    }
+
+    public static final Creator<BaseInputDataType> CREATOR = new Creator<BaseInputDataType>() {
+        @Override
+        public BaseInputDataType createFromParcel(Parcel source) {
+            return new BaseInputDataType(source);
+        }
+
+        @Override
+        public BaseInputDataType[] newArray(int size) {
+            return new BaseInputDataType[size];
+        }
+    };
+
     @BaseType
     private final String baseType;
 
@@ -64,43 +92,8 @@ public class BaseInputDataType extends InputDataType {
         this.baseType = baseType;
     }
 
-    @BaseType
-    String getBaseType() {
-        return this.baseType;
-    }
-
-    @Retention(RetentionPolicy.SOURCE)
-    @StringDef({BaseType.BOOLEAN, BaseType.DATE, BaseType.DECIMAL, BaseType.DURATION, BaseType.FRACTION,
-            BaseType.INTEGER, BaseType.STRING, BaseType.YEAR})
-    public @interface BaseType {
-        String BOOLEAN = "boolean";
-        String DATE = "date";
-        String DECIMAL = "decimal";
-        String DURATION = "duration";
-        String FRACTION = "fraction";
-        String INTEGER = "integer";
-        String STRING = "string";
-        String YEAR = "year";
-
-        Set<String> ALL = new HashSet<String>(Arrays.asList(BOOLEAN, DATE, DECIMAL, DURATION, FRACTION, INTEGER, STRING,
-                YEAR));
-    }
-
-    @Override
-    public String toString() {
-        return this.baseType;
-    }
-
-    @Override
-    protected HashCodeHelper hashCodeHelper() {
-        return super.hashCodeHelper()
-                .addFields(this.baseType);
-    }
-
-    @Override
-    protected boolean equalsHelper(Object o) {
-        BaseInputDataType baseType = (BaseInputDataType) o;
-        return Objects.equal(this.getBaseType(), baseType.getBaseType());
+    protected BaseInputDataType(Parcel in) {
+        this.baseType = in.readString();
     }
 
     @Override
@@ -113,19 +106,25 @@ public class BaseInputDataType extends InputDataType {
         dest.writeString(this.baseType);
     }
 
-    protected BaseInputDataType(Parcel in) {
-        this.baseType = in.readString();
+    @Override
+    public String toString() {
+        return this.baseType;
     }
 
-    public static final Creator<BaseInputDataType> CREATOR = new Creator<BaseInputDataType>() {
-        @Override
-        public BaseInputDataType createFromParcel(Parcel source) {
-            return new BaseInputDataType(source);
-        }
+    @Override
+    protected boolean equalsHelper(Object o) {
+        BaseInputDataType baseType = (BaseInputDataType) o;
+        return Objects.equal(this.getBaseType(), baseType.getBaseType());
+    }
 
-        @Override
-        public BaseInputDataType[] newArray(int size) {
-            return new BaseInputDataType[size];
-        }
-    };
+    @Override
+    protected HashCodeHelper hashCodeHelper() {
+        return super.hashCodeHelper()
+                .addFields(this.baseType);
+    }
+
+    @BaseType
+    String getBaseType() {
+        return this.baseType;
+    }
 }

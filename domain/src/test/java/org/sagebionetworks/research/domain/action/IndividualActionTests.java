@@ -54,6 +54,15 @@ public class IndividualActionTests {
         this.actionTestComponent = DaggerActionTestComponent.builder().build();
     }
 
+    @NonNull
+    protected Action readJsonFile(String filename) {
+        ClassLoader loader = this.getClass().getClassLoader();
+        URL url = loader.getResource("actions/" + filename);
+        Action action = this.readJsonFileHelper(url);
+        assertNotNull("Failed to read file " + filename, action);
+        return action;
+    }
+
     @Nullable
     private Action readJsonFileHelper(URL url) {
         try {
@@ -63,14 +72,5 @@ public class IndividualActionTests {
         } catch (FileNotFoundException e) {
             return null;
         }
-    }
-
-    @NonNull
-    protected Action readJsonFile(String filename) {
-        ClassLoader loader = this.getClass().getClassLoader();
-        URL url = loader.getResource("actions/" + filename);
-        Action action = this.readJsonFileHelper(url);
-        assertNotNull("Failed to read file " + filename, action);
-        return action;
     }
 }

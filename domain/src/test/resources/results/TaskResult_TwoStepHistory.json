@@ -1,19 +1,19 @@
 {
-  "type":"task",
+  "type": "task",
   "data": {
-    "identifier":"taskResult",
-    "startTime":"1970-01-01T00:00:20Z",
-    "endTime":"1970-01-01T00:00:35Z"
+    "identifier": "taskResult",
+    "startTime": "1970-01-01T00:00:20Z",
+    "endTime": "1970-01-01T00:00:35Z"
   },
-  "taskResultData":{
-    "UUID":"1a17cac2-b430-484d-9f68-322ee6217592",
-    "schema":{
-      "identifier":"schema",
-      "revision":1
+  "taskResultData": {
+    "UUID": "1a17cac2-b430-484d-9f68-322ee6217592",
+    "schema": {
+      "identifier": "schema",
+      "revision": 1
     },
-    "stepHistory":[
+    "stepHistory": [
       {
-        "type":"base",
+        "type": "base",
         "data": {
           "identifier": "step1",
           "startTime": "1970-01-01T00:00:20Z",
@@ -21,13 +21,13 @@
         }
       },
       {
-        "type":"base",
+        "type": "base",
         "data": {
           "identifier": "step2",
           "startTime": "1970-01-01T00:00:30Z"
         }
       }
     ],
-    "asyncResults":[]
+    "asyncResults": []
   }
 }

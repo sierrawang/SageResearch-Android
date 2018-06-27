@@ -47,7 +47,9 @@ import java.io.IOException;
  */
 public class DeviceMotionJsonRecorder extends DeviceMotionRecorder<Void, Void> {
     public static final String JSON_FILE_START = "[";
+
     public static final String JSON_FILE_END = "]";
+
     public static final String JSON_OBJECT_DELIMINATOR = ",";
 
     public DeviceMotionJsonRecorder(

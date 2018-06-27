@@ -35,19 +35,20 @@ package org.sagebionetworks.research.mobile_ui.recorder;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 
-import org.sagebionetworks.research.domain.recorder.RecorderConfig;
-
 /**
  * RecorderBase contains some of the common code amongst recorder implementations.
  */
 public abstract class RecorderBase implements Recorder {
     @NonNull
     protected final String identifier;
+
+    protected boolean isRecording;
+
     @Nullable
     protected final String startStepIdentifier;
+
     @Nullable
     protected final String stopStepIdentifier;
-    protected boolean isRecording;
 
     public RecorderBase(@NonNull String identifier, @Nullable String startStepIdentifier,
             @Nullable String stopStepIdentifier) {
@@ -58,23 +59,14 @@ public abstract class RecorderBase implements Recorder {
     }
 
     @Override
-    public void start() {
-        this.isRecording = true;
-    }
-
-    @Override
-    public void stop() {
-        this.isRecording = false;
-    }
-
-    @Override
     public void cancel() {
         this.isRecording = false;
     }
 
     @Override
-    public boolean isRecording() {
-        return this.isRecording;
+    @NonNull
+    public String getIdentifier() {
+        return this.identifier;
     }
 
     @Override
@@ -90,8 +82,17 @@ public abstract class RecorderBase implements Recorder {
     }
 
     @Override
-    @NonNull
-    public String getIdentifier() {
-        return this.identifier;
+    public boolean isRecording() {
+        return this.isRecording;
+    }
+
+    @Override
+    public void start() {
+        this.isRecording = true;
+    }
+
+    @Override
+    public void stop() {
+        this.isRecording = false;
     }
 }

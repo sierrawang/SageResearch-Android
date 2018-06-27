@@ -43,7 +43,18 @@ public interface Step {
     String KEY_TYPE = "type";
 
     /**
+     * Returns a copy of this step with the given identifier.
+     *
+     * @param identifier
+     *         the identifier for the new step.
+     * @return a copy of this step with the given identifier.
+     */
+    @NonNull
+    Step copyWithIdentifier(@NonNull String identifier);
+
+    /**
      * Returns the unique identifier that distinguishes this step from the other steps in the task.
+     *
      * @return the unique identifier that distinguishes this step from the other steps in the task.
      */
     @NonNull
@@ -51,17 +62,10 @@ public interface Step {
 
     /**
      * Returns the type of this step.
+     *
      * @return The type of this step.
      */
     @NonNull
     @StepType
     String getType();
-
-    /**
-     * Returns a copy of this step with the given identifier.
-     * @param identifier the identifier for the new step.
-     * @return a copy of this step with the given identifier.
-     */
-    @NonNull
-    Step copyWithIdentifier(@NonNull String identifier);
 }

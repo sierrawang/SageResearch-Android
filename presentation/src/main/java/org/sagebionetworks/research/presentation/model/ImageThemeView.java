@@ -32,35 +32,33 @@
 
 package org.sagebionetworks.research.presentation.model;
 
-import android.content.res.Resources.NotFoundException;
 import android.os.Parcelable;
-import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
-
-import com.google.auto.value.AutoValue;
 
 import org.sagebionetworks.research.domain.step.ui.theme.AnimationImageTheme;
 import org.sagebionetworks.research.domain.step.ui.theme.ColorPlacement;
 import org.sagebionetworks.research.domain.step.ui.theme.FetchableImageTheme;
 import org.sagebionetworks.research.domain.step.ui.theme.ImageTheme;
-import org.sagebionetworks.research.presentation.DisplayDrawable;
-import org.sagebionetworks.research.presentation.DisplayString;
 import org.sagebionetworks.research.presentation.mapper.DrawableMapper;
 import org.sagebionetworks.research.presentation.model.interfaces.FetchableImageThemeView;
-
-import javax.inject.Inject;
 
 public abstract class ImageThemeView implements Parcelable {
     /**
      * Creates an ImageThemeView from an ImageTheme.
-     * @param imageTheme The image theme to create this imageThemeView from.
+     *
+     * @param imageTheme
+     *         The image theme to create this imageThemeView from.
      * @return an ImageThemeView created from the given ImageTheme.
      */
     public static ImageThemeView fromImageTheme(@Nullable ImageTheme imageTheme, DrawableMapper mapper) {
+        if (mapper == null) {
+            return null;
+        }
+
         if (imageTheme instanceof AnimationImageTheme) {
-            return AnimationImageThemeView.fromAnimationImageTheme((AnimationImageTheme)imageTheme, mapper);
+            return AnimationImageThemeView.fromAnimationImageTheme((AnimationImageTheme) imageTheme, mapper);
         } else if (imageTheme instanceof FetchableImageTheme) {
-            return FetchableImageThemeView.fromFetchableImageTheme((FetchableImageTheme)imageTheme, mapper);
+            return FetchableImageThemeView.fromFetchableImageTheme((FetchableImageTheme) imageTheme, mapper);
         } else {
             return null;
         }

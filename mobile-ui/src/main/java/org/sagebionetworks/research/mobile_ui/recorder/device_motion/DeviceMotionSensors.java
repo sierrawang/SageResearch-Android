@@ -50,20 +50,23 @@ import io.reactivex.FlowableOnSubscribe;
 import io.reactivex.disposables.Disposable;
 
 /**
- * This class is a Wrapper around ReactiveSensors that allows subscribing to a set of sensors with a single
- * call.
+ * This class is a Wrapper around ReactiveSensors that allows subscribing to a set of sensors with a single call.
  */
 public class DeviceMotionSensors implements FlowableOnSubscribe<ReactiveSensorEvent> {
-    @NonNull
-    protected ReactiveSensors reactiveSensors;
-    @NonNull
-    protected Set<Integer> sensorTypes;
-    protected int sensorDelay;
     protected Disposable disposable;
+
     @NonNull
     protected Set<FlowableEmitter<ReactiveSensorEvent>> observers;
 
-    public DeviceMotionSensors(@NonNull Context context, @NonNull Set<Integer> sensorTypes,  int sensorDelay) {
+    @NonNull
+    protected ReactiveSensors reactiveSensors;
+
+    protected int sensorDelay;
+
+    @NonNull
+    protected Set<Integer> sensorTypes;
+
+    public DeviceMotionSensors(@NonNull Context context, @NonNull Set<Integer> sensorTypes, int sensorDelay) {
         this.reactiveSensors = new ReactiveSensors(context);
         List<Flowable<ReactiveSensorEvent>> allFlowables = new ArrayList<>();
         for (Integer sensorType : sensorTypes) {
@@ -81,9 +84,12 @@ public class DeviceMotionSensors implements FlowableOnSubscribe<ReactiveSensorEv
         this.observers = new HashSet<>();
     }
 
-    @Override
-    public void subscribe(final FlowableEmitter<ReactiveSensorEvent> emitter) throws Exception {
-        this.observers.add(emitter);
+    public void cancel() {
+        for (FlowableEmitter<ReactiveSensorEvent> emitter : observers) {
+            emitter.onError(new Throwable("Recording cancelled"));
+        }
+
+        this.disposable.dispose();
     }
 
     public void complete() {
@@ -94,16 +100,13 @@ public class DeviceMotionSensors implements FlowableOnSubscribe<ReactiveSensorEv
         this.disposable.dispose();
     }
 
-    public void cancel() {
-        for (FlowableEmitter<ReactiveSensorEvent> emitter : observers) {
-            emitter.onError(new Throwable("Recording cancelled"));
-        }
-
-        this.disposable.dispose();
-    }
-
     @NonNull
     public Flowable<ReactiveSensorEvent> getFlowable() {
         return Flowable.create(this, BackpressureStrategy.BUFFER);
+    }
+
+    @Override
+    public void subscribe(final FlowableEmitter<ReactiveSensorEvent> emitter) throws Exception {
+        this.observers.add(emitter);
     }
 }

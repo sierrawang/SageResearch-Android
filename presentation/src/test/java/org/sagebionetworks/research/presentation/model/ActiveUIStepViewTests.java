@@ -32,9 +32,16 @@
 
 package org.sagebionetworks.research.presentation.model;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertTrue;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
+
 import com.google.common.collect.ImmutableMap;
 
-import org.junit.*;
+import org.junit.Test;
 import org.sagebionetworks.research.domain.step.StepType;
 import org.sagebionetworks.research.domain.step.interfaces.ActiveUIStep;
 import org.sagebionetworks.research.domain.step.ui.action.interfaces.Action;
@@ -45,21 +52,8 @@ import org.sagebionetworks.research.presentation.DisplayString;
 import org.sagebionetworks.research.presentation.model.implementations.ActiveUIStepViewBase;
 import org.threeten.bp.Duration;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertTrue;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.when;
-
 public class ActiveUIStepViewTests {
     public static final ActiveUIStep MOCK_ACTIVE_UI_STEP;
-    static {
-        ImageTheme imageTheme = UIStepViewTests.mockImageTheme(ColorPlacement.HEADER, null);
-        ColorTheme colorTheme = UIStepViewTests.mockColorTheme(null, true);
-        MOCK_ACTIVE_UI_STEP = mockActiveUIStep("identifier", ImmutableMap.of(), "title", "text",
-                "detail", "footnote", colorTheme, imageTheme, 5.0, true);
-    }
 
     public static ActiveUIStep mockActiveUIStep(String identifier, ImmutableMap<String, Action> actions,
             String title, String text, String detail, String footnote, ColorTheme colorTheme, ImageTheme imageTheme,
@@ -81,22 +75,27 @@ public class ActiveUIStepViewTests {
 
     @Test
     public void testFromActiveUIStep() {
-        ActiveUIStepViewBase result = ActiveUIStepViewBase.fromActiveUIStep(MOCK_ACTIVE_UI_STEP);
+        ActiveUIStepViewBase result = ActiveUIStepViewBase.fromActiveUIStep(MOCK_ACTIVE_UI_STEP, null);
         assertNotNull(result);
         assertEquals("identifier", result.getIdentifier());
-        assertEquals(new DisplayString(null, "title"), result.getTitle());
-        assertEquals(new DisplayString(null, "text"), result.getText());
-        assertEquals(new DisplayString(null, "detail"), result.getDetail());
-        assertEquals(new DisplayString(null, "footnote"), result.getFootnote());
+        assertEquals(DisplayString.create(null, "title"), result.getTitle());
+        assertEquals(DisplayString.create(null, "text"), result.getText());
+        assertEquals(DisplayString.create(null, "detail"), result.getDetail());
+        assertEquals(DisplayString.create(null, "footnote"), result.getFootnote());
         ColorThemeView colorThemeView = result.getColorTheme();
         assertNotNull(colorThemeView);
         assertTrue(colorThemeView.lightStyle());
         ImageThemeView imageThemeView = result.getImageTheme();
-        assertNotNull(imageThemeView);
-        assertNotNull(imageThemeView.getColorPlacement());
-        assertEquals(ColorPlacement.HEADER, imageThemeView.getColorPlacement());
-        assertNull(imageThemeView.getImageResource().drawableRes);
+        // The imageThemeView will be null since we have a null drawable mapper.
+        assertNull(imageThemeView);
         assertEquals(Duration.ofMillis(5000), result.getDuration());
         assertTrue(result.isBackgroundAudioRequired());
+    }
+
+    static {
+        ImageTheme imageTheme = UIStepViewTests.mockImageTheme(ColorPlacement.HEADER, null);
+        ColorTheme colorTheme = UIStepViewTests.mockColorTheme(null, true);
+        MOCK_ACTIVE_UI_STEP = mockActiveUIStep("identifier", ImmutableMap.of(), "title", "text",
+                "detail", "footnote", colorTheme, imageTheme, 5.0, true);
     }
 }

@@ -34,9 +34,9 @@
     package="org.sagebionetworks.research.mpower">
 
     <application>
-        <service android:name="org.sagebionetworks.research.mobile_ui.recorder.service.RecorderService"
+        <service
+            android:name="org.sagebionetworks.research.mobile_ui.recorder.RecorderService"
             android:enabled="true"
-            android:exported="true">
-        </service>
+            android:exported="true"></service>
     </application>
 </manifest>

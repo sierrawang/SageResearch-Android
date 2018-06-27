@@ -32,13 +32,13 @@
 
 package org.sagebionetworks.research.domain.step.gson;
 
-import org.junit.runner.*;
-import org.junit.runners.*;
-import org.junit.runners.Suite.*;
+import org.junit.runner.RunWith;
+import org.junit.runners.Suite;
+import org.junit.runners.Suite.SuiteClasses;
 
 @RunWith(Suite.class)
 @SuiteClasses({ActiveUIStepGsonTests.class, FormUIStepGsonTests.class,
-        SectionStepGsonTests.class, TransformerStepGsonTests.class, UIStepGsonTests.class })
+        SectionStepGsonTests.class, TransformerStepGsonTests.class, UIStepGsonTests.class})
 public class AllStepGsonTests {
 
 }

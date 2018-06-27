@@ -40,8 +40,8 @@ import android.support.annotation.Nullable;
 
 public interface Recorder extends AsyncAction {
     /**
-     * An identifier marking the step at which to stop the asyncAction. If `nil`, then the asyncAction will be stopped when the
-     * task is stopped.
+     * An identifier marking the step at which to stop the asyncAction. If `nil`, then the asyncAction will be stopped
+     * when the task is stopped.
      *
      * @return step identifier, or null
      */

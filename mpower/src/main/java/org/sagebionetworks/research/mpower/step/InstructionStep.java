@@ -36,7 +36,6 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 
 import com.google.common.base.MoreObjects.ToStringHelper;
-import com.google.common.base.Objects;
 import com.google.gson.annotations.SerializedName;
 
 import org.sagebionetworks.research.domain.interfaces.HashCodeHelper;
@@ -70,25 +69,23 @@ public class InstructionStep extends ActiveUIStepBase {
     }
 
     @Override
+    public InstructionStep copyWithIdentifier(@NonNull String identifier) {
+        return new InstructionStep(identifier, this.getActions(), this.getTitle(), this.getText(), this.getDetail(),
+                this.getFootnote(), this.getColorTheme(), this.getImageTheme(), this.getDuration(),
+                this.isBackgroundAudioRequired(), this.firstRunOnly);
+    }
+
+    @NonNull
+    @Override
     public String getType() {
         return TYPE_KEY;
     }
 
-    public boolean isFirstRunOnly() {
-        return this.firstRunOnly;
-    }
-
     @Override
     protected boolean equalsHelper(Object other) {
-        InstructionStep step = (InstructionStep)other;
+        InstructionStep step = (InstructionStep) other;
         return super.equalsHelper(other) &&
                 this.isFirstRunOnly() == step.isFirstRunOnly();
-    }
-
-    @Override
-    protected ToStringHelper toStringHelper() {
-        return super.toStringHelper()
-                .add("isFirstRunOnly", this.isFirstRunOnly());
     }
 
     @Override
@@ -98,9 +95,12 @@ public class InstructionStep extends ActiveUIStepBase {
     }
 
     @Override
-    public InstructionStep copyWithIdentifier(@NonNull String identifier) {
-        return new InstructionStep(identifier, this.getActions(), this.getTitle(), this.getText(), this.getDetail(),
-                this.getFootnote(), this.getColorTheme(), this.getImageTheme(), this.getDuration(),
-                this.isBackgroundAudioRequired(), this.firstRunOnly);
+    protected ToStringHelper toStringHelper() {
+        return super.toStringHelper()
+                .add("isFirstRunOnly", this.isFirstRunOnly());
+    }
+
+    public boolean isFirstRunOnly() {
+        return this.firstRunOnly;
     }
 }

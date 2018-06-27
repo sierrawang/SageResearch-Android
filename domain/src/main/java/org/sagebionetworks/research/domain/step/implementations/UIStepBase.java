@@ -42,7 +42,6 @@ import com.google.gson.annotations.SerializedName;
 
 import org.sagebionetworks.research.domain.interfaces.HashCodeHelper;
 import org.sagebionetworks.research.domain.step.StepType;
-import org.sagebionetworks.research.domain.step.interfaces.Step;
 import org.sagebionetworks.research.domain.step.interfaces.ThemedUIStep;
 import org.sagebionetworks.research.domain.step.ui.action.interfaces.Action;
 import org.sagebionetworks.research.domain.step.ui.theme.ColorTheme;
@@ -57,23 +56,23 @@ public class UIStepBase extends StepBase implements ThemedUIStep {
     private final ImmutableMap<String, Action> actions;
 
     @Nullable
+    private final ColorTheme colorTheme;
+
+    @Nullable
     private final String detail;
 
     @Nullable
     private final String footnote;
 
     @Nullable
+    @SerializedName("image")
+    private final ImageTheme imageTheme;
+
+    @Nullable
     private final String text;
 
     @Nullable
     private final String title;
-
-    @Nullable
-    private final ColorTheme colorTheme;
-
-    @Nullable
-    @SerializedName("image")
-    private final ImageTheme imageTheme;
 
     // Gson initialize defaults
     UIStepBase() {
@@ -108,6 +107,13 @@ public class UIStepBase extends StepBase implements ThemedUIStep {
 
     @NonNull
     @Override
+    public UIStepBase copyWithIdentifier(@NonNull final String identifier) {
+        return new UIStepBase(identifier, this.getActions(), this.getTitle(), this.getText(), this.getDetail(),
+                this.getFootnote(), this.getColorTheme(), this.getImageTheme());
+    }
+
+    @NonNull
+    @Override
     public ImmutableMap<String, Action> getActions() {
         return actions;
     }
@@ -136,19 +142,6 @@ public class UIStepBase extends StepBase implements ThemedUIStep {
         return this.title;
     }
 
-    @NonNull
-    @Override
-    public String getType() {
-        return TYPE_KEY;
-    }
-
-    @NonNull
-    @Override
-    public UIStepBase copyWithIdentifier(@NonNull final String identifier) {
-        return new UIStepBase(identifier, this.getActions(), this.getTitle(), this.getText(), this.getDetail(),
-                this.getFootnote(), this.getColorTheme(), this.getImageTheme());
-    }
-
     @Nullable
     @Override
     public ColorTheme getColorTheme() {
@@ -161,11 +154,10 @@ public class UIStepBase extends StepBase implements ThemedUIStep {
         return this.imageTheme;
     }
 
+    @NonNull
     @Override
-    protected HashCodeHelper hashCodeHelper() {
-        return super.hashCodeHelper()
-                .addFields(this.actions, this.detail, this.footnote, this.text, this.title,
-                        this.colorTheme, this.imageTheme);
+    public String getType() {
+        return TYPE_KEY;
     }
 
     @Override
@@ -179,6 +171,13 @@ public class UIStepBase extends StepBase implements ThemedUIStep {
                 Objects.equal(this.getFootnote(), uiStep.getFootnote()) &&
                 Objects.equal(this.getColorTheme(), uiStep.getColorTheme()) &&
                 Objects.equal(this.getImageTheme(), uiStep.getImageTheme());
+    }
+
+    @Override
+    protected HashCodeHelper hashCodeHelper() {
+        return super.hashCodeHelper()
+                .addFields(this.actions, this.detail, this.footnote, this.text, this.title,
+                        this.colorTheme, this.imageTheme);
     }
 
     @Override

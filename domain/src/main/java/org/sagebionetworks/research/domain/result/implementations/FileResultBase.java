@@ -42,16 +42,16 @@ import org.sagebionetworks.research.domain.interfaces.HashCodeHelper;
 import org.sagebionetworks.research.domain.result.ResultType;
 import org.sagebionetworks.research.domain.result.data.FileResultData;
 import org.sagebionetworks.research.domain.result.interfaces.FileResult;
-import org.sagebionetworks.research.domain.result.interfaces.Result;
 import org.threeten.bp.Instant;
 
 /**
- * The concrete implementation of a result for a File. A wrapper around FileResultData which adds
- * behavior and can be subclassed.
+ * The concrete implementation of a result for a File. A wrapper around FileResultData which adds behavior and can be
+ * subclassed.
  */
 public class FileResultBase extends ResultBase implements FileResult {
     @ResultType
     public static final String TYPE_KEY = ResultType.FILE;
+
     // Subclasses shouldn't hide this field as this will result in a gson error.
     private final FileResultData fileResultData;
 
@@ -59,13 +59,6 @@ public class FileResultBase extends ResultBase implements FileResult {
             @NonNull final Instant endTime, @NonNull final String fileType, @NonNull final String relativePath) {
         super(identifier, startTime, endTime);
         this.fileResultData = FileResultData.create(fileType, relativePath);
-    }
-
-    @NonNull
-    @ResultType
-    @Override
-    public String getType() {
-        return TYPE_KEY;
     }
 
     @Nullable
@@ -80,6 +73,20 @@ public class FileResultBase extends ResultBase implements FileResult {
         return this.fileResultData.getRelativePath();
     }
 
+    @NonNull
+    @ResultType
+    @Override
+    public String getType() {
+        return TYPE_KEY;
+    }
+
+    @Override
+    protected boolean equalsHelper(Object o) {
+        FileResultBase fileResult = (FileResultBase) o;
+        return super.equalsHelper(o) &&
+                Objects.equal(this.fileResultData, fileResult.fileResultData);
+    }
+
     @Override
     protected HashCodeHelper hashCodeHelper() {
         return super.hashCodeHelper()
@@ -90,12 +97,5 @@ public class FileResultBase extends ResultBase implements FileResult {
     protected ToStringHelper toStringHelper() {
         return super.toStringHelper()
                 .add("TaskResultData", this.fileResultData);
-    }
-
-    @Override
-    protected boolean equalsHelper(Object o) {
-        FileResultBase fileResult = (FileResultBase) o;
-        return super.equalsHelper(o) &&
-                Objects.equal(this.fileResultData, fileResult.fileResultData);
     }
 }

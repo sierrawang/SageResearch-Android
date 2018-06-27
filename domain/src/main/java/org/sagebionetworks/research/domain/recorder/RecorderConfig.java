@@ -40,6 +40,7 @@ import org.sagebionetworks.research.domain.async.AsyncAction;
 public interface RecorderConfig extends AsyncAction {
     /**
      * Returns the type of recorder that this config is for.
+     *
      * @Return the type of recorder that this config is for.
      */
     @NonNull

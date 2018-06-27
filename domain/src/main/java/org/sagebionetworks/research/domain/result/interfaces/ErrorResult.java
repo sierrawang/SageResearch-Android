@@ -36,8 +36,8 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 
 /**
- * An ErrorResult is used to indicate that an error occurred. It allows for an error description and a Throwable
- * to be set to describe the error that occurred.
+ * An ErrorResult is used to indicate that an error occurred. It allows for an error description and a Throwable to be
+ * set to describe the error that occurred.
  */
 public interface ErrorResult extends Result {
     /**

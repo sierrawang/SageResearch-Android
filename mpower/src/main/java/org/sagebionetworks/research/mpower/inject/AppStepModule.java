@@ -35,8 +35,7 @@ package org.sagebionetworks.research.mpower.inject;
 import org.sagebionetworks.research.domain.inject.InputFieldsModule;
 import org.sagebionetworks.research.domain.inject.StepModule;
 import org.sagebionetworks.research.domain.inject.StepModule.StepClassKey;
-import org.sagebionetworks.research.domain.step.StepType;
-import org.sagebionetworks.research.domain.step.interfaces.ActiveUIStep;
+import org.sagebionetworks.research.mpower.step.CompletionStep;
 import org.sagebionetworks.research.mpower.step.InstructionStep;
 import org.sagebionetworks.research.mpower.step.OverviewStep;
 
@@ -49,8 +48,16 @@ import dagger.multibindings.IntoMap;
  */
 @Module(includes = {InputFieldsModule.class, StepModule.class})
 public class AppStepModule {
+    @Provides
+    @IntoMap
+    @StepClassKey(CompletionStep.class)
+    static String provideCompletionStepClassInfo() {
+        return CompletionStep.TYPE_KEY;
+    }
+
     /**
      * Returns the type key for InstructionStep.class.
+     *
      * @return the type key for InstructionStep.class.
      */
     @Provides
@@ -62,6 +69,7 @@ public class AppStepModule {
 
     /**
      * Returns the type key for OverviewStep.class.
+     *
      * @return the type key for OverviewStep.class.
      */
     @Provides
@@ -70,4 +78,6 @@ public class AppStepModule {
     static String provideOverviewStepClassInfo() {
         return OverviewStep.TYPE_KEY;
     }
+
+
 }

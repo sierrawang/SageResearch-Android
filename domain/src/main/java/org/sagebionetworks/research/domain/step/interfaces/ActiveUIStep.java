@@ -35,9 +35,9 @@ package org.sagebionetworks.research.domain.step.interfaces;
 import android.support.annotation.Nullable;
 
 /**
- * An ActiveUIStep is a step which asks the user to perform a task. Typically they have a duration
- * which defines how long the user should perform the task for. ActiveUISteps also have spoken instructions
- * that can be read to the user.
+ * An ActiveUIStep is a step which asks the user to perform a task. Typically they have a duration which defines how
+ * long the user should perform the task for. ActiveUISteps also have spoken instructions that can be read to the
+ * user.
  */
 public interface ActiveUIStep extends ThemedUIStep {
     /**
@@ -55,8 +55,8 @@ public interface ActiveUIStep extends ThemedUIStep {
     // TODO: commands
 
     /**
-     * Whether or not the step uses audio, such as the speech synthesizer, that should play whether or not the user has
-     * the mute switch turned on.
+     * Whether or not the step uses audio, such as the speech synthesizer, that should play whether or not the user
+     * has the mute switch turned on.
      *
      * @return whether the step requires background audio
      */

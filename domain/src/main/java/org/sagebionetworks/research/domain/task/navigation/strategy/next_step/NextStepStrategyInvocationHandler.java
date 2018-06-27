@@ -32,14 +32,14 @@
 
 package org.sagebionetworks.research.domain.task.navigation.strategy.next_step;
 
+import static com.google.common.base.Preconditions.checkNotNull;
+
 import android.support.annotation.NonNull;
 
 import org.sagebionetworks.research.domain.task.navigation.strategy.StepNavigationStrategy.NextStepStrategy;
 
 import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Method;
-
-import static com.google.common.base.Preconditions.checkNotNull;
 
 public final class NextStepStrategyInvocationHandler implements InvocationHandler {
     private final NextStepStrategy nextStepStrategy;

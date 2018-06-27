@@ -31,10 +31,7 @@
  */
 
 package org.sagebionetworks.research.mobile_ui.recorder.data;
-import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
-
-import com.google.gson.JsonObject;
 
 import org.reactivestreams.Subscriber;
 import org.reactivestreams.Subscription;

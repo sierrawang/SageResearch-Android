@@ -2,7 +2,7 @@
   "identifier": "handSelection",
   "type": "form",
   "title": "Which hands are you capable of doing this task with?",
-  "inputFields" : [
+  "inputFields": [
     {
       "uiHint": "list",
       "dataType": "singleChoice.string",

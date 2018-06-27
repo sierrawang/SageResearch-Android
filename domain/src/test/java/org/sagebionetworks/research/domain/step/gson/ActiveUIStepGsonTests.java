@@ -32,17 +32,18 @@
 
 package org.sagebionetworks.research.domain.step.gson;
 
-import org.junit.*;
+import static junit.framework.Assert.assertEquals;
+import static junit.framework.Assert.assertTrue;
+
+import static org.junit.Assert.assertNotNull;
+
+import org.junit.Test;
 import org.sagebionetworks.research.domain.step.implementations.ActiveUIStepBase;
 import org.sagebionetworks.research.domain.step.interfaces.ActiveUIStep;
 import org.sagebionetworks.research.domain.step.interfaces.Step;
 import org.sagebionetworks.research.domain.step.ui.action.interfaces.Action;
 
 import java.util.Collections;
-
-import static junit.framework.Assert.assertEquals;
-import static junit.framework.Assert.assertTrue;
-import static org.junit.Assert.*;
 
 public class ActiveUIStepGsonTests extends IndividualStepGsonTest {
     @Test
@@ -55,7 +56,7 @@ public class ActiveUIStepGsonTests extends IndividualStepGsonTest {
     @Test
     public void testExample_2() {
         ActiveUIStep expected = new ActiveUIStepBase("testActiveUIStep2", Collections.<String, Action>emptyMap(),
-                "title", "text", "detail", "footnote", null , null, null, false);
+                "title", "text", "detail", "footnote", null, null, null, false);
         commonTest(expected, "ActiveUIStep_2.json");
     }
 

@@ -32,10 +32,7 @@
 
 package org.sagebionetworks.research.mobile_ui.recorder;
 
-import android.content.Context;
 import android.support.annotation.Nullable;
-
-import org.sagebionetworks.research.domain.async.AsyncAction;
 
 import java.io.Serializable;
 

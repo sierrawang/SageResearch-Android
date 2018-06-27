@@ -32,6 +32,8 @@
 
 package org.sagebionetworks.research.mobile_ui.show_step.view;
 
+import static com.google.common.base.Preconditions.checkNotNull;
+
 import android.arch.lifecycle.ViewModelProviders;
 import android.content.Context;
 import android.os.Bundle;
@@ -50,50 +52,54 @@ import org.sagebionetworks.research.mobile_ui.widget.ActionButton;
 import org.sagebionetworks.research.presentation.ActionType;
 import org.sagebionetworks.research.presentation.model.interfaces.StepView;
 import org.sagebionetworks.research.presentation.perform_task.PerformTaskViewModel;
-import org.sagebionetworks.research.presentation.show_step.show_step_view_models.ShowStepViewModel;
 import org.sagebionetworks.research.presentation.show_step.show_step_view_model_factories.ShowStepViewModelFactory;
+import org.sagebionetworks.research.presentation.show_step.show_step_view_models.ShowStepViewModel;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import butterknife.ButterKnife;
-import butterknife.Unbinder;
-import dagger.android.support.AndroidSupportInjection;
 import javax.inject.Inject;
 
-import static com.google.common.base.Preconditions.checkNotNull;
-
-import java.util.Map;
+import butterknife.Unbinder;
+import dagger.android.support.AndroidSupportInjection;
 
 /**
- * A ShowStepFragmentBase implements the functionality common to showing all step fragments in terms of
- * 2 other unknown operations (instantiateBinding, getLayoutID).
- * @param <S> The type of StepView that this fragment uses.
- * @param <VM> The type of StepViewModel that this fragment uses.
+ * A ShowStepFragmentBase implements the functionality common to showing all step fragments in terms of 2 other
+ * unknown operations (instantiateBinding, getLayoutID).
+ *
+ * @param <S>
+ *         The type of StepView that this fragment uses.
+ * @param <VM>
+ *         The type of StepViewModel that this fragment uses.
  */
 public abstract class ShowStepFragmentBase
         <S extends StepView, VM extends ShowStepViewModel<S>, SB extends StepViewBinding<S>>
         extends Fragment {
     private static final Logger LOGGER = LoggerFactory.getLogger(ShowStepFragmentBase.class);
+
     private static final String ARGUMENT_STEP_VIEW = "STEP_VIEW";
+
     private static final String ARGUMENT_TASK_FRAGMENT = "TASK_FRAGMENT";
+
     protected PerformTaskFragment performTaskFragment;
+
+    protected PerformTaskViewModel performTaskViewModel;
+
+    protected VM showStepViewModel;
+
     @Inject
     protected ShowStepViewModelFactory showStepViewModelFactory;
 
-    protected PerformTaskViewModel performTaskViewModel;
-    protected VM showStepViewModel;
     protected S stepView;
+
     protected SB stepViewBinding;
 
     private Unbinder stepViewUnbinder;
 
-    public ShowStepFragmentBase() {
-
-    }
-
     /**
      * Creates a Bundle containing the given StepView.
-     * @param stepView The StepView to put in the bundle.
+     *
+     * @param stepView
+     *         The StepView to put in the bundle.
      * @return a Bundle containing the given StepView.
      */
     public static Bundle createArguments(@NonNull StepView stepView) {
@@ -104,8 +110,8 @@ public abstract class ShowStepFragmentBase
         return args;
     }
 
-    public void setPerformTaskFragment(PerformTaskFragment performTaskFragment) {
-        this.performTaskFragment = performTaskFragment;
+    public ShowStepFragmentBase() {
+
     }
 
     @Override
@@ -153,29 +159,18 @@ public abstract class ShowStepFragmentBase
         this.stepViewBinding.unbind();
     }
 
-    /**
-     * Called whenever one of this fragment's ActionButton's is clicked. Subclasses should override to correctly
-     * handle their ActionButtons.
-     * @param actionButton the ActionButton that was clicked by the user.
-     */
-    protected void handleActionButtonClick(@NonNull ActionButton actionButton) {
-        @ActionType String actionType = this.getActionTypeFromActionButton(actionButton);
-        this.showStepViewModel.handleAction(actionType);
-    }
-
-    protected void update(S stepView) {
-        this.stepViewBinding.update(stepView);
+    public void setPerformTaskFragment(PerformTaskFragment performTaskFragment) {
+        this.performTaskFragment = performTaskFragment;
     }
 
     /**
      * Returns the ActionType corresponding to the given ActionButton or null if the ActionType cannot be found.
-     * Default mapping of button id to ActionType is:
-     *      rs2_step_navigation_action_forward -> ActionType.Forward
-     *      rs2_step_navigation_action_backward -> ActionType.Backward
-     *      rs2_step_navigation_action_skip -> ActionType.Skip
-     *      rs2_step_header_cancel_button -> ActionType.CANCEL
-     *      rs2_step_header_info_button -> ActionType.INFO
-     * @param actionButton The ActionButton to get the ActionType for.
+     * Default mapping of button id to ActionType is: rs2_step_navigation_action_forward -> ActionType.Forward
+     * rs2_step_navigation_action_backward -> ActionType.Backward rs2_step_navigation_action_skip -> ActionType.Skip
+     * rs2_step_header_cancel_button -> ActionType.CANCEL rs2_step_header_info_button -> ActionType.INFO
+     *
+     * @param actionButton
+     *         The ActionButton to get the ActionType for.
      * @return the Actiontype corresponding to the given ActionButton or null if the ActionType cannot be found.
      */
     @Nullable
@@ -200,17 +195,34 @@ public abstract class ShowStepFragmentBase
 
     /**
      * Returns the layout resource that corresponds to the layout for this fragment.
+     *
      * @return the layout resource that corresponds to the layout for this fragment.
      */
     @LayoutRes
     protected abstract int getLayoutId();
 
     /**
-     * Instantiates and returns and instance of the correct type of StepViewBinding for this fragment.
-     * Note: If a subclass needs to add any fields to the binding it should override this method to return a
-     * different binding.
+     * Called whenever one of this fragment's ActionButton's is clicked. Subclasses should override to correctly
+     * handle their ActionButtons.
+     *
+     * @param actionButton
+     *         the ActionButton that was clicked by the user.
+     */
+    protected void handleActionButtonClick(@NonNull ActionButton actionButton) {
+        @ActionType String actionType = this.getActionTypeFromActionButton(actionButton);
+        this.showStepViewModel.handleAction(actionType);
+    }
+
+    /**
+     * Instantiates and returns and instance of the correct type of StepViewBinding for this fragment. Note: If a
+     * subclass needs to add any fields to the binding it should override this method to return a different binding.
+     *
      * @return An instance of the correct type of StepViewBinding for this fragment.
      */
     @NonNull
     protected abstract SB instantiateAndBindBinding(View view);
+
+    protected void update(S stepView) {
+        this.stepViewBinding.update(stepView);
+    }
 }

@@ -34,6 +34,10 @@ package org.sagebionetworks.research.presentation.inject;
 
 import android.support.annotation.StringDef;
 
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
+
+@Retention(RetentionPolicy.SOURCE)
 @StringDef({DrawableName.CANCEL, DrawableName.INFO, DrawableName.BACK})
 public @interface DrawableName {
     String CANCEL = "cancel";

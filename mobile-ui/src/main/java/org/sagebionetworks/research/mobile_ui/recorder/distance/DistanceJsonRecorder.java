@@ -40,6 +40,7 @@ import com.google.gson.JsonObject;
 
 import org.sagebionetworks.research.domain.recorder.RecorderConfig;
 import org.sagebionetworks.research.mobile_ui.recorder.data.DataLogger;
+import org.sagebionetworks.research.mobile_ui.recorder.distance.DistanceRecorder.DistanceInfo.DistanceRecorder.CurrentDistanceInfo;
 
 import java.io.IOException;
 
@@ -55,9 +56,10 @@ public class DistanceJsonRecorder extends DistanceRecorder {
     protected boolean usesRelativeCoordinates;
 
     public DistanceJsonRecorder(final RecorderConfig config, final Context context) throws IOException {
+        // TODO rkolmos 06/27/2018 get the output directory right.
         super(config, context, new DataLogger(config.getIdentifier(), null,
                 JSON_FILE_START, JSON_FILE_END, JSON_OBJECT_DELIMINATOR));
-        // TODO rkolmos 06/26/2018 initalize these from config.
+        // TODO rkolmos 06/26/2018 initalize this from config.
         this.usesRelativeCoordinates = false;
     }
 

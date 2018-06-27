@@ -32,8 +32,11 @@
 
 package org.sagebionetworks.research.mobile_ui.perform_task;
 
+import static com.google.common.base.Preconditions.checkNotNull;
+
 import android.arch.lifecycle.ViewModelProviders;
 import android.content.Context;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.os.ParcelUuid;
 import android.support.annotation.NonNull;
@@ -50,17 +53,21 @@ import org.sagebionetworks.research.domain.result.implementations.TaskResultBase
 import org.sagebionetworks.research.domain.result.interfaces.TaskResult;
 import org.sagebionetworks.research.mobile_ui.inject.ShowStepFragmentModule.ShowStepFragmentFactory;
 import org.sagebionetworks.research.mobile_ui.show_step.view.ShowStepFragmentBase;
-import org.sagebionetworks.research.presentation.mapper.DrawableMapper;
+import org.sagebionetworks.research.presentation.model.TaskView;
 import org.sagebionetworks.research.presentation.model.interfaces.StepView;
 import org.sagebionetworks.research.presentation.model.interfaces.StepView.NavDirection;
-import org.sagebionetworks.research.presentation.model.TaskView;
 import org.sagebionetworks.research.presentation.perform_task.PerformTaskViewModel;
 import org.sagebionetworks.research.presentation.perform_task.PerformTaskViewModelFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.threeten.bp.Instant;
+import org.threeten.bp.ZoneId;
+import org.threeten.bp.ZonedDateTime;
+import org.threeten.bp.zone.ZoneRulesException;
 
 import java.util.UUID;
+
+import javax.inject.Inject;
 
 import butterknife.ButterKnife;
 import butterknife.Unbinder;
@@ -68,9 +75,6 @@ import dagger.android.AndroidInjector;
 import dagger.android.DispatchingAndroidInjector;
 import dagger.android.support.AndroidSupportInjection;
 import dagger.android.support.HasSupportFragmentInjector;
-import javax.inject.Inject;
-
-import static com.google.common.base.Preconditions.checkNotNull;
 
 /**
  * A placeholder fragment containing a simple view.
@@ -81,6 +85,9 @@ public class PerformTaskFragment extends Fragment implements HasSupportFragmentI
     private static final String ARGUMENT_TASK_VIEW = "TASK_VIEW";
 
     private static final String ARGUMENT_TASK_RUN_UUID = "TASK_RUN_UUID";
+
+    public static final String LAST_RUN_KEY = "LAST_RUN";
+
 
     @Inject
     DispatchingAndroidInjector<Fragment> fragmentDispatchingAndroidInjector;
@@ -101,6 +108,7 @@ public class PerformTaskFragment extends Fragment implements HasSupportFragmentI
 
     private Unbinder unbinder;
 
+
     public static PerformTaskFragment newInstance(@NonNull TaskView taskView, @Nullable UUID taskRunUUID) {
         checkNotNull(taskView);
 
@@ -111,6 +119,9 @@ public class PerformTaskFragment extends Fragment implements HasSupportFragmentI
         PerformTaskFragment fragment = new PerformTaskFragment();
         fragment.setArguments(arguments);
         return fragment;
+    }
+
+    public PerformTaskFragment() {
     }
 
     @Override
@@ -145,9 +156,9 @@ public class PerformTaskFragment extends Fragment implements HasSupportFragmentI
 
         TaskResult taskResult = new TaskResultBase("taskID", Instant.now(), UUID.randomUUID());
         performTaskViewModel = ViewModelProviders
-                .of(this, taskViewModelFactory.create(taskView, taskRunParcelableUuid.getUuid()))
+                .of(this, taskViewModelFactory.create(taskView, taskRunParcelableUuid.getUuid(),
+                        this.getLastRun()))
                 .get(PerformTaskViewModel.class);
-
         performTaskViewModel.getStepView().observe(this, this::showStep);
     }
 
@@ -183,9 +194,14 @@ public class PerformTaskFragment extends Fragment implements HasSupportFragmentI
             if (currentStepFragment != null) {
                 getChildFragmentManager().beginTransaction().remove(currentStepFragment).commit();
                 currentStepFragment = null;
-            } else {
-                // TODO: handle end of perform task
             }
+
+            // Write this date as the new last run.
+            String sharedPreferencesKey = this.taskView.getIdentifier();
+            SharedPreferences sharedPreferences = getContext().getSharedPreferences(sharedPreferencesKey,
+                    Context.MODE_PRIVATE);
+            sharedPreferences.edit().putLong(LAST_RUN_KEY, Instant.now().toEpochMilli()).apply();
+            // TODO handle end of perform task.
             return;
         }
 
@@ -203,5 +219,25 @@ public class PerformTaskFragment extends Fragment implements HasSupportFragmentI
         transaction
                 .replace(R.id.rs2_step_container, step, stepView.getIdentifier())
                 .commit();
+    }
+
+    private ZonedDateTime getLastRun() {
+        String sharedPreferencesKey = this.taskView.getIdentifier();
+        SharedPreferences sharedPreferences = getContext().getSharedPreferences(sharedPreferencesKey,
+                Context.MODE_PRIVATE);
+        Long lastRun = sharedPreferences.getLong(LAST_RUN_KEY, 0);
+        if (lastRun == 0) {
+            return null;
+        }
+
+        Instant lastRunInstant = Instant.ofEpochMilli(lastRun);
+        ZoneId zoneId = null;
+        try {
+            zoneId = ZoneId.systemDefault();
+        } catch (ZoneRulesException e) {
+            zoneId = ZoneId.of("Z"); // UTC time.
+        }
+
+        return ZonedDateTime.ofInstant(lastRunInstant, zoneId);
     }
 }

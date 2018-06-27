@@ -46,7 +46,6 @@ import org.sagebionetworks.research.presentation.mapper.DrawableMapper;
 import org.sagebionetworks.research.presentation.model.ColorThemeView;
 import org.sagebionetworks.research.presentation.model.ImageThemeView;
 import org.sagebionetworks.research.presentation.model.action.ActionView;
-import org.sagebionetworks.research.presentation.model.action.ActionViewBase;
 import org.sagebionetworks.research.presentation.model.implementations.UIStepViewBase;
 import org.sagebionetworks.research.presentation.model.interfaces.UIStepView;
 
@@ -55,6 +54,24 @@ import java.util.List;
 
 public class OverviewStepView extends UIStepViewBase {
     private final ImmutableList<IconView> iconViews;
+
+    @NonNull
+    public static OverviewStepView fromOverviewStep(@NonNull Step step, DrawableMapper mapper) {
+        if (!(step instanceof OverviewStep)) {
+            throw new IllegalArgumentException("Provided step: " + step + " is not an OverviewStep");
+        }
+
+        UIStepView uiStepView = UIStepViewBase.fromUIStep(step, mapper);
+        OverviewStep overviewStep = (OverviewStep) step;
+        List<IconView> iconViews = new ArrayList<>();
+        for (Icon icon : overviewStep.getIcons()) {
+            iconViews.add(IconView.fromIcon(icon, mapper));
+        }
+
+        return new OverviewStepView(uiStepView.getIdentifier(), uiStepView.getNavDirection(), uiStepView.getActions(),
+                uiStepView.getTitle(), uiStepView.getText(), uiStepView.getDetail(), uiStepView.getFootnote(),
+                uiStepView.getColorTheme(), uiStepView.getImageTheme(), iconViews);
+    }
 
     public OverviewStepView(@NonNull final String identifier, final int navDirection,
             @NonNull final ImmutableMap<String, ActionView> actions,
@@ -67,24 +84,6 @@ public class OverviewStepView extends UIStepViewBase {
             @NonNull final List<IconView> iconViews) {
         super(identifier, navDirection, actions, title, text, detail, footnote, colorTheme, imageTheme);
         this.iconViews = ImmutableList.copyOf(iconViews);
-    }
-
-    @NonNull
-    public static OverviewStepView fromOverviewStep(@NonNull Step step, DrawableMapper mapper) {
-        if (!(step instanceof OverviewStep)) {
-            throw new IllegalArgumentException("Provided step: " + step + " is not an OverviewStep");
-        }
-
-        UIStepView uiStepView = UIStepViewBase.fromUIStep(step, mapper);
-        OverviewStep overviewStep = (OverviewStep)step;
-        List<IconView> iconViews = new ArrayList<>();
-        for (Icon icon : overviewStep.getIcons()) {
-            iconViews.add(IconView.fromIcon(icon, mapper));
-        }
-
-        return new OverviewStepView(uiStepView.getIdentifier(), uiStepView.getNavDirection(), uiStepView.getActions(),
-                uiStepView.getTitle(), uiStepView.getText(), uiStepView.getDetail(), uiStepView.getFootnote(),
-                uiStepView.getColorTheme(), uiStepView.getImageTheme(), iconViews);
     }
 
     @NonNull

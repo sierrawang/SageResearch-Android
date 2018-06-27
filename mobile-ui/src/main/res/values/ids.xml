@@ -35,56 +35,56 @@
     <id name="rs2_step_navigation_action_forward" />
     <id name="rs2_step_navigation_action_backward" />
     <id name="rs2_step_navigation_action_skip" />
-    <id name="rs2_step_navigation_action_cancel"/>
+    <id name="rs2_step_navigation_action_cancel" />
     <id name="rs2_step_navigation_action_learn_more" />
     <id name="rs2_step_navigation_action_add_more" />
-    <id name="rs2_step_navigation_action_info"/>
+    <id name="rs2_step_navigation_action_info" />
 
     <!-- Navigation Action Bar -->
-    <id name="rs2_step_navigation_shadow"/>
-    <id name="rs2_step_navigation_primary_button_group"/>
+    <id name="rs2_step_navigation_shadow" />
+    <id name="rs2_step_navigation_primary_button_group" />
 
     <!-- Step Header -->
-    <id name="rs2_progress_label"/>
-    <id name="rs2_progress_bar"/>
-    <id name="rs2_progress_bar_floating"/>
-    <id name="rs2_step_header_action_button_group"/>
+    <id name="rs2_progress_label" />
+    <id name="rs2_progress_bar" />
+    <id name="rs2_progress_bar_floating" />
+    <id name="rs2_step_header_action_button_group" />
 
     <!-- Standard Step Components -->
-    <id name="rs2_step_navigation_action_bar"/>
-    <id name="rs2_step_header"/>
-    <id name="rs2_step_body"/>
+    <id name="rs2_step_navigation_action_bar" />
+    <id name="rs2_step_header" />
+    <id name="rs2_step_body" />
 
-    <id name="rs2_step_container"/>
+    <id name="rs2_step_container" />
     <id name="rs2_current_step" />
     <id name="rs2_step_id" />
 
     <!-- Id's for NavigationViewBinding -->
-    <id name="rs2_title"/>
-    <id name="rs2_image_view"/>
-    <id name="rs2_text"/>
-    <id name="rs2_detail"/>
-    <id name="rs2_footnote"/>
+    <id name="rs2_title" />
+    <id name="rs2_image_view" />
+    <id name="rs2_text" />
+    <id name="rs2_detail" />
+    <id name="rs2_footnote" />
 
     <!-- Id's for OverviewStepViewBinding -->
-    <id name="overallIconDescriptionLabel"/>
-    <id name="leftIconImageView"/>
-    <id name="centerIconImageView"/>
-    <id name="rightIconImageView"/>
-    <id name="leftIconLabel"/>
-    <id name="centerIconLabel"/>
-    <id name="rightIconLabel"/>
+    <id name="overallIconDescriptionLabel" />
+    <id name="leftIconImageView" />
+    <id name="centerIconImageView" />
+    <id name="rightIconImageView" />
+    <id name="leftIconLabel" />
+    <id name="centerIconLabel" />
+    <id name="rightIconLabel" />
 
     <!-- Id's for ActiveUIStepViewBinding -->
-    <id name="countdownDial"/>
-    <id name="countLabel"/>
-    <id name="unitLabel"/>
+    <id name="countdownDial" />
+    <id name="countLabel" />
+    <id name="unitLabel" />
 
     <!-- Id's for TappingStepViewBinding -->
-    <id name="leftTapButton"/>
-    <id name="rightTapButton"/>
+    <id name="leftTapButton" />
+    <id name="rightTapButton" />
 
     <!-- TODO Remove these when possible -->
-    <id name="title"/>
-    <id name="description"/>
+    <id name="title" />
+    <id name="description" />
 </resources>

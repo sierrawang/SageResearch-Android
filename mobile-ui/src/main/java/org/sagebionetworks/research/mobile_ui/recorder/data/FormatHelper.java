@@ -56,8 +56,6 @@ public class FormatHelper {
     public static final SimpleDateFormat SIMPLE_FORMAT_TIME = new SimpleDateFormat(
             TIME_FORMAT_SIMPLE_DATE,
             Locale.getDefault());
-    private FormatHelper() {
-    }
 
     /**
      * Returns a DateFormat object based on the dateStyle and timeStyle params

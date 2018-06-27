@@ -53,5 +53,5 @@ public abstract class PerformTaskModule {
     @IntoMap
     @FragmentKey(PerformTaskFragment.class)
     abstract AndroidInjector.Factory<? extends android.support.v4.app.Fragment>
-        bindTaskActivityFragmentInjectorFactory(TaskActivityFragmentSubcomponent.Builder builder);
+    bindTaskActivityFragmentInjectorFactory(TaskActivityFragmentSubcomponent.Builder builder);
 }

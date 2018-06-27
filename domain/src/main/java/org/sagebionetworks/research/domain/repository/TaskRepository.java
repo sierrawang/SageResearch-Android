@@ -50,7 +50,9 @@ import io.reactivex.Single;
 public interface TaskRepository {
     /**
      * Gets the task with the given task identifier.
-     * @param taskIdentifier The name of the task to get.
+     *
+     * @param taskIdentifier
+     *         The name of the task to get.
      * @return The task with the given taskIdentifier.
      */
     @NonNull
@@ -58,7 +60,9 @@ public interface TaskRepository {
 
     /**
      * Gets the task info with the given identifier.
-     * @param taskIdentifier The name of the task info to get.
+     *
+     * @param taskIdentifier
+     *         The name of the task info to get.
      * @return The task info with the given identifier.
      */
     @NonNull
@@ -66,22 +70,27 @@ public interface TaskRepository {
 
     /**
      * Gets the task result with the given UUID.
-     * @param taskRunUUID The UUID of the result to get.
+     *
+     * @param taskRunUUID
+     *         The UUID of the result to get.
      * @return the task result with the given UUID.
      */
     @NonNull
     Maybe<TaskResult> getTaskResult(UUID taskRunUUID);
 
-    @NonNull
-    @CheckResult
-    Completable setTaskResult(TaskResult taskResult);
-
     /**
      * Finds and returns the drawable resource with the given identifier, or throws a NotFoundException()
-     * @param name - the identifier of the drawable to find.
+     *
+     * @param name
+     *         - the identifier of the drawable to find.
      * @return the drawable resource with the given identifier.
-     * @throws NotFoundException if the given resource identifier cannot be resolved as a drawable.
+     * @throws NotFoundException
+     *         if the given resource identifier cannot be resolved as a drawable.
      */
     @DrawableRes
     int resolveDrawableFromString(@NonNull String name) throws NotFoundException;
+
+    @NonNull
+    @CheckResult
+    Completable setTaskResult(TaskResult taskResult);
 }

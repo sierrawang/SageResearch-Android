@@ -32,7 +32,6 @@
 
 package org.sagebionetworks.research.presentation.model.form;
 
-import android.os.Parcel;
 import android.os.Parcelable;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -49,25 +48,27 @@ public abstract class ChoiceView<E extends Parcelable> implements Parcelable {
 
         public abstract Builder<E> setAnswerValue(@NonNull final E answerValue);
 
-        public abstract Builder<E> setText(@Nullable final DisplayString text);
-
         public abstract Builder<E> setDetail(@Nullable final DisplayString detail);
+
+        public abstract Builder<E> setExclusive(final boolean isExclusive);
 
         public abstract Builder<E> setIconResId(final int resId);
 
-        public abstract Builder<E> setExclusive(final boolean isExclusive);
+        public abstract Builder<E> setText(@Nullable final DisplayString text);
     }
-
-    public abstract Builder<E> toBuilder();
 
     @NonNull
     public abstract E getAnswerValue();
-    @Nullable
-    public abstract DisplayString getText();
+
     @Nullable
     public abstract DisplayString getDetail();
 
     public abstract int getIconResId();
 
+    @Nullable
+    public abstract DisplayString getText();
+
     public abstract boolean isExclusive();
+
+    public abstract Builder<E> toBuilder();
 }

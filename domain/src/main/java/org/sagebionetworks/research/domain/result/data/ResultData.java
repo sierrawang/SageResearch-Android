@@ -50,21 +50,15 @@ public abstract class ResultData {
     public abstract static class Builder {
         public abstract ResultData build();
 
+        public abstract Builder setEndTime(@Nullable final Instant endTime);
+
         public abstract Builder setIdentifier(final String identifier);
 
         public abstract Builder setStartTime(final Instant startTime);
-
-        public abstract Builder setEndTime(@Nullable final Instant endTime);
     }
 
     public static Builder builder() {
         return new AutoValue_ResultData.Builder();
-    }
-
-    public abstract Builder toBuilder();
-
-    public static TypeAdapter<ResultData> typeAdapter(Gson gson) {
-        return new AutoValue_ResultData.GsonTypeAdapter(gson);
     }
 
     public static ResultData create(@NonNull final String identifier,
@@ -76,12 +70,18 @@ public abstract class ResultData {
                 .build();
     }
 
+    public static TypeAdapter<ResultData> typeAdapter(Gson gson) {
+        return new AutoValue_ResultData.GsonTypeAdapter(gson);
+    }
+
+    @Nullable
+    public abstract Instant getEndTime();
+
     @NonNull
     public abstract String getIdentifier();
 
     @NonNull
     public abstract Instant getStartTime();
 
-    @Nullable
-    public abstract Instant getEndTime();
+    public abstract Builder toBuilder();
 }

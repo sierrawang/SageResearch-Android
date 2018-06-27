@@ -37,7 +37,7 @@ import org.sagebionetworks.research.domain.form.interfaces.Choice;
 import java.util.List;
 
 public interface ChoiceOptions<E> {
-    boolean isOptional();
-
     List<Choice<E>> getChoices();
+
+    boolean isOptional();
 }

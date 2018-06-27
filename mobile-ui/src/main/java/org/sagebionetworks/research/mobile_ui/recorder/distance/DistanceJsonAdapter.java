@@ -92,8 +92,9 @@ public class DistanceJsonAdapter {
         // getElapsedRealtimeNanos(), divided by a billion.)
         jsonObject.addProperty(TIMESTAMP_IN_SECONDS_KEY, (locationNanos - startTimeNanos) * 1e-9);
         jsonObject.addProperty(UPTIME_IN_SECONDS_KEY, locationNanos * 1e-9);
-        JsonObject coordinateJsonObject = DistanceJsonAdapter.getCoordinateJsonObject(location, usesRelativeCoordinates,
-                firstLocation);
+        JsonObject coordinateJsonObject = DistanceJsonAdapter
+                .getCoordinateJsonObject(location, usesRelativeCoordinates,
+                        firstLocation);
         jsonObject.add(COORDINATE_KEY, coordinateJsonObject);
         if (location.hasAccuracy()) {
             jsonObject.addProperty(ACCURACY_KEY, location.getAccuracy());

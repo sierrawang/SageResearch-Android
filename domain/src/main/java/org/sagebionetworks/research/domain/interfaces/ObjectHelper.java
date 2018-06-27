@@ -49,17 +49,8 @@ public abstract class ObjectHelper {
     }
 
     @Override
-    public String toString() {
-        return this.toStringHelper().toString();
-    }
-
-    /**
-     * Returns a toStringHelper that can be used to produce the toString for this object. Expected
-     * that subclasses will override to add their own fields.
-     * @return The ToStringHelper that can be used to produce the toString for this object.
-     */
-    protected ToStringHelper toStringHelper() {
-        return MoreObjects.toStringHelper(this);
+    public int hashCode() {
+        return this.hashCode;
     }
 
     @Override
@@ -74,26 +65,38 @@ public abstract class ObjectHelper {
         return this.equalsHelper(o);
     }
 
+    @Override
+    public String toString() {
+        return this.toStringHelper().toString();
+    }
+
     /**
-     * Returns true if this objects fields are equal to the fields of the given object, false otherwise. Expected
-     * that subclasses will override to add their own fields.
-     * Requires: this.getClass() == o.getClass()
-     * @param o The object to check for equality with.
+     * Returns true if this objects fields are equal to the fields of the given object, false otherwise. Expected that
+     * subclasses will override to add their own fields. Requires: this.getClass() == o.getClass()
+     *
+     * @param o
+     *         The object to check for equality with.
      * @return true if this object's fields are equal to the fields of the given object.
      */
     protected abstract boolean equalsHelper(Object o);
 
     /**
-     * Returns a HashCodeHelper that can be used to produce the hashCode for this object. Expected that
-     * subclasses will override to add their own fields to the hash code, as with equals and toString helpers.
+     * Returns a HashCodeHelper that can be used to produce the hashCode for this object. Expected that subclasses
+     * will override to add their own fields to the hash code, as with equals and toString helpers.
+     *
      * @return The HashCodeHelper that can be used to produce the hashCode for this object.
      */
     protected HashCodeHelper hashCodeHelper() {
         return new HashCodeHelper();
     }
 
-    @Override
-    public int hashCode() {
-        return this.hashCode;
+    /**
+     * Returns a toStringHelper that can be used to produce the toString for this object. Expected that subclasses
+     * will override to add their own fields.
+     *
+     * @return The ToStringHelper that can be used to produce the toString for this object.
+     */
+    protected ToStringHelper toStringHelper() {
+        return MoreObjects.toStringHelper(this);
     }
 }

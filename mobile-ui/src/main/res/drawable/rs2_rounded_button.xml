@@ -1,5 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
-<!--
+<?xml version="1.0" encoding="utf-8"?><!--
   ~ BSD 3-Clause License
   ~
   ~ Copyright 2018  Sage Bionetworks. All rights reserved.
@@ -34,9 +33,8 @@
 <layer-list xmlns:android="http://schemas.android.com/apk/res/android">
     <item android:id="@android:id/background">
         <shape>
-            <solid android:color="@color/butterscotch500"/>
-            <corners
-                android:radius="@dimen/rs2_completely_rounded_corner_radius"/>
+            <solid android:color="@color/butterscotch500" />
+            <corners android:radius="@dimen/rs2_completely_rounded_corner_radius" />
         </shape>
     </item>
 </layer-list>

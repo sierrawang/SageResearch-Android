@@ -1,5 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
-<!--
+<?xml version="1.0" encoding="utf-8"?><!--
   ~ BSD 3-Clause License
   ~
   ~ Copyright 2018  Sage Bionetworks. All rights reserved.
@@ -32,6 +31,7 @@
   -->
 
 <resources>
+
     <style name="Widget.ResearchStack.StepBody.TitleLabel" parent="">
         <item name="android:textSize">24sp</item>
         <item name="android:textColor">@color/appTextDark</item>

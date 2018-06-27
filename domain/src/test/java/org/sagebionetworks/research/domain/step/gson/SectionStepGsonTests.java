@@ -32,7 +32,11 @@
 
 package org.sagebionetworks.research.domain.step.gson;
 
-import org.junit.*;
+import static junit.framework.Assert.assertEquals;
+import static junit.framework.Assert.assertNotNull;
+import static junit.framework.Assert.assertTrue;
+
+import org.junit.Test;
 import org.sagebionetworks.research.domain.step.interfaces.ActiveUIStep;
 import org.sagebionetworks.research.domain.step.interfaces.SectionStep;
 import org.sagebionetworks.research.domain.step.interfaces.Step;
@@ -40,34 +44,30 @@ import org.sagebionetworks.research.domain.step.interfaces.UIStep;
 
 import java.util.List;
 
-import static junit.framework.Assert.assertEquals;
-import static junit.framework.Assert.assertNotNull;
-import static junit.framework.Assert.assertTrue;
-
 public class SectionStepGsonTests extends IndividualStepGsonTest {
-   @Test
-   public void testEmpty() {
-       Step step = this.readJsonFile("EmptySectionStep.json");
-       assertNotNull(step);
-       assertTrue(step instanceof SectionStep);
-       SectionStep sectionStep = (SectionStep) step;
-       assertEquals("emptySectionStep", sectionStep.getIdentifier());
-       assertTrue(sectionStep.getSteps().isEmpty());
-   }
+    @Test
+    public void testEmpty() {
+        Step step = this.readJsonFile("EmptySectionStep.json");
+        assertNotNull(step);
+        assertTrue(step instanceof SectionStep);
+        SectionStep sectionStep = (SectionStep) step;
+        assertEquals("emptySectionStep", sectionStep.getIdentifier());
+        assertTrue(sectionStep.getSteps().isEmpty());
+    }
 
-   @Test
-   public void testExample_1() {
-       Step step = this.readJsonFile("SectionStep_1.json");
-       assertNotNull(step);
-       assertTrue(step instanceof SectionStep);
-       SectionStep sectionStep = (SectionStep) step;
-       assertEquals("testSectionStep1", sectionStep.getIdentifier());
-       List<Step> steps = sectionStep.getSteps();
-       assertNotNull(steps);
-       assertEquals(2, steps.size());
-       Step substep1 = steps.get(0);
-       assertTrue(substep1 instanceof UIStep);
-       Step substep2 = steps.get(1);
-       assertTrue(substep2 instanceof ActiveUIStep);
-   }
+    @Test
+    public void testExample_1() {
+        Step step = this.readJsonFile("SectionStep_1.json");
+        assertNotNull(step);
+        assertTrue(step instanceof SectionStep);
+        SectionStep sectionStep = (SectionStep) step;
+        assertEquals("testSectionStep1", sectionStep.getIdentifier());
+        List<Step> steps = sectionStep.getSteps();
+        assertNotNull(steps);
+        assertEquals(2, steps.size());
+        Step substep1 = steps.get(0);
+        assertTrue(substep1 instanceof UIStep);
+        Step substep2 = steps.get(1);
+        assertTrue(substep2 instanceof ActiveUIStep);
+    }
 }

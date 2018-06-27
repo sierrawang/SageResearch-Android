@@ -1,5 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
-<!--
+<?xml version="1.0" encoding="utf-8"?><!--
   ~ BSD 3-Clause License
   ~
   ~ Copyright 2018  Sage Bionetworks. All rights reserved.
@@ -36,10 +35,9 @@
         <shape>
             <stroke
                 android:width="@dimen/mpower2_tap_button_stroke_width"
-                android:color="@color/appWhite"/>
-            <solid android:color="@color/butterscotch500"/>
-            <corners
-                android:radius="@dimen/rs2_completely_rounded_corner_radius"/>
+                android:color="@color/appWhite" />
+            <solid android:color="@color/butterscotch500" />
+            <corners android:radius="@dimen/rs2_completely_rounded_corner_radius" />
         </shape>
     </item>
 </layer-list>

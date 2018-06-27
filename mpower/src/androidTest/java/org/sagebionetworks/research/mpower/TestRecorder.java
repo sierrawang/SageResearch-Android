@@ -40,10 +40,14 @@ import org.sagebionetworks.research.mobile_ui.recorder.Recorder;
  * A generic implementation of Recorder to facilitate testing the recorder service.
  */
 public class TestRecorder implements Recorder {
-    private boolean startCalled;
-    private boolean stopCalled;
     private boolean cancelCalled;
+
+    private boolean startCalled;
+
     private final String startStepIdentifier;
+
+    private boolean stopCalled;
+
     private final String stopStepIdentifier;
 
     public TestRecorder(final String startStepIdentifier, final String stopStepIdentifier) {
@@ -52,6 +56,23 @@ public class TestRecorder implements Recorder {
         this.startCalled = false;
         this.stopCalled = false;
         this.cancelCalled = false;
+    }
+
+    public boolean isCancelCalled() {
+        return cancelCalled;
+    }
+
+    @Override
+    public boolean isRunning() {
+        return this.startCalled;
+    }
+
+    public boolean isStartCalled() {
+        return startCalled;
+    }
+
+    public boolean isStopCalled() {
+        return stopCalled;
     }
 
     @Override
@@ -73,23 +94,6 @@ public class TestRecorder implements Recorder {
         this.startCalled = false;
         this.stopCalled = false;
         this.cancelCalled = true;
-    }
-
-    @Override
-    public boolean isRunning() {
-        return this.startCalled;
-    }
-
-    public boolean isStartCalled() {
-        return startCalled;
-    }
-
-    public boolean isStopCalled() {
-        return stopCalled;
-    }
-
-    public boolean isCancelCalled() {
-        return cancelCalled;
     }
 
     @Nullable

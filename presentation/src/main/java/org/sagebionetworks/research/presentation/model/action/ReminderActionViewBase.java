@@ -61,7 +61,7 @@ public abstract class ReminderActionViewBase implements ReminderActionView {
     public static ReminderActionViewBase fromReminderAction(ReminderAction reminderAction) {
         // TODO rkolmos 06/07/2018 add the icon to this method.
         return ReminderActionViewBase.builder()
-                .setButtonTitle(new DisplayString(R.string.rs2_navigation_action_reminder,
+                .setButtonTitle(DisplayString.create(R.string.rs2_navigation_action_reminder,
                         reminderAction.getButtonTitle()))
                 .setReminderIdentifier(reminderAction.getReminderIdentifier())
                 .build();

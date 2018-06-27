@@ -32,9 +32,9 @@
 
 package org.sagebionetworks.research.domain.result.gson;
 
-import org.junit.runner.*;
-import org.junit.runners.*;
-import org.junit.runners.Suite.*;
+import org.junit.runner.RunWith;
+import org.junit.runners.Suite;
+import org.junit.runners.Suite.SuiteClasses;
 
 @RunWith(Suite.class)
 @SuiteClasses({AnswerResultGsonTests.class, CollectionResultGsonTests.class, ErrorResultGsonTests.class,

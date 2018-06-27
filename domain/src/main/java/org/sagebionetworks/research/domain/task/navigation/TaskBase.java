@@ -57,9 +57,9 @@ public abstract class TaskBase implements Task {
 
         public abstract Builder setIdentifier(@NonNull String identifier);
 
-        public abstract Builder setSteps(@NonNull List<Step> steps);
-
         public abstract Builder setProgressMarkers(@NonNull List<String> progressMarkers);
+
+        public abstract Builder setSteps(@NonNull List<Step> steps);
     }
 
     public static Builder builder() {

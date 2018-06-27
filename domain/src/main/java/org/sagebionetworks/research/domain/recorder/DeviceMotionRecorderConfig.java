@@ -37,12 +37,14 @@ import java.util.Set;
 public interface DeviceMotionRecorderConfig extends RecorderConfig {
     /**
      * Returns the frequency for this recorder. A value of null results in a default frequency being used.
+     *
      * @return the frequency for this recorder.
      */
     Double getFrequency();
 
     /**
      * Returns the set of recorder types this device motion recorder will record.
+     *
      * @return the set of recorder types this device motion recorder will record.
      */
     Set<String> getRecorderTypes();

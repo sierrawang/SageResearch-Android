@@ -41,12 +41,11 @@ import org.sagebionetworks.research.domain.mobile_ui.R;
 import org.sagebionetworks.research.mobile_ui.show_step.view.view_binding.ActiveUIStepViewBinding;
 import org.sagebionetworks.research.presentation.model.interfaces.ActiveUIStepView;
 import org.sagebionetworks.research.presentation.model.interfaces.StepView;
-import org.sagebionetworks.research.presentation.show_step.ShowGenericStepViewModel;
 import org.sagebionetworks.research.presentation.show_step.show_step_view_models.ShowActiveUIStepViewModel;
 
 public class ShowActiveUIStepFragment extends
-       ShowUIStepFragmentBase<ActiveUIStepView, ShowActiveUIStepViewModel<ActiveUIStepView>,
-               ActiveUIStepViewBinding<ActiveUIStepView>> {
+        ShowUIStepFragmentBase<ActiveUIStepView, ShowActiveUIStepViewModel<ActiveUIStepView>,
+                ActiveUIStepViewBinding<ActiveUIStepView>> {
     @NonNull
     public static ShowActiveUIStepFragment newInstance(@NonNull StepView stepView) {
         if (!(stepView instanceof ActiveUIStepView)) {

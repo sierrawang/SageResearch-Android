@@ -34,7 +34,6 @@ package org.sagebionetworks.research.presentation.model.interfaces;
 
 import android.support.annotation.NonNull;
 
-import org.sagebionetworks.research.domain.form.interfaces.InputField;
 import org.sagebionetworks.research.presentation.model.form.InputFieldView;
 
 import java.util.List;

@@ -30,20 +30,40 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.sagebionetworks.research.presentation;
+package org.sagebionetworks.research.mobile_ui.show_step.view;
 
-import org.junit.Test;
+import android.support.annotation.NonNull;
+import android.view.View;
 
-import static org.junit.Assert.*;
+import org.sagebionetworks.research.mobile_ui.show_step.view.view_binding.UIStepViewBinding;
+import org.sagebionetworks.research.mobile_ui.widget.ActionButton;
+import org.sagebionetworks.research.presentation.ActionType;
+import org.sagebionetworks.research.presentation.model.interfaces.UIStepView;
+import org.sagebionetworks.research.presentation.show_step.show_step_view_models.ShowUIStepViewModel;
 
-/**
- * Example local unit test, which will execute on the development machine (host).
- *
- * @see <a href="http://d.android.com/tools/testing">Testing documentation</a>
- */
-public class ExampleUnitTest {
-    @Test
-    public void addition_isCorrect() {
-        assertEquals(4, 2 + 2);
+public class ShowTappingActiveUIStepFragment extends ShowStepFragmentBase
+        <UIStepView, ShowUIStepViewModel<UIStepView>, UIStepViewBinding<UIStepView>> {
+
+    @Override
+    @ActionType
+    protected String getActionTypeFromActionButton(@NonNull ActionButton actionButton) {
+        int actionButtonId = actionButton.getId();
+        String actionType = super.getActionTypeFromActionButton(actionButton);
+        if (actionType != null) {
+            return actionType;
+        }
+
+        return null;
+    }
+
+    @Override
+    protected int getLayoutId() {
+        return 0;
+    }
+
+    @NonNull
+    @Override
+    protected UIStepViewBinding instantiateAndBindBinding(final View view) {
+        return null;
     }
 }

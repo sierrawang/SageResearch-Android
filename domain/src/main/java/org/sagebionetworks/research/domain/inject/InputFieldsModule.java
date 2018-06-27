@@ -47,8 +47,6 @@ import org.sagebionetworks.research.domain.form.implementations.InputFieldBase;
 import org.sagebionetworks.research.domain.form.interfaces.Choice;
 import org.sagebionetworks.research.domain.form.interfaces.InputField;
 import org.sagebionetworks.research.domain.inject.GsonModule.ClassKey;
-import org.sagebionetworks.research.domain.step.ui.action.implementations.ActionBase;
-import org.sagebionetworks.research.domain.step.ui.action.interfaces.Action;
 
 import java.lang.reflect.Type;
 import java.util.HashMap;
@@ -60,10 +58,21 @@ import dagger.Provides;
 import dagger.multibindings.IntoMap;
 import dagger.multibindings.IntoSet;
 
-import static org.sagebionetworks.research.domain.inject.GsonModule.createPassThroughDeserializer;
-
 @Module(includes = {GsonModule.class})
 public class InputFieldsModule {
+    @Provides
+    @IntoMap
+    @ClassKey(BaseType.class)
+    static Map<String, Class<?>> provideBaseTypeClassMap() {
+        Map<String, Class<?>> classMap = new HashMap<>();
+        classMap.put(BaseType.BOOLEAN, Boolean.class);
+        classMap.put(BaseType.STRING, String.class);
+        classMap.put(BaseType.INTEGER, Integer.class);
+        classMap.put(BaseType.DECIMAL, Double.class);
+        classMap.put(BaseType.DURATION, Double.class);
+        return classMap;
+    }
+
     @Provides
     @IntoMap
     @ClassKey(Choice.class)
@@ -76,19 +85,6 @@ public class InputFieldsModule {
     @ClassKey(InputDataType.class)
     static JsonDeserializer<?> provideInputDataTypeDeserializer() {
         return InputDataType.getJsonDeserializer();
-    }
-
-    @Provides
-    @IntoMap
-    @ClassKey(BaseType.class)
-    static Map<String, Class<?>> provideBaseTypeClassMap() {
-        Map<String, Class<?>> classMap = new HashMap<>();
-        classMap.put(BaseType.BOOLEAN, Boolean.class);
-        classMap.put(BaseType.STRING, String.class);
-        classMap.put(BaseType.INTEGER, Integer.class);
-        classMap.put(BaseType.DECIMAL, Double.class);
-        classMap.put(BaseType.DURATION, Double.class);
-        return classMap;
     }
 
     /**
@@ -127,11 +123,16 @@ public class InputFieldsModule {
 
     /**
      * Returns a TypeToken<ChoiceInputField<genericToken.getType()>>
-     * @param genericToken The TypeToken for the class to be the generic type argument to ChoiceInputField.
-     * @param <T> The Type of the generic type argument to ChoiceInputField.
+     *
+     * @param genericToken
+     *         The TypeToken for the class to be the generic type argument to ChoiceInputField.
+     * @param <T>
+     *         The Type of the generic type argument to ChoiceInputField.
      * @return a TypeToken<ChoiceInputField<genericToken.getType()>>
      */
     private static <T> TypeToken<ChoiceInputField<T>> createChoiceInputFieldTypeToken(TypeToken<T> genericToken) {
-        return new TypeToken<ChoiceInputField<T>>() {}.where(new TypeParameter<T>() {}, genericToken);
+        return new TypeToken<ChoiceInputField<T>>() {
+        }.where(new TypeParameter<T>() {
+        }, genericToken);
     }
 }

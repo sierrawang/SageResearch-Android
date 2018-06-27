@@ -38,24 +38,10 @@ import android.support.annotation.NonNull;
 import android.view.View;
 
 import org.sagebionetworks.research.domain.mobile_ui.R;
-import org.sagebionetworks.research.domain.task.navigation.StepNavigator;
 import org.sagebionetworks.research.mobile_ui.show_step.view.view_binding.UIStepViewBinding;
-import org.sagebionetworks.research.mobile_ui.widget.ActionButton;
-import org.sagebionetworks.research.presentation.ActionType;
-import org.sagebionetworks.research.presentation.DisplayDrawable;
-import org.sagebionetworks.research.presentation.DisplayString;
-import org.sagebionetworks.research.presentation.inject.DrawableName;
-import org.sagebionetworks.research.presentation.model.action.ActionView;
-import org.sagebionetworks.research.presentation.model.action.ActionViewBase;
 import org.sagebionetworks.research.presentation.model.interfaces.StepView;
 import org.sagebionetworks.research.presentation.model.interfaces.UIStepView;
 import org.sagebionetworks.research.presentation.show_step.show_step_view_models.ShowUIStepViewModel;
-
-import java.util.Map;
-
-import javax.inject.Inject;
-
-import dagger.Provides;
 
 public class ShowUIStepFragment extends
         ShowUIStepFragmentBase<UIStepView, ShowUIStepViewModel<UIStepView>, UIStepViewBinding<UIStepView>> {
@@ -71,15 +57,15 @@ public class ShowUIStepFragment extends
         return fragment;
     }
 
-    @NonNull
-    @Override
-    protected UIStepViewBinding<UIStepView> instantiateAndBindBinding(View view) {
-        return new UIStepViewBinding<>(view);
-    }
-
     @Override
     @LayoutRes
     public int getLayoutId() {
         return R.layout.rs2_show_ui_step_fragment_layout;
+    }
+
+    @NonNull
+    @Override
+    protected UIStepViewBinding<UIStepView> instantiateAndBindBinding(View view) {
+        return new UIStepViewBinding<>(view);
     }
 }

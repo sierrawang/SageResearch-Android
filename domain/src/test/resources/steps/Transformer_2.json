@@ -1,5 +1,7 @@
 {
-  "identifier":"right",
-  "type":"transform",
-  "resourceTransformer": { "resourceName": "TremorSectionStep.json"}
+  "identifier": "right",
+  "type": "transform",
+  "resourceTransformer": {
+    "resourceName": "TremorSectionStep.json"
+  }
 }

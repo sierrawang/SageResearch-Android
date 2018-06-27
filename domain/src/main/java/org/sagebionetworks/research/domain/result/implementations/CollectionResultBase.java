@@ -65,16 +65,23 @@ public class CollectionResultBase extends ResultBase implements CollectionResult
     }
 
     @NonNull
+    @Override
+    public ImmutableList<Result> getInputResults() {
+        return this.collectionResultData.getInputResults();
+    }
+
+    @NonNull
     @ResultType
     @Override
     public String getType() {
         return TYPE_KEY;
     }
 
-    @NonNull
     @Override
-    public ImmutableList<Result> getInputResults() {
-        return this.collectionResultData.getInputResults();
+    protected boolean equalsHelper(Object o) {
+        CollectionResultBase collectionResult = (CollectionResultBase) o;
+        return super.equalsHelper(o) &&
+                Objects.equal(this.collectionResultData, collectionResult.collectionResultData);
     }
 
     @Override
@@ -87,12 +94,5 @@ public class CollectionResultBase extends ResultBase implements CollectionResult
     protected ToStringHelper toStringHelper() {
         return super.toStringHelper()
                 .add("TaskResultData", this.collectionResultData);
-    }
-
-    @Override
-    protected boolean equalsHelper(Object o) {
-        CollectionResultBase collectionResult = (CollectionResultBase) o;
-        return super.equalsHelper(o) &&
-                Objects.equal(this.collectionResultData, collectionResult.collectionResultData);
     }
 }

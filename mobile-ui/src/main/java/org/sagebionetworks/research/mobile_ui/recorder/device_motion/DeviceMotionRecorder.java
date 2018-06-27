@@ -50,14 +50,19 @@ import io.reactivex.Flowable;
 /**
  * A DeviceMotionRecorder recorders a set of the device's motion sensors and provides access to a Single<FileResult>
  * which can access the data file once the recorder is complete
- * @param <S> The type of the summary for this recorder.
- * @param <C> The type of the current state for this recorder.
+ *
+ * @param <S>
+ *         The type of the summary for this recorder.
+ * @param <C>
+ *         The type of the current state for this recorder.
  */
 public abstract class DeviceMotionRecorder<S, C> extends ReactiveRecorder<S, C, ReactiveSensorEvent> {
     private static final long MICRO_SECONDS_PER_SEC = 1000000L;
 
-    protected final double frequency;
     protected final DeviceMotionSensors deviceMotionSensors;
+
+    protected final double frequency;
+
     protected final Set<Integer> sensorTypes;
 
     public DeviceMotionRecorder(DeviceMotionRecorderConfigPresentation config, Context context,
@@ -73,6 +78,12 @@ public abstract class DeviceMotionRecorder<S, C> extends ReactiveRecorder<S, C, 
     }
 
     @Override
+    public void cancel() {
+        super.cancel();
+        this.deviceMotionSensors.cancel();
+    }
+
+    @Override
     @NonNull
     public Flowable<ReactiveSensorEvent> intializeEventFlowable() {
         return Flowable.create(this.deviceMotionSensors, BackpressureStrategy.BUFFER);
@@ -84,23 +95,18 @@ public abstract class DeviceMotionRecorder<S, C> extends ReactiveRecorder<S, C, 
         this.deviceMotionSensors.complete();
     }
 
-    @Override
-    public void cancel() {
-        super.cancel();
-        this.deviceMotionSensors.cancel();
-    }
-
     /**
      * Calculates the delay between sensor samples in microseconds based on the frequency of this recorder.
+     *
      * @return the delay between sensor samples in microseconds.
      */
     protected int calculateDelayBetweenSamplesInMicroSeconds() {
-        return (int)((float)MICRO_SECONDS_PER_SEC / this.frequency);
+        return (int) ((float) MICRO_SECONDS_PER_SEC / this.frequency);
     }
 
     /**
      * @return true if sensor frequency does not exist, and callbacks will be based on an event, like Step Detection
-     *         false if the sensor frequency will come back at a desired frequency
+     * false if the sensor frequency will come back at a desired frequency
      */
     protected boolean isManualFrequency() {
         return this.frequency < 0;

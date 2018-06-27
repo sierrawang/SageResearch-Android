@@ -33,17 +33,22 @@
 package org.sagebionetworks.research.domain.presentation.show_step;
 
 import android.arch.lifecycle.LiveData;
+
 import org.sagebionetworks.research.domain.step.StepAction;
 import org.sagebionetworks.research.domain.step.interfaces.Step;
 
 import java.util.Set;
 
 public interface ShowStepContract {
-    LiveData<Step> getStep();
+    void cancel();
+
     LiveData<Set<StepAction>> getActions();
 
-    void goForward();
+    LiveData<Step> getStep();
+
     void goBack();
+
+    void goForward();
+
     void skipForward();
-    void cancel();
 }
