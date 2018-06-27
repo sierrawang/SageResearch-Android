@@ -40,7 +40,6 @@ import com.google.gson.JsonObject;
 
 import org.sagebionetworks.research.domain.recorder.RecorderConfig;
 import org.sagebionetworks.research.mobile_ui.recorder.data.DataLogger;
-import org.sagebionetworks.research.mobile_ui.recorder.distance.DistanceRecorder.DistanceInfo.DistanceRecorder.CurrentDistanceInfo;
 
 import java.io.IOException;
 
