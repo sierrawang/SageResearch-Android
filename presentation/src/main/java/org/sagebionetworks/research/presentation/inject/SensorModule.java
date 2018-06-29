@@ -34,7 +34,7 @@ package org.sagebionetworks.research.presentation.inject;
 
 import android.hardware.Sensor;
 
-import org.sagebionetworks.research.domain.recorder.MotionRecorderType;
+import org.sagebionetworks.research.domain.async.MotionRecorderType;
 
 import dagger.Module;
 import dagger.Provides;

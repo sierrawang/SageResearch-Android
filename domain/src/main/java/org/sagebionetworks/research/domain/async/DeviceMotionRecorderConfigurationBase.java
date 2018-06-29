@@ -30,25 +30,48 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.sagebionetworks.research.domain.recorder;
+package org.sagebionetworks.research.domain.async;
 
+import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+
+import com.google.auto.value.AutoValue;
+import com.google.gson.Gson;
+import com.google.gson.TypeAdapter;
 
 import java.util.Set;
 
-public interface DeviceMotionRecorderConfig extends RecorderConfig {
-    /**
-     * Returns the frequency for this recorder. A value of null results in a default frequency being used.
-     *
-     * @return the frequency for this recorder.
-     */
-    @Nullable
-    Double getFrequency();
+@AutoValue
+public abstract class DeviceMotionRecorderConfigurationBase implements DeviceMotionRecorderConfiguration {
+    @AutoValue.Builder
+    public abstract static class Builder {
+        public abstract DeviceMotionRecorderConfigurationBase build();
 
-    /**
-     * Returns the set of recorder types this device motion recorder will record.
-     *
-     * @return the set of recorder types this device motion recorder will record.
-     */
-    Set<String> getRecorderTypes();
+        public abstract Builder setFrequency(@Nullable Double frequency);
+
+        public abstract Builder setIdentifier(@NonNull String identifier);
+
+        public abstract Builder setRecorderTypes(@NonNull Set<String> recorderTypes);
+
+        public abstract Builder setStartStepIdentifier(@Nullable String startStepIdentifier);
+
+        public abstract Builder setStopStepIdentifier(@Nullable String stopStepIdentifier);
+    }
+
+    public static final String TYPE_KEY = RecorderType.MOTION;
+
+    public static Builder builder() {
+        return new AutoValue_DeviceMotionRecorderConfigurationBase.Builder();
+    }
+
+    public static TypeAdapter<DeviceMotionRecorderConfigurationBase> typeAdapter(Gson gson) {
+        return new AutoValue_DeviceMotionRecorderConfigurationBase.GsonTypeAdapter(gson);
+    }
+
+    @Override
+    @NonNull
+    @RecorderType
+    public String getType() {
+        return TYPE_KEY;
+    }
 }

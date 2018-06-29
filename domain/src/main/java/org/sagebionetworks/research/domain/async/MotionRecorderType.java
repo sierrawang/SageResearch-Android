@@ -30,20 +30,23 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.sagebionetworks.research.domain.recorder;
+package org.sagebionetworks.research.domain.async;
 
-import android.support.annotation.NonNull;
+import android.support.annotation.StringDef;
 
-import org.sagebionetworks.research.domain.async.AsyncAction;
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
 
-
-public interface RecorderConfig extends AsyncAction {
-    /**
-     * Returns the type of recorder that this config is for.
-     *
-     * @Return the type of recorder that this config is for.
-     */
-    @NonNull
-    @RecorderType
-    String getType();
+@Retention(RetentionPolicy.SOURCE)
+@StringDef({MotionRecorderType.ACCELEROMETER, MotionRecorderType.GYROSCOPE, MotionRecorderType.MAGNETOMETER,
+        MotionRecorderType.GRAVITY, MotionRecorderType.MAGNETIC_FIELD, MotionRecorderType.ROTATION_RATE,
+        MotionRecorderType.USER_ACCELERATION})
+public @interface MotionRecorderType {
+    String ACCELEROMETER = "accelerometer";
+    String GYROSCOPE = "gryo";
+    String MAGNETOMETER = "magnetometer";
+    String GRAVITY = "gravity";
+    String MAGNETIC_FIELD = "magneticField";
+    String ROTATION_RATE = "rotationRate";
+    String USER_ACCELERATION = "userAcceleration";
 }

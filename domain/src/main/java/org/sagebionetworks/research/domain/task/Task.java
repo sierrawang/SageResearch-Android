@@ -36,7 +36,7 @@ import android.support.annotation.NonNull;
 
 import com.google.common.collect.ImmutableList;
 
-import org.sagebionetworks.research.domain.async.AsyncAction;
+import org.sagebionetworks.research.domain.async.AsyncActionConfiguration;
 import org.sagebionetworks.research.domain.step.interfaces.Step;
 
 import java.util.List;
@@ -46,7 +46,7 @@ public interface Task {
     Task copyWithSteps(List<Step> steps);
 
     @NonNull
-    ImmutableList<AsyncAction> getAsyncActions();
+    ImmutableList<AsyncActionConfiguration> getAsyncActions();
 
     @NonNull
     String getIdentifier();

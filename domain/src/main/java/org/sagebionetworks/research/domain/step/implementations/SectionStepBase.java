@@ -37,9 +37,8 @@ import android.support.annotation.NonNull;
 import com.google.common.base.MoreObjects.ToStringHelper;
 import com.google.common.base.Objects;
 import com.google.common.collect.ImmutableList;
-import com.google.common.collect.ImmutableMap;
 
-import org.sagebionetworks.research.domain.async.AsyncAction;
+import org.sagebionetworks.research.domain.async.AsyncActionConfiguration;
 import org.sagebionetworks.research.domain.interfaces.HashCodeHelper;
 import org.sagebionetworks.research.domain.step.StepType;
 import org.sagebionetworks.research.domain.step.interfaces.SectionStep;
@@ -53,7 +52,7 @@ public class SectionStepBase extends StepBase implements SectionStep {
     @NonNull
     private final ImmutableList<Step> steps;
     @NonNull
-    private final ImmutableList<AsyncAction> asyncActions;
+    private final ImmutableList<AsyncActionConfiguration> asyncActions;
 
     // Default initializer for gson.
     public SectionStepBase() {
@@ -63,7 +62,7 @@ public class SectionStepBase extends StepBase implements SectionStep {
     }
 
     public SectionStepBase(@NonNull final String identifier, @NonNull final List<Step> steps,
-            @NonNull final List<AsyncAction> asyncActions) {
+            @NonNull final List<AsyncActionConfiguration> asyncActions) {
         super(identifier);
         this.steps = ImmutableList.copyOf(steps);
         this.asyncActions = ImmutableList.copyOf(asyncActions);
@@ -89,7 +88,7 @@ public class SectionStepBase extends StepBase implements SectionStep {
 
     @NonNull
     @Override
-    public ImmutableList<AsyncAction> getAsyncActions() {
+    public ImmutableList<AsyncActionConfiguration> getAsyncActions() {
         return this.asyncActions;
     }
 

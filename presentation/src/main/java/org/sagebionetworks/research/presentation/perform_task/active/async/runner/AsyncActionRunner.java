@@ -37,7 +37,7 @@ import static com.google.common.base.Preconditions.checkNotNull;
 import android.support.annotation.CallSuper;
 import android.support.annotation.NonNull;
 
-import org.sagebionetworks.research.domain.async.AsyncAction;
+import org.sagebionetworks.research.domain.async.AsyncActionConfiguration;
 import org.sagebionetworks.research.domain.step.interfaces.Step;
 import org.sagebionetworks.research.presentation.perform_task.active.async.StepChangeListener;
 
@@ -46,11 +46,11 @@ import org.sagebionetworks.research.presentation.perform_task.active.async.StepC
  */
 
 public abstract class AsyncActionRunner implements StepChangeListener {
-    private final AsyncAction asyncAction;
+    private final AsyncActionConfiguration asyncActionConfiguration;
 
-    public AsyncActionRunner(@NonNull AsyncAction asyncAction) {
-        checkNotNull(asyncAction);
-        this.asyncAction = asyncAction;
+    public AsyncActionRunner(@NonNull AsyncActionConfiguration asyncActionConfiguration) {
+        checkNotNull(asyncActionConfiguration);
+        this.asyncActionConfiguration = asyncActionConfiguration;
     }
 
     @Override
@@ -68,7 +68,7 @@ public abstract class AsyncActionRunner implements StepChangeListener {
     @Override
     @CallSuper
     public void onShowStep(Step step) {
-        if (asyncAction.getStartStepIdentifier().equals(step.getIdentifier())) {
+        if (asyncActionConfiguration.getStartStepIdentifier().equals(step.getIdentifier())) {
             runAction();
         }
     }

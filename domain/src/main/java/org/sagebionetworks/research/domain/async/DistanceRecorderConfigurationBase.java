@@ -35,40 +35,37 @@ package org.sagebionetworks.research.domain.async;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 
-/**
- * Defines general configuration for asynchronous asyncAction that should be run in the background. Depending upon the
- * parameters and how the asyncAction is setup, this could be something that is run continuously or else is paused or
- * reset based on a timeout interval.
- */
-public interface AsyncAction {
-    /**
-     * A short string that uniquely identifies the asyncronous asyncAction within the task. The identifier is
-     * reproduced in the results of a async results.
-     *
-     * @return identifier
-     */
+import com.google.auto.value.AutoValue;
+import com.google.gson.Gson;
+import com.google.gson.TypeAdapter;
+
+@AutoValue
+public abstract class DistanceRecorderConfigurationBase implements DistanceRecorderConfiguration {
+    public static final String TYPE_KEY = RecorderType.DISTANCE;
+
+    @AutoValue.Builder
+    public abstract static class Builder {
+        public abstract DistanceRecorderConfigurationBase build();
+
+        public abstract Builder setIdentifier(@NonNull String identifier);
+
+        public abstract Builder setStartStepIdentifier(@Nullable String startStepIdentifier);
+
+        public abstract Builder setStopStepIdentifier(@Nullable String stopStepIdentifier);
+    }
+
+    public static Builder builder() {
+        return new AutoValue_DistanceRecorderConfigurationBase.Builder();
+    }
+
+    public static TypeAdapter<DistanceRecorderConfigurationBase> typeAdapter(Gson gson) {
+        return new AutoValue_DistanceRecorderConfigurationBase.GsonTypeAdapter(gson);
+    }
+
+    @Override
     @NonNull
-    String getIdentifier();
-
-    /**
-     * @return step identifier, or null
-     */
-    @Nullable
-    String getStartStepIdentifier();
-
-    /**
-     * An idetnifier marking the step to stop hte asyncAction. If `null`, then the asyncAction will be stopped when
-     * the task is stopped.
-     *
-     * @return step identifier, or null
-     */
-    @Nullable
-    String getStopStepIdentifier();
-
-    /**
-     * An identifier marking the step to start the asyncAction. If `null`, then the asyncAction will be started when
-     * the task is started.
-     */
-    @NonNull
-    String getType();
+    @RecorderType
+    public String getType() {
+        return TYPE_KEY;
+    }
 }

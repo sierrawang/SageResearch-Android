@@ -30,42 +30,28 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.sagebionetworks.research.domain.recorder;
+package org.sagebionetworks.research.domain.async;
 
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 
-import com.google.auto.value.AutoValue;
-import com.google.gson.Gson;
-import com.google.gson.TypeAdapter;
 
-@AutoValue
-public abstract class DistanceRecorderConfigBase implements DistanceRecorderConfig {
-    public static final String TYPE_KEY = RecorderType.DISTANCE;
-
-    @AutoValue.Builder
-    public abstract static class Builder {
-        public abstract DistanceRecorderConfigBase build();
-
-        public abstract Builder setIdentifier(@NonNull String identifier);
-
-        public abstract Builder setStartStepIdentifier(@Nullable String startStepIdentifier);
-
-        public abstract Builder setStopStepIdentifier(@Nullable String stopStepIdentifier);
-    }
-
-    public static Builder builder() {
-        return new AutoValue_DistanceRecorderConfigBase.Builder();
-    }
-
-    public static TypeAdapter<DistanceRecorderConfigBase> typeAdapter(Gson gson) {
-        return new AutoValue_DistanceRecorderConfigBase.GsonTypeAdapter(gson);
-    }
-
-    @Override
+public interface RecorderConfiguration extends AsyncActionConfiguration {
+    /**
+     * Returns the type of recorder that this config is for.
+     *
+     * @Return the type of recorder that this config is for.
+     */
     @NonNull
     @RecorderType
-    public String getType() {
-        return TYPE_KEY;
-    }
+    String getType();
+
+    /**
+     * An identifier marking the step at which to stop the asyncAction. If `nil`, then the asyncAction will be stopped
+     * when the task is stopped.
+     *
+     * @return step identifier, or null
+     */
+    @Nullable
+    String getStopStepIdentifier();
 }

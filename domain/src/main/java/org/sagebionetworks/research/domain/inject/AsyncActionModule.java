@@ -37,12 +37,12 @@ import static org.sagebionetworks.research.domain.inject.GsonModule.createPassTh
 import com.google.gson.JsonDeserializer;
 
 import org.sagebionetworks.research.domain.RuntimeTypeAdapterFactory;
-import org.sagebionetworks.research.domain.async.AsyncAction;
+import org.sagebionetworks.research.domain.async.AsyncActionConfiguration;
 import org.sagebionetworks.research.domain.inject.GsonModule.ClassKey;
-import org.sagebionetworks.research.domain.recorder.DeviceMotionRecorderConfig;
-import org.sagebionetworks.research.domain.recorder.DeviceMotionRecorderConfigBase;
-import org.sagebionetworks.research.domain.recorder.DistanceRecorderConfig;
-import org.sagebionetworks.research.domain.recorder.DistanceRecorderConfigBase;
+import org.sagebionetworks.research.domain.async.DeviceMotionRecorderConfiguration;
+import org.sagebionetworks.research.domain.async.DeviceMotionRecorderConfigurationBase;
+import org.sagebionetworks.research.domain.async.DistanceRecorderConfiguration;
+import org.sagebionetworks.research.domain.async.DistanceRecorderConfigurationBase;
 
 import java.util.Map;
 import java.util.Map.Entry;
@@ -57,43 +57,43 @@ import dagger.multibindings.IntoSet;
 public class AsyncActionModule {
     @MapKey
     public @interface AsyncActionClassKey {
-        Class<? extends AsyncAction> value();
+        Class<? extends AsyncActionConfiguration> value();
     }
 
     @Provides
     @IntoMap
-    @AsyncActionClassKey(DeviceMotionRecorderConfig.class)
+    @AsyncActionClassKey(DeviceMotionRecorderConfiguration.class)
     static String provideDeviceMotionRecorderConfigTypeKey() {
-        return DeviceMotionRecorderConfigBase.TYPE_KEY;
+        return DeviceMotionRecorderConfigurationBase.TYPE_KEY;
     }
 
     @Provides
     @IntoMap
-    @AsyncActionClassKey(DistanceRecorderConfig.class)
+    @AsyncActionClassKey(DistanceRecorderConfiguration.class)
     static String provideDistanceRecorderConfigTypeKey() {
-        return DistanceRecorderConfigBase.TYPE_KEY;
+        return DistanceRecorderConfigurationBase.TYPE_KEY;
     }
 
     @Provides
     @IntoMap
-    @ClassKey(DeviceMotionRecorderConfig.class)
+    @ClassKey(DeviceMotionRecorderConfiguration.class)
     static JsonDeserializer<?> provideDeviceMotionRecorderConfigDeserializer() {
-        return createPassThroughDeserializer(DeviceMotionRecorderConfigBase.class);
+        return createPassThroughDeserializer(DeviceMotionRecorderConfigurationBase.class);
     }
 
     @Provides
     @IntoMap
-    @ClassKey(DistanceRecorderConfig.class)
+    @ClassKey(DistanceRecorderConfiguration.class)
     static JsonDeserializer<?> provideDeviceMotionRecorderConfigDeserizlier() {
-        return createPassThroughDeserializer(DistanceRecorderConfigBase.class);
+        return createPassThroughDeserializer(DistanceRecorderConfigurationBase.class);
     }
 
     @Provides
     @IntoSet
-    static RuntimeTypeAdapterFactory provideType(Map<Class<? extends AsyncAction>, String> classKeys) {
-        RuntimeTypeAdapterFactory<AsyncAction> factory = RuntimeTypeAdapterFactory.of(AsyncAction.class);
+    static RuntimeTypeAdapterFactory provideType(Map<Class<? extends AsyncActionConfiguration>, String> classKeys) {
+        RuntimeTypeAdapterFactory<AsyncActionConfiguration> factory = RuntimeTypeAdapterFactory.of(AsyncActionConfiguration.class);
 
-        for (Entry<Class<? extends AsyncAction>, String> entry : classKeys.entrySet()) {
+        for (Entry<Class<? extends AsyncActionConfiguration>, String> entry : classKeys.entrySet()) {
             factory.registerSubtype(entry.getKey(), entry.getValue());
         }
 

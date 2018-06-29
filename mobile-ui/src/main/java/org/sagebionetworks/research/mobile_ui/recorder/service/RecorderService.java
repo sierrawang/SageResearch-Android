@@ -41,7 +41,7 @@ import android.support.annotation.Nullable;
 
 import com.google.common.collect.ImmutableMap;
 
-import org.sagebionetworks.research.domain.recorder.RecorderType;
+import org.sagebionetworks.research.domain.async.RecorderType;
 import org.sagebionetworks.research.mobile_ui.recorder.Recorder;
 import org.sagebionetworks.research.mobile_ui.recorder.RecorderActionType;
 

@@ -39,7 +39,7 @@ import com.google.common.collect.ImmutableList;
 import com.google.gson.Gson;
 import com.google.gson.TypeAdapter;
 
-import org.sagebionetworks.research.domain.async.AsyncAction;
+import org.sagebionetworks.research.domain.async.AsyncActionConfiguration;
 import org.sagebionetworks.research.domain.step.interfaces.Step;
 import org.sagebionetworks.research.domain.task.Task;
 
@@ -53,7 +53,7 @@ public abstract class TaskBase implements Task {
     public abstract static class Builder {
         public abstract TaskBase build();
 
-        public abstract Builder setAsyncActions(@NonNull List<AsyncAction> asyncActions);
+        public abstract Builder setAsyncActions(@NonNull List<AsyncActionConfiguration> asyncActions);
 
         public abstract Builder setIdentifier(@NonNull String identifier);
 
@@ -64,14 +64,14 @@ public abstract class TaskBase implements Task {
 
     public static Builder builder() {
         return new AutoValue_TaskBase.Builder()
-                .setAsyncActions(Collections.<AsyncAction>emptyList());
+                .setAsyncActions(Collections.<AsyncActionConfiguration>emptyList());
     }
 
     public static TypeAdapter<TaskBase> typeAdapter(Gson gson) {
         return new AutoValue_TaskBase.GsonTypeAdapter(gson)
                 .setDefaultSteps(ImmutableList.<Step>of())
                 .setDefaultProgressMarkers(ImmutableList.<String>of())
-                .setDefaultAsyncActions(ImmutableList.<AsyncAction>of());
+                .setDefaultAsyncActions(ImmutableList.<AsyncActionConfiguration>of());
     }
 
     @NonNull

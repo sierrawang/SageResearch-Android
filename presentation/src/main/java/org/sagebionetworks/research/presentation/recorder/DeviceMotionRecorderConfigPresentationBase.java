@@ -37,7 +37,7 @@ import android.support.annotation.Nullable;
 
 import com.google.auto.value.AutoValue;
 
-import org.sagebionetworks.research.domain.recorder.DeviceMotionRecorderConfig;
+import org.sagebionetworks.research.domain.async.DeviceMotionRecorderConfiguration;
 import org.sagebionetworks.research.presentation.mapper.SensorMapper;
 
 import java.util.HashSet;
@@ -65,7 +65,7 @@ public abstract class DeviceMotionRecorderConfigPresentationBase implements Devi
         return new AutoValue_DeviceMotionRecorderConfigPresentationBase.Builder();
     }
 
-    public static DeviceMotionRecorderConfigPresentationBase fromDeviceMotionRecorderConfig(DeviceMotionRecorderConfig
+    public static DeviceMotionRecorderConfigPresentationBase fromDeviceMotionRecorderConfig(DeviceMotionRecorderConfiguration
             config) {
         double frequency = config.getFrequency() != null ? config.getFrequency() : 0; // 0 is the default value.
         Set<Integer> recorderTypes = new HashSet<>();

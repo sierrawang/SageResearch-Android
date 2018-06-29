@@ -37,7 +37,7 @@ import android.support.annotation.Nullable;
 
 import com.google.auto.value.AutoValue;
 
-import org.sagebionetworks.research.domain.recorder.DistanceRecorderConfig;
+import org.sagebionetworks.research.domain.async.DistanceRecorderConfiguration;
 
 @AutoValue
 public abstract class DistanceRecorderConfigPresentationBase implements  AsyncActionPresentation {
@@ -57,7 +57,7 @@ public abstract class DistanceRecorderConfigPresentationBase implements  AsyncAc
         return new AutoValue_DistanceRecorderConfigPresentationBase.Builder();
     }
 
-    public static DistanceRecorderConfigPresentationBase fromDistanceRecorderConfig(DistanceRecorderConfig
+    public static DistanceRecorderConfigPresentationBase fromDistanceRecorderConfig(DistanceRecorderConfiguration
             config) {
         return DistanceRecorderConfigPresentationBase.builder()
                 .setIdentifier(config.getIdentifier())

@@ -34,17 +34,21 @@ package org.sagebionetworks.research.domain.async;
 
 import android.support.annotation.Nullable;
 
-/**
- * Created by liujoshua on 10/11/2017.
- */
+import java.util.Set;
 
-public interface Recorder extends AsyncAction {
+public interface DeviceMotionRecorderConfiguration extends RecorderConfiguration {
     /**
-     * An identifier marking the step at which to stop the asyncAction. If `nil`, then the asyncAction will be stopped
-     * when the task is stopped.
+     * Returns the frequency for this recorder. A value of null results in a default frequency being used.
      *
-     * @return step identifier, or null
+     * @return the frequency for this recorder.
      */
     @Nullable
-    String getStopStepIdentifier();
+    Double getFrequency();
+
+    /**
+     * Returns the set of recorder types this device motion recorder will record.
+     *
+     * @return the set of recorder types this device motion recorder will record.
+     */
+    Set<String> getRecorderTypes();
 }

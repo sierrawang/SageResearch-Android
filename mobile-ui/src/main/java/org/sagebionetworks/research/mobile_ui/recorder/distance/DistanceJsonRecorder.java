@@ -38,7 +38,7 @@ import android.support.annotation.NonNull;
 
 import com.google.gson.JsonObject;
 
-import org.sagebionetworks.research.domain.recorder.RecorderConfig;
+import org.sagebionetworks.research.domain.async.RecorderConfiguration;
 import org.sagebionetworks.research.mobile_ui.recorder.data.DataLogger;
 
 import java.io.IOException;
@@ -54,7 +54,7 @@ public class DistanceJsonRecorder extends DistanceRecorder {
 
     protected boolean usesRelativeCoordinates;
 
-    public DistanceJsonRecorder(final RecorderConfig config, final Context context) throws IOException {
+    public DistanceJsonRecorder(final RecorderConfiguration config, final Context context) throws IOException {
         // TODO rkolmos 06/27/2018 get the output directory right.
         super(config, context, new DataLogger(config.getIdentifier(), null,
                 JSON_FILE_START, JSON_FILE_END, JSON_OBJECT_DELIMINATOR));

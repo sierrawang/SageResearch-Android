@@ -30,16 +30,8 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.sagebionetworks.research.domain.recorder;
+package org.sagebionetworks.research.domain.async;
 
-import android.support.annotation.StringDef;
+public interface DistanceRecorderConfiguration extends RecorderConfiguration {
 
-import java.lang.annotation.Retention;
-import java.lang.annotation.RetentionPolicy;
-
-@Retention(RetentionPolicy.SOURCE)
-@StringDef({RecorderType.MOTION, RecorderType.DISTANCE})
-public @interface RecorderType {
-    String MOTION = "motion";
-    String DISTANCE = "distance";
 }
