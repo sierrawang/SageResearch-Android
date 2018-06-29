@@ -30,16 +30,19 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.sagebionetworks.research.mobile_ui.recorder.distance;
+package org.sagebionetworks.research.mobile_ui.recorder.distance.json;
 
 import android.content.Context;
 import android.location.Location;
 import android.support.annotation.NonNull;
 
-import com.google.gson.JsonObject;
+import com.google.gson.Gson;
 
 import org.sagebionetworks.research.domain.async.RecorderConfiguration;
 import org.sagebionetworks.research.mobile_ui.recorder.data.DataLogger;
+import org.sagebionetworks.research.mobile_ui.recorder.distance.DistanceRecorder;
+import org.sagebionetworks.research.mobile_ui.recorder.distance.Path;
+import org.sagebionetworks.research.mobile_ui.recorder.distance.json.DistanceEvent;
 
 import java.io.IOException;
 
@@ -51,15 +54,18 @@ public class DistanceJsonRecorder extends DistanceRecorder {
     public static final String JSON_FILE_START = "[";
     public static final String JSON_FILE_END = "]";
     public static final String JSON_OBJECT_DELIMINATOR = ",";
+    private final Gson gson;
 
     protected boolean usesRelativeCoordinates;
 
-    public DistanceJsonRecorder(final RecorderConfiguration config, final Context context) throws IOException {
+    public DistanceJsonRecorder(final RecorderConfiguration config, final Context context, final
+            Gson gson) throws IOException {
         // TODO rkolmos 06/27/2018 get the output directory right.
         super(config, context, new DataLogger(config.getIdentifier(), null,
                 JSON_FILE_START, JSON_FILE_END, JSON_OBJECT_DELIMINATOR));
         // TODO rkolmos 06/26/2018 initalize this from config.
         this.usesRelativeCoordinates = false;
+        this.gson = gson;
     }
 
     @NonNull
@@ -67,8 +73,7 @@ public class DistanceJsonRecorder extends DistanceRecorder {
     protected String getDataString(@NonNull final Location event) {
         Path currentPath = this.getPathFlowable().blockingLatest().iterator().next();
         Location firstLocation = currentPath.getFirstLocation();
-        JsonObject jsonObject = DistanceJsonAdapter.getJsonObject(event, this.usesRelativeCoordinates,
-                firstLocation);
-        return jsonObject.toString();
+        DistanceEvent distanceEvent = DistanceEvent.create(firstLocation, event, this.usesRelativeCoordinates);
+        return gson.toJson(distanceEvent);
     }
 }

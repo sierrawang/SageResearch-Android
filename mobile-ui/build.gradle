@@ -72,14 +72,12 @@ dependencies {
     implementation 'org.slf4j:slf4j-api:1.7.21'
     implementation 'com.android.support:support-annotations:27.1.1'
     implementation 'com.google.code.gson:gson:2.8.2'
-//
-//    implementation 'com.google.auto.value:auto-value-annotations:1.6'
-//    implementation 'com.ryanharter.auto.value:auto-value-gson-annotations:0.7.0'
-//    implementation 'com.ryanharter.auto.value:auto-value-parcel-adapter:0.2.6'
-//
-//    annotationProcessor "com.google.auto.value:auto-value:1.6"
-//    annotationProcessor 'com.ryanharter.auto.value:auto-value-gson:0.7.0'
-//    annotationProcessor 'com.ryanharter.auto.value:auto-value-parcel:0.2.6'
+
+    implementation 'com.ryanharter.auto.value:auto-value-gson-annotations:0.7.0'
+    implementation 'com.ryanharter.auto.value:auto-value-parcel-adapter:0.2.6'
+
+    annotationProcessor 'com.ryanharter.auto.value:auto-value-gson:0.7.0'
+    annotationProcessor 'com.ryanharter.auto.value:auto-value-parcel:0.2.6'
 
     api 'com.google.dagger:dagger-android:2.15'
     api 'com.google.dagger:dagger-android-support:2.15'

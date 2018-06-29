@@ -50,13 +50,8 @@ import io.reactivex.Flowable;
 /**
  * A DeviceMotionRecorder recorders a set of the device's motion sensors and provides access to a Single<FileResult>
  * which can access the data file once the recorder is complete
- *
- * @param <S>
- *         The type of the summary for this recorder.
- * @param <C>
- *         The type of the current state for this recorder.
  */
-public abstract class DeviceMotionRecorder<S, C> extends ReactiveRecorder<S, C, ReactiveSensorEvent> {
+public abstract class DeviceMotionRecorder extends ReactiveRecorder<ReactiveSensorEvent> {
     private static final long MICRO_SECONDS_PER_SEC = 1000000L;
 
     protected final DeviceMotionSensors deviceMotionSensors;
@@ -66,10 +61,8 @@ public abstract class DeviceMotionRecorder<S, C> extends ReactiveRecorder<S, C, 
     protected final Set<Integer> sensorTypes;
 
     public DeviceMotionRecorder(DeviceMotionRecorderConfigPresentation config, Context context,
-            DataLogger dataLogger, SummarySubscriber<S, ReactiveSensorEvent> summarySubscriber,
-            CurrentStateSubscriber<C, ReactiveSensorEvent> currentStateSubscriber) {
-        super(config.getIdentifier(), config.getStartStepIdentifier(), config.getStopStepIdentifier(), dataLogger,
-                summarySubscriber, currentStateSubscriber);
+            DataLogger dataLogger) {
+        super(config.getIdentifier(), config.getStartStepIdentifier(), config.getStopStepIdentifier(), dataLogger);
         this.frequency = config.getFrequency();
         this.sensorTypes = config.getRecorderTypes();
         int sensorDelay = this.isManualFrequency() ? this.calculateDelayBetweenSamplesInMicroSeconds()

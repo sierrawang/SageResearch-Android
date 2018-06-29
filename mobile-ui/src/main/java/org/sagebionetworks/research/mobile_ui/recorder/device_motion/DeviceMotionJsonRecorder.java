@@ -45,7 +45,7 @@ import java.io.IOException;
 /**
  * DeviceMotionJsonRecorder recorders the devices motion as Json into a file. It provides no summary result.
  */
-public class DeviceMotionJsonRecorder extends DeviceMotionRecorder<Void, Void> {
+public class DeviceMotionJsonRecorder extends DeviceMotionRecorder {
     public static final String JSON_FILE_START = "[";
 
     public static final String JSON_FILE_END = "]";
@@ -56,7 +56,7 @@ public class DeviceMotionJsonRecorder extends DeviceMotionRecorder<Void, Void> {
             final DeviceMotionRecorderConfigPresentation config, final Context context) throws IOException {
         // TODO rkolmos 06/26/2018 make this recorder output to the correct file.
         super(config, context, new DataLogger(config.getIdentifier(), null, JSON_FILE_START,
-                JSON_FILE_END, JSON_OBJECT_DELIMINATOR), null, null);
+                JSON_FILE_END, JSON_OBJECT_DELIMINATOR));
     }
 
     @NonNull

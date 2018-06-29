@@ -30,60 +30,67 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.sagebionetworks.research.mobile_ui.recorder.distance;
+package org.sagebionetworks.research.mobile_ui.recorder.distance.json;
 
-import android.location.Location;
-import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 
 import com.google.auto.value.AutoValue;
+import com.google.gson.Gson;
+import com.google.gson.TypeAdapter;
+import com.google.gson.annotations.SerializedName;
 
 /**
- * A Path is a lightweight representation of the data from a Distance recorder. It provides access to the the first
- * and last locations the user was measured at. The total distance that was travelled, and the duration of the
- * trip.
+ * Helper class for ensuring coordinates get serialized with the correct key names.
  */
 @AutoValue
-public abstract class Path {
-    public static final Path ZERO = builder().setDistance(0).setDuration(0).setFirstLocation(null).setLastLocation(null)
-            .build();
+public abstract class Coordinates {
+    public static final String LONGITUDE_KEY = "longitude";
+    public static final String LATITUDE_KEY = "latitude";
+    public static final String RELATIVE_LATITUDE_KEY = "relativeLatitude";
+    public static final String RELATIVE_LONGITUDE_KEY = "relativeLongitude";
 
     @AutoValue.Builder
     public abstract static class Builder {
-        public abstract Path build();
+        public abstract Coordinates build();
 
-        public abstract Builder setDistance(float distance);
+        public abstract Builder setLongitude(@Nullable Double longitude);
 
-        public abstract Builder setFirstLocation(@Nullable Location firstLocation);
+        public abstract Builder setLatitude(@Nullable Double latitude);
 
-        public abstract Builder setLastLocation(@Nullable Location lastLocation);
+        public abstract Builder setRelativeLongitude(@Nullable Double relativeLongitude);
 
-        public abstract Builder setDuration(long duration);
+        public abstract Builder setRelativeLatitude(@Nullable Double relativeLatitude);
     }
 
-    public static Builder builder() {
-        return new AutoValue_Path.Builder();
+    private static Builder builder() {
+        return new AutoValue_Coordinates.Builder();
     }
 
-    public abstract float getDistance();
+    public static TypeAdapter<Coordinates> typeAdapter(Gson gson) {
+        return new AutoValue_Coordinates.GsonTypeAdapter(gson);
+    }
 
+    public static Coordinates create(double longitude, double latitude, boolean usesRelativeCoordinates) {
+        if (usesRelativeCoordinates) {
+            return builder().setRelativeLongitude(longitude).setRelativeLatitude(latitude).build();
+        } else {
+            return builder().setLongitude(longitude).setLatitude(latitude).build();
+        }
+    }
+
+    @SerializedName(LONGITUDE_KEY)
     @Nullable
-    public abstract Location getFirstLocation();
+    public abstract Double getLongitude();
 
+    @SerializedName(LATITUDE_KEY)
     @Nullable
-    public abstract Location getLastLocation();
+    public abstract Double getLatitude();
 
-    public abstract long getDuration();
+    @SerializedName(RELATIVE_LONGITUDE_KEY)
+    @Nullable
+    public abstract Double getRelativeLongitude();
 
-    /**
-     * Returns a new Path that is the result of adding the given location to this Path.
-     * @param location The location tot add to this path.
-     * @return a new Path that is the result of adding the given location to this Path.
-     */
-    public Path addLocation(@NonNull Location location) {
-        long lastLocationTime = this.getLastLocation() != null ? this.getLastLocation().getTime() : 0;
-        long duration = this.getDuration() + (location.getTime() - lastLocationTime);
-        float distance = this.getDistance() + (this.getLastLocation().distanceTo(location));
-        return Path.builder().setDuration(duration).setDistance(distance).setFirstLocation(this.getFirstLocation())
-                .setLastLocation(location).build();
-    }}
+    @SerializedName(RELATIVE_LATITUDE_KEY)
+    @Nullable
+    public abstract Double getRelativeLatitude();
+}
