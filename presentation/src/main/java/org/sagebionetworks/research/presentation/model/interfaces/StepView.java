@@ -44,7 +44,7 @@ import org.sagebionetworks.research.domain.result.interfaces.TaskResult;
 import java.lang.annotation.Retention;
 
 /**
- * Map a {@link Step} to a {@link StepView} when data is moving from the Domain layer to this layer.
+ * Map a {@link org.sagebionetworks.research.domain.step.interfaces.Step} to a {@link StepView} when data is moving from the Domain layer to this layer.
  */
 public interface StepView extends Parcelable {
     @Retention(SOURCE)

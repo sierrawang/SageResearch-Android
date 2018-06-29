@@ -68,9 +68,11 @@ public abstract class AsyncActionRunner implements StepChangeListener {
     @Override
     @CallSuper
     public void onShowStep(Step step) {
-        if (asyncAction.getStartStepIdentifier().equals(step.getIdentifier())) {
+        if (step.getIdentifier().equals(asyncAction.getStartStepIdentifier())) {
             runAction();
         }
+        // TODO: run async actions without a startStepIdentifier for first step, e.g. introduce a AsyncAction
+        // model for presentation layer that defaults in startStepIdentifier
     }
 
     protected abstract void runAction();

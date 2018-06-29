@@ -58,7 +58,7 @@ public class SectionStepBase extends StepBase implements SectionStep {
 
     @NonNull
     @Override
-    public SectionStepBase copyWithIdentifier(String identifier) {
+    public SectionStep copyWithIdentifier(String identifier) {
         return new SectionStepBase(identifier, steps);
     }
 

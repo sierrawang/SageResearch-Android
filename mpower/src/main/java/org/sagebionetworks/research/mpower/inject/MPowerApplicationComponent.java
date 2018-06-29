@@ -47,9 +47,9 @@ public abstract class MPowerApplicationComponent {
     public interface Builder {
 
         @BindsInstance
-        public Builder application(MPowerApplication application);
+        Builder application(MPowerApplication application);
 
-        public MPowerApplicationComponent build();
+        MPowerApplicationComponent build();
     }
 
     public abstract MPowerApplication inject(MPowerApplication app);

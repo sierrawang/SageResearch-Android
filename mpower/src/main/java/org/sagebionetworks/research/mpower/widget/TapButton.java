@@ -30,7 +30,7 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.sagebionetworks.research.mobile_ui.widget;
+package org.sagebionetworks.research.mpower.widget;
 
 import android.content.Context;
 import android.support.v7.widget.AppCompatButton;

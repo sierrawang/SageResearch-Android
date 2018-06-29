@@ -50,7 +50,7 @@ import org.sagebionetworks.research.presentation.model.implementations.ActiveUIS
 import org.threeten.bp.Duration;
 
 public class InstructionStepView extends ActiveUIStepViewBase {
-    private final boolean isFirstRunOnly;
+    private final boolean firstRunOnly;
 
     public InstructionStepView(@NonNull final String identifier, final int navDirection,
             @NonNull final ImmutableMap<String, ActionView> actions,
@@ -62,14 +62,14 @@ public class InstructionStepView extends ActiveUIStepViewBase {
             @Nullable final ImageThemeView imageTheme,
             @NonNull final Duration duration,
             final boolean isBackgroundAudioRequired,
-            final boolean isFirstRunOnly) {
+            final boolean firstRunOnly) {
         super(identifier, navDirection, actions, title, text, detail, footnote, colorTheme, imageTheme, duration,
                 isBackgroundAudioRequired);
-        this.isFirstRunOnly = isFirstRunOnly;
+        this.firstRunOnly = firstRunOnly;
     }
 
     public boolean isFirstRunOnly() {
-        return this.isFirstRunOnly;
+        return this.firstRunOnly;
     }
 
     @NonNull
@@ -90,6 +90,6 @@ public class InstructionStepView extends ActiveUIStepViewBase {
     @Override
     public boolean shouldSkip(@Nullable TaskResult taskResult) {
         // If this step should only run on first runs and it is not a first run then we should skip this step.
-        return this.isFirstRunOnly && !FirstRunHelper.isFirstRun(taskResult);
+        return this.firstRunOnly && !FirstRunHelper.isFirstRun(taskResult);
     }
 }

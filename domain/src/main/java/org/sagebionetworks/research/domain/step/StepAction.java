@@ -35,7 +35,7 @@ package org.sagebionetworks.research.domain.step;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 
-import org.sagebionetworks.research.domain.step.ui.action.interfaces.ActionType;
+import org.sagebionetworks.research.domain.step.ui.action.ActionType;
 
 public class StepAction {
     public static class StepCustomAction extends StepAction {

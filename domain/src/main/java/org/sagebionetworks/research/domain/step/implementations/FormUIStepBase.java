@@ -42,13 +42,14 @@ import org.sagebionetworks.research.domain.form.interfaces.InputField;
 import org.sagebionetworks.research.domain.interfaces.HashCodeHelper;
 import org.sagebionetworks.research.domain.step.StepType;
 import org.sagebionetworks.research.domain.step.interfaces.FormUIStep;
-import org.sagebionetworks.research.domain.step.ui.action.interfaces.Action;
+import org.sagebionetworks.research.domain.step.ui.action.Action;
 import org.sagebionetworks.research.domain.step.ui.theme.ColorTheme;
 import org.sagebionetworks.research.domain.step.ui.theme.ImageTheme;
 
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 public class FormUIStepBase extends UIStepBase implements FormUIStep {
     public static final String TYPE_KEY = StepType.FORM;
@@ -63,17 +64,19 @@ public class FormUIStepBase extends UIStepBase implements FormUIStep {
     }
 
     public FormUIStepBase(@NonNull final String identifier, @NonNull Map<String, Action> actions,
-            @Nullable final String title, @Nullable final String text, @Nullable final String detail,
-            @Nullable final String footnote, @Nullable final ColorTheme colorTheme,
+            @Nullable Set<String> hiddenActions, @Nullable final String title, @Nullable final String text,
+            @Nullable final String detail, @Nullable final String footnote, @Nullable final ColorTheme colorTheme,
             @Nullable final ImageTheme imageTheme, @NonNull final List<InputField> inputFields) {
-        super(identifier, actions, title, text, detail, footnote, colorTheme, imageTheme);
+        super(identifier, actions, hiddenActions, title, text, detail, footnote, colorTheme, imageTheme);
         this.inputFields = inputFields;
     }
 
+    @NonNull
     @Override
     public FormUIStepBase copyWithIdentifier(@NonNull String identifier) {
-        return new FormUIStepBase(identifier, this.getActions(), this.getTitle(), this.getText(), this.getDetail(),
-                this.getFootnote(), this.getColorTheme(), this.getImageTheme(), this.inputFields);
+        return new FormUIStepBase(identifier, this.getActions(), this.getHiddenActions(), this.getTitle(),
+                this.getText(), this.getDetail(), this.getFootnote(), this.getColorTheme(), this.getImageTheme(),
+                this.inputFields);
     }
 
     @NonNull

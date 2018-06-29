@@ -37,13 +37,12 @@ import static org.sagebionetworks.research.domain.inject.GsonModule.createPassTh
 import com.google.gson.JsonDeserializer;
 
 import org.sagebionetworks.research.domain.RuntimeTypeAdapterFactory;
+import org.sagebionetworks.research.domain.impl.StepAutoValueModule;
 import org.sagebionetworks.research.domain.inject.GsonModule.ClassKey;
-import org.sagebionetworks.research.domain.step.implementations.ActiveUIStepBase;
 import org.sagebionetworks.research.domain.step.implementations.FormUIStepBase;
 import org.sagebionetworks.research.domain.step.implementations.SectionStepBase;
 import org.sagebionetworks.research.domain.step.implementations.TransformerStepBase;
 import org.sagebionetworks.research.domain.step.implementations.UIStepBase;
-import org.sagebionetworks.research.domain.step.interfaces.ActiveUIStep;
 import org.sagebionetworks.research.domain.step.interfaces.FormUIStep;
 import org.sagebionetworks.research.domain.step.interfaces.SectionStep;
 import org.sagebionetworks.research.domain.step.interfaces.Step;
@@ -62,7 +61,7 @@ import dagger.Provides;
 import dagger.multibindings.IntoMap;
 import dagger.multibindings.IntoSet;
 
-@Module(includes = {GsonModule.class})
+@Module(includes = {GsonModule.class, StepAutoValueModule.class})
 public class StepModule {
     @MapKey
     public @interface StepClassKey {
@@ -72,22 +71,6 @@ public class StepModule {
     @MapKey
     public @interface ImageThemeClassKey {
         Class<? extends ImageTheme> value();
-    }
-
-    // region Step Deserializers
-    @Provides
-    @IntoMap
-    @ClassKey(ActiveUIStep.class)
-    static JsonDeserializer<?> provideActiveUIStepDeserializer() {
-        return createPassThroughDeserializer(ActiveUIStepBase.class);
-    }
-
-    // region Type Keys
-    @Provides
-    @IntoMap
-    @StepClassKey(ActiveUIStep.class)
-    static String provideActiveUIStepTypeKey() {
-        return ActiveUIStepBase.TYPE_KEY;
     }
 
     @Provides

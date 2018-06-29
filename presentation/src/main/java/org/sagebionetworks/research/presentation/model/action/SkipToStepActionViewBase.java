@@ -34,7 +34,7 @@ package org.sagebionetworks.research.presentation.model.action;
 
 import com.google.auto.value.AutoValue;
 
-import org.sagebionetworks.research.domain.step.ui.action.interfaces.SkipToStepAction;
+import org.sagebionetworks.research.domain.step.ui.action.SkipToStepAction;
 import org.sagebionetworks.research.presentation.DisplayDrawable;
 import org.sagebionetworks.research.presentation.DisplayString;
 

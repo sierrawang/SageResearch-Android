@@ -36,19 +36,12 @@ import static junit.framework.Assert.assertNotNull;
 
 import static org.junit.Assert.assertEquals;
 
-import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
-
 import org.junit.Before;
+import org.sagebionetworks.research.domain.JsonAssetUtil;
 import org.sagebionetworks.research.domain.result.DaggerResultTestComponent;
 import org.sagebionetworks.research.domain.result.ResultTestComponent;
+import org.sagebionetworks.research.domain.result.interfaces.ErrorResult;
 import org.sagebionetworks.research.domain.result.interfaces.Result;
-
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.FileReader;
-import java.io.Reader;
-import java.net.URL;
 
 public class IndividualResultGsonTest {
     protected ResultTestComponent resultTestComponent;
@@ -58,13 +51,9 @@ public class IndividualResultGsonTest {
         this.resultTestComponent = DaggerResultTestComponent.builder().build();
     }
 
-    @NonNull
-    protected Result readJsonFile(String filename) {
-        ClassLoader loader = this.getClass().getClassLoader();
-        URL url = loader.getResource("results/" + filename);
-        Result result = this.readJsonFileHelper(url);
-        assertNotNull("Failed to read file " + filename, result);
-        return result;
+    protected void testCommon(Result expected, String filename) {
+        JsonAssetUtil
+                .assertJsonFileEqualRef(expected, resultTestComponent.gson(), "results/" + filename, Result.class);
     }
 
     protected void testSerializationThenDeserialization(Result result) {
@@ -72,18 +61,15 @@ public class IndividualResultGsonTest {
         assertNotNull(serialized);
         Result deserialized = this.resultTestComponent.gson().fromJson(serialized, Result.class);
         assertNotNull(deserialized);
-        assertEquals(result, deserialized);
-    }
-
-    @Nullable
-    private Result readJsonFileHelper(URL url) {
-        try {
-            Reader reader = new FileReader(new File(url.getFile()));
-            Result result = this.resultTestComponent.gson().fromJson(reader, Result.class);
-            return result;
-        } catch (FileNotFoundException e) {
-            return null;
+        if (deserialized instanceof ErrorResult) {
+            String message = ((ErrorResult) result).getErrorDescription();
+            ErrorResult errorResult = (ErrorResult) result;
+            assertEquals(message, errorResult.getErrorDescription());
+            if (errorResult.getThrowable() != null) {
+                assertEquals(message, errorResult.getThrowable().getMessage());
+            }
+        } else {
+            assertEquals(result, deserialized);
         }
     }
-
 }

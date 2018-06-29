@@ -87,13 +87,6 @@ public class TaskResultGsonTests extends IndividualResultGsonTest {
         testCommon(TWO_STEP_HISTORY, "TaskResult_TwoStepHistory.json");
     }
 
-    private void testCommon(Result expected, String filename) {
-        Result result = this.readJsonFile(filename);
-        assertNotNull(result);
-        assertTrue(result instanceof TaskResult);
-        assertEquals(expected, result);
-    }
-
     static {
         List<Result> stepHistory = new ArrayList<>();
         stepHistory.add(new ResultBase("step1", Instant.ofEpochSecond(20), Instant.ofEpochSecond(30)));

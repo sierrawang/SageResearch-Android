@@ -93,5 +93,6 @@ public class ActiveUIStepViewBinding<S extends ActiveUIStepView> extends UIStepV
         this.activeUIStepViewHolderUnbinder.unbind();
     }
 
-    // TODO rkolmos 05/25/2018 override update to do the correct thing once the corresponding subclass of StepView is created
+    // TODO rkolmos 05/25/2018 override update to do the correct thing once the corresponding subclass of StepView is
+    // created
 }

@@ -36,6 +36,8 @@ import static junit.framework.Assert.assertEquals;
 import static junit.framework.Assert.assertNotNull;
 import static junit.framework.Assert.assertTrue;
 
+import static org.sagebionetworks.research.domain.JsonAssetUtil.readJsonFile;
+
 import org.junit.Test;
 import org.sagebionetworks.research.domain.step.interfaces.ActiveUIStep;
 import org.sagebionetworks.research.domain.step.interfaces.SectionStep;
@@ -47,17 +49,20 @@ import java.util.List;
 public class SectionStepGsonTests extends IndividualStepGsonTest {
     @Test
     public void testEmpty() {
-        Step step = this.readJsonFile("EmptySectionStep.json");
+        Step step = readJsonFile(stepTestComponent.gson(), "steps/EmptySectionStep.json", Step.class);
+
         assertNotNull(step);
         assertTrue(step instanceof SectionStep);
         SectionStep sectionStep = (SectionStep) step;
         assertEquals("emptySectionStep", sectionStep.getIdentifier());
         assertTrue(sectionStep.getSteps().isEmpty());
+
+        testCommon(sectionStep, "EmptySectionStep.json");
     }
 
     @Test
     public void testExample_1() {
-        Step step = this.readJsonFile("SectionStep_1.json");
+        Step step = readJsonFile(stepTestComponent.gson(), "steps/SectionStep_1.json", Step.class);
         assertNotNull(step);
         assertTrue(step instanceof SectionStep);
         SectionStep sectionStep = (SectionStep) step;
