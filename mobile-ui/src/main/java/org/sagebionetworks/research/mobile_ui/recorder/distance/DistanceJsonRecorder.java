@@ -65,13 +65,8 @@ public class DistanceJsonRecorder extends DistanceRecorder {
     @NonNull
     @Override
     protected String getDataString(@NonNull final Location event) {
-        // TODO rkolmos 06/26/2018 potentially refactor start time and first location.
-        CurrentDistanceInfo currentState = this.getCurrentState();
-        if (currentState == null || currentState.getFirstLocation() == null) {
-            throw new IllegalStateException("Cannot get data string while not recording.");
-        }
-
-        Location firstLocation = currentState.getFirstLocation();
+        Path currentPath = this.getPathFlowable().blockingLatest().iterator().next();
+        Location firstLocation = currentPath.getFirstLocation();
         JsonObject jsonObject = DistanceJsonAdapter.getJsonObject(event, this.usesRelativeCoordinates,
                 firstLocation);
         return jsonObject.toString();

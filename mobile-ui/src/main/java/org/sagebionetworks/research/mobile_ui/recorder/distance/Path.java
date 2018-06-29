@@ -32,43 +32,58 @@
 
 package org.sagebionetworks.research.mobile_ui.recorder.distance;
 
-import android.content.Context;
 import android.location.Location;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 
-import org.sagebionetworks.research.domain.async.RecorderConfiguration;
-import org.sagebionetworks.research.mobile_ui.recorder.ReactiveRecorder;
-import org.sagebionetworks.research.mobile_ui.recorder.data.DataLogger;
-
-import io.reactivex.Flowable;
+import com.google.auto.value.AutoValue;
 
 /**
- * Records the user's location and distance travelled via a Stream of Location's that the user is measured at.
+ * A Path is a lightweight representation of the data from a Distance recorder. It provides access to the the first
+ * and last locations the user was measured at. The total distance that was travelled, and the duration of the
+ * trip.
  */
-public abstract class DistanceRecorder extends ReactiveRecorder<Location> {
-    protected final Context context;
-    protected final Flowable<Path> pathFlowable;
+@AutoValue
+public abstract class Path {
+    public static final Path ZERO = builder().setDistance(0).setDuration(0).setFirstLocation(0).setLastLocation(0)
+            .build();
 
-    public DistanceRecorder(RecorderConfiguration config, Context context, @Nullable final DataLogger dataLogger) {
-        super(config.getIdentifier(), config.getStartStepIdentifier(), config.getStopStepIdentifier(), dataLogger);
-        this.context = context;
-        this.pathFlowable = this.getEventFlowable().scan(Path.ZERO, new PathAccumulator());
+    @AutoValue.Builder
+    public abstract static class Builder {
+        public abstract Path build();
+
+        public abstract Builder setDistance(float distance);
+
+        public abstract Builder setFirstLocation(@Nullable Location firstLocation);
+
+        public abstract Builder setLastLocation(@Nullable Location lastLocation);
+
+        public abstract Builder setDuration(long duration);
     }
+
+    public static Builder builder() {
+        return new AutoValue_Distance.Builder();
+    }
+
+    public abstract float getDistance();
+
+    @Nullable
+    public abstract Location getFirstLocation();
+
+    @Nullable
+    public abstract Location getLastLocation();
+
+    public abstract long getDuration();
 
     /**
-     * Returns a Flowable<Path> that can be used to obtain information about the user's path while the recorder
-     * is running.
-     * @return a Flowable<Path> that can be used to obtain information about the user's path while the recorder
-     * is running.
+     * Returns a new Path that is the result of adding the given location to this Path.
+     * @param location The location tot add to this path.
+     * @return a new Path that is the result of adding the given location to this Path.
      */
-    public Flowable<Path> getPathFlowable() {
-        return this.pathFlowable;
-    }
-
-    @Override
-    @NonNull
-    public Flowable<Location> intializeEventFlowable() {
-        return LocationSensor.getLocation(this.context);
-    }
-}
+    public Path addLocation(@NonNull Location location) {
+        long lastLocationTime = this.getLastLocation() != null ? this.getLastLocation().getTime() : 0;
+        long duration = this.getDuration() + (location.getTime() - lastLocationTime);
+        float distance = this.getDistance() + (this.getLastLocation().distanceTo(location));
+        return Path.builder().setDuration(duration).setDistance(distance).setFirstLocation(this.getFirstLocation())
+                .setLastLocation(location).build();
+    }}

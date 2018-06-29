@@ -32,43 +32,23 @@
 
 package org.sagebionetworks.research.mobile_ui.recorder.distance;
 
-import android.content.Context;
 import android.location.Location;
-import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
 
-import org.sagebionetworks.research.domain.async.RecorderConfiguration;
-import org.sagebionetworks.research.mobile_ui.recorder.ReactiveRecorder;
-import org.sagebionetworks.research.mobile_ui.recorder.data.DataLogger;
-
-import io.reactivex.Flowable;
+import io.reactivex.functions.BiFunction;
 
 /**
- * Records the user's location and distance travelled via a Stream of Location's that the user is measured at.
+ * Provides the ability to use Observable.scan() on the LocationObservable from locationSensor in order to obtain
+ * an observable that provides information about the path that the Locations form.
  */
-public abstract class DistanceRecorder extends ReactiveRecorder<Location> {
-    protected final Context context;
-    protected final Flowable<Path> pathFlowable;
-
-    public DistanceRecorder(RecorderConfiguration config, Context context, @Nullable final DataLogger dataLogger) {
-        super(config.getIdentifier(), config.getStartStepIdentifier(), config.getStopStepIdentifier(), dataLogger);
-        this.context = context;
-        this.pathFlowable = this.getEventFlowable().scan(Path.ZERO, new PathAccumulator());
-    }
-
-    /**
-     * Returns a Flowable<Path> that can be used to obtain information about the user's path while the recorder
-     * is running.
-     * @return a Flowable<Path> that can be used to obtain information about the user's path while the recorder
-     * is running.
-     */
-    public Flowable<Path> getPathFlowable() {
-        return this.pathFlowable;
-    }
-
+public class PathAccumulator implements BiFunction<Path, Location, Path> {
     @Override
-    @NonNull
-    public Flowable<Location> intializeEventFlowable() {
-        return LocationSensor.getLocation(this.context);
+    public Path apply(final Path path, final Location location) {
+        if (path.equals(Path.ZERO)) {
+            // If this is the initial value we initialize the locations.
+            return Path.builder().setDistance(0f).setFirstLocation(location).setLastLocation(location)
+                    .setDuration(0).build();
+        }
+
+        return path.addLocation(location);
     }
 }
