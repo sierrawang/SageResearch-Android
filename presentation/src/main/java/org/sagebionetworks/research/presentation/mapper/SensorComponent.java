@@ -38,16 +38,7 @@ import java.util.Map;
 
 import dagger.Component;
 
-public class SensorMapper {
-    @Component(modules = {SensorModule.class})
-    public interface SensorComponent {
-        Map<String, Integer> getSensorMap();
-    }
-
-    private static Map<String, Integer> sensorMap = DaggerSensorMapper_SensorComponent.builder().build()
-            .getSensorMap();
-
-    public static Integer getSensorType(String sensor) {
-        return sensorMap.get(sensor);
-    }
+@Component(modules = {SensorModule.class})
+public abstract class SensorComponent {
+    public abstract Map<String, Integer> getSensorMap();
 }

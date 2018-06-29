@@ -38,13 +38,16 @@ import android.support.annotation.Nullable;
 import com.google.auto.value.AutoValue;
 
 import org.sagebionetworks.research.domain.async.DeviceMotionRecorderConfiguration;
-import org.sagebionetworks.research.presentation.mapper.SensorMapper;
+import org.sagebionetworks.research.presentation.mapper.DaggerSensorComponent;
+import org.sagebionetworks.research.presentation.mapper.SensorComponent;
 
 import java.util.HashSet;
 import java.util.Set;
 
 @AutoValue
 public abstract class DeviceMotionRecorderConfigPresentationBase implements DeviceMotionRecorderConfigPresentation {
+    public static SensorComponent SENSOR_COMPONENT = DaggerSensorComponent.builder().build();
+
     // TODO rkolmos 06/27/2018 change this name
     @AutoValue.Builder
     public abstract static class Builder {
@@ -70,7 +73,7 @@ public abstract class DeviceMotionRecorderConfigPresentationBase implements Devi
         double frequency = config.getFrequency() != null ? config.getFrequency() : 0; // 0 is the default value.
         Set<Integer> recorderTypes = new HashSet<>();
         for (String sensor : config.getRecorderTypes()) {
-            Integer sensorType = SensorMapper.getSensorType(sensor);
+            Integer sensorType = SENSOR_COMPONENT.getSensorMap().get(sensor);
             if (sensorType != null) {
                 recorderTypes.add(sensorType);
             }
