@@ -62,7 +62,7 @@ public class ResultBase extends ObjectHelper implements Result {
 
     /**
      * Constructor for subclasses to use to allow them to have the correct type. If the given type is null the type
-     * for this result is assumed to be ResultType.BASE.
+     * for this result is assumed to be ResultType.DEFAULT.
      *
      * @param identifier
      *         The identifier of the result type.

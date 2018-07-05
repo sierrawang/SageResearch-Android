@@ -3,7 +3,7 @@
   "asyncActions": [],
   "actions": {
     "cancel": {
-      "type": "base",
+      "type": "default",
       "iconName": "closeActivity"
     }
   },
@@ -21,7 +21,7 @@
       "image": "before",
       "actions": {
         "goForward": {
-          "type": "base",
+          "type": "default",
           "buttonTitle": "Go, Dogs!"
         }
       }
@@ -115,7 +115,7 @@
       },
       "actions": {
         "goForward": {
-          "type": "base",
+          "type": "default",
           "buttonTitle": "Start"
         }
       }
