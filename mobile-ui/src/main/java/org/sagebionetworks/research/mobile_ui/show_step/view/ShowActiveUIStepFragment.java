@@ -32,10 +32,17 @@
 
 package org.sagebionetworks.research.mobile_ui.show_step.view;
 
+import android.animation.ObjectAnimator;
+import android.arch.lifecycle.LiveData;
+import android.arch.lifecycle.Observer;
 import android.os.Bundle;
 import android.support.annotation.LayoutRes;
 import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.view.View;
+import android.view.animation.LinearInterpolator;
+import android.widget.ProgressBar;
+import android.widget.TextView;
 
 import org.sagebionetworks.research.domain.mobile_ui.R;
 import org.sagebionetworks.research.mobile_ui.show_step.view.view_binding.ActiveUIStepViewBinding;
@@ -46,6 +53,10 @@ import org.sagebionetworks.research.presentation.show_step.show_step_view_models
 public class ShowActiveUIStepFragment extends
         ShowUIStepFragmentBase<ActiveUIStepView, ShowActiveUIStepViewModel<ActiveUIStepView>,
                 ActiveUIStepViewBinding<ActiveUIStepView>> {
+    public static final int PROGRESS_BAR_ANIMATION_MULTIPILER = 1000;
+
+    protected LiveData<Long> countdown;
+
     @NonNull
     public static ShowActiveUIStepFragment newInstance(@NonNull StepView stepView) {
         if (!(stepView instanceof ActiveUIStepView)) {
@@ -67,5 +78,46 @@ public class ShowActiveUIStepFragment extends
     @Override
     protected ActiveUIStepViewBinding<ActiveUIStepView> instantiateAndBindBinding(View view) {
         return new ActiveUIStepViewBinding<>(view);
+    }
+
+    @Override
+    public void onStart() {
+        super.onStart();
+        this.countdown = this.showStepViewModel.getCountdown();
+        ProgressBar countdownDial = this.stepViewBinding.getCountdownDial();
+        Integer duration = ((Long)this.stepView.getDuration().getSeconds()).intValue();
+        if (countdownDial != null) {
+            countdownDial.setMax(duration * PROGRESS_BAR_ANIMATION_MULTIPILER);
+            ObjectAnimator animator = ObjectAnimator.ofInt(countdownDial, "progress", 0,
+                    duration * PROGRESS_BAR_ANIMATION_MULTIPILER);
+            animator.setDuration(duration * 1000);
+            animator.setStartDelay(0);
+            animator.setInterpolator(new LinearInterpolator());
+            animator.start();
+        }
+
+        TextView countdownLabel = this.stepViewBinding.getCountdownLabel();
+        if (countdownLabel != null) {
+            countdownLabel.setText(duration.toString());
+        }
+
+        TextView unitLabel = this.stepViewBinding.getUnitLabel();
+        this.countdown.observe(this, count -> {
+            if (count == null) {
+                return;
+            }
+
+            if (count == 0) {
+                this.performTaskViewModel.goForward();
+                return;
+            }
+
+            if (countdownLabel != null) {
+                countdownLabel.setText(count.toString());
+            }
+
+            if (countdownDial != null) {
+            }
+        });
     }
 }

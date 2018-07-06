@@ -42,6 +42,7 @@ import com.google.gson.Gson;
 import com.google.gson.TypeAdapter;
 
 import org.sagebionetworks.research.domain.result.interfaces.TaskResult;
+import org.sagebionetworks.research.domain.step.StepType;
 import org.sagebionetworks.research.domain.step.interfaces.Step;
 import org.sagebionetworks.research.presentation.model.interfaces.StepView;
 
@@ -53,6 +54,8 @@ import java.util.Set;
  */
 @AutoValue
 public abstract class BaseStepView implements StepView, Parcelable {
+    public static final String TYPE = StepType.BASE;
+
     @AutoValue.Builder
     public abstract static class Builder {
         public abstract BaseStepView build();
@@ -98,4 +101,11 @@ public abstract class BaseStepView implements StepView, Parcelable {
     public abstract String getTitle();
 
     public abstract Builder toBuilder();
+
+    @Override
+    @NonNull
+    @StepType
+    public String getType() {
+        return TYPE;
+    }
 }

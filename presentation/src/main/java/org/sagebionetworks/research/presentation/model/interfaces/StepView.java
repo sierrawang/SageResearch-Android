@@ -40,6 +40,7 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 
 import org.sagebionetworks.research.domain.result.interfaces.TaskResult;
+import org.sagebionetworks.research.domain.step.StepType;
 
 import java.lang.annotation.Retention;
 
@@ -56,6 +57,10 @@ public interface StepView extends Parcelable {
 
     @NonNull
     String getIdentifier();
+
+    @NonNull
+    @StepType
+    String getType();
 
     @NavDirection
     int getNavDirection();

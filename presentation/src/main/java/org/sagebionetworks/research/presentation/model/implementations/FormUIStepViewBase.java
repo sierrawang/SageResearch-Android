@@ -39,6 +39,7 @@ import android.support.annotation.Nullable;
 import com.google.common.collect.ImmutableMap;
 
 import org.sagebionetworks.research.domain.form.interfaces.InputField;
+import org.sagebionetworks.research.domain.step.StepType;
 import org.sagebionetworks.research.domain.step.interfaces.FormUIStep;
 import org.sagebionetworks.research.domain.step.interfaces.Step;
 import org.sagebionetworks.research.presentation.DisplayString;
@@ -54,6 +55,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class FormUIStepViewBase extends UIStepViewBase implements FormUIStepView {
+    public static final String TYPE = StepType.FORM;
+
     public static final Creator<FormUIStepViewBase> CREATOR = new Creator<FormUIStepViewBase>() {
         @Override
         public FormUIStepViewBase createFromParcel(Parcel source) {
@@ -108,6 +111,13 @@ public class FormUIStepViewBase extends UIStepViewBase implements FormUIStepView
     @Override
     public int describeContents() {
         return 0;
+    }
+
+    @NonNull
+    @Override
+    @StepType
+    public String getType() {
+        return TYPE;
     }
 
     @Override

@@ -38,6 +38,7 @@ import android.support.annotation.Nullable;
 import com.google.common.collect.ImmutableMap;
 
 import org.sagebionetworks.research.domain.result.interfaces.TaskResult;
+import org.sagebionetworks.research.domain.step.StepType;
 import org.sagebionetworks.research.domain.step.interfaces.Step;
 import org.sagebionetworks.research.mpower.show_step_fragment.FirstRunHelper;
 import org.sagebionetworks.research.mpower.step.InstructionStep;
@@ -50,6 +51,8 @@ import org.sagebionetworks.research.presentation.model.implementations.ActiveUIS
 import org.threeten.bp.Duration;
 
 public class InstructionStepView extends ActiveUIStepViewBase {
+    public static final String TYPE = StepType.INSTRUCTION;
+
     private final boolean isFirstRunOnly;
 
     public InstructionStepView(@NonNull final String identifier, final int navDirection,
@@ -85,6 +88,13 @@ public class InstructionStepView extends ActiveUIStepViewBase {
                 activeUIStepView.getDetail(), activeUIStepView.getFootnote(), activeUIStepView.getColorTheme(),
                 activeUIStepView.getImageTheme(), activeUIStepView.getDuration(),
                 activeUIStepView.isBackgroundAudioRequired(), instructionStep.isFirstRunOnly());
+    }
+
+    @Override
+    @StepType
+    @NonNull
+    public String getType() {
+        return TYPE;
     }
 
     @Override

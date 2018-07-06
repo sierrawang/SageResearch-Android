@@ -78,6 +78,4 @@ public class AppStepModule {
     static String provideOverviewStepClassInfo() {
         return OverviewStep.TYPE_KEY;
     }
-
-
 }

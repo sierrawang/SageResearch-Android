@@ -38,6 +38,8 @@ import org.sagebionetworks.research.mobile_ui.show_step.view.ShowActiveUIStepFra
 import org.sagebionetworks.research.mobile_ui.show_step.view.ShowStepFragmentBase;
 import org.sagebionetworks.research.mobile_ui.show_step.view.ShowUIStepFragment;
 import org.sagebionetworks.research.presentation.inject.DrawableModule;
+import org.sagebionetworks.research.presentation.model.implementations.ActiveUIStepViewBase;
+import org.sagebionetworks.research.presentation.model.implementations.UIStepViewBase;
 import org.sagebionetworks.research.presentation.model.interfaces.ActiveUIStepView;
 import org.sagebionetworks.research.presentation.model.interfaces.StepView;
 import org.sagebionetworks.research.presentation.model.interfaces.UIStepView;
@@ -55,7 +57,7 @@ import dagger.multibindings.IntoMap;
 public class ShowStepFragmentModule {
     @MapKey
     public @interface StepViewKey {
-        Class<? extends StepView> value();
+        String value();
     }
 
     public interface ShowStepFragmentFactory {
@@ -65,10 +67,10 @@ public class ShowStepFragmentModule {
 
     @Provides
     public static ShowStepFragmentFactory provideShowStepFragmentFactory(
-            Map<Class<? extends StepView>, ShowStepFragmentFactory> showStepFragmentFactoryMap) {
+            Map<String, ShowStepFragmentFactory> showStepFragmentFactoryMap) {
         return (@NonNull StepView stepView) -> {
-            if (showStepFragmentFactoryMap.containsKey(stepView.getClass())) {
-                return showStepFragmentFactoryMap.get(stepView.getClass()).create(stepView);
+            if (showStepFragmentFactoryMap.containsKey(stepView.getType())) {
+                return showStepFragmentFactoryMap.get(stepView.getType()).create(stepView);
             }
 
             // If we don't have a factory we default to the most general ShowStepFragment.
@@ -78,14 +80,14 @@ public class ShowStepFragmentModule {
 
     @Provides
     @IntoMap
-    @StepViewKey(ActiveUIStepView.class)
+    @StepViewKey(ActiveUIStepViewBase.TYPE)
     static ShowStepFragmentFactory provideShowActiveUIStepFragmentFactory() {
         return ShowActiveUIStepFragment::newInstance;
     }
 
     @Provides
     @IntoMap
-    @StepViewKey(UIStepView.class)
+    @StepViewKey(UIStepViewBase.TYPE)
     static ShowStepFragmentFactory provideShowUIStepFragmentFactory() {
         return ShowUIStepFragment::newInstance;
     }
