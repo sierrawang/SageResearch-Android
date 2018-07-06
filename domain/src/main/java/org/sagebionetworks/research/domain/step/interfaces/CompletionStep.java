@@ -30,35 +30,8 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.sagebionetworks.research.mpower.step;
+package org.sagebionetworks.research.domain.step.interfaces;
 
-import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
-
-import org.sagebionetworks.research.domain.step.StepType;
-import org.sagebionetworks.research.domain.step.implementations.UIStepBase;
-import org.sagebionetworks.research.domain.step.ui.action.interfaces.Action;
-import org.sagebionetworks.research.domain.step.ui.theme.ColorTheme;
-import org.sagebionetworks.research.domain.step.ui.theme.ImageTheme;
-
-import java.util.Map;
-
-public class CompletionStep extends UIStepBase {
-    public static final String TYPE_KEY = StepType.COMPLETION;
-
-    public CompletionStep(@NonNull final String identifier,
-            @Nullable final Map<String, Action> actions,
-            @Nullable final String title,
-            @Nullable final String text,
-            @Nullable final String detail,
-            @Nullable final String footnote,
-            @Nullable final ColorTheme colorTheme,
-            @Nullable final ImageTheme imageTheme) {
-        super(identifier, actions, title, text, detail, footnote, colorTheme, imageTheme);
-    }
-
-    @Override
-    public String getType() {
-        return TYPE_KEY;
-    }
+public interface CompletionStep extends ThemedUIStep {
+    // For now a Completion Step is just a normal UI step. In the future this may change however.
 }

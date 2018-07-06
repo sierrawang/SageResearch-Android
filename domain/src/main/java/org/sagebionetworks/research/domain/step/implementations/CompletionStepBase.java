@@ -30,52 +30,41 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.sagebionetworks.research.mpower.inject;
+package org.sagebionetworks.research.domain.step.implementations;
 
-import org.sagebionetworks.research.domain.inject.InputFieldsModule;
-import org.sagebionetworks.research.domain.inject.StepModule;
-import org.sagebionetworks.research.domain.inject.StepModule.StepClassKey;
-import org.sagebionetworks.research.domain.step.implementations.CompletionStepBase;
-import org.sagebionetworks.research.mpower.step.InstructionStep;
-import org.sagebionetworks.research.mpower.step.OverviewStep;
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 
-import dagger.Module;
-import dagger.Provides;
-import dagger.multibindings.IntoMap;
+import org.sagebionetworks.research.domain.step.StepType;
+import org.sagebionetworks.research.domain.step.implementations.UIStepBase;
+import org.sagebionetworks.research.domain.step.interfaces.CompletionStep;
+import org.sagebionetworks.research.domain.step.ui.action.interfaces.Action;
+import org.sagebionetworks.research.domain.step.ui.theme.ColorTheme;
+import org.sagebionetworks.research.domain.step.ui.theme.ImageTheme;
 
-/**
- * Add app-specific steps.
- */
-@Module(includes = {InputFieldsModule.class, StepModule.class})
-public class AppStepModule {
-    @Provides
-    @IntoMap
-    @StepClassKey(CompletionStepBase.class)
-    static String provideCompletionStepClassInfo() {
-        return CompletionStepBase.TYPE_KEY;
+import java.util.Map;
+
+public class CompletionStepBase extends UIStepBase implements CompletionStep {
+    public static final String TYPE_KEY = StepType.COMPLETION;
+
+    // Default initializer for gson
+    public CompletionStepBase() {
+        super();
     }
 
-    /**
-     * Returns the type key for InstructionStep.class.
-     *
-     * @return the type key for InstructionStep.class.
-     */
-    @Provides
-    @IntoMap
-    @StepClassKey(InstructionStep.class)
-    static String provideInstructionStepClassInfo() {
-        return InstructionStep.TYPE_KEY;
+    public CompletionStepBase(@NonNull final String identifier,
+            @Nullable final Map<String, Action> actions,
+            @Nullable final String title,
+            @Nullable final String text,
+            @Nullable final String detail,
+            @Nullable final String footnote,
+            @Nullable final ColorTheme colorTheme,
+            @Nullable final ImageTheme imageTheme) {
+        super(identifier, actions, title, text, detail, footnote, colorTheme, imageTheme);
     }
 
-    /**
-     * Returns the type key for OverviewStep.class.
-     *
-     * @return the type key for OverviewStep.class.
-     */
-    @Provides
-    @IntoMap
-    @StepClassKey(OverviewStep.class)
-    static String provideOverviewStepClassInfo() {
-        return OverviewStep.TYPE_KEY;
+    @Override
+    public String getType() {
+        return TYPE_KEY;
     }
 }

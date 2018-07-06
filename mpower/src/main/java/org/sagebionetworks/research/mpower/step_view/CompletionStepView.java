@@ -39,7 +39,7 @@ import com.google.common.collect.ImmutableMap;
 
 import org.sagebionetworks.research.domain.step.StepType;
 import org.sagebionetworks.research.domain.step.interfaces.Step;
-import org.sagebionetworks.research.mpower.step.CompletionStep;
+import org.sagebionetworks.research.domain.step.implementations.CompletionStepBase;
 import org.sagebionetworks.research.presentation.DisplayString;
 import org.sagebionetworks.research.presentation.mapper.DrawableMapper;
 import org.sagebionetworks.research.presentation.model.ColorThemeView;
@@ -51,8 +51,8 @@ public class CompletionStepView extends UIStepViewBase {
     public static final String TYPE = StepType.COMPLETION;
 
     public static CompletionStepView fromCompletionStep(Step step, DrawableMapper mapper) {
-        if (!(step instanceof CompletionStep)) {
-            throw new IllegalArgumentException("Provided step: " + step + " is not a CompletionStep.");
+        if (!(step instanceof CompletionStepBase)) {
+            throw new IllegalArgumentException("Provided step: " + step + " is not a CompletionStepBase.");
         }
 
         UIStepViewBase uiStep = UIStepViewBase.fromUIStep(step, mapper);
