@@ -32,8 +32,10 @@
 
 package org.sagebionetworks.research.presentation.inject;
 
+import org.sagebionetworks.research.domain.inject.StepModule.StepClassKey;
 import org.sagebionetworks.research.presentation.model.BaseStepView;
 import org.sagebionetworks.research.presentation.model.implementations.ActiveUIStepViewBase;
+import org.sagebionetworks.research.presentation.model.implementations.CompletionStepViewBase;
 import org.sagebionetworks.research.presentation.model.implementations.FormUIStepViewBase;
 import org.sagebionetworks.research.presentation.model.implementations.UIStepViewBase;
 import org.sagebionetworks.research.presentation.model.interfaces.ActiveUIStepView;
@@ -92,6 +94,13 @@ public abstract class ShowStepViewModelModule {
     @IntoMap
     @StepViewClassKey(UIStepViewBase.TYPE)
     static AbstractShowStepViewModelFactory<?, ? extends StepView> provideUIStepVMF() {
-        return new ShowUIStepViewModelFactory<UIStepView>();
+        return new ShowUIStepViewModelFactory<>();
+    }
+
+    @Provides
+    @IntoMap
+    @StepViewClassKey(CompletionStepViewBase.TYPE)
+    static AbstractShowStepViewModelFactory<?, ? extends StepView> provideCompletionStepVMF() {
+        return new ShowUIStepViewModelFactory<>();
     }
 }

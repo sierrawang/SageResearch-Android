@@ -30,36 +30,7 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.sagebionetworks.research.mpower.inject;
+package org.sagebionetworks.research.presentation.model.interfaces;
 
-import org.sagebionetworks.research.domain.step.StepType;
-import org.sagebionetworks.research.presentation.model.implementations.CompletionStepViewBase;
-import org.sagebionetworks.research.mpower.step_view.InstructionStepView;
-import org.sagebionetworks.research.mpower.step_view.OverviewStepView;
-import org.sagebionetworks.research.presentation.inject.StepViewModule;
-import org.sagebionetworks.research.presentation.inject.StepViewModule.InternalStepViewFactory;
-import org.sagebionetworks.research.presentation.inject.StepViewModule.StepTypeKey;
-
-import dagger.Module;
-import dagger.Provides;
-import dagger.multibindings.IntoMap;
-
-/**
- * Add app-specific steps.
- */
-@Module(includes = StepViewModule.class)
-public class AppStepViewModule {
-    @Provides
-    @IntoMap
-    @StepTypeKey(StepType.INSTRUCTION)
-    static InternalStepViewFactory provideInstructionStepViewFactory() {
-        return InstructionStepView::fromInstructionStep;
-    }
-
-    @Provides
-    @IntoMap
-    @StepTypeKey(StepType.OVERVIEW)
-    static InternalStepViewFactory provideOverviewStepViewFactory() {
-        return OverviewStepView::fromOverviewStep;
-    }
+public interface CompletionStepView extends UIStepView {
 }

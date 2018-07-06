@@ -48,13 +48,6 @@ import dagger.multibindings.IntoMap;
  */
 @Module(includes = {InputFieldsModule.class, StepModule.class})
 public class AppStepModule {
-    @Provides
-    @IntoMap
-    @StepClassKey(CompletionStepBase.class)
-    static String provideCompletionStepClassInfo() {
-        return CompletionStepBase.TYPE_KEY;
-    }
-
     /**
      * Returns the type key for InstructionStep.class.
      *
