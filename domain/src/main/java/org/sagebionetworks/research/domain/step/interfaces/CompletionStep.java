@@ -30,47 +30,8 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.sagebionetworks.research.mpower;
+package org.sagebionetworks.research.domain.step.interfaces;
 
-import android.app.Activity;
-import android.support.multidex.MultiDexApplication;
-import android.support.v4.app.Fragment;
-
-
-import org.sagebionetworks.research.mpower.inject.DaggerMPowerApplicationComponent;
-
-import javax.inject.Inject;
-
-import dagger.android.AndroidInjector;
-import dagger.android.DispatchingAndroidInjector;
-import dagger.android.HasActivityInjector;
-import dagger.android.support.HasSupportFragmentInjector;
-
-public class MPowerApplication extends MultiDexApplication implements HasSupportFragmentInjector,
-        HasActivityInjector {
-    @Inject
-    DispatchingAndroidInjector<Activity> dispatchingActivityInjector;
-
-    @Inject
-    DispatchingAndroidInjector<Fragment> dispatchingSupportFragmentInjector;
-
-    @Override
-    public void onCreate() {
-        super.onCreate();
-        DaggerMPowerApplicationComponent
-                .builder()
-                .application(this)
-                .build()
-                .inject(this);
-    }
-
-    @Override
-    public AndroidInjector<Activity> activityInjector() {
-        return dispatchingActivityInjector;
-    }
-
-    @Override
-    public AndroidInjector<Fragment> supportFragmentInjector() {
-        return dispatchingSupportFragmentInjector;
-    }
+public interface CompletionStep extends ThemedUIStep {
+    // For now a Completion Step is just a normal UI step. In the future this may change however.
 }

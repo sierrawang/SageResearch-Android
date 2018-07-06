@@ -30,47 +30,40 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.sagebionetworks.research.mpower;
+package org.sagebionetworks.research.mobile_ui.show_step.view;
 
-import android.app.Activity;
-import android.support.multidex.MultiDexApplication;
-import android.support.v4.app.Fragment;
+import android.os.Bundle;
+import android.support.annotation.NonNull;
+import android.view.View;
 
+import org.sagebionetworks.research.domain.mobile_ui.R;
+import org.sagebionetworks.research.mobile_ui.show_step.view.view_binding.UIStepViewBinding;
+import org.sagebionetworks.research.presentation.model.interfaces.CompletionStepView;
+import org.sagebionetworks.research.presentation.model.interfaces.StepView;
+import org.sagebionetworks.research.presentation.show_step.show_step_view_models.ShowUIStepViewModel;
 
-import org.sagebionetworks.research.mpower.inject.DaggerMPowerApplicationComponent;
+public class ShowCompletionStepFragment extends
+        ShowUIStepFragmentBase<CompletionStepView, ShowUIStepViewModel<CompletionStepView>, UIStepViewBinding<CompletionStepView>> {
+    @NonNull
+    public static ShowCompletionStepFragment newInstance(@NonNull StepView stepView) {
+        if (!(stepView instanceof CompletionStepView)) {
+            throw new IllegalArgumentException("Step view: " + stepView + " is not a CompletionStepView.");
+        }
 
-import javax.inject.Inject;
-
-import dagger.android.AndroidInjector;
-import dagger.android.DispatchingAndroidInjector;
-import dagger.android.HasActivityInjector;
-import dagger.android.support.HasSupportFragmentInjector;
-
-public class MPowerApplication extends MultiDexApplication implements HasSupportFragmentInjector,
-        HasActivityInjector {
-    @Inject
-    DispatchingAndroidInjector<Activity> dispatchingActivityInjector;
-
-    @Inject
-    DispatchingAndroidInjector<Fragment> dispatchingSupportFragmentInjector;
-
-    @Override
-    public void onCreate() {
-        super.onCreate();
-        DaggerMPowerApplicationComponent
-                .builder()
-                .application(this)
-                .build()
-                .inject(this);
+        ShowCompletionStepFragment fragment = new ShowCompletionStepFragment();
+        Bundle arguments = ShowStepFragmentBase.createArguments(stepView);
+        fragment.setArguments(arguments);
+        return fragment;
     }
 
     @Override
-    public AndroidInjector<Activity> activityInjector() {
-        return dispatchingActivityInjector;
+    protected int getLayoutId() {
+        return R.layout.rs2_show_completion_step_fragment_layout;
     }
 
+    @NonNull
     @Override
-    public AndroidInjector<Fragment> supportFragmentInjector() {
-        return dispatchingSupportFragmentInjector;
+    protected UIStepViewBinding<CompletionStepView> instantiateAndBindBinding(final View view) {
+        return new UIStepViewBinding<>(view);
     }
 }

@@ -35,12 +35,9 @@ package org.sagebionetworks.research.domain.step.implementations;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 
-import com.google.common.base.MoreObjects.ToStringHelper;
-import com.google.common.base.Objects;
-
-import org.sagebionetworks.research.domain.interfaces.HashCodeHelper;
 import org.sagebionetworks.research.domain.step.StepType;
-import org.sagebionetworks.research.domain.step.interfaces.ActiveUIStep;
+import org.sagebionetworks.research.domain.step.implementations.UIStepBase;
+import org.sagebionetworks.research.domain.step.interfaces.CompletionStep;
 import org.sagebionetworks.research.domain.step.ui.action.interfaces.Action;
 import org.sagebionetworks.research.domain.step.ui.theme.ColorTheme;
 import org.sagebionetworks.research.domain.step.ui.theme.ImageTheme;
@@ -49,38 +46,31 @@ import org.slf4j.LoggerFactory;
 
 import java.util.Map;
 
+public class CompletionStepBase extends UIStepBase implements CompletionStep {
+    public static final String TYPE_KEY = StepType.COMPLETION;
+    private static final Logger LOGGER = LoggerFactory.getLogger(CompletionStepBase.class);
 
-public class ActiveUIStepBase extends UIStepBase implements ActiveUIStep {
-    public static final String TYPE_KEY = StepType.ACTIVE;
-    private static final Logger LOGGER = LoggerFactory.getLogger(ActiveUIStepBase.class);
-
-    private final boolean backgroundAudioRequired;
-
-    @Nullable
-    private final Double duration;
-
-    // Gson initialize defaults
-    ActiveUIStepBase() {
+    // Default initializer for gson
+    public CompletionStepBase() {
         super();
-        duration = null;
-        backgroundAudioRequired = false;
     }
 
-    public ActiveUIStepBase(@NonNull final String identifier, @NonNull final Map<String, Action> actions,
-            @Nullable final String title, @Nullable final String text,
-            @Nullable final String detail, @Nullable final String footnote,
-            @Nullable final ColorTheme colorTheme, @Nullable final ImageTheme imageTheme,
-            @Nullable final Double duration, final boolean backgroundAudioRequired) {
+    public CompletionStepBase(@NonNull final String identifier,
+            @Nullable final Map<String, Action> actions,
+            @Nullable final String title,
+            @Nullable final String text,
+            @Nullable final String detail,
+            @Nullable final String footnote,
+            @Nullable final ColorTheme colorTheme,
+            @Nullable final ImageTheme imageTheme) {
         super(identifier, actions, title, text, detail, footnote, colorTheme, imageTheme);
-        this.duration = duration;
-        this.backgroundAudioRequired = backgroundAudioRequired;
     }
 
     @Override
-    public ActiveUIStepBase copyWithIdentifier(@NonNull String identifier) {
-        ActiveUIStepBase result = new ActiveUIStepBase(identifier, this.getActions(), this.getTitle(), this.getText(), this.getDetail(),
-                this.getFootnote(), this.getColorTheme(), this.getImageTheme(), this.getDuration(),
-                this.isBackgroundAudioRequired());
+    @NonNull
+    public CompletionStepBase copyWithIdentifier(@NonNull String identifier) {
+        CompletionStepBase result = new CompletionStepBase(identifier, this.getActions(), this.getTitle(), this.getText(), this.getDetail(),
+                this.getFootnote(), this.getColorTheme(), this.getImageTheme());
         // If the user forgets to override copy with identifier, the type of the step will change when it goes through
         // the resource transformer. This is a really confusing bug so this code is present to make it clearer why
         // this is happening.
@@ -92,41 +82,8 @@ public class ActiveUIStepBase extends UIStepBase implements ActiveUIStep {
         return result;
     }
 
-    @NonNull
     @Override
     public String getType() {
         return TYPE_KEY;
-    }
-
-    @Override
-    protected boolean equalsHelper(Object o) {
-        ActiveUIStepBase activeStep = (ActiveUIStepBase) o;
-        return super.equalsHelper(o) &&
-                Objects.equal(this.getDuration(), activeStep.getDuration()) &&
-                Objects.equal(this.isBackgroundAudioRequired(), activeStep.isBackgroundAudioRequired());
-    }
-
-    @Override
-    protected HashCodeHelper hashCodeHelper() {
-        return super.hashCodeHelper()
-                .addFields(this.duration, this.backgroundAudioRequired);
-    }
-
-    @Override
-    protected ToStringHelper toStringHelper() {
-        return super.toStringHelper()
-                .add("duration", this.getDuration())
-                .add("isBackgroundAudioRequired", this.isBackgroundAudioRequired());
-    }
-
-    @Nullable
-    @Override
-    public Double getDuration() {
-        return this.duration;
-    }
-
-    @Override
-    public boolean isBackgroundAudioRequired() {
-        return this.backgroundAudioRequired;
     }
 }

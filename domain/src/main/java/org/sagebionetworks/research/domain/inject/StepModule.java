@@ -39,11 +39,13 @@ import com.google.gson.JsonDeserializer;
 import org.sagebionetworks.research.domain.RuntimeTypeAdapterFactory;
 import org.sagebionetworks.research.domain.inject.GsonModule.ClassKey;
 import org.sagebionetworks.research.domain.step.implementations.ActiveUIStepBase;
+import org.sagebionetworks.research.domain.step.implementations.CompletionStepBase;
 import org.sagebionetworks.research.domain.step.implementations.FormUIStepBase;
 import org.sagebionetworks.research.domain.step.implementations.SectionStepBase;
 import org.sagebionetworks.research.domain.step.implementations.TransformerStepBase;
 import org.sagebionetworks.research.domain.step.implementations.UIStepBase;
 import org.sagebionetworks.research.domain.step.interfaces.ActiveUIStep;
+import org.sagebionetworks.research.domain.step.interfaces.CompletionStep;
 import org.sagebionetworks.research.domain.step.interfaces.FormUIStep;
 import org.sagebionetworks.research.domain.step.interfaces.SectionStep;
 import org.sagebionetworks.research.domain.step.interfaces.Step;
@@ -109,6 +111,13 @@ public class StepModule {
     @StepClassKey(FormUIStep.class)
     static String provideFormUIStepTypeKey() {
         return FormUIStepBase.TYPE_KEY;
+    }
+
+    @Provides
+    @IntoMap
+    @StepClassKey(CompletionStep.class)
+    static String provideCompletionStepTypeKey() {
+        return CompletionStepBase.TYPE_KEY;
     }
     // endregion
 
@@ -187,5 +196,12 @@ public class StepModule {
     @ClassKey(UIStep.class)
     static JsonDeserializer<?> providedUIStepDeserializer() {
         return createPassThroughDeserializer(UIStepBase.class);
+    }
+
+    @Provides
+    @IntoMap
+    @ClassKey(CompletionStep.class)
+    static JsonDeserializer<?> provideCompletionStepDeserializer() {
+        return createPassThroughDeserializer(CompletionStepBase.class);
     }
 }

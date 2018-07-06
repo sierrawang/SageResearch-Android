@@ -1,6 +1,6 @@
 {
   "identifier": "testUIStep2",
-  "type": "ui",
+  "type": "completion",
   "title": "title",
   "text": "text",
   "detail": "detail",
