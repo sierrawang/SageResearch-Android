@@ -36,4 +36,6 @@
     <item name="rs2_show_ui_step_fragment_layout" type="layout">@layout/rs2_default_show_step_fragment_layout</item>
     <item name="rs2_show_active_ui_step_fragment_layout" type="layout">@layout/rs2_default_show_step_fragment_layout
     </item>
+    <item name="rs2_show_completion_step_fragment_layout" type="layout">@layout/rs2_default_show_step_fragment_layout
+    </item>
 </resources>
