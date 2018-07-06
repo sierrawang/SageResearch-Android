@@ -132,6 +132,7 @@ public abstract class ShowStepFragmentBase
         S stepViewArg = null;
         if (getArguments() != null) {
             stepViewArg = this.getArguments().getParcelable(ARGUMENT_STEP_VIEW);
+            this.stepView = stepViewArg;
         }
 
         //noinspection unchecked

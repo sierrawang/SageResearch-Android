@@ -49,19 +49,15 @@ public class ShowActiveUIStepViewModel<S extends ActiveUIStepView> extends ShowU
     }
 
     public LiveData<Long> getCountdown() {
-        // TODO: implement real count
+        long duration = this.stepView.getDuration().getSeconds();
         return LiveDataReactiveStreams.fromPublisher(
                 new FlowableFromObservable<>(
-                        Observable.<Long>intervalRange(10, 1, 1, 10, TimeUnit.SECONDS)
-                                .map(i -> 10 - i)));
+                        Observable.<Long>intervalRange(0, duration + 1,
+                                0, 1, TimeUnit.SECONDS)
+                                .map(i -> duration - i)));
     }
 
     public LiveData<String> getSpokenInstructions() {
-        return null;
-    }
-
-    @Override
-    public LiveData<S> getStepView() {
         return null;
     }
 }

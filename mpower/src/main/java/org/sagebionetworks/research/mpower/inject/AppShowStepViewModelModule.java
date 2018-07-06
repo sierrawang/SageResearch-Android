@@ -47,14 +47,14 @@ import dagger.multibindings.IntoMap;
 public class AppShowStepViewModelModule {
     @Provides
     @IntoMap
-    @StepViewClassKey(InstructionStepView.class)
+    @StepViewClassKey(InstructionStepView.TYPE)
     static AbstractShowStepViewModelFactory<?, ? extends StepView> provideInstructionStepVMF() {
         return new ShowUIStepViewModelFactory<InstructionStepView>();
     }
 
     @Provides
     @IntoMap
-    @StepViewClassKey(OverviewStepView.class)
+    @StepViewClassKey(OverviewStepView.TYPE)
     static AbstractShowStepViewModelFactory<?, ? extends StepView> provideOverviewStepVMF() {
         return new ShowUIStepViewModelFactory<OverviewStepView>();
     }

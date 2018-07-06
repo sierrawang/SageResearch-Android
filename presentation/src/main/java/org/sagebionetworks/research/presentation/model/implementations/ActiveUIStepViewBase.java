@@ -38,6 +38,7 @@ import android.support.annotation.Nullable;
 
 import com.google.common.collect.ImmutableMap;
 
+import org.sagebionetworks.research.domain.step.StepType;
 import org.sagebionetworks.research.domain.step.interfaces.ActiveUIStep;
 import org.sagebionetworks.research.domain.step.interfaces.Step;
 import org.sagebionetworks.research.presentation.DisplayString;
@@ -49,6 +50,8 @@ import org.sagebionetworks.research.presentation.model.interfaces.ActiveUIStepVi
 import org.threeten.bp.Duration;
 
 public class ActiveUIStepViewBase extends UIStepViewBase implements ActiveUIStepView {
+    public static final String TYPE = StepType.ACTIVE;
+
     public static final Creator<ActiveUIStepViewBase> CREATOR = new Creator<ActiveUIStepViewBase>() {
         @Override
         public ActiveUIStepViewBase createFromParcel(Parcel source) {
@@ -106,6 +109,13 @@ public class ActiveUIStepViewBase extends UIStepViewBase implements ActiveUIStep
     @Override
     public int describeContents() {
         return 0;
+    }
+
+    @NonNull
+    @Override
+    @StepType
+    public String getType() {
+        return TYPE;
     }
 
     @Override

@@ -49,7 +49,7 @@
         app:srcCompat="@drawable/f_walking1" />
 
     <org.sagebionetworks.research.mobile_ui.widget.NavigationActionBar
-        android:id="@+id/navigationActionBar"
+        android:id="@id/rs2_step_navigation_action_bar"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:background="@android:color/transparent"

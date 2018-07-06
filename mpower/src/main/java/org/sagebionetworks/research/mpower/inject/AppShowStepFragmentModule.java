@@ -48,14 +48,14 @@ import dagger.multibindings.IntoMap;
 public class AppShowStepFragmentModule {
     @Provides
     @IntoMap
-    @StepViewKey(InstructionStepView.class)
+    @StepViewKey(InstructionStepView.TYPE)
     static ShowStepFragmentFactory provideShowInstructionStepFragmentFactory() {
         return ShowInstructionStepFragment::newInstance;
     }
 
     @Provides
     @IntoMap
-    @StepViewKey(OverviewStepView.class)
+    @StepViewKey(OverviewStepView.TYPE)
     static ShowStepFragmentFactory provideShowOverviewStepFragmentFactory() {
         return ShowOverviewStepFragment::newInstance;
     }

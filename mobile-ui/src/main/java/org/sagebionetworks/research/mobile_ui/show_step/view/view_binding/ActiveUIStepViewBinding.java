@@ -85,13 +85,24 @@ public class ActiveUIStepViewBinding<S extends ActiveUIStepView> extends UIStepV
         this.activeUIStepViewHolderUnbinder = ButterKnife.bind(this.activeUIStepViewHolder, view);
     }
 
-    // TODO rkolmos 06/10/2018 potentially override update();
-
     @Override
     public void unbind() {
         super.unbind();
         this.activeUIStepViewHolderUnbinder.unbind();
     }
 
-    // TODO rkolmos 05/25/2018 override update to do the correct thing once the corresponding subclass of StepView is created
+    @Nullable
+    public ProgressBar getCountdownDial() {
+        return this.activeUIStepViewHolder.countdownDial;
+    }
+
+    @Nullable
+    public TextView getCountdownLabel() {
+        return this.activeUIStepViewHolder.countdownLabel;
+    }
+
+    @Nullable
+    public TextView getUnitLabel() {
+        return this.activeUIStepViewHolder.unitLabel;
+    }
 }

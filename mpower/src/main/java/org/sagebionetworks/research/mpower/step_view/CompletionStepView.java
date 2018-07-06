@@ -37,6 +37,7 @@ import android.support.annotation.Nullable;
 
 import com.google.common.collect.ImmutableMap;
 
+import org.sagebionetworks.research.domain.step.StepType;
 import org.sagebionetworks.research.domain.step.interfaces.Step;
 import org.sagebionetworks.research.mpower.step.CompletionStep;
 import org.sagebionetworks.research.presentation.DisplayString;
@@ -47,6 +48,8 @@ import org.sagebionetworks.research.presentation.model.action.ActionView;
 import org.sagebionetworks.research.presentation.model.implementations.UIStepViewBase;
 
 public class CompletionStepView extends UIStepViewBase {
+    public static final String TYPE = StepType.COMPLETION;
+
     public static CompletionStepView fromCompletionStep(Step step, DrawableMapper mapper) {
         if (!(step instanceof CompletionStep)) {
             throw new IllegalArgumentException("Provided step: " + step + " is not a CompletionStep.");
@@ -67,5 +70,12 @@ public class CompletionStepView extends UIStepViewBase {
             @Nullable final ColorThemeView colorTheme,
             @Nullable final ImageThemeView imageTheme) {
         super(identifier, navDirection, actions, title, text, detail, footnote, colorTheme, imageTheme);
+    }
+
+    @Override
+    @StepType
+    @NonNull
+    public String getType() {
+        return TYPE;
     }
 }

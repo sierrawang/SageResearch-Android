@@ -38,7 +38,7 @@
     android:padding="0dp">
 
     <ImageView
-        android:id="@+id/imageView"
+        android:id="@id/rs2_image_view"
         android:layout_width="0dp"
         android:layout_height="0dp"
         android:background="@drawable/completion_background_gradient"
@@ -59,14 +59,14 @@
         android:layout_height="wrap_content"
         android:layout_marginBottom="20dp"
         android:layout_marginTop="20dp"
-        app:layout_constraintBottom_toTopOf="@+id/navigationActionBar"
+        app:layout_constraintBottom_toTopOf="@id/rs2_step_navigation_action_bar"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.5"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/imageView" />
+        app:layout_constraintTop_toBottomOf="@id/rs2_image_view" />
 
     <org.sagebionetworks.research.mobile_ui.widget.NavigationActionBar
-        android:id="@+id/navigationActionBar"
+        android:id="@id/rs2_step_navigation_action_bar"
         style="@style/Widget.ResearchStack.NavigationActionBar.Completion"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
