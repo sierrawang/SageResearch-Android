@@ -52,7 +52,7 @@ public abstract class ActionBase implements Action {
         public abstract Builder setButtonTitle(@Nullable String buttonTitle);
     }
 
-    public static final String TYPE_KEY = ActionDeserializationType.BASE;
+    public static final String TYPE_KEY = ActionDeserializationType.DEFAULT;
 
     public static Builder builder() {
         return new AutoValue_ActionBase.Builder();
