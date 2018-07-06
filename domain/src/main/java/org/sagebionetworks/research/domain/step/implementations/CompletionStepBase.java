@@ -41,11 +41,14 @@ import org.sagebionetworks.research.domain.step.interfaces.CompletionStep;
 import org.sagebionetworks.research.domain.step.ui.action.interfaces.Action;
 import org.sagebionetworks.research.domain.step.ui.theme.ColorTheme;
 import org.sagebionetworks.research.domain.step.ui.theme.ImageTheme;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.Map;
 
 public class CompletionStepBase extends UIStepBase implements CompletionStep {
     public static final String TYPE_KEY = StepType.COMPLETION;
+    private static final Logger LOGGER = LoggerFactory.getLogger(CompletionStepBase.class);
 
     // Default initializer for gson
     public CompletionStepBase() {
@@ -61,6 +64,22 @@ public class CompletionStepBase extends UIStepBase implements CompletionStep {
             @Nullable final ColorTheme colorTheme,
             @Nullable final ImageTheme imageTheme) {
         super(identifier, actions, title, text, detail, footnote, colorTheme, imageTheme);
+    }
+
+    @Override
+    @NonNull
+    public CompletionStepBase copyWithIdentifier(@NonNull String identifier) {
+        CompletionStepBase result = new CompletionStepBase(identifier, this.getActions(), this.getTitle(), this.getText(), this.getDetail(),
+                this.getFootnote(), this.getColorTheme(), this.getImageTheme());
+        // If the user forgets to override copy with identifier, the type of the step will change when it goes through
+        // the resource transformer. This is a really confusing bug so this code is present to make it clearer why
+        // this is happening.
+        if (result.getClass() != this.getClass()) {
+            LOGGER.warn("Result of copy with identifier has different type than original input, did you"
+                    + "forget to override CopyWithIdentifier");
+        }
+
+        return result;
     }
 
     @Override

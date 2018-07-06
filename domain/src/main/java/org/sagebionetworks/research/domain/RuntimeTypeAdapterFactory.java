@@ -230,7 +230,12 @@ public final class RuntimeTypeAdapterFactory<T> implements TypeAdapterFactory {
                     throw new JsonParseException("cannot deserialize " + baseType + " subtype named "
                             + label + "; did you forget to register a subtype?");
                 }
-                return delegate.fromJsonTree(jsonElement);
+                R result = delegate.fromJsonTree(jsonElement);
+                if (result != null) {
+                    return result;
+                }
+
+                return (R)new Object();
             }
         }.nullSafe();
     }

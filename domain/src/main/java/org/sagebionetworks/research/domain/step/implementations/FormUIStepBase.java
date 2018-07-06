@@ -45,6 +45,8 @@ import org.sagebionetworks.research.domain.step.interfaces.FormUIStep;
 import org.sagebionetworks.research.domain.step.ui.action.interfaces.Action;
 import org.sagebionetworks.research.domain.step.ui.theme.ColorTheme;
 import org.sagebionetworks.research.domain.step.ui.theme.ImageTheme;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.Collections;
 import java.util.List;
@@ -52,6 +54,7 @@ import java.util.Map;
 
 public class FormUIStepBase extends UIStepBase implements FormUIStep {
     public static final String TYPE_KEY = StepType.FORM;
+    private static final Logger LOGGER = LoggerFactory.getLogger(FormUIStepBase.class);
 
     @NonNull
     private final List<InputField> inputFields;
@@ -72,8 +75,17 @@ public class FormUIStepBase extends UIStepBase implements FormUIStep {
 
     @Override
     public FormUIStepBase copyWithIdentifier(@NonNull String identifier) {
-        return new FormUIStepBase(identifier, this.getActions(), this.getTitle(), this.getText(), this.getDetail(),
+        FormUIStepBase result = new FormUIStepBase(identifier, this.getActions(), this.getTitle(), this.getText(), this.getDetail(),
                 this.getFootnote(), this.getColorTheme(), this.getImageTheme(), this.inputFields);
+        // If the user forgets to override copy with identifier, the type of the step will change when it goes through
+        // the resource transformer. This is a really confusing bug so this code is present to make it clearer why
+        // this is happening.
+        if (result.getClass() != this.getClass()) {
+            LOGGER.warn("Result of copy with identifier has different type than original input, did you"
+                    + "forget to override CopyWithIdentifier");
+        }
+
+        return result;
     }
 
     @NonNull
