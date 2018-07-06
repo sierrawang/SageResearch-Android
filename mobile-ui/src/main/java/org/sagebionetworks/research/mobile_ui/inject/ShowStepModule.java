@@ -33,9 +33,11 @@
 package org.sagebionetworks.research.mobile_ui.inject;
 
 import org.sagebionetworks.research.mobile_ui.inject.subcomponents.ShowActiveUIStepFragmentSubcomponent;
+import org.sagebionetworks.research.mobile_ui.inject.subcomponents.ShowCompletionStepFragmentSubcomponent;
 import org.sagebionetworks.research.mobile_ui.inject.subcomponents.ShowStepFragmentSubcomponent;
 import org.sagebionetworks.research.mobile_ui.inject.subcomponents.ShowUIStepFragmentSubcomponent;
 import org.sagebionetworks.research.mobile_ui.show_step.view.ShowActiveUIStepFragment;
+import org.sagebionetworks.research.mobile_ui.show_step.view.ShowCompletionStepFragment;
 import org.sagebionetworks.research.mobile_ui.show_step.view.ShowStepFragment;
 import org.sagebionetworks.research.mobile_ui.show_step.view.ShowUIStepFragment;
 
@@ -45,8 +47,8 @@ import dagger.android.AndroidInjector;
 import dagger.android.support.FragmentKey;
 import dagger.multibindings.IntoMap;
 
-@Module(subcomponents = {ShowStepFragmentSubcomponent.class, ShowUIStepFragmentSubcomponent.class,
-        ShowActiveUIStepFragmentSubcomponent.class})
+@Module(subcomponents = {ShowStepFragmentSubcomponent.class, ShowCompletionStepFragmentSubcomponent.class,
+        ShowUIStepFragmentSubcomponent.class, ShowActiveUIStepFragmentSubcomponent.class})
 public abstract class ShowStepModule {
     @Binds
     @IntoMap
@@ -65,4 +67,10 @@ public abstract class ShowStepModule {
     @FragmentKey(ShowUIStepFragment.class)
     abstract AndroidInjector.Factory<? extends android.support.v4.app.Fragment>
     bindShowUIStepFragmentInjectorFactory(ShowUIStepFragmentSubcomponent.Builder builder);
+
+    @Binds
+    @IntoMap
+    @FragmentKey(ShowCompletionStepFragment.class)
+    abstract AndroidInjector.Factory<? extends android.support.v4.app.Fragment>
+    bindShowCompletionStepFragmentInjectorFactory(ShowCompletionStepFragmentSubcomponent.Builder builder);
 }
