@@ -30,46 +30,22 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.sagebionetworks.research.mpower.inject;
+package org.sagebionetworks.research.mobile_ui.show_step.view.form;
 
-import org.sagebionetworks.research.domain.step.StepType;
-import org.sagebionetworks.research.mpower.step.AppStepType;
-import org.sagebionetworks.research.mpower.step.HandSelectionStep;
-import org.sagebionetworks.research.mpower.step_view.HandSelectionStepView;
-import org.sagebionetworks.research.presentation.model.implementations.CompletionStepViewBase;
-import org.sagebionetworks.research.mpower.step_view.InstructionStepView;
-import org.sagebionetworks.research.mpower.step_view.OverviewStepView;
-import org.sagebionetworks.research.presentation.inject.StepViewModule;
-import org.sagebionetworks.research.presentation.inject.StepViewModule.InternalStepViewFactory;
-import org.sagebionetworks.research.presentation.inject.StepViewModule.StepTypeKey;
+import android.support.v7.widget.RecyclerView;
+import android.widget.Button;
 
-import dagger.Module;
-import dagger.Provides;
-import dagger.multibindings.IntoMap;
+import org.sagebionetworks.research.mobile_ui.widget.ActionButton;
 
-/**
- * Add app-specific steps.
- */
-@Module(includes = StepViewModule.class)
-public class AppStepViewModule {
-    @Provides
-    @IntoMap
-    @StepTypeKey(StepType.INSTRUCTION)
-    static InternalStepViewFactory provideInstructionStepViewFactory() {
-        return InstructionStepView::fromInstructionStep;
+public class FormUIViewHolder extends RecyclerView.ViewHolder {
+    private final ActionButton button;
+
+    public FormUIViewHolder(final ActionButton button) {
+        super(button);
+        this.button = button;
     }
 
-    @Provides
-    @IntoMap
-    @StepTypeKey(StepType.OVERVIEW)
-    static InternalStepViewFactory provideOverviewStepViewFactory() {
-        return OverviewStepView::fromOverviewStep;
-    }
-
-    @Provides
-    @IntoMap
-    @StepTypeKey(AppStepType.HAND_SELECTION)
-    static InternalStepViewFactory provideHandSelectionStepViewFactory() {
-        return HandSelectionStepView::fromHandSelectionStep;
+    public ActionButton getButton() {
+        return this.button;
     }
 }

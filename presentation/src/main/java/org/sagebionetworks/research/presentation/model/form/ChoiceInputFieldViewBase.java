@@ -45,12 +45,12 @@ import org.sagebionetworks.research.presentation.DisplayString;
 
 import java.util.List;
 
-public class ChoiceInputFieldBase<E extends Parcelable> extends InputFieldViewBase {
+public class ChoiceInputFieldViewBase<E> extends InputFieldViewBase {
     private final List<ChoiceView<E>> choices;
 
     private final ChoiceView<E> defaultAnswer;
 
-    public ChoiceInputFieldBase(final String identifier,
+    public ChoiceInputFieldViewBase(final String identifier,
             final DisplayString prompt, final DisplayString promptDetail,
             final DisplayString placeholderText, final boolean isOptional,
             @NonNull final InputDataType formDataType, final String uiHint,
@@ -63,7 +63,7 @@ public class ChoiceInputFieldBase<E extends Parcelable> extends InputFieldViewBa
         this.defaultAnswer = defaultAnswer;
     }
 
-    public ChoiceInputFieldBase(final Parcel in,
+    public ChoiceInputFieldViewBase(final Parcel in,
             final List<ChoiceView<E>> choices, final ChoiceView<E> defaultAnswer) {
         super(in);
         this.choices = choices;

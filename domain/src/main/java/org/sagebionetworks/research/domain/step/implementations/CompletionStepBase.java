@@ -83,6 +83,7 @@ public class CompletionStepBase extends UIStepBase implements CompletionStep {
     }
 
     @Override
+    @NonNull
     public String getType() {
         return TYPE_KEY;
     }

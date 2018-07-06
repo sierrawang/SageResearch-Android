@@ -32,10 +32,23 @@
 
 package org.sagebionetworks.research.mpower.show_step_fragment;
 
+import android.os.Bundle;
+import android.support.annotation.NonNull;
+
+import org.sagebionetworks.research.mobile_ui.show_step.view.ShowStepFragmentBase;
 import org.sagebionetworks.research.mobile_ui.show_step.view.ShowUIStepFragment;
 import org.sagebionetworks.research.mpower.R;
+import org.sagebionetworks.research.presentation.model.interfaces.StepView;
 
 public class ShowCompletionStepFragment extends ShowUIStepFragment {
+    @NonNull
+    public static ShowCompletionStepFragment newInstance(@NonNull StepView stepView) {
+        ShowCompletionStepFragment fragment = new ShowCompletionStepFragment();
+        Bundle arguments = ShowStepFragmentBase.createArguments(stepView);
+        fragment.setArguments(arguments);
+        return fragment;
+    }
+
     @Override
     public int getLayoutId() {
         return R.layout.mpower2_completion_step;

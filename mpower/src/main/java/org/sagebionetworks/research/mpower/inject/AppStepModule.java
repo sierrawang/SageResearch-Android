@@ -36,6 +36,9 @@ import org.sagebionetworks.research.domain.inject.InputFieldsModule;
 import org.sagebionetworks.research.domain.inject.StepModule;
 import org.sagebionetworks.research.domain.inject.StepModule.StepClassKey;
 import org.sagebionetworks.research.domain.step.implementations.CompletionStepBase;
+import org.sagebionetworks.research.domain.step.interfaces.FormUIStep;
+import org.sagebionetworks.research.mpower.step.AppStepType;
+import org.sagebionetworks.research.mpower.step.HandSelectionStep;
 import org.sagebionetworks.research.mpower.step.InstructionStep;
 import org.sagebionetworks.research.mpower.step.OverviewStep;
 
@@ -70,5 +73,12 @@ public class AppStepModule {
     @StepClassKey(OverviewStep.class)
     static String provideOverviewStepClassInfo() {
         return OverviewStep.TYPE_KEY;
+    }
+
+    @Provides
+    @IntoMap
+    @StepClassKey(HandSelectionStep.class)
+    static String provideHandSelectedStepClassInfo() {
+        return HandSelectionStep.TYPE_KEY;
     }
 }
