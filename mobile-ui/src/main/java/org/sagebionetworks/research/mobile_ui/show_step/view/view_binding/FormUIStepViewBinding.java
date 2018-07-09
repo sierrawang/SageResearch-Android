@@ -32,25 +32,14 @@
 
 package org.sagebionetworks.research.mobile_ui.show_step.view.view_binding;
 
-import android.os.Parcelable;
-import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
 
-import org.sagebionetworks.research.domain.form.implementations.ChoiceInputField;
-import org.sagebionetworks.research.domain.mobile_ui.R;
-import org.sagebionetworks.research.domain.mobile_ui.R2;
 import org.sagebionetworks.research.domain.mobile_ui.R2.id;
 import org.sagebionetworks.research.domain.step.interfaces.FormUIStep;
-import org.sagebionetworks.research.mobile_ui.show_step.view.form.FormUIAdapter;
-import org.sagebionetworks.research.presentation.model.form.ChoiceInputFieldViewBase;
-import org.sagebionetworks.research.presentation.model.form.ChoiceView;
-import org.sagebionetworks.research.presentation.model.form.InputFieldView;
 import org.sagebionetworks.research.presentation.model.interfaces.FormUIStepView;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;

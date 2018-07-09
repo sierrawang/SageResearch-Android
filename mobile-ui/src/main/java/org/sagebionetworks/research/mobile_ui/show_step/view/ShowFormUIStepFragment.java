@@ -30,22 +30,41 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.sagebionetworks.research.mobile_ui.show_step.view.form;
+package org.sagebionetworks.research.mobile_ui.show_step.view;
 
-import android.support.v7.widget.RecyclerView;
-import android.widget.Button;
+import android.os.Bundle;
+import android.support.annotation.NonNull;
+import android.view.View;
 
-import org.sagebionetworks.research.mobile_ui.widget.ActionButton;
+import org.sagebionetworks.research.domain.mobile_ui.R;
+import org.sagebionetworks.research.mobile_ui.show_step.view.view_binding.FormUIStepViewBinding;
+import org.sagebionetworks.research.presentation.model.interfaces.FormUIStepView;
+import org.sagebionetworks.research.presentation.model.interfaces.StepView;
+import org.sagebionetworks.research.presentation.show_step.show_step_view_models.ShowUIStepViewModel;
 
-public class FormUIViewHolder extends RecyclerView.ViewHolder {
-    private final ActionButton button;
+public class ShowFormUIStepFragment extends
+        ShowStepFragmentBase<FormUIStepView, ShowUIStepViewModel<FormUIStepView>,
+                        FormUIStepViewBinding<FormUIStepView>> {
+    @NonNull
+    public static ShowFormUIStepFragment newInstance(@NonNull StepView stepView) {
+        if (!(stepView instanceof FormUIStepView)) {
+            throw new IllegalArgumentException("Step view: " + stepView + " is not a FormUIStepView.");
+        }
 
-    public FormUIViewHolder(final ActionButton button) {
-        super(button);
-        this.button = button;
+        ShowFormUIStepFragment fragment = new ShowFormUIStepFragment();
+        Bundle arguments = ShowStepFragmentBase.createArguments(stepView);
+        fragment.setArguments(arguments);
+        return fragment;
     }
 
-    public ActionButton getButton() {
-        return this.button;
+    @Override
+    protected int getLayoutId() {
+        return R.layout.rs2_form_step;
+    }
+
+    @NonNull
+    @Override
+    protected FormUIStepViewBinding<FormUIStepView> instantiateAndBindBinding(View view) {
+        return new FormUIStepViewBinding<>(view);
     }
 }

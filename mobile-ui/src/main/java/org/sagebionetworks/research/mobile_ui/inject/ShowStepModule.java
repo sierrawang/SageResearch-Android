@@ -41,7 +41,7 @@ import org.sagebionetworks.research.mobile_ui.show_step.view.ShowActiveUIStepFra
 import org.sagebionetworks.research.mobile_ui.show_step.view.ShowCompletionStepFragment;
 import org.sagebionetworks.research.mobile_ui.show_step.view.ShowStepFragment;
 import org.sagebionetworks.research.mobile_ui.show_step.view.ShowUIStepFragment;
-import org.sagebionetworks.research.mobile_ui.show_step.view.form.ShowFormUIStepFragment;
+import org.sagebionetworks.research.mobile_ui.show_step.view.ShowFormUIStepFragment;
 
 import dagger.Binds;
 import dagger.Module;

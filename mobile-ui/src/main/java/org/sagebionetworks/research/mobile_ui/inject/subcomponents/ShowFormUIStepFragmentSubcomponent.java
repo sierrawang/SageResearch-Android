@@ -32,8 +32,7 @@
 
 package org.sagebionetworks.research.mobile_ui.inject.subcomponents;
 
-import org.sagebionetworks.research.mobile_ui.show_step.view.ShowActiveUIStepFragment;
-import org.sagebionetworks.research.mobile_ui.show_step.view.form.ShowFormUIStepFragment;
+import org.sagebionetworks.research.mobile_ui.show_step.view.ShowFormUIStepFragment;
 import org.sagebionetworks.research.presentation.inject.ShowStepViewModelModule;
 
 import dagger.Subcomponent;
