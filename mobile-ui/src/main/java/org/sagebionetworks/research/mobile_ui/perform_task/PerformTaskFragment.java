@@ -65,6 +65,7 @@ import org.threeten.bp.ZoneId;
 import org.threeten.bp.ZonedDateTime;
 import org.threeten.bp.zone.ZoneRulesException;
 
+import java.io.Serializable;
 import java.util.UUID;
 
 import javax.inject.Inject;
@@ -79,7 +80,7 @@ import dagger.android.support.HasSupportFragmentInjector;
 /**
  * A placeholder fragment containing a simple view.
  */
-public class PerformTaskFragment extends Fragment implements HasSupportFragmentInjector {
+public class PerformTaskFragment extends Fragment implements HasSupportFragmentInjector, Serializable {
     private static final Logger LOGGER = LoggerFactory.getLogger(PerformTaskFragment.class);
 
     private static final String ARGUMENT_TASK_VIEW = "TASK_VIEW";
@@ -205,8 +206,7 @@ public class PerformTaskFragment extends Fragment implements HasSupportFragmentI
             return;
         }
 
-        ShowStepFragmentBase step = showStepFragmentFactory.create(stepView);
-        step.setPerformTaskFragment(this);
+        ShowStepFragmentBase step = showStepFragmentFactory.create(stepView, this);
         currentStepFragment = step;
         FragmentTransaction transaction = getChildFragmentManager().beginTransaction();
 

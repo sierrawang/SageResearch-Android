@@ -45,6 +45,7 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import org.sagebionetworks.research.domain.mobile_ui.R;
+import org.sagebionetworks.research.mobile_ui.perform_task.PerformTaskFragment;
 import org.sagebionetworks.research.mobile_ui.show_step.view.view_binding.ActiveUIStepViewBinding;
 import org.sagebionetworks.research.presentation.model.interfaces.ActiveUIStepView;
 import org.sagebionetworks.research.presentation.model.interfaces.StepView;
@@ -58,13 +59,14 @@ public class ShowActiveUIStepFragment extends
     protected LiveData<Long> countdown;
 
     @NonNull
-    public static ShowActiveUIStepFragment newInstance(@NonNull StepView stepView) {
+    public static ShowActiveUIStepFragment newInstance(@NonNull StepView stepView,
+                                                       @NonNull PerformTaskFragment performTaskFragment) {
         if (!(stepView instanceof ActiveUIStepView)) {
             throw new IllegalArgumentException("Step view: " + stepView + " is not an ActiveUIStepView.");
         }
 
         ShowActiveUIStepFragment fragment = new ShowActiveUIStepFragment();
-        Bundle arguments = ShowStepFragmentBase.createArguments(stepView);
+        Bundle arguments = ShowStepFragmentBase.createArguments(stepView, performTaskFragment);
         fragment.setArguments(arguments);
         return fragment;
     }

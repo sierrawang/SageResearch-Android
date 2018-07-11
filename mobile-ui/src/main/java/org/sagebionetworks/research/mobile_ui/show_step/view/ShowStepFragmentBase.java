@@ -102,11 +102,14 @@ public abstract class ShowStepFragmentBase
      *         The StepView to put in the bundle.
      * @return a Bundle containing the given StepView.
      */
-    public static Bundle createArguments(@NonNull StepView stepView) {
+    public static Bundle createArguments(@NonNull StepView stepView,
+                                         @NonNull PerformTaskFragment performTaskFragment) {
         checkNotNull(stepView);
+        checkNotNull(performTaskFragment);
 
         Bundle args = new Bundle();
         args.putParcelable(ARGUMENT_STEP_VIEW, stepView);
+        args.putSerializable(ARGUMENT_TASK_FRAGMENT, performTaskFragment);
         return args;
     }
 
@@ -132,6 +135,8 @@ public abstract class ShowStepFragmentBase
         S stepViewArg = null;
         if (getArguments() != null) {
             stepViewArg = this.getArguments().getParcelable(ARGUMENT_STEP_VIEW);
+            this.performTaskFragment = (PerformTaskFragment)
+                    this.getArguments().getSerializable(ARGUMENT_TASK_FRAGMENT);
             this.stepView = stepViewArg;
         }
 
@@ -158,10 +163,6 @@ public abstract class ShowStepFragmentBase
     public void onDestroyView() {
         super.onDestroyView();
         this.stepViewBinding.unbind();
-    }
-
-    public void setPerformTaskFragment(PerformTaskFragment performTaskFragment) {
-        this.performTaskFragment = performTaskFragment;
     }
 
     /**
