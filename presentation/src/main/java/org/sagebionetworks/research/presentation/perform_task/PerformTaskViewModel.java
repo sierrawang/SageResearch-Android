@@ -63,6 +63,7 @@ import org.sagebionetworks.research.presentation.mapper.TaskMapper;
 import org.sagebionetworks.research.presentation.model.TaskView;
 import org.sagebionetworks.research.presentation.model.action.ActionView;
 import org.sagebionetworks.research.presentation.model.interfaces.StepView;
+import org.sagebionetworks.research.presentation.show_step.show_step_view_model_factories.ShowStepViewModelFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.threeten.bp.Instant;
@@ -112,15 +113,20 @@ public class PerformTaskViewModel extends ViewModel {
 
     private final TaskView taskView;
 
+    private final ShowStepViewModelFactory showStepViewModelFactory;
+
     private final MutableLiveData<LoadableResource<TaskView>> taskViewLiveData;
 
     public PerformTaskViewModel(@NonNull TaskView taskView, @NonNull UUID taskRunUUID,
-            @NonNull StepNavigatorFactory stepNavigatorFactory, @NonNull TaskRepository taskRepository,
-            @NonNull TaskMapper taskMapper, StepViewFactory stepViewFactory,
-            @NonNull ZonedDateTime lastRun) {
+                                @NonNull StepNavigatorFactory stepNavigatorFactory,
+                                @NonNull ShowStepViewModelFactory showStepViewModelFactory,
+                                @NonNull TaskRepository taskRepository,
+                                @NonNull TaskMapper taskMapper, StepViewFactory stepViewFactory,
+                                @NonNull ZonedDateTime lastRun) {
         this.taskView = checkNotNull(taskView);
         this.taskRunUuid = checkNotNull(taskRunUUID);
         this.stepNavigatorFactory = checkNotNull(stepNavigatorFactory);
+        this.showStepViewModelFactory = checkNotNull(showStepViewModelFactory);
         this.taskRepository = checkNotNull(taskRepository);
         this.taskMapper = checkNotNull(taskMapper);
         this.stepViewFactory = stepViewFactory;
@@ -142,6 +148,9 @@ public class PerformTaskViewModel extends ViewModel {
         initTaskSteps(taskView, taskRunUuid);
     }
 
+    public ShowStepViewModelFactory getShowStepViewModelFactory() {
+        return showStepViewModelFactory;
+    }
 
     public void addAsyncResult(Result result) {
         checkState(taskResultLiveData.getValue() != null);

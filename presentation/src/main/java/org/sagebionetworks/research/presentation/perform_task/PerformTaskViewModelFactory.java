@@ -43,6 +43,7 @@ import org.sagebionetworks.research.domain.task.navigation.StepNavigatorFactory;
 import org.sagebionetworks.research.presentation.inject.StepViewModule.StepViewFactory;
 import org.sagebionetworks.research.presentation.mapper.TaskMapper;
 import org.sagebionetworks.research.presentation.model.TaskView;
+import org.sagebionetworks.research.presentation.show_step.show_step_view_model_factories.ShowStepViewModelFactory;
 import org.threeten.bp.ZonedDateTime;
 
 import java.util.UUID;
@@ -58,10 +59,15 @@ public class PerformTaskViewModelFactory {
 
     private final TaskRepository taskRepository;
 
+    private final ShowStepViewModelFactory showStepViewModelFactory;
+
     @Inject
-    public PerformTaskViewModelFactory(StepNavigatorFactory stepNavigatorFactory, TaskMapper taskMapper,
-            final TaskRepository taskRepository, StepViewFactory stepViewFactory) {
+    public PerformTaskViewModelFactory(StepNavigatorFactory stepNavigatorFactory,
+                                       ShowStepViewModelFactory showStepViewModelFactory,
+                                       TaskMapper taskMapper,
+                                       final TaskRepository taskRepository, StepViewFactory stepViewFactory) {
         this.stepNavigatorFactory = stepNavigatorFactory;
+        this.showStepViewModelFactory = showStepViewModelFactory;
         this.taskMapper = taskMapper;
         this.taskRepository = taskRepository;
         this.stepViewFactory = stepViewFactory;
@@ -80,7 +86,7 @@ public class PerformTaskViewModelFactory {
                 if (modelClass.isAssignableFrom(PerformTaskViewModel.class)) {
                     // noinspection unchecked
                     return (T) new PerformTaskViewModel(taskView, taskRunUUID, stepNavigatorFactory,
-                            taskRepository, taskMapper, stepViewFactory, lastRun);
+                            showStepViewModelFactory, taskRepository, taskMapper, stepViewFactory, lastRun);
                 }
                 throw new IllegalArgumentException("Unknown ViewModel class");
             }

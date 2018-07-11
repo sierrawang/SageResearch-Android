@@ -88,9 +88,6 @@ public abstract class ShowStepFragmentBase
 
     protected VM showStepViewModel;
 
-    @Inject
-    protected ShowStepViewModelFactory showStepViewModelFactory;
-
     protected S stepView;
 
     protected SB stepViewBinding;
@@ -130,13 +127,16 @@ public abstract class ShowStepFragmentBase
 
             if (this.performTaskFragment != null) {
                 // gets the PerformTaskViewModel instance of performTaskFragment
-                this.performTaskViewModel = ViewModelProviders.of(this.performTaskFragment).get(PerformTaskViewModel.class);
+                this.performTaskViewModel = ViewModelProviders.of(this.performTaskFragment)
+                        .get(PerformTaskViewModel.class);
                 if (this.stepView != null) {
+                    ShowStepViewModelFactory showStepViewModelFactory = this.performTaskViewModel
+                            .getShowStepViewModelFactory();
                     //noinspection unchecked
                     this.showStepViewModel = (VM) ViewModelProviders
-                            .of(this, this.showStepViewModelFactory.create(this.performTaskViewModel,
+                            .of(this, showStepViewModelFactory.create(this.performTaskViewModel,
                                     this.stepView))
-                            .get(this.stepView.getIdentifier(), this.showStepViewModelFactory
+                            .get(this.stepView.getIdentifier(), showStepViewModelFactory
                                     .getViewModelClass(this.stepView));
                 } else {
                     LOGGER.warn("ShowStepFragment not passed StepView: {}", this);
