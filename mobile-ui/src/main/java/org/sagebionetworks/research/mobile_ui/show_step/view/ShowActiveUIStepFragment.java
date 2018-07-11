@@ -68,6 +68,7 @@ public class ShowActiveUIStepFragment extends
         ShowActiveUIStepFragment fragment = new ShowActiveUIStepFragment();
         Bundle arguments = ShowStepFragmentBase.createArguments(stepView, performTaskFragment);
         fragment.setArguments(arguments);
+        fragment.initialize();
         return fragment;
     }
 

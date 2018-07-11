@@ -55,6 +55,7 @@ public class ShowCompletionStepFragment extends
         ShowCompletionStepFragment fragment = new ShowCompletionStepFragment();
         Bundle arguments = ShowStepFragmentBase.createArguments(stepView, performTaskFragment);
         fragment.setArguments(arguments);
+        fragment.initialize();
         return fragment;
     }
 
