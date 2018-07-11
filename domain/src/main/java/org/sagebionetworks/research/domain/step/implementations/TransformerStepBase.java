@@ -45,6 +45,7 @@ import com.google.gson.JsonParseException;
 import com.google.gson.annotations.SerializedName;
 
 import org.sagebionetworks.research.domain.interfaces.HashCodeHelper;
+import org.sagebionetworks.research.domain.result.interfaces.Result;
 import org.sagebionetworks.research.domain.step.StepType;
 import org.sagebionetworks.research.domain.step.interfaces.TransformerStep;
 
@@ -103,6 +104,12 @@ public class TransformerStepBase extends StepBase implements TransformerStep {
     @Override
     public String getType() {
         return TYPE_KEY;
+    }
+
+    @NonNull
+    @Override
+    public Result instantiateStepResult() {
+        throw new UnsupportedOperationException();
     }
 
     @Override

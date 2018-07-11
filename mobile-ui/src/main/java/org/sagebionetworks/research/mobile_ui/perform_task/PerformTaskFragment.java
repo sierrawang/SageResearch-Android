@@ -52,12 +52,14 @@ import org.sagebionetworks.research.domain.mobile_ui.R;
 import org.sagebionetworks.research.domain.result.implementations.TaskResultBase;
 import org.sagebionetworks.research.domain.result.interfaces.TaskResult;
 import org.sagebionetworks.research.mobile_ui.inject.ShowStepFragmentModule.ShowStepFragmentFactory;
+import org.sagebionetworks.research.mobile_ui.show_step.view.FragmentSkipRule;
 import org.sagebionetworks.research.mobile_ui.show_step.view.ShowStepFragmentBase;
 import org.sagebionetworks.research.presentation.model.TaskView;
 import org.sagebionetworks.research.presentation.model.interfaces.StepView;
 import org.sagebionetworks.research.presentation.model.interfaces.StepView.NavDirection;
 import org.sagebionetworks.research.presentation.perform_task.PerformTaskViewModel;
 import org.sagebionetworks.research.presentation.perform_task.PerformTaskViewModelFactory;
+import org.sagebionetworks.research.presentation.show_step.show_step_view_model_factories.ShowStepViewModelFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.threeten.bp.Instant;
@@ -97,6 +99,9 @@ public class PerformTaskFragment extends Fragment implements HasSupportFragmentI
 
     @Inject
     PerformTaskViewModelFactory taskViewModelFactory;
+
+    @Inject
+    ShowStepViewModelFactory showStepViewModelFactory;
 
     private ShowStepFragmentBase currentStepFragment;
 
@@ -219,6 +224,23 @@ public class PerformTaskFragment extends Fragment implements HasSupportFragmentI
         transaction
                 .replace(R.id.rs2_step_container, step, stepView.getIdentifier())
                 .commit();
+
+        if (step instanceof FragmentSkipRule) {
+            FragmentSkipRule fragmentSkipRule = (FragmentSkipRule)step;
+            if (fragmentSkipRule.shouldSkip()) {
+                String skipToIdentifier = fragmentSkipRule.skipToIdentifier();
+                if (skipToIdentifier != null) {
+                    // If we have the identifier of the step to skip to we use that.
+                    this.performTaskViewModel.skipToStep(fragmentSkipRule.skipToIdentifier());
+                } else {
+                    // Otherwise we just go forward.
+                    this.performTaskViewModel.goForward();
+                }
+
+                return;
+            }
+        }
+
     }
 
     private ZonedDateTime getLastRun() {

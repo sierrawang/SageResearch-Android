@@ -44,7 +44,9 @@ import org.sagebionetworks.research.presentation.show_step.show_step_view_models
 import java.util.Map;
 
 import javax.inject.Inject;
+import javax.inject.Singleton;
 
+@Singleton
 public class ShowStepViewModelFactory {
     private final Map<String, AbstractShowStepViewModelFactory<?, ? extends StepView>> t;
 

@@ -40,6 +40,7 @@ import org.sagebionetworks.research.domain.task.navigation.StepNavigatorFactory;
 import org.sagebionetworks.research.presentation.inject.StepViewModule.StepViewFactory;
 import org.sagebionetworks.research.presentation.mapper.TaskMapper;
 import org.sagebionetworks.research.presentation.model.TaskView;
+import org.sagebionetworks.research.presentation.show_step.show_step_view_model_factories.ShowStepViewModelFactory;
 import org.threeten.bp.ZonedDateTime;
 
 import java.util.UUID;
@@ -50,14 +51,15 @@ import io.reactivex.Observable;
 public class PerformActiveTaskViewModel extends PerformTaskViewModel {
 
     public PerformActiveTaskViewModel(@NonNull final TaskView taskView,
-            @NonNull final UUID taskRunUUID,
-            @NonNull final StepNavigatorFactory stepNavigatorFactory,
-            @NonNull final TaskRepository taskRepository,
-            @NonNull final TaskMapper taskMapper,
-            @NonNull final StepViewFactory stepViewFactory,
-            @Nullable final ZonedDateTime lastRunDate) {
+                                      @NonNull final UUID taskRunUUID,
+                                      @NonNull final StepNavigatorFactory stepNavigatorFactory,
+                                      @NonNull final TaskRepository taskRepository,
+                                      @NonNull final TaskMapper taskMapper,
+                                      @NonNull final StepViewFactory stepViewFactory,
+                                      @Nullable final ZonedDateTime lastRunDate,
+                                      @NonNull ShowStepViewModelFactory showStepViewModelFactory) {
         super(taskView, taskRunUUID, stepNavigatorFactory, taskRepository, taskMapper, stepViewFactory,
-                lastRunDate);
+                lastRunDate, showStepViewModelFactory);
     }
 
     public Observable<Long> getCountdown() {

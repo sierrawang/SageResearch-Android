@@ -41,6 +41,8 @@ import com.google.common.collect.ImmutableMap;
 import com.google.gson.annotations.SerializedName;
 
 import org.sagebionetworks.research.domain.interfaces.HashCodeHelper;
+import org.sagebionetworks.research.domain.result.implementations.ResultBase;
+import org.sagebionetworks.research.domain.result.interfaces.Result;
 import org.sagebionetworks.research.domain.step.StepType;
 import org.sagebionetworks.research.domain.step.interfaces.ThemedUIStep;
 import org.sagebionetworks.research.domain.step.ui.action.interfaces.Action;
@@ -48,6 +50,7 @@ import org.sagebionetworks.research.domain.step.ui.theme.ColorTheme;
 import org.sagebionetworks.research.domain.step.ui.theme.ImageTheme;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.threeten.bp.Instant;
 
 import java.util.Map;
 
@@ -204,5 +207,11 @@ public class UIStepBase extends StepBase implements ThemedUIStep {
                 .add("footnote", this.getFootnote())
                 .add("colorTheme", this.getColorTheme())
                 .add("imageTheme", this.getImageTheme());
+    }
+
+    @Override
+    public Result instantiateStepResult() {
+        // TODO rkolmos 07/10/2018 figure out how to get the times right or remove them from result.
+        return new ResultBase(this.getIdentifier(), Instant.now(), Instant.now());
     }
 }

@@ -34,6 +34,7 @@ package org.sagebionetworks.research.domain.step.interfaces;
 
 import android.support.annotation.NonNull;
 
+import org.sagebionetworks.research.domain.result.interfaces.Result;
 import org.sagebionetworks.research.domain.step.StepType;
 
 /**
@@ -67,4 +68,12 @@ public interface Step {
      */
     @NonNull
     String getType();
+
+    /**
+     * Returns a Result for this step.
+     *
+     * @return a Result for this step.
+     */
+    @NonNull
+    Result instantiateStepResult();
 }

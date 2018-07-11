@@ -39,6 +39,7 @@ import android.support.annotation.IntDef;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 
+import org.sagebionetworks.research.domain.result.interfaces.Result;
 import org.sagebionetworks.research.domain.result.interfaces.TaskResult;
 import org.sagebionetworks.research.domain.step.StepType;
 

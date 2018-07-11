@@ -53,6 +53,8 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.UUID;
 
+import javax.annotation.RegEx;
+
 /**
  * The concrete implementation of the result for a Task. A wrapper around TaskResultData which adds behavior and can
  * be subclassed
@@ -234,5 +236,18 @@ public class TaskResultBase extends ResultBase implements TaskResult {
 
         returnValue.add(result);
         return returnValue;
+    }
+
+    @Override
+    @NonNull
+    public List<Result> getResultsMatchingRegex(@RegEx String regex) {
+        List<Result> matches = new ArrayList<>();
+        for (Result result : this.taskResultData.getStepHistory()) {
+            if (result.getIdentifier().matches(regex)) {
+                matches.add(result);
+            }
+        }
+
+        return matches;
     }
 }
