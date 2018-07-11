@@ -129,18 +129,6 @@ public abstract class ShowStepFragmentBase
                 // gets the PerformTaskViewModel instance of performTaskFragment
                 this.performTaskViewModel = ViewModelProviders.of(this.performTaskFragment)
                         .get(PerformTaskViewModel.class);
-                if (this.stepView != null) {
-                    ShowStepViewModelFactory showStepViewModelFactory = this.performTaskViewModel
-                            .getShowStepViewModelFactory();
-                    //noinspection unchecked
-                    this.showStepViewModel = (VM) ViewModelProviders
-                            .of(this, showStepViewModelFactory.create(this.performTaskViewModel,
-                                    this.stepView))
-                            .get(this.stepView.getIdentifier(), showStepViewModelFactory
-                                    .getViewModelClass(this.stepView));
-                } else {
-                    LOGGER.warn("ShowStepFragment not passed StepView: {}", this);
-                }
             } else {
                 LOGGER.warn("ShowStepFragment not passed PerformTaskFragment: {}", this);
             }
@@ -164,6 +152,19 @@ public abstract class ShowStepFragmentBase
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         this.initialize();
+
+        if (this.stepView != null) {
+            ShowStepViewModelFactory showStepViewModelFactory = this.performTaskViewModel
+                    .getShowStepViewModelFactory();
+            //noinspection unchecked
+            this.showStepViewModel = (VM) ViewModelProviders
+                    .of(this, showStepViewModelFactory.create(this.performTaskViewModel,
+                            this.stepView))
+                    .get(this.stepView.getIdentifier(),
+                            showStepViewModelFactory.getViewModelClass(this.stepView));
+        } else {
+            LOGGER.warn("ShowStepFragment not passed StepView: {}", this);
+        }
     }
 
     @Override
