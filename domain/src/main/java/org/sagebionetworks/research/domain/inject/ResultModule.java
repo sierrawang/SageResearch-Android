@@ -97,20 +97,6 @@ public class ResultModule {
     }
 
     // region Result Deserializers
-    @Provides
-    @IntoMap
-    @ClassKey(AnswerResult.class)
-    static JsonDeserializer<?> provideAnswerResultDeserializer() {
-        return createPassThroughDeserializer(AnswerResultBase.class);
-    }
-
-    // region Result Serializers
-    @Provides
-    @IntoMap
-    @ClassKey(AnswerResult.class)
-    static JsonSerializer<?> provideAnswerResultSerializer() {
-        return createPassThroughSerializer(AnswerResultBase.class);
-    }
 
     @Provides
     @IntoMap
@@ -132,42 +118,12 @@ public class ResultModule {
         return AnswerResultBase.TYPE_KEY;
     }
     // endregion
-
-    @Provides
-    @IntoMap
-    @ClassKey(CollectionResult.class)
-    static JsonDeserializer<?> provideCollectionResultDeserializer() {
-        return createPassThroughDeserializer(CollectionResultBase.class);
-    }
-
-    @Provides
-    @IntoMap
-    @ClassKey(CollectionResult.class)
-    static JsonSerializer<?> provideCollectionResultSerializer() {
-        return createPassThroughSerializer(CollectionResultBase.class);
-    }
-
     @Provides
     @IntoMap
     @ResultClassKey(CollectionResult.class)
     static String provideCollectionResultTypeKey() {
         return CollectionResultBase.TYPE_KEY;
     }
-
-    @Provides
-    @IntoMap
-    @ClassKey(ErrorResult.class)
-    static JsonDeserializer<?> provideErrorResultDeserializer() {
-        return createPassThroughDeserializer(ErrorResultBase.class);
-    }
-
-    @Provides
-    @IntoMap
-    @ClassKey(ErrorResult.class)
-    static JsonSerializer<?> provideErrorResultSerializer() {
-        return createPassThroughSerializer(ErrorResultBase.class);
-    }
-    // endregion
 
     @Provides
     @IntoMap
@@ -178,38 +134,9 @@ public class ResultModule {
 
     @Provides
     @IntoMap
-    @ClassKey(FileResult.class)
-    static JsonDeserializer<?> provideFileResultDeserializer() {
-        return createPassThroughDeserializer(FileResultBase.class);
-    }
-
-    @Provides
-    @IntoMap
-    @ClassKey(FileResult.class)
-    static JsonSerializer<?> provideFileResultSerializer() {
-        return createPassThroughSerializer(FileResultBase.class);
-    }
-
-    @Provides
-    @IntoMap
     @ResultClassKey(FileResult.class)
     static String provideFileResultTypeKey() {
         return FileResultBase.TYPE_KEY;
-    }
-
-    @Provides
-    @IntoMap
-    @ClassKey(TaskResult.class)
-    static JsonDeserializer<?> provideTaskResultDeserializer() {
-        return createPassThroughDeserializer(TaskResultBase.class);
-    }
-    // endregion
-
-    @Provides
-    @IntoMap
-    @ClassKey(TaskResult.class)
-    static JsonSerializer<?> provideTaskResultSerializer() {
-        return createPassThroughSerializer(TaskResultBase.class);
     }
 
     @Provides

@@ -69,13 +69,6 @@ public class ActionModule {
     }
 
     @Provides
-    @IntoMap
-    @ClassKey(Action.class)
-    static JsonDeserializer<?> provideActionDeserializer() {
-        return createPassThroughDeserializer(ActionBase.class);
-    }
-
-    @Provides
     @IntoSet
     static RuntimeTypeAdapterFactory provideActionTypeAdapterFactory(Map<Class<? extends Action>, String> typeMap) {
         RuntimeTypeAdapterFactory factory = RuntimeTypeAdapterFactory.of(Action.class);
@@ -96,22 +89,8 @@ public class ActionModule {
 
     @Provides
     @IntoMap
-    @ClassKey(ReminderAction.class)
-    static JsonDeserializer<?> provideReminderActionDeserializer() {
-        return createPassThroughDeserializer(ReminderActionBase.class);
-    }
-
-    @Provides
-    @IntoMap
     @ActionKey(ReminderAction.class)
     static String provideReminderActionTypeKey() {
         return ReminderActionBase.TYPE_KEY;
-    }
-
-    @Provides
-    @IntoMap
-    @ClassKey(SkipToStepAction.class)
-    static JsonDeserializer<?> provideSkipToStepActionDeserializer() {
-        return createPassThroughDeserializer(SkipToStepActionBase.class);
     }
 }

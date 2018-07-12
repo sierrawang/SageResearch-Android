@@ -33,11 +33,6 @@
 package org.sagebionetworks.research.app;
 
 
-import static org.hamcrest.CoreMatchers.instanceOf;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertThat;
-
 import com.google.common.collect.ImmutableMap;
 
 import org.junit.Test;
@@ -49,6 +44,11 @@ import org.sagebionetworks.research.domain.task.Task;
 
 import java.io.IOException;
 import java.util.List;
+
+import static org.hamcrest.CoreMatchers.instanceOf;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertThat;
 
 public class FooTaskDeserializeTest extends JsonDeserializationTestBase {
     @Test
