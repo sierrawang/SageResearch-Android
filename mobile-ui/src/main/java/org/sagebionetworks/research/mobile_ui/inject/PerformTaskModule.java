@@ -47,7 +47,7 @@ import dagger.android.support.FragmentKey;
 import dagger.multibindings.IntoMap;
 
 @Module(includes = {GsonModule.class, TaskModule.class, StepModule.class, StepViewModule.class,
-        ShowStepFragmentModule.class, ShowStepViewModelModule.class, ActionModule.class},
+        ShowStepViewModelModule.class, ShowStepFragmentModule.class, ActionModule.class},
         subcomponents = TaskActivityFragmentSubcomponent.class)
 public abstract class PerformTaskModule {
     @Binds

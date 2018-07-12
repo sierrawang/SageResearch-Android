@@ -112,27 +112,29 @@ public class PerformTaskViewModel extends ViewModel {
 
     private final MutableLiveData<TaskResult> taskResultLiveData;
 
-    private final ShowStepViewModelFactory showStepViewModelFactory;
-
     private final UUID taskRunUuid;
 
     private final TaskView taskView;
+
+    private final ShowStepViewModelFactory showStepViewModelFactory;
 
     private Task task;
 
     private final MutableLiveData<LoadableResource<TaskView>> taskViewLiveData;
 
     public PerformTaskViewModel(@NonNull TaskView taskView, @NonNull UUID taskRunUUID,
-            @NonNull StepNavigatorFactory stepNavigatorFactory, @NonNull TaskRepository taskRepository,
-            @NonNull TaskMapper taskMapper, StepViewFactory stepViewFactory,
-            @NonNull ZonedDateTime lastRun, @NonNull ShowStepViewModelFactory showStepViewModelFactory) {
+                                @NonNull StepNavigatorFactory stepNavigatorFactory,
+                                @NonNull ShowStepViewModelFactory showStepViewModelFactory,
+                                @NonNull TaskRepository taskRepository,
+                                @NonNull TaskMapper taskMapper, StepViewFactory stepViewFactory,
+                                @NonNull ZonedDateTime lastRun) {
         this.taskView = checkNotNull(taskView);
         this.taskRunUuid = checkNotNull(taskRunUUID);
         this.stepNavigatorFactory = checkNotNull(stepNavigatorFactory);
+        this.showStepViewModelFactory = checkNotNull(showStepViewModelFactory);
         this.taskRepository = checkNotNull(taskRepository);
         this.taskMapper = checkNotNull(taskMapper);
         this.stepViewFactory = stepViewFactory;
-        this.showStepViewModelFactory = showStepViewModelFactory;
         this.lastRun = lastRun;
 
         taskLiveData = new MutableLiveData<>();

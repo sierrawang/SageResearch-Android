@@ -44,6 +44,7 @@ import android.widget.ScrollView;
 import android.widget.TextView;
 
 import org.sagebionetworks.research.domain.result.implementations.ResultBase;
+import org.sagebionetworks.research.mobile_ui.perform_task.PerformTaskFragment;
 import org.sagebionetworks.research.mobile_ui.show_step.view.ShowStepFragmentBase;
 import org.sagebionetworks.research.mobile_ui.show_step.view.ShowUIStepFragmentBase;
 import org.sagebionetworks.research.mobile_ui.widget.ActionButton;
@@ -70,10 +71,12 @@ public class ShowOverviewStepFragment extends
     private boolean isFirstRun;
 
     @NonNull
-    public static ShowOverviewStepFragment newInstance(@NonNull StepView stepView) {
+    public static ShowOverviewStepFragment newInstance(@NonNull StepView stepView,
+            @NonNull PerformTaskFragment performTaskFragment) {
         ShowOverviewStepFragment fragment = new ShowOverviewStepFragment();
-        Bundle arguments = ShowStepFragmentBase.createArguments(stepView);
+        Bundle arguments = ShowStepFragmentBase.createArguments(stepView, performTaskFragment);
         fragment.setArguments(arguments);
+        fragment.initialize();
         return fragment;
     }
 

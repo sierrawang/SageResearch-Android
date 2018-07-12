@@ -34,6 +34,8 @@ package org.sagebionetworks.research.mobile_ui.inject;
 
 import android.support.annotation.NonNull;
 
+import org.sagebionetworks.research.domain.step.implementations.CompletionStepBase;
+import org.sagebionetworks.research.mobile_ui.perform_task.PerformTaskFragment;
 import org.sagebionetworks.research.mobile_ui.show_step.view.ShowActiveUIStepFragment;
 import org.sagebionetworks.research.mobile_ui.show_step.view.ShowCompletionStepFragment;
 import org.sagebionetworks.research.mobile_ui.show_step.view.ShowStepFragmentBase;
@@ -64,19 +66,21 @@ public class ShowStepFragmentModule {
 
     public interface ShowStepFragmentFactory {
         @NonNull
-        ShowStepFragmentBase create(@NonNull StepView stepView);
+        ShowStepFragmentBase create(@NonNull StepView stepView,
+                                    @NonNull PerformTaskFragment performTaskFragment);
     }
 
     @Provides
     public static ShowStepFragmentFactory provideShowStepFragmentFactory(
             Map<String, ShowStepFragmentFactory> showStepFragmentFactoryMap) {
-        return (@NonNull StepView stepView) -> {
+        return (@NonNull StepView stepView, @NonNull PerformTaskFragment performTaskFragment) -> {
             if (showStepFragmentFactoryMap.containsKey(stepView.getType())) {
-                return showStepFragmentFactoryMap.get(stepView.getType()).create(stepView);
+                return showStepFragmentFactoryMap.get(stepView.getType()).create(stepView,
+                        performTaskFragment);
             }
 
             // If we don't have a factory we default to the most general ShowStepFragment.
-            return ShowUIStepFragment.newInstance(stepView);
+            return ShowUIStepFragment.newInstance(stepView, performTaskFragment);
         };
     }
 

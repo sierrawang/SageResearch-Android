@@ -37,6 +37,7 @@ import android.support.annotation.NonNull;
 import android.view.View;
 
 import org.sagebionetworks.research.domain.mobile_ui.R;
+import org.sagebionetworks.research.mobile_ui.perform_task.PerformTaskFragment;
 import org.sagebionetworks.research.mobile_ui.show_step.view.view_binding.UIStepViewBinding;
 import org.sagebionetworks.research.presentation.model.interfaces.CompletionStepView;
 import org.sagebionetworks.research.presentation.model.interfaces.StepView;
@@ -45,14 +46,16 @@ import org.sagebionetworks.research.presentation.show_step.show_step_view_models
 public class ShowCompletionStepFragment extends
         ShowUIStepFragmentBase<CompletionStepView, ShowUIStepViewModel<CompletionStepView>, UIStepViewBinding<CompletionStepView>> {
     @NonNull
-    public static ShowCompletionStepFragment newInstance(@NonNull StepView stepView) {
+    public static ShowCompletionStepFragment newInstance(@NonNull StepView stepView,
+                                                         @NonNull PerformTaskFragment performTaskFragment) {
         if (!(stepView instanceof CompletionStepView)) {
             throw new IllegalArgumentException("Step view: " + stepView + " is not a CompletionStepView.");
         }
 
         ShowCompletionStepFragment fragment = new ShowCompletionStepFragment();
-        Bundle arguments = ShowStepFragmentBase.createArguments(stepView);
+        Bundle arguments = ShowStepFragmentBase.createArguments(stepView, performTaskFragment);
         fragment.setArguments(arguments);
+        fragment.initialize();
         return fragment;
     }
 
