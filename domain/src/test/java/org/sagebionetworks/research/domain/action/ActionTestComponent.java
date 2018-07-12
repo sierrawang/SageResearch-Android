@@ -36,12 +36,13 @@ import com.google.gson.Gson;
 
 import org.sagebionetworks.research.domain.inject.ActionModule;
 import org.sagebionetworks.research.domain.inject.GsonModule;
+import org.sagebionetworks.research.domain.inject.JsonModule;
 
 import javax.inject.Singleton;
 
 import dagger.Component;
 
-@Component(modules = {ActionModule.class, GsonModule.class})
+@Component(modules = {ActionModule.class, JsonModule.class, GsonModule.class})
 @Singleton
 public interface ActionTestComponent {
     Gson gson();

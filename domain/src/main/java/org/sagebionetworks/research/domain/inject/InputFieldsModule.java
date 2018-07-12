@@ -73,19 +73,6 @@ public class InputFieldsModule {
         return classMap;
     }
 
-    @Provides
-    @IntoMap
-    @ClassKey(Choice.class)
-    static JsonDeserializer<?> provideChoiceDeserializer() {
-        return ChoiceBase.getJsonDeserializer();
-    }
-
-    @Provides
-    @IntoMap
-    @ClassKey(InputDataType.class)
-    static JsonDeserializer<?> provideInputDataTypeDeserializer() {
-        return InputDataType.getJsonDeserializer();
-    }
 
     /**
      * @return Gson RuntimeTypeAdapterFactory for InputField.class.

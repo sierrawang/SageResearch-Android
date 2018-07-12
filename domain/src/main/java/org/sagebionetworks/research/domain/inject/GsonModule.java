@@ -32,6 +32,9 @@
 
 package org.sagebionetworks.research.domain.inject;
 
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
+
 import com.dampcake.gson.immutable.ImmutableAdapterFactory;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
@@ -106,13 +109,12 @@ public abstract class GsonModule {
     }
 
     @Multibinds
-    abstract Map<Class<?>, JsonDeserializer<?>> provideJsonDeserializerMap();
+    abstract Map<DependencyInjectionType, Map<Class<?>, JsonDeserializer<?>>>
+    provideJsonDeserializerMap();
 
     @Multibinds
-    abstract Set<TypeAdapter> provideJsonDeserializers();
-
-    @Multibinds
-    abstract Map<Class<?>, JsonSerializer<?>> provideJsonSerializerMap();
+    abstract Map<DependencyInjectionType, Map<Class<?>, JsonSerializer<?>>>
+    provideJsonSerializerMap();
 
     @Multibinds
     abstract Set<RuntimeTypeAdapterFactory> provideRuntimeTypeAdapterFactories();
@@ -125,24 +127,28 @@ public abstract class GsonModule {
 
     @Provides
     @Singleton
-    static Gson provideGson(Map<Class<?>, JsonDeserializer<?>> jsonDeserializerMap,
-            Map<Class<?>, JsonSerializer<?>> jsonSerializerMap,
+    static Gson provideGson(Map<DependencyInjectionType, Map<Class<?>, JsonDeserializer<?>>> jsonDeserializerMap,
+            Map<DependencyInjectionType, Map<Class<?>, JsonSerializer<?>>> jsonSerializerMap,
             Set<TypeAdapterFactory> typeAdapterFactories,
             Set<RuntimeTypeAdapterFactory> runtimeTypeAdapterFactories) {
         GsonBuilder builder = new GsonBuilder();
+        // Registers Deserializers
+        Map<Class<?>, JsonDeserializer<?>> defaultJsonDeserializerMap = jsonDeserializerMap.get(DependencyInjectionType.DEFAULT);
+        Map<Class<?>, JsonDeserializer<?>> overrideJsonDeserializerMap = jsonDeserializerMap.get(DependencyInjectionType.OVERRIDE);
+        GsonModule.registerTypeAdapters(defaultJsonDeserializerMap, overrideJsonDeserializerMap, builder);
 
-        for (Entry<Class<?>, JsonDeserializer<?>> entry : jsonDeserializerMap.entrySet()) {
-            LOGGER.debug("Registering JsonDeserializer for: {}", entry.getKey());
-            builder.registerTypeAdapter(entry.getKey(), entry.getValue());
-        }
-        for (Entry<Class<?>, JsonSerializer<?>> entry : jsonSerializerMap.entrySet()) {
-            LOGGER.debug("Registering JsonSerializer for: {}", entry.getKey());
-            builder.registerTypeAdapter(entry.getKey(), entry.getValue());
-        }
+        // Register Serializers
+        Map<Class<?>, JsonSerializer<?>> defaultJsonSerializerMap = jsonSerializerMap.get(DependencyInjectionType.DEFAULT);
+        Map<Class<?>, JsonSerializer<?>> overrideJsonSerializerMap = jsonSerializerMap.get(DependencyInjectionType.OVERRIDE);
+        GsonModule.registerTypeAdapters(defaultJsonSerializerMap, overrideJsonSerializerMap, builder);
+
+        // Register TypeAdapterFactories
         for (TypeAdapterFactory typeAdapterFactory : typeAdapterFactories) {
             LOGGER.debug("Registering TypeAdapterFactory: {}", typeAdapterFactory.getClass());
             builder.registerTypeAdapterFactory(typeAdapterFactory);
         }
+
+        // Registers RuntimeTypeAdapterFactories
         for (RuntimeTypeAdapterFactory runtimeTypeAdapterFactory : runtimeTypeAdapterFactories) {
             LOGGER.debug("Registering RuntimeTypeAdapterFactory: {}", runtimeTypeAdapterFactory.getClass());
             builder.registerTypeAdapterFactory(runtimeTypeAdapterFactory);
@@ -151,6 +157,34 @@ public abstract class GsonModule {
         ThreeTenGsonAdapter.registerAll(builder);
 
         return builder.create();
+    }
+
+    /**
+     * Registers the json type adapters from both maps. If a given class key exists in both maps only
+     * the type adapter from the override map will be registered.
+     * @param defaultTypeAdapterMap The default type adapters.
+     * @param overrideTypeAdapterMap The override type adapters which if present take precedent over the default ones.
+     * @param builder The gson builder to register the type adapters in.
+     */
+    static void registerTypeAdapters(@Nullable Map<Class<?>, ? extends Object> defaultTypeAdapterMap,
+                                     @Nullable Map<Class<?>, ? extends Object> overrideTypeAdapterMap,
+                                     @NonNull GsonBuilder builder) {
+        if (overrideTypeAdapterMap != null) {
+            for (Entry<Class<?>, ? extends Object> entry : overrideTypeAdapterMap.entrySet()) {
+                LOGGER.debug("Registering Override TypeAdapter ({}) for: {}", entry.getValue(), entry.getKey());
+                builder.registerTypeAdapter(entry.getKey(), entry.getValue());
+            }
+        }
+
+        if (defaultTypeAdapterMap != null) {
+            for (Entry<Class<?>, ? extends Object> entry : defaultTypeAdapterMap.entrySet()) {
+                LOGGER.debug("Registering Default TypeAdapter ({}) for: {}", entry.getValue(), entry.getKey());
+                // We only register the default if there isn't an override for this class.
+                if (overrideTypeAdapterMap == null || !overrideTypeAdapterMap.containsKey(entry.getKey())) {
+                    builder.registerTypeAdapter(entry.getKey(), entry.getValue());
+                }
+            }
+        }
     }
 
     @Provides
