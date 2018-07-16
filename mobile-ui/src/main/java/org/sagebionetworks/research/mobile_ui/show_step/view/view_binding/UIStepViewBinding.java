@@ -307,6 +307,8 @@ public class UIStepViewBinding<S extends UIStepView> implements StepViewBinding<
                 view.setText(displayString.getDisplayString());
             } else if (displayString.getDefaultDisplayStringRes() != null) {
                 view.setText(displayString.getDefaultDisplayStringRes());
+            } else {
+                view.setText(null);
             }
         }
     }

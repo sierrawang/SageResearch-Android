@@ -80,7 +80,7 @@ public class FormUIStepViewBase extends UIStepViewBase implements FormUIStepView
         UIStepViewBase uiStepView = UIStepViewBase.fromUIStep(formUIStep, mapper);
         List<InputFieldView> inputFields = new ArrayList<>();
         for (InputField field : formUIStep.getInputFields()) {
-            inputFields.add(InputFieldViewBase.fromInputField(field));
+            inputFields.add(InputFieldViewBase.fromInputField(field, mapper));
         }
 
         return new FormUIStepViewBase(uiStepView.getIdentifier(), uiStepView.getNavDirection(),
@@ -115,7 +115,6 @@ public class FormUIStepViewBase extends UIStepViewBase implements FormUIStepView
 
     @NonNull
     @Override
-    @StepType
     public String getType() {
         return TYPE;
     }

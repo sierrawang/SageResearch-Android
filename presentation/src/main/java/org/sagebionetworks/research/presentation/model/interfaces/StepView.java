@@ -59,7 +59,6 @@ public interface StepView extends Parcelable {
     String getIdentifier();
 
     @NonNull
-    @StepType
     String getType();
 
     @NavDirection

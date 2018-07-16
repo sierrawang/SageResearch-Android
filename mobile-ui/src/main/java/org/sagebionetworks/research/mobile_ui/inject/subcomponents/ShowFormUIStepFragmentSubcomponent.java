@@ -30,46 +30,20 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.sagebionetworks.research.mpower.inject;
+package org.sagebionetworks.research.mobile_ui.inject.subcomponents;
 
-import org.sagebionetworks.research.domain.step.StepType;
-import org.sagebionetworks.research.mpower.step.AppStepType;
-import org.sagebionetworks.research.mpower.step.HandSelectionStep;
-import org.sagebionetworks.research.mpower.step_view.HandSelectionStepView;
-import org.sagebionetworks.research.presentation.model.implementations.CompletionStepViewBase;
-import org.sagebionetworks.research.mpower.step_view.InstructionStepView;
-import org.sagebionetworks.research.mpower.step_view.OverviewStepView;
-import org.sagebionetworks.research.presentation.inject.StepViewModule;
-import org.sagebionetworks.research.presentation.inject.StepViewModule.InternalStepViewFactory;
-import org.sagebionetworks.research.presentation.inject.StepViewModule.StepTypeKey;
+import org.sagebionetworks.research.mobile_ui.show_step.view.ShowActiveUIStepFragment;
+import org.sagebionetworks.research.mobile_ui.show_step.view.form.ShowFormUIStepFragment;
+import org.sagebionetworks.research.presentation.inject.ShowStepViewModelModule;
 
-import dagger.Module;
-import dagger.Provides;
-import dagger.multibindings.IntoMap;
+import dagger.Subcomponent;
+import dagger.android.AndroidInjector;
 
-/**
- * Add app-specific steps.
- */
-@Module(includes = StepViewModule.class)
-public class AppStepViewModule {
-    @Provides
-    @IntoMap
-    @StepTypeKey(StepType.INSTRUCTION)
-    static InternalStepViewFactory provideInstructionStepViewFactory() {
-        return InstructionStepView::fromInstructionStep;
-    }
-
-    @Provides
-    @IntoMap
-    @StepTypeKey(StepType.OVERVIEW)
-    static InternalStepViewFactory provideOverviewStepViewFactory() {
-        return OverviewStepView::fromOverviewStep;
-    }
-
-    @Provides
-    @IntoMap
-    @StepTypeKey(AppStepType.HAND_SELECTION)
-    static InternalStepViewFactory provideHandSelectionStepViewFactory() {
-        return HandSelectionStepView::fromHandSelectionStep;
+@ShowFormUIStepFragmentScope
+@Subcomponent(modules = ShowStepViewModelModule.class)
+public abstract class ShowFormUIStepFragmentSubcomponent implements AndroidInjector<ShowFormUIStepFragment> {
+    @Subcomponent.Builder
+    public static abstract class Builder extends AndroidInjector.Builder<ShowFormUIStepFragment> {
+        public abstract ShowFormUIStepFragmentSubcomponent build();
     }
 }

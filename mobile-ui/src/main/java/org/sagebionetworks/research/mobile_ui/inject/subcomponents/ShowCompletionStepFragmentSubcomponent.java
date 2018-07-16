@@ -39,7 +39,7 @@ import org.sagebionetworks.research.presentation.inject.ShowStepViewModelModule;
 import dagger.Subcomponent;
 import dagger.android.AndroidInjector;
 
-@ShowActiveUIStepFragmentScope
+@ShowCompletionStepFragmentScope
 @Subcomponent(modules = ShowStepViewModelModule.class)
 public abstract class ShowCompletionStepFragmentSubcomponent implements AndroidInjector<ShowCompletionStepFragment> {
     @Subcomponent.Builder

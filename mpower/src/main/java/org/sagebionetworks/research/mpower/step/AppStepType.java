@@ -30,46 +30,21 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.sagebionetworks.research.mpower.inject;
+package org.sagebionetworks.research.mpower.step;
+
+import android.support.annotation.StringDef;
 
 import org.sagebionetworks.research.domain.step.StepType;
-import org.sagebionetworks.research.mpower.step.AppStepType;
-import org.sagebionetworks.research.mpower.step.HandSelectionStep;
-import org.sagebionetworks.research.mpower.step_view.HandSelectionStepView;
-import org.sagebionetworks.research.presentation.model.implementations.CompletionStepViewBase;
-import org.sagebionetworks.research.mpower.step_view.InstructionStepView;
-import org.sagebionetworks.research.mpower.step_view.OverviewStepView;
-import org.sagebionetworks.research.presentation.inject.StepViewModule;
-import org.sagebionetworks.research.presentation.inject.StepViewModule.InternalStepViewFactory;
-import org.sagebionetworks.research.presentation.inject.StepViewModule.StepTypeKey;
 
-import dagger.Module;
-import dagger.Provides;
-import dagger.multibindings.IntoMap;
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
 
-/**
- * Add app-specific steps.
- */
-@Module(includes = StepViewModule.class)
-public class AppStepViewModule {
-    @Provides
-    @IntoMap
-    @StepTypeKey(StepType.INSTRUCTION)
-    static InternalStepViewFactory provideInstructionStepViewFactory() {
-        return InstructionStepView::fromInstructionStep;
-    }
-
-    @Provides
-    @IntoMap
-    @StepTypeKey(StepType.OVERVIEW)
-    static InternalStepViewFactory provideOverviewStepViewFactory() {
-        return OverviewStepView::fromOverviewStep;
-    }
-
-    @Provides
-    @IntoMap
-    @StepTypeKey(AppStepType.HAND_SELECTION)
-    static InternalStepViewFactory provideHandSelectionStepViewFactory() {
-        return HandSelectionStepView::fromHandSelectionStep;
-    }
+// Adds the app specific steps to the StepType annotation
+@Retention(RetentionPolicy.RUNTIME)
+@StringDef({StepType.COMPLETION, StepType.OVERVIEW, StepType.INSTRUCTION, StepType.UI, StepType.FORM,
+    StepType.ACTIVE, StepType.BASE, StepType.COUNTDOWN, StepType.IMAGE_PICKER, StepType.IMAGE_PICKER,
+    StepType.LOGGING, StepType.REVIEW, StepType.SECTION, StepType.SELECTION, StepType.TASK_INFO,
+    StepType.TRANSFORM, AppStepType.HAND_SELECTION})
+public @interface AppStepType {
+    String HAND_SELECTION = "handSelection";
 }

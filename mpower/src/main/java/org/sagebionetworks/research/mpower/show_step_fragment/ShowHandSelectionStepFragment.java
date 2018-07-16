@@ -30,46 +30,23 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.sagebionetworks.research.mpower.inject;
+package org.sagebionetworks.research.mpower.show_step_fragment;
 
-import org.sagebionetworks.research.domain.step.StepType;
-import org.sagebionetworks.research.mpower.step.AppStepType;
-import org.sagebionetworks.research.mpower.step.HandSelectionStep;
-import org.sagebionetworks.research.mpower.step_view.HandSelectionStepView;
-import org.sagebionetworks.research.presentation.model.implementations.CompletionStepViewBase;
-import org.sagebionetworks.research.mpower.step_view.InstructionStepView;
-import org.sagebionetworks.research.mpower.step_view.OverviewStepView;
-import org.sagebionetworks.research.presentation.inject.StepViewModule;
-import org.sagebionetworks.research.presentation.inject.StepViewModule.InternalStepViewFactory;
-import org.sagebionetworks.research.presentation.inject.StepViewModule.StepTypeKey;
+import android.os.Bundle;
+import android.support.annotation.LayoutRes;
+import android.support.annotation.NonNull;
 
-import dagger.Module;
-import dagger.Provides;
-import dagger.multibindings.IntoMap;
+import org.sagebionetworks.research.mobile_ui.show_step.view.ShowStepFragmentBase;
+import org.sagebionetworks.research.mobile_ui.show_step.view.form.ShowFormUIStepFragment;
+import org.sagebionetworks.research.mpower.R;
+import org.sagebionetworks.research.presentation.model.interfaces.StepView;
 
-/**
- * Add app-specific steps.
- */
-@Module(includes = StepViewModule.class)
-public class AppStepViewModule {
-    @Provides
-    @IntoMap
-    @StepTypeKey(StepType.INSTRUCTION)
-    static InternalStepViewFactory provideInstructionStepViewFactory() {
-        return InstructionStepView::fromInstructionStep;
-    }
-
-    @Provides
-    @IntoMap
-    @StepTypeKey(StepType.OVERVIEW)
-    static InternalStepViewFactory provideOverviewStepViewFactory() {
-        return OverviewStepView::fromOverviewStep;
-    }
-
-    @Provides
-    @IntoMap
-    @StepTypeKey(AppStepType.HAND_SELECTION)
-    static InternalStepViewFactory provideHandSelectionStepViewFactory() {
-        return HandSelectionStepView::fromHandSelectionStep;
+public class ShowHandSelectionStepFragment extends ShowFormUIStepFragment {
+    @NonNull
+    public static ShowHandSelectionStepFragment newInstance(@NonNull StepView stepView) {
+        ShowHandSelectionStepFragment fragment = new ShowHandSelectionStepFragment();
+        Bundle arguments = ShowStepFragmentBase.createArguments(stepView);
+        fragment.setArguments(arguments);
+        return fragment;
     }
 }

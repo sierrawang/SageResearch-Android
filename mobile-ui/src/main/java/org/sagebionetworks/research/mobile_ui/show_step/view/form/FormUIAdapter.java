@@ -30,46 +30,52 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.sagebionetworks.research.mpower.inject;
+package org.sagebionetworks.research.mobile_ui.show_step.view.form;
 
-import org.sagebionetworks.research.domain.step.StepType;
-import org.sagebionetworks.research.mpower.step.AppStepType;
-import org.sagebionetworks.research.mpower.step.HandSelectionStep;
-import org.sagebionetworks.research.mpower.step_view.HandSelectionStepView;
-import org.sagebionetworks.research.presentation.model.implementations.CompletionStepViewBase;
-import org.sagebionetworks.research.mpower.step_view.InstructionStepView;
-import org.sagebionetworks.research.mpower.step_view.OverviewStepView;
-import org.sagebionetworks.research.presentation.inject.StepViewModule;
-import org.sagebionetworks.research.presentation.inject.StepViewModule.InternalStepViewFactory;
-import org.sagebionetworks.research.presentation.inject.StepViewModule.StepTypeKey;
+import android.os.Parcelable;
+import android.support.annotation.NonNull;
+import android.support.v7.widget.RecyclerView;
+import android.view.LayoutInflater;
+import android.view.ViewGroup;
 
-import dagger.Module;
-import dagger.Provides;
-import dagger.multibindings.IntoMap;
+import org.sagebionetworks.research.domain.mobile_ui.R;
+import org.sagebionetworks.research.mobile_ui.widget.ActionButton;
+import org.sagebionetworks.research.presentation.DisplayString;
+import org.sagebionetworks.research.presentation.model.form.ChoiceView;
+import org.sagebionetworks.research.presentation.model.form.InputFieldView;
 
-/**
- * Add app-specific steps.
- */
-@Module(includes = StepViewModule.class)
-public class AppStepViewModule {
-    @Provides
-    @IntoMap
-    @StepTypeKey(StepType.INSTRUCTION)
-    static InternalStepViewFactory provideInstructionStepViewFactory() {
-        return InstructionStepView::fromInstructionStep;
+import java.util.List;
+
+public class FormUIAdapter<T> extends RecyclerView.Adapter<FormUIViewHolder> {
+    private List<ChoiceView<T>> choices;
+
+    public FormUIAdapter(final List<ChoiceView<T>> choices) {
+        this.choices = choices;
     }
 
-    @Provides
-    @IntoMap
-    @StepTypeKey(StepType.OVERVIEW)
-    static InternalStepViewFactory provideOverviewStepViewFactory() {
-        return OverviewStepView::fromOverviewStep;
+    @NonNull
+    @Override
+    public FormUIViewHolder onCreateViewHolder(@NonNull final ViewGroup parent, final int viewType) {
+        ActionButton button = (ActionButton) LayoutInflater.from(parent.getContext()).inflate(R.layout.rs2_form_view_holder,
+                parent, false);
+        return new FormUIViewHolder(button);
     }
 
-    @Provides
-    @IntoMap
-    @StepTypeKey(AppStepType.HAND_SELECTION)
-    static InternalStepViewFactory provideHandSelectionStepViewFactory() {
-        return HandSelectionStepView::fromHandSelectionStep;
+    @Override
+    public void onBindViewHolder(@NonNull final FormUIViewHolder holder, final int position) {
+        ChoiceView<T> inputField = this.choices.get(position);
+        ActionButton button = holder.getButton();
+        DisplayString textDisplayString = inputField.getText();
+        String text = "";
+        if (textDisplayString != null) {
+            text = textDisplayString.getDisplayString();
+        }
+
+        button.setText(text);
+    }
+
+    @Override
+    public int getItemCount() {
+        return this.choices.size();
     }
 }
