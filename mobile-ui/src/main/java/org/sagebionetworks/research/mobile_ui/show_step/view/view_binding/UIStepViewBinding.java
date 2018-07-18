@@ -284,6 +284,16 @@ public class UIStepViewBinding<S extends UIStepView> implements StepViewBinding<
         StepHeader stepHeader = this.getStepHeader();
         if (stepHeader != null) {
             stepHeader.setActionButtonClickListener(actionButtonClickListener);
+        } else {
+            final ActionButton cancelButton = this.getCancelButton();
+            if (cancelButton != null) {
+                cancelButton.setOnClickListener(view -> actionButtonClickListener.onClick(cancelButton));
+            }
+
+            final ActionButton infoButton = this.getInfoButton();
+            if (infoButton != null) {
+                infoButton.setOnClickListener(view -> actionButtonClickListener.onClick(infoButton));
+            }
         }
     }
 

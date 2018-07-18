@@ -89,11 +89,6 @@ public abstract class BaseStepView implements StepView, Parcelable {
 
     public abstract int getNavDirection();
 
-    @Override
-    public boolean shouldSkip(@Nullable TaskResult taskResult) {
-        return false;
-    }
-
     @NonNull
     public abstract ImmutableSet<StepActionView> getStepActionViews();
 

@@ -37,6 +37,7 @@ import android.support.annotation.NonNull;
 import android.view.View;
 
 import org.sagebionetworks.research.domain.mobile_ui.R;
+import org.sagebionetworks.research.mobile_ui.perform_task.PerformTaskFragment;
 import org.sagebionetworks.research.mobile_ui.show_step.view.view_binding.FormUIStepViewBinding;
 import org.sagebionetworks.research.presentation.model.interfaces.FormUIStepView;
 import org.sagebionetworks.research.presentation.model.interfaces.StepView;
@@ -46,14 +47,16 @@ public class ShowFormUIStepFragment extends
         ShowStepFragmentBase<FormUIStepView, ShowUIStepViewModel<FormUIStepView>,
                         FormUIStepViewBinding<FormUIStepView>> {
     @NonNull
-    public static ShowFormUIStepFragment newInstance(@NonNull StepView stepView) {
+    public static ShowFormUIStepFragment newInstance(@NonNull StepView stepView,
+                                                     @NonNull PerformTaskFragment performTaskFragment) {
         if (!(stepView instanceof FormUIStepView)) {
             throw new IllegalArgumentException("Step view: " + stepView + " is not a FormUIStepView.");
         }
 
         ShowFormUIStepFragment fragment = new ShowFormUIStepFragment();
-        Bundle arguments = ShowStepFragmentBase.createArguments(stepView);
+        Bundle arguments = ShowStepFragmentBase.createArguments(stepView, performTaskFragment);
         fragment.setArguments(arguments);
+        fragment.initialize();
         return fragment;
     }
 

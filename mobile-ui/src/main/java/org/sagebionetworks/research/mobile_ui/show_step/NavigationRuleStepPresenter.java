@@ -36,6 +36,7 @@ import android.support.annotation.Nullable;
 
 import org.sagebionetworks.research.domain.result.interfaces.Result;
 import org.sagebionetworks.research.domain.result.interfaces.TaskResult;
+import org.sagebionetworks.research.domain.task.Task;
 import org.sagebionetworks.research.domain.task.navigation.strategy.StepNavigationStrategy;
 import org.sagebionetworks.research.mobile_ui.show_step.ShowStepContract.View;
 import org.sagebionetworks.research.presentation.perform_task.PerformTaskViewModel;
@@ -69,17 +70,17 @@ public class NavigationRuleStepPresenter extends StepPresenter
 
     @Nullable
     @Override
-    public String getNextStepIdentifier(@Nullable final TaskResult taskResult) {
+    public String getNextStepIdentifier(@Nullable final Task Task, @Nullable final TaskResult taskResult) {
         return null;
     }
 
     @Override
-    public boolean isBackAllowed(@Nullable final TaskResult taskResult) {
+    public boolean isBackAllowed(@Nullable final Task task, @Nullable final TaskResult taskResult) {
         return false;
     }
 
     @Override
-    public boolean shouldSkip(@Nullable final TaskResult taskResult) {
+    public boolean shouldSkip(@Nullable final Task task, @Nullable final TaskResult taskResult) {
         return false;
     }
 }

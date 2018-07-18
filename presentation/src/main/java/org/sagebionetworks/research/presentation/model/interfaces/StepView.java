@@ -64,13 +64,4 @@ public interface StepView extends Parcelable {
 
     @NavDirection
     int getNavDirection();
-
-    /**
-     * Returns true if this step view should be skipped for the given task result, false otherwise
-     *
-     * @param taskResult
-     *         The task result to use to determine if this step view should be skipped
-     * @return true if this step view should be skipped, false otherwise.
-     */
-    boolean shouldSkip(@Nullable TaskResult taskResult);
 }

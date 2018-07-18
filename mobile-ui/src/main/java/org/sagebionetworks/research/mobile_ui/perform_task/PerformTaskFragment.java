@@ -43,6 +43,7 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.annotation.VisibleForTesting;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -52,6 +53,7 @@ import org.sagebionetworks.research.domain.mobile_ui.R;
 import org.sagebionetworks.research.domain.result.implementations.TaskResultBase;
 import org.sagebionetworks.research.domain.result.interfaces.TaskResult;
 import org.sagebionetworks.research.mobile_ui.inject.ShowStepFragmentModule.ShowStepFragmentFactory;
+import org.sagebionetworks.research.mobile_ui.show_step.view.FragmentNavigationRule;
 import org.sagebionetworks.research.mobile_ui.show_step.view.FragmentSkipRule;
 import org.sagebionetworks.research.mobile_ui.show_step.view.ShowStepFragmentBase;
 import org.sagebionetworks.research.presentation.model.TaskView;
@@ -194,6 +196,12 @@ public class PerformTaskFragment extends Fragment implements HasSupportFragmentI
         return fragmentDispatchingAndroidInjector;
     }
 
+    public void endPerformTask() {
+        // TODO handle end of perform task.
+        FragmentManager manager = getFragmentManager();
+        manager.beginTransaction().remove(this).commit();
+    }
+
     @VisibleForTesting
     void showStep(StepView stepView) {
         if (stepView == null) {
@@ -207,7 +215,7 @@ public class PerformTaskFragment extends Fragment implements HasSupportFragmentI
             SharedPreferences sharedPreferences = getContext().getSharedPreferences(sharedPreferencesKey,
                     Context.MODE_PRIVATE);
             sharedPreferences.edit().putLong(LAST_RUN_KEY, Instant.now().toEpochMilli()).apply();
-            // TODO handle end of perform task.
+            this.endPerformTask();
             return;
         }
 
@@ -224,22 +232,6 @@ public class PerformTaskFragment extends Fragment implements HasSupportFragmentI
         transaction
                 .replace(R.id.rs2_step_container, step, stepView.getIdentifier())
                 .commit();
-
-        if (step instanceof FragmentSkipRule) {
-            FragmentSkipRule fragmentSkipRule = (FragmentSkipRule)step;
-            if (fragmentSkipRule.shouldSkip()) {
-                String skipToIdentifier = fragmentSkipRule.skipToIdentifier();
-                if (skipToIdentifier != null) {
-                    // If we have the identifier of the step to skip to we use that.
-                    this.performTaskViewModel.skipToStep(fragmentSkipRule.skipToIdentifier());
-                } else {
-                    // Otherwise we just go forward.
-                    this.performTaskViewModel.goForward();
-                }
-
-                return;
-            }
-        }
 
     }
 

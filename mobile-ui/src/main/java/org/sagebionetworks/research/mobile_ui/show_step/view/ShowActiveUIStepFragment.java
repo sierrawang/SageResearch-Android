@@ -35,6 +35,7 @@ package org.sagebionetworks.research.mobile_ui.show_step.view;
 import android.animation.ObjectAnimator;
 import android.arch.lifecycle.LiveData;
 import android.arch.lifecycle.Observer;
+import android.graphics.Paint;
 import android.os.Bundle;
 import android.support.annotation.LayoutRes;
 import android.support.annotation.NonNull;
@@ -47,6 +48,7 @@ import android.widget.TextView;
 import org.sagebionetworks.research.domain.mobile_ui.R;
 import org.sagebionetworks.research.mobile_ui.perform_task.PerformTaskFragment;
 import org.sagebionetworks.research.mobile_ui.show_step.view.view_binding.ActiveUIStepViewBinding;
+import org.sagebionetworks.research.mobile_ui.widget.ActionButton;
 import org.sagebionetworks.research.presentation.model.interfaces.ActiveUIStepView;
 import org.sagebionetworks.research.presentation.model.interfaces.StepView;
 import org.sagebionetworks.research.presentation.show_step.show_step_view_models.ShowActiveUIStepViewModel;
@@ -82,6 +84,7 @@ public class ShowActiveUIStepFragment extends
     protected ActiveUIStepViewBinding<ActiveUIStepView> instantiateAndBindBinding(View view) {
         return new ActiveUIStepViewBinding<>(view);
     }
+
 
     @Override
     public void onStart() {

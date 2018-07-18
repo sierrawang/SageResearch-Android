@@ -220,15 +220,21 @@ public abstract class ShowUIStepFragmentBase<S extends UIStepView,
 
     // region Navigation Buttons
     protected void updateNavigationButtons(UIStepView stepView) {
+        ActionButton forwardButton = this.stepViewBinding.getNextButton();
+        ActionView forwardActionView = this.getForwardButtonActionView(stepView);
+        this.updateButtonFromActionView(forwardButton, forwardActionView);
+        ActionButton backButton = this.stepViewBinding.getBackButton();
+        ActionView backActionView = this.getBackwardButtonActionView(stepView);
+        this.updateButtonFromActionView(backButton, backActionView);
+        ActionButton cancelButton = this.stepViewBinding.getCancelButton();
+        ActionView cancelActionView = this.getCancelButtonActionView(stepView);
+        this.updateButtonFromActionView(cancelButton, cancelActionView);
         ActionButton skipButton = this.stepViewBinding.getSkipButton();
-        this.updateButtonFromActionView(this.stepViewBinding.getNextButton(),
-                this.getForwardButtonActionView(stepView));
-        this.updateButtonFromActionView(this.stepViewBinding.getBackButton(),
-                this.getBackwardButtonActionView(stepView));
-        this.updateButtonFromActionView(this.stepViewBinding.getCancelButton(),
-                this.getCancelButtonActionView(stepView));
-        this.updateButtonFromActionView(skipButton, this.getSkipButtonActionView(stepView));
-        this.updateButtonFromActionView(this.stepViewBinding.getInfoButton(), this.getInfoButtonActionView(stepView));
+        ActionView skipActionView = this.getSkipButtonActionView(stepView);
+        this.updateButtonFromActionView(skipButton, skipActionView);
+        ActionButton infoButton = this.stepViewBinding.getInfoButton();
+        ActionView infoActionView = this.getInfoButtonActionView(stepView);
+        this.updateButtonFromActionView(infoButton, infoActionView);
     }
     // endregion
 }

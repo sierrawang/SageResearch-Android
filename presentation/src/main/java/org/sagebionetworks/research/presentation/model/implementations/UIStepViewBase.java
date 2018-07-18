@@ -265,11 +265,6 @@ public class UIStepViewBase implements UIStepView {
         return navDirection;
     }
 
-    @Override
-    public boolean shouldSkip(@Nullable final TaskResult taskResult) {
-        return false;
-    }
-
     protected static Map<String, ActionView> getActionsFrom(Map<String, Action> actions) {
         Map<String, ActionView> returnValue = new HashMap<>();
         for (Entry<String, Action> entry : actions.entrySet()) {

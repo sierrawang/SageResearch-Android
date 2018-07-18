@@ -233,7 +233,11 @@ public abstract class ShowStepFragmentBase
      */
     protected void handleActionButtonClick(@NonNull ActionButton actionButton) {
         @ActionType String actionType = this.getActionTypeFromActionButton(actionButton);
-        this.showStepViewModel.handleAction(actionType);
+        if (actionType.equals(ActionType.CANCEL)) {
+            this.performTaskFragment.endPerformTask();
+        } else {
+            this.showStepViewModel.handleAction(actionType);
+        }
     }
 
     /**
