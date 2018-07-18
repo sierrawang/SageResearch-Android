@@ -44,6 +44,7 @@ import com.google.common.collect.ImmutableMap.Builder;
 import org.jetbrains.annotations.NotNull;
 import org.sagebionetworks.research.domain.result.interfaces.TaskResult;
 import org.sagebionetworks.research.domain.step.interfaces.Step;
+import org.sagebionetworks.research.domain.task.Task;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -59,8 +60,8 @@ public class OrderedStepNavigator implements StepNavigator {
     public static final class Factory implements StepNavigatorFactory {
 
         @Override
-        public StepNavigator create(List<Step> steps, List<String> progressMarkers) {
-            return new OrderedStepNavigator(steps);
+        public StepNavigator create(Task task, List<String> progressMarkers) {
+            return new OrderedStepNavigator(task.getSteps());
         }
     }
 
