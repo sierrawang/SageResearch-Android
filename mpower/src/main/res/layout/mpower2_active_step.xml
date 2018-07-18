@@ -43,7 +43,7 @@
     tools:layout_editor_absoluteY="81dp">
 
     <ImageView
-        android:id="@+id/imageView"
+        android:id="@id/rs2_image_view"
         android:layout_width="0dp"
         android:layout_height="0dp"
         android:adjustViewBounds="false"
@@ -59,7 +59,8 @@
         app:srcCompat="@drawable/f_walking1" />
 
     <org.sagebionetworks.research.mobile_ui.widget.NavigationActionBar
-        android:id="@+id/navigationActionBar"
+        android:id="@id/rs2_step_navigation_action_bar"
+        style="@style/Widget.ResearchStack.NavigationActionBar.Active"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:background="@android:color/transparent"
@@ -68,19 +69,17 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent" />
 
-    <ImageButton
-        android:id="@+id/cancelButton"
+    <org.sagebionetworks.research.mobile_ui.widget.ActionButton
+        android:id="@+id/rs2_step_navigation_action_cancel"
         android:layout_width="0dp"
         android:layout_height="30dp"
         android:layout_marginLeft="20dp"
         android:layout_marginStart="20dp"
         android:layout_marginTop="20dp"
-        android:background="@android:color/transparent"
-        android:scaleType="fitXY"
+        android:background="@drawable/rs2_cancel_icon"
         app:layout_constraintDimensionRatio="H,1:1"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:srcCompat="@drawable/rs2_cancel_icon" />
+        app:layout_constraintTop_toTopOf="parent" />
 
     <TextView
         android:id="@+id/textLabel"
@@ -99,7 +98,7 @@
         android:textStyle="bold"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/cancelButton" />
+        app:layout_constraintTop_toBottomOf="@id/rs2_step_navigation_action_cancel" />
 
     <ProgressBar
         android:id="@+id/countdownDial"
@@ -114,7 +113,7 @@
         android:progressDrawable="@drawable/countdown_dial"
         app:layout_constrainedHeight="true"
         app:layout_constrainedWidth="true"
-        app:layout_constraintBottom_toTopOf="@+id/navigationActionBar"
+        app:layout_constraintBottom_toTopOf="@id/rs2_step_navigation_action_bar"
         app:layout_constraintDimensionRatio="H,1:1"
         app:layout_constraintHeight_max="250dp"
         app:layout_constraintHeight_min="150dp"
@@ -125,7 +124,7 @@
         app:layout_constraintWidth_min="150dp" />
 
     <TextView
-        android:id="@+id/countdownLabel"
+        android:id="@+id/countLabel"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:fontFamily="@font/lato_light"
@@ -155,6 +154,6 @@
         app:layout_constraintEnd_toStartOf="@+id/countdownDial"
         app:layout_constraintHorizontal_bias="0.503"
         app:layout_constraintStart_toEndOf="@+id/countdownDial"
-        app:layout_constraintTop_toBottomOf="@+id/countdownLabel" />
+        app:layout_constraintTop_toBottomOf="@+id/countLabel" />
 
 </android.support.constraint.ConstraintLayout>

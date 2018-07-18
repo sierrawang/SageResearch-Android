@@ -39,6 +39,7 @@ import android.support.annotation.Nullable;
 import com.google.common.collect.ImmutableMap;
 
 import org.sagebionetworks.research.domain.result.interfaces.TaskResult;
+import org.sagebionetworks.research.domain.step.StepType;
 import org.sagebionetworks.research.domain.step.interfaces.Step;
 import org.sagebionetworks.research.domain.step.interfaces.ThemedUIStep;
 import org.sagebionetworks.research.domain.step.ui.action.Action;
@@ -60,6 +61,8 @@ import java.util.Map;
 import java.util.Map.Entry;
 
 public class UIStepViewBase implements UIStepView {
+    public static final String TYPE = StepType.UI;
+
     public static final Creator<UIStepViewBase> CREATOR = new Creator<UIStepViewBase>() {
         @Override
         public UIStepViewBase createFromParcel(Parcel source) {
@@ -246,6 +249,12 @@ public class UIStepViewBase implements UIStepView {
     @Override
     public String getIdentifier() {
         return this.identifier;
+    }
+
+    @NonNull
+    @Override
+    public String getType() {
+        return TYPE;
     }
 
     @Override

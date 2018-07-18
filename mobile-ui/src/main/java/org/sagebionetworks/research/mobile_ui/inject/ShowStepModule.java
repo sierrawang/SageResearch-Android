@@ -33,11 +33,15 @@
 package org.sagebionetworks.research.mobile_ui.inject;
 
 import org.sagebionetworks.research.mobile_ui.inject.subcomponents.ShowActiveUIStepFragmentSubcomponent;
+import org.sagebionetworks.research.mobile_ui.inject.subcomponents.ShowCompletionStepFragmentSubcomponent;
+import org.sagebionetworks.research.mobile_ui.inject.subcomponents.ShowFormUIStepFragmentSubcomponent;
 import org.sagebionetworks.research.mobile_ui.inject.subcomponents.ShowStepFragmentSubcomponent;
 import org.sagebionetworks.research.mobile_ui.inject.subcomponents.ShowUIStepFragmentSubcomponent;
 import org.sagebionetworks.research.mobile_ui.show_step.view.ShowActiveUIStepFragment;
+import org.sagebionetworks.research.mobile_ui.show_step.view.ShowCompletionStepFragment;
 import org.sagebionetworks.research.mobile_ui.show_step.view.ShowStepFragment;
 import org.sagebionetworks.research.mobile_ui.show_step.view.ShowUIStepFragment;
+import org.sagebionetworks.research.mobile_ui.show_step.view.form.ShowFormUIStepFragment;
 
 import dagger.Binds;
 import dagger.Module;
@@ -45,7 +49,8 @@ import dagger.android.AndroidInjector;
 import dagger.android.support.FragmentKey;
 import dagger.multibindings.IntoMap;
 
-@Module(subcomponents = {ShowStepFragmentSubcomponent.class, ShowUIStepFragmentSubcomponent.class,
+@Module(subcomponents = {ShowStepFragmentSubcomponent.class, ShowCompletionStepFragmentSubcomponent.class,
+        ShowUIStepFragmentSubcomponent.class, ShowFormUIStepFragmentSubcomponent.class,
         ShowActiveUIStepFragmentSubcomponent.class})
 public abstract class ShowStepModule {
     @Binds
@@ -65,4 +70,16 @@ public abstract class ShowStepModule {
     @FragmentKey(ShowUIStepFragment.class)
     abstract AndroidInjector.Factory<? extends android.support.v4.app.Fragment>
     bindShowUIStepFragmentInjectorFactory(ShowUIStepFragmentSubcomponent.Builder builder);
+
+    @Binds
+    @IntoMap
+    @FragmentKey(ShowCompletionStepFragment.class)
+    abstract AndroidInjector.Factory<? extends android.support.v4.app.Fragment>
+    bindShowCompletionStepFragmentInjectorFactory(ShowCompletionStepFragmentSubcomponent.Builder builder);
+
+    @Binds
+    @IntoMap
+    @FragmentKey(ShowFormUIStepFragment.class)
+    abstract AndroidInjector.Factory<? extends android.support.v4.app.Fragment>
+    bindShowFormUIStepFragmentInjectorFactory(ShowFormUIStepFragmentSubcomponent.Builder builder);
 }

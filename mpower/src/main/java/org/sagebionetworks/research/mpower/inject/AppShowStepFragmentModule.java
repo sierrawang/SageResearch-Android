@@ -35,8 +35,11 @@ package org.sagebionetworks.research.mpower.inject;
 import org.sagebionetworks.research.mobile_ui.inject.ShowStepFragmentModule;
 import org.sagebionetworks.research.mobile_ui.inject.ShowStepFragmentModule.ShowStepFragmentFactory;
 import org.sagebionetworks.research.mobile_ui.inject.ShowStepFragmentModule.StepViewKey;
+import org.sagebionetworks.research.mpower.show_step_fragment.ShowHandSelectionStepFragment;
 import org.sagebionetworks.research.mpower.show_step_fragment.ShowInstructionStepFragment;
 import org.sagebionetworks.research.mpower.show_step_fragment.ShowOverviewStepFragment;
+import org.sagebionetworks.research.mpower.step.HandSelectionStep;
+import org.sagebionetworks.research.mpower.step_view.HandSelectionStepView;
 import org.sagebionetworks.research.mpower.step_view.InstructionStepView;
 import org.sagebionetworks.research.mpower.step_view.OverviewStepView;
 
@@ -48,15 +51,22 @@ import dagger.multibindings.IntoMap;
 public class AppShowStepFragmentModule {
     @Provides
     @IntoMap
-    @StepViewKey(InstructionStepView.class)
+    @StepViewKey(InstructionStepView.TYPE)
     static ShowStepFragmentFactory provideShowInstructionStepFragmentFactory() {
         return ShowInstructionStepFragment::newInstance;
     }
 
     @Provides
     @IntoMap
-    @StepViewKey(OverviewStepView.class)
+    @StepViewKey(OverviewStepView.TYPE)
     static ShowStepFragmentFactory provideShowOverviewStepFragmentFactory() {
         return ShowOverviewStepFragment::newInstance;
+    }
+
+    @Provides
+    @IntoMap
+    @StepViewKey(HandSelectionStepView.TYPE)
+    static ShowStepFragmentFactory provideHandSelectionStepFragmentFactory() {
+        return ShowHandSelectionStepFragment::newInstance;
     }
 }

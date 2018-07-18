@@ -30,37 +30,20 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.sagebionetworks.research.mpower.step;
+package org.sagebionetworks.research.mobile_ui.inject.subcomponents;
 
-import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
+import org.sagebionetworks.research.mobile_ui.show_step.view.ShowCompletionStepFragment;
+import org.sagebionetworks.research.presentation.inject.ShowStepViewModelModule;
 
-import org.sagebionetworks.research.domain.step.StepType;
-import org.sagebionetworks.research.domain.step.implementations.UIStepBase;
-import org.sagebionetworks.research.domain.step.ui.action.Action;
-import org.sagebionetworks.research.domain.step.ui.theme.ColorTheme;
-import org.sagebionetworks.research.domain.step.ui.theme.ImageTheme;
+import dagger.Subcomponent;
+import dagger.android.AndroidInjector;
 
-import java.util.Map;
-import java.util.Set;
-
-public class CompletionStep extends UIStepBase {
-    public static final String TYPE_KEY = StepType.COMPLETION;
-
-    public CompletionStep(@NonNull final String identifier,
-            @Nullable final Map<String, Action> actions,
-            @Nullable final Set<String> hiddenActions,
-            @Nullable final String title,
-            @Nullable final String text,
-            @Nullable final String detail,
-            @Nullable final String footnote,
-            @Nullable final ColorTheme colorTheme,
-            @Nullable final ImageTheme imageTheme) {
-        super(identifier, actions, hiddenActions, title, text, detail, footnote, colorTheme, imageTheme);
-    }
-
-    @Override
-    public String getType() {
-        return TYPE_KEY;
+@ShowCompletionStepFragmentScope
+@Subcomponent(modules = ShowStepViewModelModule.class)
+public abstract class ShowCompletionStepFragmentSubcomponent implements AndroidInjector<ShowCompletionStepFragment> {
+    @Subcomponent.Builder
+    public abstract static class Builder extends AndroidInjector.Builder<ShowCompletionStepFragment> {
+        @Override
+        public abstract ShowCompletionStepFragmentSubcomponent build();
     }
 }

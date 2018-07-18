@@ -73,7 +73,7 @@ public class FormUIStepBase extends UIStepBase implements FormUIStep {
 
     @NonNull
     @Override
-    public FormUIStepBase copyWithIdentifier(@NonNull String identifier) {
+    public FormUIStepBase copyWithIdentifierOperation(@NonNull String identifier) {
         return new FormUIStepBase(identifier, this.getActions(), this.getHiddenActions(), this.getTitle(),
                 this.getText(), this.getDetail(), this.getFootnote(), this.getColorTheme(), this.getImageTheme(),
                 this.inputFields);

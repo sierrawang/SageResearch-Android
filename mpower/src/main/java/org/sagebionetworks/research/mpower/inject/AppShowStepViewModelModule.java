@@ -32,6 +32,7 @@
 
 package org.sagebionetworks.research.mpower.inject;
 
+import org.sagebionetworks.research.mpower.step_view.HandSelectionStepView;
 import org.sagebionetworks.research.mpower.step_view.InstructionStepView;
 import org.sagebionetworks.research.mpower.step_view.OverviewStepView;
 import org.sagebionetworks.research.presentation.inject.ShowStepViewModelModule.StepViewClassKey;
@@ -47,15 +48,22 @@ import dagger.multibindings.IntoMap;
 public class AppShowStepViewModelModule {
     @Provides
     @IntoMap
-    @StepViewClassKey(InstructionStepView.class)
+    @StepViewClassKey(InstructionStepView.TYPE)
     static AbstractShowStepViewModelFactory<?, ? extends StepView> provideInstructionStepVMF() {
         return new ShowUIStepViewModelFactory<InstructionStepView>();
     }
 
     @Provides
     @IntoMap
-    @StepViewClassKey(OverviewStepView.class)
+    @StepViewClassKey(OverviewStepView.TYPE)
     static AbstractShowStepViewModelFactory<?, ? extends StepView> provideOverviewStepVMF() {
         return new ShowUIStepViewModelFactory<OverviewStepView>();
+    }
+
+    @Provides
+    @IntoMap
+    @StepViewClassKey(HandSelectionStepView.TYPE)
+    static AbstractShowStepViewModelFactory<?, ? extends StepView> provideHandSelectionStepVMF() {
+        return new ShowUIStepViewModelFactory<HandSelectionStepView>();
     }
 }

@@ -47,12 +47,16 @@ import org.sagebionetworks.research.domain.step.interfaces.ThemedUIStep;
 import org.sagebionetworks.research.domain.step.ui.action.Action;
 import org.sagebionetworks.research.domain.step.ui.theme.ColorTheme;
 import org.sagebionetworks.research.domain.step.ui.theme.ImageTheme;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.Map;
 import java.util.Set;
 
 public class UIStepBase extends StepBase implements ThemedUIStep {
     public static final String TYPE_KEY = StepType.UI;
+
+    private static final Logger LOGGER = LoggerFactory.getLogger(UIStepBase.class);
 
     @NonNull
     private final ImmutableMap<String, Action> actions;
@@ -115,10 +119,23 @@ public class UIStepBase extends StepBase implements ThemedUIStep {
 
     @NonNull
     @Override
-    public UIStepBase copyWithIdentifier(@NonNull final String identifier) {
+    public final UIStepBase copyWithIdentifier(@NonNull final String identifier) {
+        UIStepBase result = copyWithIdentifierOperation(identifier);
+        // If the user forgets to override copy with identifier, the type of the step will change when it goes through
+        // the resource transformer. This is a really confusing bug so this code is present to make it clearer why
+        // this is happening.
+        if (result.getClass() != this.getClass()) {
+            LOGGER.warn("Result of copy with identifier has different type than original input, did you"
+                    + "forget to override CopyWithIdentifier");
+        }
+
+        return result;
+    }
+
+    @NonNull
+    protected UIStepBase copyWithIdentifierOperation(@NonNull final String identifier) {
         return new UIStepBase(identifier, this.getActions(), this.getHiddenActions(), this.getTitle(), this.getText(),
-                this.getDetail(),
-                this.getFootnote(), this.getColorTheme(), this.getImageTheme());
+                this.getDetail(), this.getFootnote(), this.getColorTheme(), this.getImageTheme());
     }
 
     @NonNull

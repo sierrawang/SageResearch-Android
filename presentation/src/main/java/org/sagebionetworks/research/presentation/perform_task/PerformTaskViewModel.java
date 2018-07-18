@@ -69,6 +69,7 @@ import org.threeten.bp.Instant;
 import org.threeten.bp.ZonedDateTime;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 
@@ -288,7 +289,8 @@ public class PerformTaskViewModel extends ViewModel {
     @VisibleForTesting
     void handleTaskLoad(Task task) {
         LOGGER.debug("Loaded task: {}", task);
-        stepNavigator = stepNavigatorFactory.create(task.getSteps(), task.getProgressMarkers());
+        List<Step> steps = task.getSteps();
+        stepNavigator = stepNavigatorFactory.create(steps, task.getProgressMarkers());
         this.stepViewMapping = new HashMap<>();
         for (Step step : this.stepNavigator.getSteps()) {
             // This if statement is necessary to ensure we can call stepViewFactory.apply on the step.

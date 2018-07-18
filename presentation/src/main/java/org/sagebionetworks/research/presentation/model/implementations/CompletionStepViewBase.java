@@ -30,35 +30,38 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.sagebionetworks.research.mpower.step_view;
+package org.sagebionetworks.research.presentation.model.implementations;
 
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 
 import com.google.common.collect.ImmutableMap;
 
+import org.sagebionetworks.research.domain.step.StepType;
 import org.sagebionetworks.research.domain.step.interfaces.Step;
-import org.sagebionetworks.research.mpower.step.CompletionStep;
+import org.sagebionetworks.research.domain.step.implementations.CompletionStepBase;
 import org.sagebionetworks.research.presentation.DisplayString;
 import org.sagebionetworks.research.presentation.mapper.DrawableMapper;
 import org.sagebionetworks.research.presentation.model.ColorThemeView;
 import org.sagebionetworks.research.presentation.model.ImageThemeView;
 import org.sagebionetworks.research.presentation.model.action.ActionView;
-import org.sagebionetworks.research.presentation.model.implementations.UIStepViewBase;
+import org.sagebionetworks.research.presentation.model.interfaces.CompletionStepView;
 
-public class CompletionStepView extends UIStepViewBase {
-    public static CompletionStepView fromCompletionStep(Step step, DrawableMapper mapper) {
-        if (!(step instanceof CompletionStep)) {
-            throw new IllegalArgumentException("Provided step: " + step + " is not a CompletionStep.");
+public class CompletionStepViewBase extends UIStepViewBase implements CompletionStepView {
+    public static final String TYPE = StepType.COMPLETION;
+
+    public static CompletionStepViewBase fromCompletionStep(Step step, DrawableMapper mapper) {
+        if (!(step instanceof CompletionStepBase)) {
+            throw new IllegalArgumentException("Provided step: " + step + " is not a CompletionStepBase.");
         }
 
         UIStepViewBase uiStep = UIStepViewBase.fromUIStep(step, mapper);
-        return new CompletionStepView(uiStep.getIdentifier(), uiStep.getNavDirection(), uiStep.getActions(),
+        return new CompletionStepViewBase(uiStep.getIdentifier(), uiStep.getNavDirection(), uiStep.getActions(),
                 uiStep.getTitle(), uiStep.getText(), uiStep.getDetail(), uiStep.getFootnote(), uiStep.getColorTheme(),
                 uiStep.getImageTheme());
     }
 
-    public CompletionStepView(@NonNull final String identifier, final int navDirection,
+    public CompletionStepViewBase(@NonNull final String identifier, final int navDirection,
             @NonNull final ImmutableMap<String, ActionView> actions,
             @Nullable final DisplayString title,
             @Nullable final DisplayString text,
@@ -67,5 +70,11 @@ public class CompletionStepView extends UIStepViewBase {
             @Nullable final ColorThemeView colorTheme,
             @Nullable final ImageThemeView imageTheme) {
         super(identifier, navDirection, actions, title, text, detail, footnote, colorTheme, imageTheme);
+    }
+
+    @Override
+    @NonNull
+    public String getType() {
+        return TYPE;
     }
 }

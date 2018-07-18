@@ -139,6 +139,7 @@ public abstract class ShowStepFragmentBase<StepT extends StepView, ViewModelT ex
         } else {
             stepView = savedInstanceState.getParcelable(ARGUMENT_STEP_VIEW);
         }
+        this.stepView = stepView;
 
         checkState(stepView != null, "stepView cannot be null");
 

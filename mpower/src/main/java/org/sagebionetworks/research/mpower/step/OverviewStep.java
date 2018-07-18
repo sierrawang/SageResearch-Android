@@ -62,7 +62,7 @@ public class OverviewStep extends UIStepBase {
     }
 
     @Override
-    public OverviewStep copyWithIdentifier(@NonNull String identifier) {
+    public OverviewStep copyWithIdentifierOperation(@NonNull String identifier) {
         return new OverviewStep(identifier, this.getActions(), this.getHiddenActions(), this.getTitle(),
                 this.getText(), this.getDetail(), this.getFootnote(), this.getColorTheme(), this.getImageTheme(),
                 this.icons);

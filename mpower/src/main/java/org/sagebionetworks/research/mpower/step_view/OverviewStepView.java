@@ -38,6 +38,7 @@ import android.support.annotation.Nullable;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
 
+import org.sagebionetworks.research.domain.step.StepType;
 import org.sagebionetworks.research.domain.step.interfaces.Step;
 import org.sagebionetworks.research.mpower.step.Icon;
 import org.sagebionetworks.research.mpower.step.OverviewStep;
@@ -53,6 +54,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class OverviewStepView extends UIStepViewBase {
+    public static final String TYPE = StepType.OVERVIEW;
+
     private final ImmutableList<IconView> iconViews;
 
     @NonNull
@@ -84,6 +87,13 @@ public class OverviewStepView extends UIStepViewBase {
             @NonNull final List<IconView> iconViews) {
         super(identifier, navDirection, actions, title, text, detail, footnote, colorTheme, imageTheme);
         this.iconViews = ImmutableList.copyOf(iconViews);
+    }
+
+    @Override
+    @NonNull
+    @StepType
+    public String getType() {
+        return TYPE;
     }
 
     @NonNull

@@ -42,11 +42,14 @@ import org.sagebionetworks.research.domain.interfaces.HashCodeHelper;
 import org.sagebionetworks.research.domain.step.StepType;
 import org.sagebionetworks.research.domain.step.interfaces.SectionStep;
 import org.sagebionetworks.research.domain.step.interfaces.Step;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.List;
 
 public class SectionStepBase extends StepBase implements SectionStep {
     public static final String TYPE_KEY = StepType.SECTION;
+    private static final Logger LOGGER = LoggerFactory.getLogger(SectionStepBase.class);
 
     @NonNull
     private final ImmutableList<Step> steps;
@@ -59,7 +62,16 @@ public class SectionStepBase extends StepBase implements SectionStep {
     @NonNull
     @Override
     public SectionStep copyWithIdentifier(String identifier) {
-        return new SectionStepBase(identifier, steps);
+        SectionStepBase result = new SectionStepBase(identifier, steps);
+        // If the user forgets to override copy with identifier, the type of the step will change when it goes through
+        // the resource transformer. This is a really confusing bug so this code is present to make it clearer why
+        // this is happening.
+        if (result.getClass() != this.getClass()) {
+            LOGGER.warn("Result of copy with identifier has different type than original input, did you"
+                    + "forget to override CopyWithIdentifier");
+        }
+
+        return result;
     }
 
     @NonNull

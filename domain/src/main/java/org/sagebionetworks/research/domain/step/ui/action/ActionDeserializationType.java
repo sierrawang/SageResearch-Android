@@ -38,9 +38,9 @@ import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 
 @Retention(RetentionPolicy.SOURCE)
-@StringDef({ActionDeserializationType.BASE, ActionDeserializationType.REMINDER, ActionDeserializationType.SKIP})
+@StringDef({ActionDeserializationType.DEFAULT, ActionDeserializationType.REMINDER, ActionDeserializationType.SKIP})
 public @interface ActionDeserializationType {
-    String BASE = "Base";
+    String DEFAULT = "default";
     String REMINDER = "reminder";
     String SKIP = "skip";
 }

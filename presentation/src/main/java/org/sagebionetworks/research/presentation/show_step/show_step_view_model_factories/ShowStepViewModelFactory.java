@@ -36,6 +36,7 @@ import android.arch.lifecycle.ViewModel;
 import android.arch.lifecycle.ViewModelProvider;
 import android.support.annotation.NonNull;
 
+import org.sagebionetworks.research.presentation.model.BaseStepView;
 import org.sagebionetworks.research.presentation.model.interfaces.StepView;
 import org.sagebionetworks.research.presentation.perform_task.PerformTaskViewModel;
 import org.sagebionetworks.research.presentation.show_step.show_step_view_models.ShowStepViewModel;
@@ -45,11 +46,11 @@ import java.util.Map;
 import javax.inject.Inject;
 
 public class ShowStepViewModelFactory {
-    private final Map<Class<? extends StepView>, AbstractShowStepViewModelFactory<?, ? extends StepView>> t;
+    private final Map<String, AbstractShowStepViewModelFactory<?, ? extends StepView>> t;
 
     @Inject
     public ShowStepViewModelFactory(
-            Map<Class<? extends StepView>, AbstractShowStepViewModelFactory<?, ? extends StepView>> t) {
+            Map<String, AbstractShowStepViewModelFactory<?, ? extends StepView>> t) {
         this.t = t;
     }
 
@@ -75,11 +76,12 @@ public class ShowStepViewModelFactory {
         return getFactory(stepView).getViewModelClass();
     }
 
-    private AbstractShowStepViewModelFactory getFactory(final StepView stepView) {
-        AbstractShowStepViewModelFactory factory = t.get(stepView.getClass());
+    private AbstractShowStepViewModelFactory<?, ? extends StepView> getFactory(final StepView stepView) {
+        AbstractShowStepViewModelFactory<?, ? extends StepView> factory = t.get(stepView.getType());
         if (factory == null) {
-            factory = t.get(StepView.class);
+            factory = t.get(BaseStepView.TYPE);
         }
+
         return factory;
     }
 }
