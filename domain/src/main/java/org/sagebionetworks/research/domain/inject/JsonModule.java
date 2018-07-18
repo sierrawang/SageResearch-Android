@@ -46,6 +46,7 @@ import dagger.Binds;
 import dagger.Module;
 import dagger.Provides;
 import dagger.multibindings.IntoMap;
+import kotlin.internal.DynamicExtension;
 
 import static org.sagebionetworks.research.domain.inject.GsonModule.createPassThroughDeserializer;
 import static org.sagebionetworks.research.domain.inject.GsonModule.createPassThroughSerializer;
@@ -55,6 +56,7 @@ public abstract class JsonModule {
     // region JsonDeserializers
     @Provides
     @IntoMap
+    @DependencyInjectionType.Default
     @ClassKey(ActiveUIStep.class)
     static JsonDeserializer<?> provideActiveUIStepDeserializer() {
         return createPassThroughDeserializer(ActiveUIStepBase.class);
@@ -62,6 +64,7 @@ public abstract class JsonModule {
 
     @Provides
     @IntoMap
+    @DependencyInjectionType.Default
     @ClassKey(SectionStep.class)
     static JsonDeserializer<?> provideSectionStepDeserializer() {
         return createPassThroughDeserializer(SectionStepBase.class);
@@ -69,6 +72,7 @@ public abstract class JsonModule {
 
     @Provides
     @IntoMap
+    @DependencyInjectionType.Default
     @ClassKey(TransformerStep.class)
     static JsonDeserializer<?> provideTransformerStepDeserializer() {
         return TransformerStepBase.getJsonDeserializer();
@@ -76,6 +80,7 @@ public abstract class JsonModule {
 
     @Provides
     @IntoMap
+    @DependencyInjectionType.Default
     @ClassKey(FormUIStep.class)
     static JsonDeserializer<?> providedFormUIStepDeserializer() {
         return createPassThroughDeserializer(FormUIStepBase.class);
@@ -83,6 +88,7 @@ public abstract class JsonModule {
 
     @Provides
     @IntoMap
+    @DependencyInjectionType.Default
     @ClassKey(UIStep.class)
     static JsonDeserializer<?> providedUIStepDeserializer() {
         return createPassThroughDeserializer(UIStepBase.class);
@@ -90,6 +96,7 @@ public abstract class JsonModule {
 
     @Provides
     @IntoMap
+    @DependencyInjectionType.Default
     @ClassKey(CompletionStep.class)
     static JsonDeserializer<?> provideCompletionStepDeserializer() {
         return createPassThroughDeserializer(CompletionStepBase.class);
@@ -97,6 +104,7 @@ public abstract class JsonModule {
 
     @Provides
     @IntoMap
+    @DependencyInjectionType.Default
     @ClassKey(Choice.class)
     static JsonDeserializer<?> provideChoiceDeserializer() {
         return ChoiceBase.getJsonDeserializer();
@@ -104,6 +112,7 @@ public abstract class JsonModule {
 
     @Provides
     @IntoMap
+    @DependencyInjectionType.Default
     @ClassKey(InputDataType.class)
     static JsonDeserializer<?> provideInputDataTypeDeserializer() {
         return InputDataType.getJsonDeserializer();
@@ -111,6 +120,7 @@ public abstract class JsonModule {
 
     @Provides
     @IntoMap
+    @DependencyInjectionType.Default
     @ClassKey(AnswerResult.class)
     static JsonDeserializer<?> provideAnswerResultDeserializer() {
         return createPassThroughDeserializer(AnswerResultBase.class);
@@ -119,6 +129,7 @@ public abstract class JsonModule {
 
     @Provides
     @IntoMap
+    @DependencyInjectionType.Default
     @ClassKey(CollectionResult.class)
     static JsonDeserializer<?> provideCollectionResultDeserializer() {
         return createPassThroughDeserializer(CollectionResultBase.class);
@@ -126,6 +137,7 @@ public abstract class JsonModule {
 
     @Provides
     @IntoMap
+    @DependencyInjectionType.Default
     @ClassKey(ErrorResult.class)
     static JsonDeserializer<?> provideErrorResultDeserializer() {
         return createPassThroughDeserializer(ErrorResultBase.class);
@@ -133,6 +145,7 @@ public abstract class JsonModule {
 
     @Provides
     @IntoMap
+    @DependencyInjectionType.Default
     @ClassKey(FileResult.class)
     static JsonDeserializer<?> provideFileResultDeserializer() {
         return createPassThroughDeserializer(FileResultBase.class);
@@ -140,6 +153,7 @@ public abstract class JsonModule {
 
     @Provides
     @IntoMap
+    @DependencyInjectionType.Default
     @ClassKey(TaskResult.class)
     static JsonDeserializer<?> provideTaskResultDeserializer() {
         return createPassThroughDeserializer(TaskResultBase.class);
@@ -150,6 +164,7 @@ public abstract class JsonModule {
      */
     @Provides
     @IntoMap
+    @DependencyInjectionType.Default
     @ClassKey(Task.class)
     static JsonDeserializer<?> provideTaskDeserializer() {
         return createPassThroughDeserializer(TaskBase.class);
@@ -160,6 +175,7 @@ public abstract class JsonModule {
      */
     @Provides
     @IntoMap
+    @DependencyInjectionType.Default
     @ClassKey(TaskInfo.class)
     static JsonDeserializer<?> provideTaskInfoDeserializer() {
         return createPassThroughDeserializer(TaskInfoBase.class);
@@ -167,6 +183,7 @@ public abstract class JsonModule {
 
     @Provides
     @IntoMap
+    @DependencyInjectionType.Default
     @ClassKey(Action.class)
     static JsonDeserializer<?> provideActionDeserializer() {
         return createPassThroughDeserializer(ActionBase.class);
@@ -174,6 +191,7 @@ public abstract class JsonModule {
 
     @Provides
     @IntoMap
+    @DependencyInjectionType.Default
     @ClassKey(ReminderAction.class)
     static JsonDeserializer<?> provideReminderActionDeserializer() {
         return createPassThroughDeserializer(ReminderActionBase.class);
@@ -181,6 +199,7 @@ public abstract class JsonModule {
 
     @Provides
     @IntoMap
+    @DependencyInjectionType.Default
     @ClassKey(SkipToStepAction.class)
     static JsonDeserializer<?> provideSkipToStepActionDeserializer() {
         return createPassThroughDeserializer(SkipToStepActionBase.class);
@@ -190,6 +209,7 @@ public abstract class JsonModule {
     // region Json Serializers
     @Provides
     @IntoMap
+    @DependencyInjectionType.Default
     @ClassKey(CollectionResult.class)
     static JsonSerializer<?> provideCollectionResultSerializer() {
         return createPassThroughSerializer(CollectionResultBase.class);
@@ -197,6 +217,7 @@ public abstract class JsonModule {
 
     @Provides
     @IntoMap
+    @DependencyInjectionType.Default
     @ClassKey(AnswerResult.class)
     static JsonSerializer<?> provideAnswerResultSerializer() {
         return createPassThroughSerializer(AnswerResultBase.class);
@@ -204,6 +225,7 @@ public abstract class JsonModule {
 
     @Provides
     @IntoMap
+    @DependencyInjectionType.Default
     @ClassKey(ErrorResult.class)
     static JsonSerializer<?> provideErrorResultSerializer() {
         return createPassThroughSerializer(ErrorResultBase.class);
@@ -211,6 +233,7 @@ public abstract class JsonModule {
 
     @Provides
     @IntoMap
+    @DependencyInjectionType.Default
     @ClassKey(FileResult.class)
     static JsonSerializer<?> provideFileResultSerializer() {
         return createPassThroughSerializer(FileResultBase.class);
@@ -218,6 +241,7 @@ public abstract class JsonModule {
 
     @Provides
     @IntoMap
+    @DependencyInjectionType.Default
     @ClassKey(TaskResult.class)
     static JsonSerializer<?> provideTaskResultSerializer() {
         return createPassThroughSerializer(TaskResultBase.class);
@@ -228,11 +252,11 @@ public abstract class JsonModule {
     @IntoMap
     @DependencyInjectionType.DependencyInjectionTypeKey(DependencyInjectionType.DEFAULT)
     abstract Map<Class<?>, JsonDeserializer<?>>
-    bindDefaultJsonDeserializerMap(Map<Class<?>, JsonDeserializer<?>> defaultJsonDeserializerMap);
+    bindDefaultJsonDeserializerMap(@DependencyInjectionType.Default Map<Class<?>, JsonDeserializer<?>> defaultJsonDeserializerMap);
 
     @Binds
     @IntoMap
     @DependencyInjectionType.DependencyInjectionTypeKey(DependencyInjectionType.DEFAULT)
     abstract Map<Class<?>, JsonSerializer<?>>
-    bindDefaultJsonSerializerMap(Map<Class<?>, JsonSerializer<?>> defaultJsonSerializerMap);
+    bindDefaultJsonSerializerMap(@DependencyInjectionType.Default Map<Class<?>, JsonSerializer<?>> defaultJsonSerializerMap);
 }

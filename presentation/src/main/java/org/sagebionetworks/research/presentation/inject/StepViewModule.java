@@ -34,6 +34,7 @@ package org.sagebionetworks.research.presentation.inject;
 
 import android.support.annotation.Nullable;
 
+import org.sagebionetworks.research.domain.inject.DependencyInjectionType;
 import org.sagebionetworks.research.domain.step.StepType;
 import org.sagebionetworks.research.domain.step.implementations.CompletionStepBase;
 import org.sagebionetworks.research.domain.step.interfaces.Step;
@@ -72,10 +73,16 @@ public abstract class StepViewModule {
     }
 
     @Multibinds
-    abstract Map<String, StepViewFactory> stepToFactoryMap();
+    @DependencyInjectionType.Default
+    abstract Map<String, InternalStepViewFactory> stepToFactoryMap();
+
+    @Multibinds
+    @DependencyInjectionType.Override
+    abstract Map<String, InternalStepViewFactory> stepViewFactoryOverrideMap();
 
     @Provides
     @IntoMap
+    @DependencyInjectionType.Default
     @StepTypeKey(StepType.ACTIVE)
     static InternalStepViewFactory provideActiveUIStepFactory() {
         return ActiveUIStepViewBase::fromActiveUIStep;
@@ -83,6 +90,7 @@ public abstract class StepViewModule {
 
     @Provides
     @IntoMap
+    @DependencyInjectionType.Default
     @StepTypeKey(StepType.FORM)
     static InternalStepViewFactory provideFormUIStepFactory() {
         return FormUIStepViewBase::fromFormUIStep;
@@ -90,6 +98,7 @@ public abstract class StepViewModule {
 
     @Provides
     @IntoMap
+    @DependencyInjectionType.Default
     @StepTypeKey(StepType.UI)
     static InternalStepViewFactory provideUIStepFactory() {
         return UIStepViewBase::fromUIStep;
@@ -97,18 +106,23 @@ public abstract class StepViewModule {
 
     @Provides
     @IntoMap
+    @DependencyInjectionType.Default
     @StepTypeKey(StepType.COMPLETION)
     static InternalStepViewFactory provideCompletionStepFactory() {
         return CompletionStepViewBase::fromCompletionStep;
     }
 
     @Provides
-    static StepViewFactory provideStepViewFactory(final Map<String, InternalStepViewFactory> stepToFactoryMap,
+    static StepViewFactory provideStepViewFactory(
+            @DependencyInjectionType.Default final Map<String, InternalStepViewFactory> stepToFactoryMap,
+            @DependencyInjectionType.Override final Map<String, InternalStepViewFactory> stepToFactoryOverrideMap,
             final DrawableMapper drawableMapper) {
         return (final Step step) ->
         {
             String type = step.getType();
-            if (stepToFactoryMap.containsKey(type)) {
+            if (stepToFactoryOverrideMap.containsKey(type)) {
+                return stepToFactoryOverrideMap.get(type).apply(step, drawableMapper);
+            } else if (stepToFactoryMap.containsKey(type)) {
                 return stepToFactoryMap.get(type).apply(step, drawableMapper);
             } else {
                 return UIStepViewBase.fromUIStep(step, drawableMapper);

@@ -1,5 +1,10 @@
 package org.sagebionetworks.research.domain.inject;
 
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
+
+import javax.inject.Qualifier;
+
 import dagger.MapKey;
 
 /**
@@ -12,5 +17,17 @@ public enum DependencyInjectionType {
     @MapKey
     public @interface DependencyInjectionTypeKey {
         DependencyInjectionType value();
+    }
+
+    @Retention(RetentionPolicy.CLASS)
+    @Qualifier
+    public @interface Default {
+
+    }
+
+    @Retention(RetentionPolicy.CLASS)
+    @Qualifier
+    public @interface Override {
+
     }
 }

@@ -32,19 +32,14 @@
 
 package org.sagebionetworks.research.domain.inject;
 
-import com.google.common.reflect.TypeParameter;
-import com.google.common.reflect.TypeToken;
-import com.google.gson.JsonDeserializer;
+import com.google.gson.reflect.TypeToken;
 
 import org.sagebionetworks.research.domain.RuntimeTypeAdapterFactory;
 import org.sagebionetworks.research.domain.form.DataTypes.BaseInputDataType.BaseType;
 import org.sagebionetworks.research.domain.form.DataTypes.CollectionInputDataType;
 import org.sagebionetworks.research.domain.form.DataTypes.CollectionInputDataType.CollectionType;
-import org.sagebionetworks.research.domain.form.DataTypes.InputDataType;
-import org.sagebionetworks.research.domain.form.implementations.ChoiceBase;
 import org.sagebionetworks.research.domain.form.implementations.ChoiceInputField;
 import org.sagebionetworks.research.domain.form.implementations.InputFieldBase;
-import org.sagebionetworks.research.domain.form.interfaces.Choice;
 import org.sagebionetworks.research.domain.form.interfaces.InputField;
 import org.sagebionetworks.research.domain.inject.GsonModule.ClassKey;
 
@@ -91,7 +86,7 @@ public class InputFieldsModule {
                 // We either use the registered class for the base type, or just use a raw ChoiceInputField.
                 Type type = baseClassMap.get(baseType);
                 if (type != null) {
-                    type = createChoiceInputFieldTypeToken(TypeToken.of(type)).getType();
+                    type = TypeToken.getParameterized(ChoiceInputField.class, type).getType();
                 } else {
                     type = ChoiceInputField.class;
                 }
@@ -106,20 +101,5 @@ public class InputFieldsModule {
 
         typeAdapterFactory.registerDefaultType(InputFieldBase.class);
         return typeAdapterFactory;
-    }
-
-    /**
-     * Returns a TypeToken<ChoiceInputField<genericToken.getType()>>
-     *
-     * @param genericToken
-     *         The TypeToken for the class to be the generic type argument to ChoiceInputField.
-     * @param <T>
-     *         The Type of the generic type argument to ChoiceInputField.
-     * @return a TypeToken<ChoiceInputField<genericToken.getType()>>
-     */
-    private static <T> TypeToken<ChoiceInputField<T>> createChoiceInputFieldTypeToken(TypeToken<T> genericToken) {
-        return new TypeToken<ChoiceInputField<T>>() {
-        }.where(new TypeParameter<T>() {
-        }, genericToken);
     }
 }

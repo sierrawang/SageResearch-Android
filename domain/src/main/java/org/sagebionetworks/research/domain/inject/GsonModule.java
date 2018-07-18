@@ -178,9 +178,9 @@ public abstract class GsonModule {
 
         if (defaultTypeAdapterMap != null) {
             for (Entry<Class<?>, ? extends Object> entry : defaultTypeAdapterMap.entrySet()) {
-                LOGGER.debug("Registering Default TypeAdapter ({}) for: {}", entry.getValue(), entry.getKey());
-                // We only register the default if there isn't an override for this class.
                 if (overrideTypeAdapterMap == null || !overrideTypeAdapterMap.containsKey(entry.getKey())) {
+                    // We only register the default if there isn't an override for this class.
+                    LOGGER.debug("Registering Default TypeAdapter ({}) for: {}", entry.getValue(), entry.getKey());
                     builder.registerTypeAdapter(entry.getKey(), entry.getValue());
                 }
             }

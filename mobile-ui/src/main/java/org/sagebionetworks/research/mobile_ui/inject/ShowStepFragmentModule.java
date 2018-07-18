@@ -34,6 +34,8 @@ package org.sagebionetworks.research.mobile_ui.inject;
 
 import android.support.annotation.NonNull;
 
+import dagger.multibindings.Multibinds;
+import org.sagebionetworks.research.domain.inject.DependencyInjectionType;
 import org.sagebionetworks.research.domain.step.implementations.CompletionStepBase;
 import org.sagebionetworks.research.mobile_ui.perform_task.PerformTaskFragment;
 import org.sagebionetworks.research.mobile_ui.show_step.view.ShowActiveUIStepFragment;
@@ -58,11 +60,19 @@ import dagger.multibindings.IntoMap;
 // The ShowUIStepViewFragment needs the drawable module so it doesn't make sense to use one of these modules without
 // the other.
 @Module(includes = DrawableModule.class)
-public class ShowStepFragmentModule {
+public abstract class ShowStepFragmentModule {
     @MapKey
     public @interface StepViewKey {
         String value();
     }
+
+    @Multibinds
+    @DependencyInjectionType.Default
+    abstract Map<String, ShowStepFragmentFactory> defaultMap();
+
+    @Multibinds
+    @DependencyInjectionType.Override
+    abstract Map<String, ShowStepFragmentFactory> overrideMap();
 
     public interface ShowStepFragmentFactory {
         @NonNull
@@ -72,9 +82,13 @@ public class ShowStepFragmentModule {
 
     @Provides
     public static ShowStepFragmentFactory provideShowStepFragmentFactory(
-            Map<String, ShowStepFragmentFactory> showStepFragmentFactoryMap) {
+            @DependencyInjectionType.Default Map<String, ShowStepFragmentFactory> showStepFragmentFactoryMap,
+            @DependencyInjectionType.Override Map<String, ShowStepFragmentFactory> showStepFragmentFactoryOverrideMap) {
         return (@NonNull StepView stepView, @NonNull PerformTaskFragment performTaskFragment) -> {
-            if (showStepFragmentFactoryMap.containsKey(stepView.getType())) {
+            if (showStepFragmentFactoryOverrideMap.containsKey(stepView.getType())) {
+                return showStepFragmentFactoryOverrideMap.get(stepView.getType()).create(stepView,
+                        performTaskFragment);
+            } else if (showStepFragmentFactoryMap.containsKey(stepView.getType())) {
                 return showStepFragmentFactoryMap.get(stepView.getType()).create(stepView,
                         performTaskFragment);
             }
@@ -86,6 +100,7 @@ public class ShowStepFragmentModule {
 
     @Provides
     @IntoMap
+    @DependencyInjectionType.Default
     @StepViewKey(ActiveUIStepViewBase.TYPE)
     static ShowStepFragmentFactory provideShowActiveUIStepFragmentFactory() {
         return ShowActiveUIStepFragment::newInstance;
@@ -93,6 +108,7 @@ public class ShowStepFragmentModule {
 
     @Provides
     @IntoMap
+    @DependencyInjectionType.Default
     @StepViewKey(UIStepViewBase.TYPE)
     static ShowStepFragmentFactory provideShowUIStepFragmentFactory() {
         return ShowUIStepFragment::newInstance;
@@ -100,6 +116,7 @@ public class ShowStepFragmentModule {
 
     @Provides
     @IntoMap
+    @DependencyInjectionType.Default
     @StepViewKey(CompletionStepViewBase.TYPE)
     static ShowStepFragmentFactory provideShowCompletionStepFragmentFactory() {
         return ShowCompletionStepFragment::newInstance;
@@ -107,6 +124,7 @@ public class ShowStepFragmentModule {
 
     @Provides
     @IntoMap
+    @DependencyInjectionType.Default
     @StepViewKey(FormUIStepViewBase.TYPE)
     static ShowStepFragmentFactory provideShowFormUIStepFragmentFactory() {
         return ShowFormUIStepFragment::newInstance;

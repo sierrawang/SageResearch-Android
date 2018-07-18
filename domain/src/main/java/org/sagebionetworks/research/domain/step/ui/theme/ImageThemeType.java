@@ -36,6 +36,6 @@ import android.support.annotation.StringDef;
 
 @StringDef({ImageThemeType.ANIMATION, ImageThemeType.FETCHABLE})
 public @interface ImageThemeType {
-    String ANIMATION = "animation";
+    String ANIMATION = "animated";
     String FETCHABLE = "fetchable";
 }

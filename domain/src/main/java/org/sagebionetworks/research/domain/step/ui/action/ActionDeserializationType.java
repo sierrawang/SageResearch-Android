@@ -38,5 +38,5 @@ import android.support.annotation.StringDef;
 public @interface ActionDeserializationType {
     String DEFAULT = "default";
     String REMINDER = "reminder";
-    String SKIP = "skip";
+    String SKIP = "navigation";
 }
