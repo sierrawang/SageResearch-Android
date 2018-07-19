@@ -55,10 +55,10 @@ public abstract class IndividualStepGsonTest {
 
     public static BiFunction<Step, Step, Boolean> EQUALS = (step, step2) -> {
 
-        return step == step2 ||
-                (step != null) && (step2 != null) &&
-                        Objects.equal(step.getIdentifier(), step2.getIdentifier())
-                        && Objects.equal(step.getType(), step.getType());
+        return step == step2
+                || ((step != null) && (step2 != null)
+                        && Objects.equal(step.getIdentifier(), step2.getIdentifier())
+                        && Objects.equal(step.getType(), step.getType()));
     };
 
     protected StepTestComponent stepTestComponent;
