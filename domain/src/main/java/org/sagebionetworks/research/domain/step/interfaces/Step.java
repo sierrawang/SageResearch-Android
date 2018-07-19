@@ -66,6 +66,5 @@ public interface Step {
      * @return The type of this step.
      */
     @NonNull
-    @StepType
     String getType();
 }

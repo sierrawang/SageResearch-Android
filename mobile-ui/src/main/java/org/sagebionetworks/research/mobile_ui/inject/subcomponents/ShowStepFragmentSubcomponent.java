@@ -43,7 +43,8 @@ import dagger.android.AndroidInjector;
 public abstract class ShowStepFragmentSubcomponent implements AndroidInjector<ShowStepFragment> {
 
     @Subcomponent.Builder
-    public static abstract class Builder extends AndroidInjector.Builder<ShowStepFragment> {
+    public abstract static class Builder extends AndroidInjector.Builder<ShowStepFragment> {
+        @Override
         public abstract ShowStepFragmentSubcomponent build();
     }
 }

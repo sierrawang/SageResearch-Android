@@ -35,15 +35,22 @@ package org.sagebionetworks.research.presentation.model.form;
 import android.os.Parcelable;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.view.Display;
 
 import com.google.auto.value.AutoValue;
 
+import org.sagebionetworks.research.domain.form.interfaces.Choice;
 import org.sagebionetworks.research.presentation.DisplayString;
+import org.sagebionetworks.research.presentation.mapper.DrawableMapper;
+
+import java.io.Serializable;
+
+import dagger.Provides;
 
 @AutoValue
-public abstract class ChoiceView<E extends Parcelable> implements Parcelable {
+public abstract class ChoiceView<E> {
     @AutoValue.Builder
-    public abstract static class Builder<E extends Parcelable> {
+    public abstract static class Builder<E> {
         public abstract ChoiceView<E> build();
 
         public abstract Builder<E> setAnswerValue(@NonNull final E answerValue);
@@ -55,6 +62,33 @@ public abstract class ChoiceView<E extends Parcelable> implements Parcelable {
         public abstract Builder<E> setIconResId(final int resId);
 
         public abstract Builder<E> setText(@Nullable final DisplayString text);
+    }
+
+    public static <T> ChoiceView<T> fromChoice(@Nullable Choice<T> choice, DrawableMapper mapper) {
+        if (choice == null) {
+            return null;
+        }
+
+        DisplayString detail = DisplayString.create(0, choice.getDetail());
+        DisplayString text = DisplayString.create(0, choice.getText());
+        String iconName = choice.getIconName();
+        int iconRes = 0;
+        if (iconName != null) {
+            iconRes = mapper.getDrawableFromName(iconName);
+        }
+
+        return ChoiceView.<T>builder()
+                .setAnswerValue(choice.getAnswerValue())
+                .setText(text)
+                .setDetail(detail)
+                .setExclusive(choice.isExclusive())
+                .setIconResId(iconRes)
+                .build();
+
+    }
+
+    public static <T> Builder<T> builder() {
+        return new AutoValue_ChoiceView.Builder<T>();
     }
 
     @NonNull

@@ -57,7 +57,7 @@ public class ErrorResultBase extends ResultBase implements ErrorResult {
 
     public ErrorResultBase(@NonNull final String identifier, @NonNull final Instant startTime,
             @NonNull final Instant endTime, @NonNull final String errorDescription,
-            @Nullable final Throwable throwable) {
+            @Nullable final ErrorResultThrowable throwable) {
         super(identifier, startTime, endTime);
         this.errorResultData = ErrorResultData.create(errorDescription, throwable);
     }
@@ -70,7 +70,7 @@ public class ErrorResultBase extends ResultBase implements ErrorResult {
 
     @Nullable
     @Override
-    public Throwable getThrowable() {
+    public ErrorResultThrowable getThrowable() {
         return this.errorResultData.getThrowable();
     }
 

@@ -113,7 +113,6 @@ public class ActiveUIStepViewBase extends UIStepViewBase implements ActiveUIStep
 
     @NonNull
     @Override
-    @StepType
     public String getType() {
         return TYPE;
     }

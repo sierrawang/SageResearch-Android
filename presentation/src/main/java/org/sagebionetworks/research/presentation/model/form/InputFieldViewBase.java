@@ -39,12 +39,15 @@ import android.support.annotation.Nullable;
 
 import com.google.common.collect.Range;
 
-import org.sagebionetworks.research.domain.form.DataTypes.InputDataType;
+import org.sagebionetworks.research.domain.form.data_types.InputDataType;
 import org.sagebionetworks.research.domain.form.InputUIHint;
 import org.sagebionetworks.research.domain.form.TextField.TextFieldOptions;
+import org.sagebionetworks.research.domain.form.implementations.ChoiceInputField;
+import org.sagebionetworks.research.domain.form.interfaces.Choice;
 import org.sagebionetworks.research.domain.form.interfaces.InputField;
 import org.sagebionetworks.research.domain.form.interfaces.SurveyRule;
 import org.sagebionetworks.research.presentation.DisplayString;
+import org.sagebionetworks.research.presentation.mapper.DrawableMapper;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -93,7 +96,7 @@ public class InputFieldViewBase implements InputFieldView, Parcelable {
     @InputUIHint
     private final String uiHint;
 
-    public static InputFieldViewBase fromInputField(InputField inputField) {
+    public static InputFieldViewBase fromInputField(InputField inputField, DrawableMapper mapper) {
         String identifier = inputField.getIdentifier();
         boolean isOptional = inputField.isOptional();
         InputDataType formDataType = inputField.getFormDataType();
@@ -105,9 +108,27 @@ public class InputFieldViewBase implements InputFieldView, Parcelable {
         DisplayString prompt = DisplayString.create(0, inputField.getPrompt());
         DisplayString promptDetail = DisplayString.create(0, inputField.getPromptDetail());
         DisplayString placeholderText = DisplayString.create(0, inputField.getPlaceholderText());
+        if (inputField instanceof ChoiceInputField<?>) {
+            ChoiceInputField<Object> choiceInputField = (ChoiceInputField<Object>)inputField;
+            List<ChoiceView<Object>> choices =
+                    processChoices(choiceInputField.getChoices(), mapper);
+            ChoiceView<Object> defaultAnswer = ChoiceView.fromChoice(choiceInputField.getDefaultAnswer(), mapper);
+            return new ChoiceInputFieldViewBase<>(identifier, prompt, promptDetail, placeholderText, isOptional,
+                    formDataType, uiHint, textFieldOptions, range, surveyRules, choices, defaultAnswer);
+        }
 
         return new InputFieldViewBase(identifier, prompt, promptDetail, placeholderText, isOptional, formDataType,
                 uiHint, textFieldOptions, range, surveyRules);
+    }
+
+    private static <T> List<ChoiceView<T>> processChoices(List<Choice<T>> choices,
+            DrawableMapper mapper) {
+        List<ChoiceView<T>> result = new ArrayList<>();
+        for (Choice<T> choice : choices) {
+            result.add(ChoiceView.fromChoice(choice, mapper));
+        }
+
+        return result;
     }
 
     public InputFieldViewBase(@Nullable final String identifier, @Nullable final DisplayString prompt,

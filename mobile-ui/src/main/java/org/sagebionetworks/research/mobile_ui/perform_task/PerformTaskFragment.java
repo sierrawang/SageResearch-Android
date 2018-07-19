@@ -33,6 +33,7 @@
 package org.sagebionetworks.research.mobile_ui.perform_task;
 
 import static com.google.common.base.Preconditions.checkNotNull;
+import static com.google.common.base.Preconditions.checkState;
 
 import android.arch.lifecycle.ViewModelProviders;
 import android.content.Context;
@@ -146,7 +147,7 @@ public class PerformTaskFragment extends Fragment implements HasSupportFragmentI
             taskRunParcelableUuid = savedInstanceState.getParcelable(ARGUMENT_TASK_RUN_UUID);
         }
 
-        checkNotNull(taskView, "taskView cannot be null");
+        checkState(taskView != null, "taskView cannot be null");
         LOGGER.debug("taskView: {}", taskView);
 
         if (taskRunParcelableUuid == null) {

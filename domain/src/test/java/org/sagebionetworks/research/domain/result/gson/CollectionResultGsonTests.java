@@ -83,12 +83,6 @@ public class CollectionResultGsonTests extends IndividualResultGsonTest {
         testSerializationThenDeserialization(DOUBLE);
     }
 
-    private void testCommon(Result expected, String filename) {
-        Result result = this.readJsonFile(filename);
-        assertTrue(result instanceof CollectionResult);
-        assertEquals(expected, result);
-    }
-
     static {
         List<Result> expectedSubResults = new ArrayList<Result>();
         expectedSubResults.add(new ResultBase("subResult1", Instant.ofEpochSecond(20), null));

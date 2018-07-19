@@ -37,10 +37,10 @@ import com.google.common.reflect.TypeToken;
 import com.google.gson.JsonDeserializer;
 
 import org.sagebionetworks.research.domain.RuntimeTypeAdapterFactory;
-import org.sagebionetworks.research.domain.form.DataTypes.BaseInputDataType.BaseType;
-import org.sagebionetworks.research.domain.form.DataTypes.CollectionInputDataType;
-import org.sagebionetworks.research.domain.form.DataTypes.CollectionInputDataType.CollectionType;
-import org.sagebionetworks.research.domain.form.DataTypes.InputDataType;
+import org.sagebionetworks.research.domain.form.data_types.BaseInputDataType.BaseType;
+import org.sagebionetworks.research.domain.form.data_types.CollectionInputDataType;
+import org.sagebionetworks.research.domain.form.data_types.CollectionInputDataType.CollectionType;
+import org.sagebionetworks.research.domain.form.data_types.InputDataType;
 import org.sagebionetworks.research.domain.form.implementations.ChoiceBase;
 import org.sagebionetworks.research.domain.form.implementations.ChoiceInputField;
 import org.sagebionetworks.research.domain.form.implementations.InputFieldBase;

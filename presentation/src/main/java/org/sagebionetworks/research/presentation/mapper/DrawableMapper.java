@@ -34,6 +34,7 @@ package org.sagebionetworks.research.presentation.mapper;
 
 import android.content.res.Resources.NotFoundException;
 import android.support.annotation.DrawableRes;
+import android.support.annotation.NonNull;
 
 import org.sagebionetworks.research.domain.repository.TaskRepository;
 
@@ -50,7 +51,7 @@ public class DrawableMapper {
     }
 
     @DrawableRes
-    public Integer getDrawableFromName(String name) throws NotFoundException {
+    public Integer getDrawableFromName(@NonNull String name) throws NotFoundException {
         if (name == null) {
             throw new NotFoundException("Attempted to find drawable with null identifier");
         }

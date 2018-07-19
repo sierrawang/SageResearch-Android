@@ -120,6 +120,7 @@ import java.util.Set;
  *       .registerSubtype(Diamond.class);
  * }</pre>
  */
+@SuppressWarnings({})
 public final class RuntimeTypeAdapterFactory<T> implements TypeAdapterFactory {
     private final Type baseType;
 
@@ -154,6 +155,7 @@ public final class RuntimeTypeAdapterFactory<T> implements TypeAdapterFactory {
         this.typeFieldName = typeFieldName;
     }
 
+    @Override
     public <R> TypeAdapter<R> create(Gson gson, com.google.gson.reflect.TypeToken<R> type) {
         if (type.getRawType() != baseType) {
             return null;

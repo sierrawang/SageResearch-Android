@@ -32,58 +32,61 @@
 
 package org.sagebionetworks.research.domain.step.gson;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
+import static org.sagebionetworks.research.domain.step.gson.UIStepGsonTests.UI_STEP_ASSERT_EQUALS;
 
 import com.google.common.collect.ImmutableMap;
+import com.google.common.collect.ImmutableSet;
 
 import org.junit.Test;
 import org.sagebionetworks.research.domain.step.interfaces.CompletionStep;
 import org.sagebionetworks.research.domain.step.interfaces.Step;
 import org.sagebionetworks.research.domain.step.interfaces.UIStep;
-import org.sagebionetworks.research.domain.step.ui.action.implementations.ActionBase;
-import org.sagebionetworks.research.domain.step.ui.action.interfaces.Action;
+import org.sagebionetworks.research.domain.step.ui.action.Action;
 
 public class CompletionStepGsonTests extends IndividualStepGsonTest {
     @Test
     public void testExample_1() {
         CompletionStep expected = mock(CompletionStep.class);
         when(expected.getIdentifier()).thenReturn("testUIStep1");
-        when(expected.getActions()).thenReturn(ImmutableMap.<String, Action>of());
+        when(expected.getType()).thenReturn("completion");
+        when(expected.getActions()).thenReturn(ImmutableMap.of());
+        when(expected.getHiddenActions()).thenReturn(ImmutableSet.of());
         when(expected.getTitle()).thenReturn("title");
         when(expected.getText()).thenReturn("text");
         when(expected.getDetail()).thenReturn(null);
         when(expected.getFootnote()).thenReturn(null);
 
-        testCommon(expected, "CompletionStep_1.json");
+        Step rawStep = readStep("CompletionStep_1.json");
+        assertTrue(rawStep instanceof UIStep);
+
+        UIStep result = (UIStep) rawStep;
+        UI_STEP_ASSERT_EQUALS.accept(expected, result);
     }
 
     @Test
     public void testExample_2() {
+        Action goForward = mock(Action.class);
+        when(goForward.getType()).thenReturn("default");
+        when(goForward.getButtonTitle()).thenReturn("Go, Dogs!");
+
         CompletionStep expected = mock(CompletionStep.class);
         when(expected.getIdentifier()).thenReturn("testUIStep2");
+        when(expected.getType()).thenReturn("completion");
         when(expected.getActions()).thenReturn(ImmutableMap.<String, Action>builder()
-                .put("goForward", ActionBase.builder().setButtonTitle("Go, Dogs!").build()).build());
+                .put("goForward", goForward).build());
+        when(expected.getHiddenActions()).thenReturn(ImmutableSet.of());
         when(expected.getTitle()).thenReturn("title");
         when(expected.getText()).thenReturn("text");
         when(expected.getDetail()).thenReturn("detail");
         when(expected.getFootnote()).thenReturn("footnote");
 
-        testCommon(expected, "CompletionStep_2.json");
-    }
+        Step rawStep = readStep("CompletionStep_2.json");
+        assertTrue(rawStep instanceof UIStep);
 
-    private void testCommon(UIStep expected, String filename) {
-        Step step = this.readJsonFile(filename);
-        assertNotNull(step);
-        assertTrue(step instanceof CompletionStep);
-        CompletionStep completionStep = (CompletionStep) step;
-        assertEquals(expected.getActions(), completionStep.getActions());
-        assertEquals(expected.getDetail(), completionStep.getDetail());
-        assertEquals(expected.getFootnote(), completionStep.getFootnote());
-        assertEquals(expected.getText(), completionStep.getText());
-        assertEquals(expected.getTitle(), completionStep.getTitle());
+        UIStep result = (UIStep) rawStep;
+        UI_STEP_ASSERT_EQUALS.accept(expected, result);
     }
 }

@@ -73,7 +73,6 @@ public class CompletionStepViewBase extends UIStepViewBase implements Completion
     }
 
     @Override
-    @StepType
     @NonNull
     public String getType() {
         return TYPE;

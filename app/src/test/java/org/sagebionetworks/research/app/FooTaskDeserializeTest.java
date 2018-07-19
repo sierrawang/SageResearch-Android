@@ -37,14 +37,18 @@ import static org.hamcrest.CoreMatchers.instanceOf;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertThat;
+import static org.mockito.ArgumentMatchers.refEq;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
 
 import com.google.common.collect.ImmutableMap;
 
+import org.junit.Ignore;
 import org.junit.Test;
 import org.sagebionetworks.research.domain.step.interfaces.ActiveUIStep;
 import org.sagebionetworks.research.domain.step.interfaces.FormUIStep;
 import org.sagebionetworks.research.domain.step.interfaces.Step;
-import org.sagebionetworks.research.domain.step.ui.action.implementations.ActionBase;
+import org.sagebionetworks.research.domain.step.ui.action.Action;
 import org.sagebionetworks.research.domain.task.Task;
 
 import java.io.IOException;
@@ -52,6 +56,7 @@ import java.util.List;
 
 public class FooTaskDeserializeTest extends JsonDeserializationTestBase {
     @Test
+    @Ignore
     public void testDeserializeFooTask() throws IOException {
         String json = getClasspathResourceAsString("task/foo.json");
 
@@ -70,11 +75,21 @@ public class FooTaskDeserializeTest extends JsonDeserializationTestBase {
             InstructionStep step1 = (InstructionStep) steps.get(0);
             assertEquals("step1", step1.getIdentifier());
             assertEquals("Step 1", step1.getTitle());
+
+            Action forward = mock(Action.class);
+            when(forward.getButtonTitle()).thenReturn("Go, Dogs!");
+
+            assertEquals(1, step1.getActions().size());
+
+            Action goForwardAction = step1.getActions().get("goForward");
+
+
+            assertEquals(refEq(forward), refEq(goForwardAction));
+
+
             assertEquals(
                     ImmutableMap.builder()
-                            .put("goForward", ActionBase.builder()
-                                    .setButtonTitle("Go, Dogs!")
-                                    .build())
+                            .put("goForward", forward)
                             .build(),
                     step1.getActions());
         }
@@ -96,11 +111,12 @@ public class FooTaskDeserializeTest extends JsonDeserializationTestBase {
             assertThat(steps.get(4), instanceOf(InstructionStep.class));
             InstructionStep step8 = (InstructionStep) steps.get(4);
             assertEquals("step2", step8.getIdentifier());
+
+            Action forward = mock(Action.class);
+            when(forward.getButtonTitle()).thenReturn("Start");
             assertEquals(
                     ImmutableMap.builder()
-                            .put("goForward", ActionBase.builder()
-                                    .setButtonTitle("Start")
-                                    .build())
+                            .put("goForward", forward)
                             .build(),
                     step8.getActions());
         }

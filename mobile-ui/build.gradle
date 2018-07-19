@@ -32,12 +32,13 @@
 
 apply plugin: 'com.android.library'
 apply plugin: 'com.jakewharton.butterknife'
+apply from: '../config/quality/quality.gradle'
 
 android {
     compileSdkVersion 27
 
     defaultConfig {
-        minSdkVersion 16
+        minSdkVersion 19
         targetSdkVersion 27
         versionCode 1
         versionName "1.0"
@@ -70,7 +71,7 @@ dependencies {
     api 'com.google.guava:guava:24.1-android'
     api project(':presentation')
     implementation 'org.slf4j:slf4j-api:1.7.21'
-    implementation 'com.android.support:support-annotations:27.1.1'
+    implementation "com.android.support:support-annotations:$support_library_version"
     implementation 'com.google.code.gson:gson:2.8.2'
 //
 //    implementation 'com.google.auto.value:auto-value-annotations:1.6'
@@ -81,17 +82,17 @@ dependencies {
 //    annotationProcessor 'com.ryanharter.auto.value:auto-value-gson:0.7.0'
 //    annotationProcessor 'com.ryanharter.auto.value:auto-value-parcel:0.2.6'
 
-    api 'com.google.dagger:dagger-android:2.15'
-    api 'com.google.dagger:dagger-android-support:2.15'
-    annotationProcessor 'com.google.dagger:dagger-android-processor:2.15'
-    annotationProcessor "com.google.dagger:dagger-compiler:2.15"
+    api 'com.google.dagger:dagger-android:2.16'
+    api 'com.google.dagger:dagger-android-support:2.16'
+    annotationProcessor 'com.google.dagger:dagger-android-processor:2.16'
+    annotationProcessor "com.google.dagger:dagger-compiler:2.16"
 
     implementation 'com.jakewharton:butterknife:8.8.1'
-    implementation 'com.android.support:support-v4:27.1.1'
+    implementation "com.android.support:support-v4:$support_library_version"
     annotationProcessor 'com.jakewharton:butterknife-compiler:8.8.1'
     implementation 'com.android.support.constraint:constraint-layout:1.1.0'
-    implementation 'com.android.support:appcompat-v7:27.1.1'
-    implementation 'com.android.support:design:27.1.1'
+    implementation "com.android.support:appcompat-v7:$support_library_version"
+    implementation "com.android.support:design:$support_library_version"
     implementation 'android.arch.lifecycle:extensions:1.1.1'
     annotationProcessor "android.arch.lifecycle:compiler:1.1.1"
     testImplementation 'junit:junit:4.12'

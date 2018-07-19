@@ -32,16 +32,11 @@
 
 package org.sagebionetworks.research.domain.result.gson;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
-
 import org.junit.Test;
 import org.sagebionetworks.research.domain.Schema;
 import org.sagebionetworks.research.domain.result.implementations.ResultBase;
 import org.sagebionetworks.research.domain.result.implementations.TaskResultBase;
 import org.sagebionetworks.research.domain.result.interfaces.Result;
-import org.sagebionetworks.research.domain.result.interfaces.TaskResult;
 import org.threeten.bp.Instant;
 
 import java.util.ArrayList;
@@ -85,13 +80,6 @@ public class TaskResultGsonTests extends IndividualResultGsonTest {
     @Test
     public void testTaskResult_TwoStepHistory() {
         testCommon(TWO_STEP_HISTORY, "TaskResult_TwoStepHistory.json");
-    }
-
-    private void testCommon(Result expected, String filename) {
-        Result result = this.readJsonFile(filename);
-        assertNotNull(result);
-        assertTrue(result instanceof TaskResult);
-        assertEquals(expected, result);
     }
 
     static {
