@@ -111,7 +111,7 @@ public class UIStepGsonTests extends IndividualStepGsonTest {
     public void testExample_2() {
         Action goForward = mock(Action.class);
         when(goForward.getButtonTitle()).thenReturn("Go, Dogs!");
-        when(goForward.getType()).thenReturn(ActionDeserializationType.BASE);
+        when(goForward.getType()).thenReturn(ActionDeserializationType.DEFAULT);
 
         UIStep expected = mock(UIStep.class);
         when(expected.getIdentifier()).thenReturn("testUIStep2");

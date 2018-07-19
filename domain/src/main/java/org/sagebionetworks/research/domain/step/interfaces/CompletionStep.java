@@ -32,6 +32,10 @@
 
 package org.sagebionetworks.research.domain.step.interfaces;
 
+import org.sagebionetworks.research.domain.step.StepType;
+
 public interface CompletionStep extends ThemedUIStep {
+    String TYPE_KEY = StepType.COMPLETION;
+
     // For now a Completion Step is just a normal UI step. In the future this may change however.
 }

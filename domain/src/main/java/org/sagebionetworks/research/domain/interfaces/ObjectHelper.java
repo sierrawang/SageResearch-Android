@@ -36,6 +36,13 @@ import com.google.common.base.MoreObjects;
 import com.google.common.base.MoreObjects.ToStringHelper;
 
 public abstract class ObjectHelper {
+    private final HashCodeHelper hashCodeHelper;
+    private final ToStringHelper toStringHelper;
+
+    public ObjectHelper() {
+        hashCodeHelper = new HashCodeHelper();
+        toStringHelper = MoreObjects.toStringHelper(this);
+    }
 
     @Override
     public int hashCode() {
@@ -76,7 +83,7 @@ public abstract class ObjectHelper {
      * @return The HashCodeHelper that can be used to produce the hashCode for this object.
      */
     protected HashCodeHelper hashCodeHelper() {
-        return new HashCodeHelper();
+        return hashCodeHelper;
     }
 
     /**
@@ -86,6 +93,6 @@ public abstract class ObjectHelper {
      * @return The ToStringHelper that can be used to produce the toString for this object.
      */
     protected ToStringHelper toStringHelper() {
-        return MoreObjects.toStringHelper(this);
+        return toStringHelper;
     }
 }
