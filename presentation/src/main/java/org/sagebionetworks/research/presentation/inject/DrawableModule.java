@@ -34,8 +34,8 @@ package org.sagebionetworks.research.presentation.inject;
 
 import android.support.annotation.DrawableRes;
 
-import org.sagebionetworks.research.domain.presentation.R;
 import org.sagebionetworks.research.domain.repository.TaskRepository;
+import org.sagebionetworks.research.presentation.R;
 import org.sagebionetworks.research.presentation.mapper.DrawableMapper;
 
 import java.util.Map;

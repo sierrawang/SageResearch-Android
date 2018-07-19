@@ -43,7 +43,6 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.annotation.VisibleForTesting;
 
-import org.sagebionetworks.research.domain.presentation.model.LoadableResource;
 import org.sagebionetworks.research.domain.repository.TaskRepository;
 import org.sagebionetworks.research.domain.result.AnswerResultType;
 import org.sagebionetworks.research.domain.result.implementations.AnswerResultBase;
@@ -58,6 +57,7 @@ import org.sagebionetworks.research.domain.task.navigation.StepNavigator;
 import org.sagebionetworks.research.domain.task.navigation.StepNavigatorFactory;
 import org.sagebionetworks.research.domain.task.navigation.TaskProgress;
 import org.sagebionetworks.research.presentation.ActionType;
+import org.sagebionetworks.research.presentation.contract.model.LoadableResource;
 import org.sagebionetworks.research.presentation.inject.StepViewModule.StepViewFactory;
 import org.sagebionetworks.research.presentation.mapper.TaskMapper;
 import org.sagebionetworks.research.presentation.model.TaskView;
@@ -117,7 +117,7 @@ public class PerformTaskViewModel extends ViewModel {
     public PerformTaskViewModel(@NonNull TaskView taskView, @NonNull UUID taskRunUUID,
             @NonNull StepNavigatorFactory stepNavigatorFactory, @NonNull TaskRepository taskRepository,
             @NonNull TaskMapper taskMapper, StepViewFactory stepViewFactory,
-            @NonNull ZonedDateTime lastRun) {
+            @Nullable ZonedDateTime lastRun) {
         this.taskView = checkNotNull(taskView);
         this.taskRunUuid = checkNotNull(taskRunUUID);
         this.stepNavigatorFactory = checkNotNull(stepNavigatorFactory);
@@ -217,6 +217,7 @@ public class PerformTaskViewModel extends ViewModel {
         TaskResult taskResult = taskResultLiveData.getValue();
         checkState(currentStep != null);
         checkState(taskResult != null);
+
         Step backStep = stepNavigator.getPreviousStep(currentStep, taskResult);
         StepView stepView = null;
         if (backStep != null) {
@@ -238,6 +239,8 @@ public class PerformTaskViewModel extends ViewModel {
         LOGGER.debug("goForward called");
         Step currentStep = currentStepLiveData.getValue();
         TaskResult taskResult = taskResultLiveData.getValue();
+        checkState(taskResult != null);
+
         Step nextStep = stepNavigator.getNextStep(currentStep, taskResult);
         StepView stepView = null;
         if (nextStep != null) {
@@ -261,7 +264,9 @@ public class PerformTaskViewModel extends ViewModel {
      * @return true if there is a step after the current one in the task, false otherwise.
      */
     public boolean hasNextStep() {
-        return this.stepNavigator.getNextStep(this.getStep().getValue(), this.getTaskResult().getValue()) != null;
+        TaskResult taskResult = taskResultLiveData.getValue();
+        checkState(taskResult != null);
+        return this.stepNavigator.getNextStep(this.getStep().getValue(), taskResult) != null;
     }
 
     /**
@@ -270,7 +275,11 @@ public class PerformTaskViewModel extends ViewModel {
      * @return true if there is a step before the current one in the task, false otherwise.
      */
     public boolean hasPreviousStep() {
-        return this.stepNavigator.getPreviousStep(this.getStep().getValue(), this.getTaskResult().getValue()) != null;
+        Step currentStep = currentStepLiveData.getValue();
+        checkState(currentStep != null);
+        TaskResult taskResult = taskResultLiveData.getValue();
+        checkState(taskResult != null);
+        return this.stepNavigator.getPreviousStep(currentStep, taskResult) != null;
     }
 
     protected void onCleared() {

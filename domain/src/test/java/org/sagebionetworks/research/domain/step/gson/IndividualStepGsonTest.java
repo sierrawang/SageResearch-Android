@@ -32,23 +32,35 @@
 
 package org.sagebionetworks.research.domain.step.gson;
 
-import static junit.framework.Assert.assertNotNull;
+import static org.junit.Assert.assertEquals;
 
 import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
+
+import com.google.common.base.Objects;
 
 import org.junit.Before;
+import org.sagebionetworks.research.domain.JsonAssetUtil;
 import org.sagebionetworks.research.domain.step.DaggerStepTestComponent;
 import org.sagebionetworks.research.domain.step.StepTestComponent;
 import org.sagebionetworks.research.domain.step.interfaces.Step;
 
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.FileReader;
-import java.io.Reader;
-import java.net.URL;
+import java.util.function.BiConsumer;
+import java.util.function.BiFunction;
 
 public abstract class IndividualStepGsonTest {
+    public static BiConsumer<Step, Step> STEP_ASSERT_EQUALS = (@NonNull Step expected, @NonNull Step actual) -> {
+        assertEquals("identifier mismatch", expected.getIdentifier(), actual.getIdentifier());
+        assertEquals("type mismatch", expected.getType(), actual.getType());
+    };
+
+    public static BiFunction<Step, Step, Boolean> EQUALS = (step, step2) -> {
+
+        return step == step2 ||
+                (step != null) && (step2 != null) &&
+                        Objects.equal(step.getIdentifier(), step2.getIdentifier())
+                        && Objects.equal(step.getType(), step.getType());
+    };
+
     protected StepTestComponent stepTestComponent;
 
     @Before
@@ -56,24 +68,11 @@ public abstract class IndividualStepGsonTest {
         this.stepTestComponent = DaggerStepTestComponent.builder().build();
     }
 
-    @NonNull
-    protected Step readJsonFile(String filename) {
-        ClassLoader loader = this.getClass().getClassLoader();
-        URL url = loader.getResource("steps/" + filename);
-        Step step = this.readJsonFileHelper(url);
-        assertNotNull("Failed to read file " + filename, step);
-        return step;
+    protected Step readStep(String filename) {
+        return JsonAssetUtil.readJsonFile(stepTestComponent.gson(), "steps/" + filename, Step.class);
     }
 
-    @Nullable
-    private Step readJsonFileHelper(URL url) {
-        try {
-            Reader reader = new FileReader(new File(url.getFile()));
-            Step step = this.stepTestComponent.gson().fromJson(reader, Step.class);
-            return step;
-        } catch (FileNotFoundException e) {
-            return null;
-        }
+    protected void testCommon(Step expected, String filename) {
+        JsonAssetUtil.assertJsonFileEqualRef(expected, stepTestComponent.gson(), "steps/" + filename, Step.class);
     }
-
 }

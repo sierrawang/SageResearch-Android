@@ -32,46 +32,104 @@
 
 package org.sagebionetworks.research.domain.step.gson;
 
-import static junit.framework.Assert.assertEquals;
-import static junit.framework.Assert.assertTrue;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
+import static org.sagebionetworks.research.domain.step.gson.UIStepGsonTests.UI_STEP_ASSERT_EQUALS;
 
-import static org.junit.Assert.assertNotNull;
+import android.support.annotation.NonNull;
+
+import com.google.common.collect.ImmutableMap;
+import com.google.common.collect.ImmutableSet;
 
 import org.junit.Test;
-import org.sagebionetworks.research.domain.step.implementations.ActiveUIStepBase;
+import org.sagebionetworks.research.domain.step.StepType;
 import org.sagebionetworks.research.domain.step.interfaces.ActiveUIStep;
 import org.sagebionetworks.research.domain.step.interfaces.Step;
-import org.sagebionetworks.research.domain.step.ui.action.interfaces.Action;
+import org.sagebionetworks.research.domain.step.ui.action.ActionDeserializationType;
 
-import java.util.Collections;
+import java.util.function.BiConsumer;
 
 public class ActiveUIStepGsonTests extends IndividualStepGsonTest {
+    public static final BiConsumer<ActiveUIStep, ActiveUIStep> ACTIVE_UI_STEP_ASSERT_EQUALS
+            = (@NonNull ActiveUIStep expected, @NonNull ActiveUIStep actual) -> {
+        // inherited getters
+        UI_STEP_ASSERT_EQUALS.accept(expected, actual);
+
+        assertEquals(expected.getCommands(), actual.getCommands());
+        assertEquals(expected.getDuration(), actual.getDuration());
+        assertEquals(expected.getSpokenInstructions(), actual.getSpokenInstructions());
+        assertEquals(expected.isBackgroundAudioRequired(), actual.isBackgroundAudioRequired());
+    };
+
     @Test
     public void testExample_1() {
-        ActiveUIStep expected = new ActiveUIStepBase("testActiveUIStep1", Collections.<String, Action>emptyMap(),
-                "title", "text", null, null, null, null, null, false);
-        commonTest(expected, "ActiveUIStep_1.json");
+        ActiveUIStep expected = mock(ActiveUIStep.class);
+        when(expected.getIdentifier()).thenReturn("testActiveUIStep1");
+        when(expected.getType()).thenReturn(StepType.ACTIVE);
+        when(expected.getActions()).thenReturn(ImmutableMap.of());
+        when(expected.getHiddenActions()).thenReturn(ImmutableSet.of());
+        when(expected.getTitle()).thenReturn("title");
+        when(expected.getText()).thenReturn("text");
+        when(expected.getDetail()).thenReturn(null);
+        when(expected.getFootnote()).thenReturn(null);
+        when(expected.getCommands()).thenReturn(ImmutableSet.of());
+        when(expected.getDuration()).thenReturn(5D);
+        when(expected.getSpokenInstructions()).thenReturn(ImmutableMap.of());
+        when(expected.isBackgroundAudioRequired()).thenReturn(false);
+
+        Step rawStep = readStep("ActiveUIStep_1.json");
+        assertTrue(rawStep instanceof ActiveUIStep);
+
+        ActiveUIStep result = (ActiveUIStep) rawStep;
+        UI_STEP_ASSERT_EQUALS.accept(expected, result);
     }
 
     @Test
     public void testExample_2() {
-        ActiveUIStep expected = new ActiveUIStepBase("testActiveUIStep2", Collections.<String, Action>emptyMap(),
-                "title", "text", "detail", "footnote", null, null, null, false);
-        commonTest(expected, "ActiveUIStep_2.json");
+
+        ActiveUIStep expected = mock(ActiveUIStep.class);
+        when(expected.getIdentifier()).thenReturn("testActiveUIStep2");
+        when(expected.getType()).thenReturn(StepType.ACTIVE);
+        when(expected.getActions()).thenReturn(ImmutableMap.of());
+        when(expected.getHiddenActions()).thenReturn(ImmutableSet.of());
+        when(expected.getTitle()).thenReturn("title");
+        when(expected.getText()).thenReturn("text");
+        when(expected.getDetail()).thenReturn("detail");
+        when(expected.getFootnote()).thenReturn("footnote");
+        when(expected.getCommands()).thenReturn(ImmutableSet.of());
+        when(expected.getDuration()).thenReturn(5D);
+        when(expected.getSpokenInstructions()).thenReturn(ImmutableMap.of());
+        when(expected.isBackgroundAudioRequired()).thenReturn(false);
+
+        Step rawStep = readStep("ActiveUIStep_2.json");
+        assertTrue(rawStep instanceof ActiveUIStep);
+
+        ActiveUIStep result = (ActiveUIStep) rawStep;
+        UI_STEP_ASSERT_EQUALS.accept(expected, result);
     }
 
     @Test
     public void testExample_3() {
-        ActiveUIStepBase expected = new ActiveUIStepBase("testActiveUIStep3",
-                Collections.<String, Action>emptyMap(), "title", "text", "detail", "footnote", null, null,
-                5D, false);
-        commonTest(expected, "ActiveUIStep_3.json");
-    }
+        ActiveUIStep expected = mock(ActiveUIStep.class);
+        when(expected.getIdentifier()).thenReturn("testActiveUIStep3");
+        when(expected.getType()).thenReturn(StepType.ACTIVE);
+        when(expected.getActions()).thenReturn(ImmutableMap.of());
+        when(expected.getHiddenActions()).thenReturn(ImmutableSet.of());
+        when(expected.getTitle()).thenReturn("title");
+        when(expected.getText()).thenReturn("text");
+        when(expected.getDetail()).thenReturn("detail");
+        when(expected.getFootnote()).thenReturn("footnote");
+        when(expected.getCommands()).thenReturn(ImmutableSet.of());
+        when(expected.getDuration()).thenReturn(5D);
+        when(expected.getSpokenInstructions()).thenReturn(ImmutableMap.of());
+        when(expected.isBackgroundAudioRequired()).thenReturn(false);
 
-    private void commonTest(ActiveUIStep expected, String filename) {
-        Step step = this.readJsonFile(filename);
-        assertNotNull(step);
-        assertTrue(step instanceof ActiveUIStep);
-        assertEquals(expected, step);
+        Step rawStep = readStep("ActiveUIStep_3.json");
+        assertTrue(rawStep instanceof ActiveUIStep);
+
+        ActiveUIStep result = (ActiveUIStep) rawStep;
+        UI_STEP_ASSERT_EQUALS.accept(expected, result);
     }
 }

@@ -42,7 +42,8 @@ import dagger.android.AndroidInjector;
 @Subcomponent(modules = ShowStepViewModelModule.class)
 public abstract class ShowActiveUIStepFragmentSubcomponent implements AndroidInjector<ShowActiveUIStepFragment> {
     @Subcomponent.Builder
-    public static abstract class Builder extends AndroidInjector.Builder<ShowActiveUIStepFragment> {
+    public abstract static class Builder extends AndroidInjector.Builder<ShowActiveUIStepFragment> {
+        @Override
         public abstract ShowActiveUIStepFragmentSubcomponent build();
     }
 }

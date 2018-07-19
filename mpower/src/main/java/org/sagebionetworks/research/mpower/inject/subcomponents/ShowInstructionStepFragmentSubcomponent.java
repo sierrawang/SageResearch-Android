@@ -44,6 +44,7 @@ public abstract class ShowInstructionStepFragmentSubcomponent
         implements AndroidInjector<ShowInstructionStepFragment> {
     @Subcomponent.Builder
     public abstract static class Builder extends AndroidInjector.Builder<ShowInstructionStepFragment> {
+        @Override
         public abstract ShowInstructionStepFragmentSubcomponent build();
     }
 }

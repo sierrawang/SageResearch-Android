@@ -37,16 +37,18 @@ import android.support.annotation.Nullable;
 
 import com.google.auto.value.AutoValue;
 import com.google.common.collect.ImmutableMap;
+import com.google.common.collect.ImmutableSet;
 import com.google.gson.Gson;
 import com.google.gson.TypeAdapter;
 
 import org.sagebionetworks.research.domain.step.StepType;
 import org.sagebionetworks.research.domain.step.interfaces.ActiveUIStep;
-import org.sagebionetworks.research.domain.step.ui.action.interfaces.Action;
+import org.sagebionetworks.research.domain.step.ui.action.Action;
 import org.sagebionetworks.research.domain.step.ui.theme.ColorTheme;
 import org.sagebionetworks.research.domain.step.ui.theme.ImageTheme;
 
 import java.util.Map;
+import java.util.Set;
 
 @AutoValue
 public abstract class InstructionStep implements ActiveUIStep {
@@ -65,13 +67,22 @@ public abstract class InstructionStep implements ActiveUIStep {
         public abstract Builder setColorTheme(@Nullable ColorTheme colorTheme);
 
         @NonNull
+        public abstract Builder setCommands(@NonNull Set<String> commands);
+
+        @NonNull
         public abstract Builder setDetail(@Nullable String detail);
 
         @NonNull
         public abstract Builder setDuration(@Nullable Double duration);
 
         @NonNull
+        public abstract Builder setFirstRunOnly(boolean firstRunOnly);
+
+        @NonNull
         public abstract Builder setFootnote(@Nullable String footnote);
+
+        @NonNull
+        public abstract Builder setHiddenActions(@NonNull Set<String> hiddenActions);
 
         @NonNull
         public abstract Builder setIdentifier(@NonNull String identifier);
@@ -80,13 +91,16 @@ public abstract class InstructionStep implements ActiveUIStep {
         public abstract Builder setImageTheme(@Nullable ImageTheme imageTheme);
 
         @NonNull
+        public abstract Builder setSpokenInstructions(@NonNull Map<String, String> spokenInstructions);
+
+        @NonNull
         public abstract Builder setText(@Nullable String text);
 
         @NonNull
         public abstract Builder setTitle(@Nullable String title);
     }
 
-    public static final String TYPE_KEY = "instruction";
+    public static final String TYPE_KEY = StepType.INSTRUCTION;
 
     @NonNull
     public static Builder builder() {
@@ -95,12 +109,16 @@ public abstract class InstructionStep implements ActiveUIStep {
 
     public static TypeAdapter<InstructionStep> typeAdapter(Gson gson) {
         return new AutoValue_InstructionStep.GsonTypeAdapter(gson)
-                .setDefaultActions(ImmutableMap.of());
+                .setDefaultActions(ImmutableMap.of())
+                .setDefaultCommands(ImmutableSet.of())
+                .setDefaultHiddenActions(ImmutableSet.of())
+                .setDefaultSpokenInstructions(ImmutableMap.of());
     }
 
+    @NonNull
     @Override
     public InstructionStep copyWithIdentifier(@NonNull String identifier) {
-        return null;
+        return toBuilder().setIdentifier(identifier).build();
     }
 
     @NonNull
@@ -109,6 +127,8 @@ public abstract class InstructionStep implements ActiveUIStep {
         return StepType.INSTRUCTION;
     }
 
+    abstract boolean isFirstRunOnly();
+
     @NonNull
-    public abstract Builder toBuilder();
+    abstract Builder toBuilder();
 }

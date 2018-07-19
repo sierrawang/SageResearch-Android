@@ -40,7 +40,6 @@ import static org.mockito.Mockito.when;
 import org.junit.Before;
 import org.junit.Test;
 import org.sagebionetworks.research.domain.result.interfaces.TaskResult;
-import org.sagebionetworks.research.domain.step.implementations.UIStepBase;
 import org.sagebionetworks.research.domain.step.interfaces.Step;
 import org.sagebionetworks.research.domain.task.navigation.strategy.StepNavigationStrategy.NextStepStrategy;
 
@@ -50,7 +49,9 @@ public class NextStepStrategyFactoryTest {
 
     @Test
     public void createWithNextStepIdentifier() {
-        Step step = new UIStepBase("identifier", null, null, null, null, null, null, null);
+        Step step = mock(Step.class);
+        when(step.getIdentifier()).thenReturn("identifier");
+
         String nextIdentifier = "nextIdentifier";
 
         NextStepStrategy nextStepStrategy = nextStepStrategyFactory.create(step, nextIdentifier);
@@ -66,7 +67,8 @@ public class NextStepStrategyFactoryTest {
         NextStepStrategy nextStepStrategy = mock(NextStepStrategy.class);
         when(nextStepStrategy.getNextStepIdentifier(taskResult)).thenReturn(nextIdentifier);
 
-        Step step = new UIStepBase("identifier", null, null, null, null, null, null, null);
+        Step step = mock(Step.class);
+        when(step.getIdentifier()).thenReturn("identifier");
 
         NextStepStrategy nextStepStrategyResult = nextStepStrategyFactory.create(step, nextStepStrategy);
 

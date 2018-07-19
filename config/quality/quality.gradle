@@ -47,12 +47,12 @@ apply plugin: 'findbugs'
 apply plugin: 'pmd'
 apply plugin: 'net.ltgt.errorprone'
 configurations.errorprone {
-    resolutionStrategy.force 'com.google.errorprone:error_prone_core:2.2.0'
+    resolutionStrategy.force 'com.google.errorprone:error_prone_core:2.3.1'
     // forcing dependencies to match the ones in the dependencies section
 }
 dependencies {
     checkstyle 'com.puppycrawl.tools:checkstyle:8.10'
-    errorprone "com.google.errorprone:error_prone_core:2.2.0"
+    errorprone "com.google.errorprone:error_prone_core:2.3.1"
 }
 
 def qualityConfigDir = "$project.rootDir/config/quality";
@@ -63,6 +63,10 @@ check.dependsOn 'checkstyle', 'findbugs', 'pmd'
 task checkstyle(type: Checkstyle, group: 'Verification', description: 'Runs code style checks') {
     configFile file("$qualityConfigDir/checkstyle/checkstyle-config.xml")
     configProperties.checkstyleSuppressionsPath = file("${qualityConfigDir}/checkstyle/suppressions.xml").absolutePath
+
+    ignoreFailures = true
+    showViolations = true
+
     source 'src'
     include '**/*.java'
 
@@ -81,7 +85,8 @@ task findbugs(type: FindBugs,
         description: 'Inspect java bytecode for bugs',
         dependsOn: ['compileDebugSources', 'compileReleaseSources']) {
 
-    ignoreFailures = false
+    ignoreFailures = true
+
     effort = "max"
     reportLevel = "high"
     excludeFilter = new File("$qualityConfigDir/findbugs/android-exclude-filter.xml")
@@ -108,7 +113,8 @@ task findbugs(type: FindBugs,
 
 task pmd(type: Pmd, group: 'Verification', description: 'Inspect sourcecode for bugs') {
     ruleSetFiles = files("$qualityConfigDir/pmd/pmd-ruleset.xml")
-    ignoreFailures = false
+    ignoreFailures = true
+
     ruleSets = []
 
     source 'src'

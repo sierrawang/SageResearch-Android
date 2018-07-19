@@ -49,6 +49,8 @@ import org.sagebionetworks.research.domain.form.interfaces.Choice;
 import org.sagebionetworks.research.domain.interfaces.HashCodeHelper;
 import org.sagebionetworks.research.domain.interfaces.ObjectHelper;
 import org.sagebionetworks.research.domain.result.interfaces.Result;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.lang.reflect.Type;
 
@@ -59,6 +61,8 @@ import java.lang.reflect.Type;
  *         The type of answer that the choice represents.
  */
 public class ChoiceBase<E> extends ObjectHelper implements Choice<E> {
+    private static final Logger LOGGER = LoggerFactory.getLogger(ChoiceBase.class);
+
     @NonNull
     @SerializedName("value")
     private final E answerValue;
@@ -66,11 +70,12 @@ public class ChoiceBase<E> extends ObjectHelper implements Choice<E> {
     @Nullable
     private final String detail;
 
+    @SerializedName("isExclusive")
+    private final boolean exclusive;
+
     @Nullable
     @SerializedName("icon")
     private final String iconName;
-
-    private final boolean isExclusive;
 
     @NonNull
     private final String text;
@@ -122,17 +127,17 @@ public class ChoiceBase<E> extends ObjectHelper implements Choice<E> {
         this.text = null;
         this.detail = null;
         this.iconName = null;
-        this.isExclusive = false;
+        this.exclusive = false;
     }
 
     public ChoiceBase(@NonNull final E answerValue, @NonNull final String text, @Nullable final String detail,
-            @Nullable final String iconName, final boolean isExclusive) {
+            @Nullable final String iconName, final boolean exclusive) {
         super();
         this.answerValue = answerValue;
         this.text = text;
         this.detail = detail;
         this.iconName = iconName;
-        this.isExclusive = isExclusive;
+        this.exclusive = exclusive;
     }
 
     public ChoiceBase(@NonNull final E answerValue) {
@@ -141,7 +146,7 @@ public class ChoiceBase<E> extends ObjectHelper implements Choice<E> {
         this.text = answerValue.toString();
         this.detail = null;
         this.iconName = null;
-        this.isExclusive = false;
+        this.exclusive = false;
     }
 
     @NonNull
@@ -176,7 +181,7 @@ public class ChoiceBase<E> extends ObjectHelper implements Choice<E> {
 
     @Override
     public boolean isExclusive() {
-        return this.isExclusive;
+        return this.exclusive;
     }
 
     @Override
@@ -192,10 +197,8 @@ public class ChoiceBase<E> extends ObjectHelper implements Choice<E> {
     @Override
     protected HashCodeHelper hashCodeHelper() {
         return super.hashCodeHelper()
-                .addFields(this.isExclusive, this.iconName, this.detail, this.text, this.answerValue);
+                .addFields(this.exclusive, this.iconName, this.detail, this.text, this.answerValue);
     }
-
-    // region Deserialization
 
     @Override
     protected ToStringHelper toStringHelper() {
@@ -204,7 +207,7 @@ public class ChoiceBase<E> extends ObjectHelper implements Choice<E> {
                 .add("text", this.getText())
                 .add("detail", this.getDetail())
                 .add("iconName", this.getIconName())
-                .add("isExclusive", this.isExclusive());
+                .add("exclusive", this.isExclusive());
     }
 
     /**
@@ -213,7 +216,7 @@ public class ChoiceBase<E> extends ObjectHelper implements Choice<E> {
      * @param typeOfT
      *         The type corresponding to some Choice<T> to produce a ChoiceBase<T> for.
      * @return A TypeToken<ChoiceBase<T>> with the same generic parameter as the given Type which should be a
-     * Choice<T> for some Type T.
+     *         Choice<T> for some Type T.
      */
     private static Type getInnerType(Type typeOfT) {
         TypeToken tToken = TypeToken.of(typeOfT);
@@ -222,11 +225,9 @@ public class ChoiceBase<E> extends ObjectHelper implements Choice<E> {
                     .getGenericReturnType());
             return token.getType();
         } catch (NoSuchMethodException e) {
-            e.printStackTrace();
+            LOGGER.warn("Error retrieving inner type of AnswerValue", e);
         }
 
         return null;
     }
-
-    // endregion
 }

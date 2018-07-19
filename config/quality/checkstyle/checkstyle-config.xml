@@ -102,6 +102,7 @@
         <module name="AbbreviationAsWordInName">
             <property name="ignoreFinal" value="false" />
             <property name="allowedAbbreviationLength" value="1" />
+            <property name="allowedAbbreviations" value="UUID,UI"/>
         </module>
         <module name="OverloadMethodsDeclarationOrder" />
         <module name="VariableDeclarationUsageDistance" />
@@ -183,7 +184,6 @@
             <property name="forbiddenSummaryFragments"
                 value="^@return the *|^This method returns |^A [{]@code [a-zA-Z0-9]+[}]( is a )" />
         </module>
-        <module name="JavadocParagraph" />
         <module name="AtclauseOrder">
             <property name="tagOrder" value="@param, @return, @throws, @deprecated" />
             <property name="target" value="CLASS_DEF, INTERFACE_DEF, ENUM_DEF, METHOD_DEF, CTOR_DEF, VARIABLE_DEF" />
@@ -198,6 +198,7 @@
             <property name="allowedAnnotations" value="Override, Test" />
             <property name="allowThrowsTagsForSubclasses" value="true" />
             <property name="tokens" value="METHOD_DEF, ANNOTATION_FIELD_DEF" />
+            <property name="ignoreMethodNamesRegex" value="^typeAdapter$"/>
         </module>
 
         <module name="NoWhitespaceAfter">
@@ -233,7 +234,6 @@
         </module>
         <!-- Naming -->
         <module name="PackageName">
-            <property name="format" value="^[a-z]+(\.[a-z][a-z0-9]*)*$" />
             <message key="name.invalidPattern" value="Package name ''{0}'' must match pattern ''{1}''." />
         </module>
         <module name="TypeName">
