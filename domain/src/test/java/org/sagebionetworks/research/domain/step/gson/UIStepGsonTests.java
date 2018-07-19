@@ -64,7 +64,7 @@ public class UIStepGsonTests extends IndividualStepGsonTest {
 
     public static BiConsumer<Map<String, Action>, Map<String, Action>> ACTIONS_ASSERT_EQUALS =
             (@NonNull Map<String, Action> expected, @NonNull Map<String, Action> actual) -> {
-                assertEquals(expected.keySet(), actual.keySet());
+                assertEquals("actions keys mismatch", expected.keySet(), actual.keySet());
                 for (String key : expected.keySet()) {
                     ACTION_ASSERT_EQUALS.accept(expected.get(key), actual.get(key));
                 }
@@ -72,7 +72,7 @@ public class UIStepGsonTests extends IndividualStepGsonTest {
 
     public static BiConsumer<ActionHandler, ActionHandler> ACTION_HANDLER_ASSERT_EQUALS
             = (@NonNull ActionHandler expected, @NonNull ActionHandler actual) -> {
-        assertEquals(expected.getHiddenActions(), actual.getHiddenActions());
+        assertEquals("hiddenActions mismatch", expected.getHiddenActions(), actual.getHiddenActions());
 
         ACTIONS_ASSERT_EQUALS.accept(expected.getActions(), actual.getActions());
     };
@@ -84,10 +84,10 @@ public class UIStepGsonTests extends IndividualStepGsonTest {
         STEP_ASSERT_EQUALS.accept(expected, actual);
         ACTION_HANDLER_ASSERT_EQUALS.accept(expected, actual);
 
-        assertEquals(expected.getTitle(), actual.getTitle());
-        assertEquals(expected.getDetail(), actual.getDetail());
-        assertEquals(expected.getText(), actual.getText());
-        assertEquals(expected.getFootnote(), actual.getFootnote());
+        assertEquals("title mismatch", expected.getTitle(), actual.getTitle());
+        assertEquals("detail mismatch", expected.getDetail(), actual.getDetail());
+        assertEquals("text mismatch", expected.getText(), actual.getText());
+        assertEquals("footnote mismatch", expected.getFootnote(), actual.getFootnote());
     };
 
     @Test

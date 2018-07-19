@@ -49,8 +49,8 @@ import java.util.function.BiFunction;
 
 public abstract class IndividualStepGsonTest {
     public static BiConsumer<Step, Step> STEP_ASSERT_EQUALS = (@NonNull Step expected, @NonNull Step actual) -> {
-        assertEquals(expected.getIdentifier(), actual.getIdentifier());
-        assertEquals(expected.getType(), actual.getType());
+        assertEquals("identifier mismatch", expected.getIdentifier(), actual.getIdentifier());
+        assertEquals("type mismatch", expected.getType(), actual.getType());
     };
 
     public static BiFunction<Step, Step, Boolean> EQUALS = (step, step2) -> {
