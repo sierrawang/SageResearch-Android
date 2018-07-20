@@ -1,5 +1,7 @@
 package org.sagebionetworks.research.domain.navigation;
 
+import com.google.common.collect.ImmutableList;
+
 import static junit.framework.Assert.assertEquals;
 import static junit.framework.Assert.assertNotNull;
 import static junit.framework.Assert.assertNull;
@@ -8,6 +10,7 @@ import static junit.framework.Assert.assertTrue;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.argThat;
 import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 import static org.mockito.Mockito.withSettings;
 
@@ -17,6 +20,7 @@ import org.sagebionetworks.research.domain.result.interfaces.Result;
 import org.sagebionetworks.research.domain.result.interfaces.TaskResult;
 import org.sagebionetworks.research.domain.step.interfaces.SectionStep;
 import org.sagebionetworks.research.domain.step.interfaces.Step;
+import org.sagebionetworks.research.domain.task.Task;
 import org.sagebionetworks.research.domain.task.navigation.TaskProgress;
 import org.sagebionetworks.research.domain.task.navigation.strategy.StepNavigationStrategy.BackStepStrategy;
 import org.sagebionetworks.research.domain.task.navigation.strategy.StepNavigationStrategy.NextStepStrategy;
@@ -35,8 +39,27 @@ public class StrategyBasedNavigatorTests extends IndividualNavigatorTests {
 
     private static final StrategyBasedNavigator STRATEGY_TEST_NAVIGATOR;
 
+    private static final Task TEST_TASK = mockTask(TEST_STEPS, TEST_PROGRESS_MARKERS);
+
     public StrategyBasedNavigatorTests() {
-        super(new StrategyBasedNavigator(TEST_STEPS, TEST_PROGRESS_MARKERS));
+       super(new StrategyBasedNavigator(TEST_TASK, TEST_PROGRESS_MARKERS));
+    }
+
+    public static Task mockTask(List<Step> steps, List<String> progressMarkers) {
+        if (steps == null) {
+            steps = ImmutableList.of();
+        }
+
+        if (progressMarkers == null) {
+            progressMarkers = ImmutableList.of();
+        }
+
+        Task task = mock(Task.class);
+        when(task.getSteps()).thenReturn(ImmutableList.copyOf(steps));
+        when(task.getIdentifier()).thenReturn("testTask");
+        when(task.getProgressMarkers()).thenReturn(ImmutableList.copyOf(progressMarkers));
+        when(task.getAsyncActions()).thenReturn(null);
+        return task;
     }
 
     // region Test With BackStepStrategy
@@ -170,7 +193,8 @@ public class StrategyBasedNavigatorTests extends IndividualNavigatorTests {
     @Test
     public void testProgess_NoMarkers_FlatHierarchy() {
         List<Step> steps = createSteps(new String[]{"1", "2", "3", "4"});
-        StrategyBasedNavigator navigator = new StrategyBasedNavigator(steps, null);
+        Task task = mockTask(steps, null);
+        StrategyBasedNavigator navigator = new StrategyBasedNavigator(task, null);
         TaskResult taskResult = mockTaskResult("task", steps.subList(0, 1));
 
         TaskProgress progress = navigator.getProgress(steps.get(1), taskResult);
@@ -214,7 +238,7 @@ public class StrategyBasedNavigatorTests extends IndividualNavigatorTests {
     @Test
     public void testSkip_resultPresent_From2() {
         List<Result> stepHistory = new ArrayList<>();
-        stepHistory.add(mockTaskResult(SKIP_RESULT_IDENTIFIER, null));
+        stepHistory.add(mockResult(SKIP_RESULT_IDENTIFIER));
         for (int i = 0; i < 2; i++) {
             stepHistory.add(mockResult(STRATEGY_TEST_STEPS.get(i)));
         }
@@ -228,7 +252,7 @@ public class StrategyBasedNavigatorTests extends IndividualNavigatorTests {
     @Test
     public void testSkip_resultPresent_From5X() {
         List<Result> stepHistory = new ArrayList<>();
-        stepHistory.add(mockTaskResult(SKIP_RESULT_IDENTIFIER, new ArrayList<Step>()));
+        stepHistory.add(mockResult(SKIP_RESULT_IDENTIFIER));
         for (int i = 0; i < 4; i++) {
             stepHistory.add(mockResult(STRATEGY_TEST_STEPS.get(i)));
         }
@@ -247,6 +271,14 @@ public class StrategyBasedNavigatorTests extends IndividualNavigatorTests {
         return mockTaskResult(sectionStep.getIdentifier(), sectionStep.getSteps().subList(from, to));
     }
 
+    private static ArgumentMatcher<Task> TASK_MATCHER = task -> true;
+
+    private static ArgumentMatcher<TaskResult> TASK_RESULT_MATCHER =
+            taskResult -> taskResult != null && taskResult.getResult(SKIP_RESULT_IDENTIFIER) != null;
+
+    private static ArgumentMatcher<TaskResult> INVERSE_TASK_RESULT_MATCHER =
+            taskResult -> taskResult == null || taskResult.getResult(SKIP_RESULT_IDENTIFIER) == null;
+
     // region Mocking
     private static Step mockTestStep(String identifier, boolean isBackAllowed, String nextStepId,
             boolean shouldAddSkipRule) {
@@ -255,28 +287,16 @@ public class StrategyBasedNavigatorTests extends IndividualNavigatorTests {
         when(step.getIdentifier()).thenReturn(identifier);
         when(step.getType()).thenReturn(TEST_STEP_TYPE);
         when(step.toString()).thenReturn(identifier + ": " + TEST_STEP_TYPE);
-        when(((BackStepStrategy) step).isBackAllowed(any(TaskResult.class))).thenReturn(isBackAllowed);
-        when(((NextStepStrategy) step).getNextStepIdentifier(any(TaskResult.class))).thenReturn(nextStepId);
+        when(((BackStepStrategy) step).isBackAllowed(any(Task.class), any(TaskResult.class))).thenReturn(isBackAllowed);
+        when(((NextStepStrategy) step).getNextStepIdentifier(argThat(TASK_MATCHER), any(TaskResult.class))).thenReturn(nextStepId);
         if (shouldAddSkipRule) {
-            // If we are adding a skip rule, return true for any argument in which the given TaskResult contains a
-            // result with the SKIP_RESULT_IDENTIFIER, false otherwise.
-            TaskResult match = argThat(new ArgumentMatcher<TaskResult>() {
-                @Override
-                public boolean matches(final TaskResult argument) {
-                    return argument != null && argument.getResult(SKIP_RESULT_IDENTIFIER) != null;
-                }
-            });
-            when(((SkipStepStrategy) step).shouldSkip(match)).thenReturn(true);
-            TaskResult notMatch = argThat(new ArgumentMatcher<TaskResult>() {
-                @Override
-                public boolean matches(final TaskResult argument) {
-                    return argument != null && argument.getResult(SKIP_RESULT_IDENTIFIER) == null;
-                }
-            });
-            when(((SkipStepStrategy) step).shouldSkip(notMatch)).thenReturn(false);
+            when(((SkipStepStrategy) step).shouldSkip(argThat(TASK_MATCHER), argThat(TASK_RESULT_MATCHER)))
+                    .thenReturn(true);
+            when(((SkipStepStrategy) step).shouldSkip(argThat(TASK_MATCHER), argThat(INVERSE_TASK_RESULT_MATCHER)))
+                    .thenReturn(false);
         } else {
             // If we aren't adding a skip rule we always return false.
-            when(((SkipStepStrategy) step).shouldSkip(any(TaskResult.class))).thenReturn(false);
+            when(((SkipStepStrategy) step).shouldSkip(any(Task.class), any(TaskResult.class))).thenReturn(false);
         }
 
         return step;
@@ -297,7 +317,7 @@ public class StrategyBasedNavigatorTests extends IndividualNavigatorTests {
         STRATEGY_TEST_STEPS.add(mockSectionStep("step6", createSteps(new String[]{"step6.A", "step6.B", "step6.c"})));
         STRATEGY_TEST_STEPS.add(mockTestStep("step7", false, "step6.A", false));
         STRATEGY_TEST_STEPS.add(mockStep("conclusion"));
-        STRATEGY_TEST_NAVIGATOR = new StrategyBasedNavigator(STRATEGY_TEST_STEPS, TEST_PROGRESS_MARKERS);
+        STRATEGY_TEST_NAVIGATOR = new StrategyBasedNavigator(mockTask(STRATEGY_TEST_STEPS, TEST_PROGRESS_MARKERS), TEST_PROGRESS_MARKERS);
     }
     // endregion
 }

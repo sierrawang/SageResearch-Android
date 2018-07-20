@@ -37,6 +37,7 @@ import static org.mockito.Mockito.mock;
 
 import org.junit.Test;
 import org.sagebionetworks.research.domain.result.interfaces.TaskResult;
+import org.sagebionetworks.research.domain.task.Task;
 import org.sagebionetworks.research.domain.task.navigation.strategy.StepNavigationStrategy.NextStepStrategy;
 
 public class ConstantNextStepStrategyTest {
@@ -45,6 +46,6 @@ public class ConstantNextStepStrategyTest {
     public void getNextStepIdentifier() {
         String nextIdentifier = "nextIdentifier";
         NextStepStrategy constantNextStepStrategy = new ConstantNextStepStrategy(nextIdentifier);
-        assertEquals(nextIdentifier, constantNextStepStrategy.getNextStepIdentifier(mock(TaskResult.class)));
+        assertEquals(nextIdentifier, constantNextStepStrategy.getNextStepIdentifier(mock(Task.class), mock(TaskResult.class)));
     }
 }

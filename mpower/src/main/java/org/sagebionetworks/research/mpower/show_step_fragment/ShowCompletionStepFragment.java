@@ -44,7 +44,7 @@ public class ShowCompletionStepFragment extends ShowUIStepFragment {
     @NonNull
     public static ShowCompletionStepFragment newInstance(@NonNull StepView stepView) {
         ShowCompletionStepFragment fragment = new ShowCompletionStepFragment();
-        Bundle arguments = ShowStepFragmentBase.createArguments(stepView);
+        Bundle arguments = ShowStepFragmentBase.createArguments(stepView, null);
         fragment.setArguments(arguments);
         return fragment;
     }

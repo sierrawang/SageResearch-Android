@@ -7,22 +7,21 @@ import android.view.View;
 
 import org.sagebionetworks.research.domain.mobile_ui.R;
 import org.sagebionetworks.research.mobile_ui.perform_task.PerformTaskFragment;
-import org.sagebionetworks.research.mobile_ui.show_step.view.ShowActiveUIStepFragmentBase;
 import org.sagebionetworks.research.mobile_ui.show_step.view.view_binding.ActiveUIStepViewBinding;
-import org.sagebionetworks.research.presentation.model.interfaces.ActiveUIStepView;
+import org.sagebionetworks.research.presentation.model.interfaces.CountdownStepView;
 import org.sagebionetworks.research.presentation.model.interfaces.StepView;
 import org.sagebionetworks.research.presentation.show_step.show_step_view_models.ShowActiveUIStepViewModel;
 
-public class ShowActiveUIStepFragment extends ShowActiveUIStepFragmentBase<ActiveUIStepView,
-        ShowActiveUIStepViewModel<ActiveUIStepView>, ActiveUIStepViewBinding<ActiveUIStepView>> {
+public class ShowCountdownStepFragment extends ShowActiveUIStepFragmentBase<CountdownStepView,
+        ShowActiveUIStepViewModel<CountdownStepView>, ActiveUIStepViewBinding<CountdownStepView>> {
     @NonNull
-    public static ShowActiveUIStepFragment newInstance(@NonNull StepView stepView,
+    public static ShowCountdownStepFragment newInstance(@NonNull StepView stepView,
                                                        @NonNull PerformTaskFragment performTaskFragment) {
-        if (!(stepView instanceof ActiveUIStepView)) {
-            throw new IllegalArgumentException("Step view: " + stepView + " is not an ActiveUIStepView.");
+        if (!(stepView instanceof CountdownStepView)) {
+            throw new IllegalArgumentException("Step view: " + stepView + " is not a CountdownStepView.");
         }
 
-        ShowActiveUIStepFragment fragment = new ShowActiveUIStepFragment();
+        ShowCountdownStepFragment fragment = new ShowCountdownStepFragment();
         Bundle arguments = ShowStepFragmentBase.createArguments(stepView, performTaskFragment);
         fragment.setArguments(arguments);
         fragment.initialize();
@@ -33,14 +32,12 @@ public class ShowActiveUIStepFragment extends ShowActiveUIStepFragmentBase<Activ
     @Override
     @LayoutRes
     public int getLayoutId() {
-        return R.layout.rs2_show_active_ui_step_fragment_layout;
+        return R.layout.rs2_show_countdown_step_fragment_layout;
     }
 
     @Override
     @NonNull
-    protected ActiveUIStepViewBinding<ActiveUIStepView> instantiateAndBindBinding(View view) {
+    protected ActiveUIStepViewBinding<CountdownStepView> instantiateAndBindBinding(View view) {
         return new ActiveUIStepViewBinding<>(view);
     }
-
-
 }

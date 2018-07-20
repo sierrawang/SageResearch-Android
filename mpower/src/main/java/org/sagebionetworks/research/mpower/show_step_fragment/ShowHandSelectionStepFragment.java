@@ -33,19 +33,17 @@
 package org.sagebionetworks.research.mpower.show_step_fragment;
 
 import android.os.Bundle;
-import android.support.annotation.LayoutRes;
 import android.support.annotation.NonNull;
 
+import org.sagebionetworks.research.mobile_ui.show_step.view.ShowFormUIStepFragment;
 import org.sagebionetworks.research.mobile_ui.show_step.view.ShowStepFragmentBase;
-import org.sagebionetworks.research.mobile_ui.show_step.view.form.ShowFormUIStepFragment;
-import org.sagebionetworks.research.mpower.R;
 import org.sagebionetworks.research.presentation.model.interfaces.StepView;
 
 public class ShowHandSelectionStepFragment extends ShowFormUIStepFragment {
     @NonNull
     public static ShowHandSelectionStepFragment newInstance(@NonNull StepView stepView) {
         ShowHandSelectionStepFragment fragment = new ShowHandSelectionStepFragment();
-        Bundle arguments = ShowStepFragmentBase.createArguments(stepView);
+        Bundle arguments = ShowStepFragmentBase.createArguments(stepView, null);
         fragment.setArguments(arguments);
         return fragment;
     }

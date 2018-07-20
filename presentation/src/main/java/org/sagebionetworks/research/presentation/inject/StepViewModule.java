@@ -37,10 +37,12 @@ import android.support.annotation.Nullable;
 import org.sagebionetworks.research.domain.inject.DependencyInjectionType;
 import org.sagebionetworks.research.domain.step.StepType;
 import org.sagebionetworks.research.domain.step.implementations.CompletionStepBase;
+import org.sagebionetworks.research.domain.step.implementations.CountdownStepBase;
 import org.sagebionetworks.research.domain.step.interfaces.Step;
 import org.sagebionetworks.research.presentation.mapper.DrawableMapper;
 import org.sagebionetworks.research.presentation.model.implementations.ActiveUIStepViewBase;
 import org.sagebionetworks.research.presentation.model.implementations.CompletionStepViewBase;
+import org.sagebionetworks.research.presentation.model.implementations.CountdownStepViewBase;
 import org.sagebionetworks.research.presentation.model.implementations.FormUIStepViewBase;
 import org.sagebionetworks.research.presentation.model.implementations.UIStepViewBase;
 import org.sagebionetworks.research.presentation.model.interfaces.StepView;
@@ -110,6 +112,14 @@ public abstract class StepViewModule {
     @StepTypeKey(StepType.COMPLETION)
     static InternalStepViewFactory provideCompletionStepFactory() {
         return CompletionStepViewBase::fromCompletionStep;
+    }
+
+    @Provides
+    @IntoMap
+    @DependencyInjectionType.Default
+    @StepTypeKey(StepType.COUNTDOWN)
+    static InternalStepViewFactory provideCountdownStepFactory() {
+        return CountdownStepViewBase::fromCountdownStep;
     }
 
     @Provides

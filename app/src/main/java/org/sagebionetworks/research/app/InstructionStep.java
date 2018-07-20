@@ -40,11 +40,14 @@ import com.google.common.collect.ImmutableMap;
 import com.google.gson.Gson;
 import com.google.gson.TypeAdapter;
 
+import org.sagebionetworks.research.domain.result.implementations.ResultBase;
+import org.sagebionetworks.research.domain.result.interfaces.Result;
 import org.sagebionetworks.research.domain.step.StepType;
 import org.sagebionetworks.research.domain.step.interfaces.ActiveUIStep;
 import org.sagebionetworks.research.domain.step.ui.action.interfaces.Action;
 import org.sagebionetworks.research.domain.step.ui.theme.ColorTheme;
 import org.sagebionetworks.research.domain.step.ui.theme.ImageTheme;
+import org.threeten.bp.Instant;
 
 import java.util.Map;
 
@@ -101,6 +104,11 @@ public abstract class InstructionStep implements ActiveUIStep {
     @Override
     public InstructionStep copyWithIdentifier(@NonNull String identifier) {
         return null;
+    }
+
+    @Override
+    public Result instantiateStepResult() {
+        return new ResultBase(this.getIdentifier(), Instant.now(), Instant.now());
     }
 
     @NonNull

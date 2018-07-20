@@ -18,12 +18,14 @@ import org.sagebionetworks.research.domain.result.interfaces.FileResult;
 import org.sagebionetworks.research.domain.result.interfaces.TaskResult;
 import org.sagebionetworks.research.domain.step.implementations.ActiveUIStepBase;
 import org.sagebionetworks.research.domain.step.implementations.CompletionStepBase;
+import org.sagebionetworks.research.domain.step.implementations.CountdownStepBase;
 import org.sagebionetworks.research.domain.step.implementations.FormUIStepBase;
 import org.sagebionetworks.research.domain.step.implementations.SectionStepBase;
 import org.sagebionetworks.research.domain.step.implementations.TransformerStepBase;
 import org.sagebionetworks.research.domain.step.implementations.UIStepBase;
 import org.sagebionetworks.research.domain.step.interfaces.ActiveUIStep;
 import org.sagebionetworks.research.domain.step.interfaces.CompletionStep;
+import org.sagebionetworks.research.domain.step.interfaces.CountdownStep;
 import org.sagebionetworks.research.domain.step.interfaces.FormUIStep;
 import org.sagebionetworks.research.domain.step.interfaces.SectionStep;
 import org.sagebionetworks.research.domain.step.interfaces.TransformerStep;
@@ -76,6 +78,14 @@ public abstract class JsonModule {
     @ClassKey(TransformerStep.class)
     static JsonDeserializer<?> provideTransformerStepDeserializer() {
         return TransformerStepBase.getJsonDeserializer();
+    }
+
+    @Provides
+    @IntoMap
+    @DependencyInjectionType.Default
+    @ClassKey(CountdownStep.class)
+    static JsonDeserializer<?> provideCounntdownStepDeserializer() {
+        return createPassThroughDeserializer(CountdownStepBase.class);
     }
 
     @Provides

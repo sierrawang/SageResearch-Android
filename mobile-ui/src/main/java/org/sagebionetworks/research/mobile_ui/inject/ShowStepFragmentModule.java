@@ -40,12 +40,14 @@ import org.sagebionetworks.research.domain.step.implementations.CompletionStepBa
 import org.sagebionetworks.research.mobile_ui.perform_task.PerformTaskFragment;
 import org.sagebionetworks.research.mobile_ui.show_step.view.ShowActiveUIStepFragment;
 import org.sagebionetworks.research.mobile_ui.show_step.view.ShowCompletionStepFragment;
+import org.sagebionetworks.research.mobile_ui.show_step.view.ShowCountdownStepFragment;
 import org.sagebionetworks.research.mobile_ui.show_step.view.ShowStepFragmentBase;
 import org.sagebionetworks.research.mobile_ui.show_step.view.ShowUIStepFragment;
 import org.sagebionetworks.research.mobile_ui.show_step.view.ShowFormUIStepFragment;
 import org.sagebionetworks.research.presentation.inject.DrawableModule;
 import org.sagebionetworks.research.presentation.model.implementations.ActiveUIStepViewBase;
 import org.sagebionetworks.research.presentation.model.implementations.CompletionStepViewBase;
+import org.sagebionetworks.research.presentation.model.implementations.CountdownStepViewBase;
 import org.sagebionetworks.research.presentation.model.implementations.FormUIStepViewBase;
 import org.sagebionetworks.research.presentation.model.implementations.UIStepViewBase;
 import org.sagebionetworks.research.presentation.model.interfaces.StepView;
@@ -128,5 +130,13 @@ public abstract class ShowStepFragmentModule {
     @StepViewKey(FormUIStepViewBase.TYPE)
     static ShowStepFragmentFactory provideShowFormUIStepFragmentFactory() {
         return ShowFormUIStepFragment::newInstance;
+    }
+
+    @Provides
+    @IntoMap
+    @DependencyInjectionType.Default
+    @StepViewKey(CountdownStepViewBase.TYPE)
+    static ShowStepFragmentFactory provideShowCountdownStepFragmentFactory() {
+        return ShowCountdownStepFragment::newInstance;
     }
 }
