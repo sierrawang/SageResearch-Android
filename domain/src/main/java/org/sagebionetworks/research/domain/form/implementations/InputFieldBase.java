@@ -84,7 +84,7 @@ public class InputFieldBase<E extends Comparable<E>> extends ObjectHelper implem
     @Nullable
     private final Range<E> range;
 
-    @Nullable
+    @NonNull
     private final ImmutableList<SurveyRule> surveyRules;
 
     @Nullable
@@ -104,7 +104,7 @@ public class InputFieldBase<E extends Comparable<E>> extends ObjectHelper implem
         this.formUIHint = null;
         this.textFieldOptions = null;
         this.range = null;
-        this.surveyRules = null;
+        this.surveyRules = ImmutableList.of();
     }
 
     public InputFieldBase(@Nullable final String identifier, @Nullable final String prompt,
@@ -113,7 +113,7 @@ public class InputFieldBase<E extends Comparable<E>> extends ObjectHelper implem
             @NonNull final InputDataType formDataType,
             @Nullable final String formUIHint,
             @Nullable final TextFieldOptions textFieldOptions, @Nullable final Range<E> range,
-            @Nullable final ImmutableList<SurveyRule> surveyRules) {
+            @NonNull final ImmutableList<SurveyRule> surveyRules) {
         super();
         this.identifier = identifier;
         this.prompt = prompt;
@@ -170,7 +170,7 @@ public class InputFieldBase<E extends Comparable<E>> extends ObjectHelper implem
         return this.range;
     }
 
-    @Nullable
+    @NonNull
     @Override
     public ImmutableList<SurveyRule> getSurveyRules() {
         return this.surveyRules;

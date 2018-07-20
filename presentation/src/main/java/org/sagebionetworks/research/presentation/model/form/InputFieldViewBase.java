@@ -113,10 +113,8 @@ public class InputFieldViewBase<E extends Comparable> implements InputFieldView<
             ChoiceInputField<E> choiceInputField = (ChoiceInputField<E>) inputField;
             ImmutableList<ChoiceView<E>> choices =
                     processChoices(choiceInputField.getChoices(), mapper);
-            ChoiceView<E> defaultAnswer = ChoiceView
-                    .fromChoice(choiceInputField.getDefaultAnswer(), mapper);
             return new ChoiceInputFieldViewBase<E>(identifier, prompt, promptDetail, placeholderText, isOptional,
-                    formDataType, uiHint, textFieldOptions, range, surveyRules, choices, defaultAnswer);
+                    formDataType, uiHint, textFieldOptions, range, surveyRules, choices, choiceInputField.getDefaultAnswer());
         }
 
         return new InputFieldViewBase<>(identifier, prompt, promptDetail, placeholderText, isOptional, formDataType,

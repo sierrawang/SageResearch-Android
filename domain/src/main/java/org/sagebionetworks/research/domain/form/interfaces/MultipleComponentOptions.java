@@ -44,11 +44,9 @@ import com.google.common.collect.ImmutableList;
  * @param <E>
  *         The type of choices that this object stores.
  */
-public interface ChoiceOptions<E> {
+public interface MultipleComponentOptions<E> {
     @NonNull
-    ImmutableList<Choice<E>> getChoices();
-
-    boolean isOptional();
+    ImmutableList<ImmutableList<Choice<E>>> getChoices();
 
     @Nullable
     E getDefaultAnswer();

@@ -101,7 +101,7 @@ public interface InputField<E extends Comparable<E>> {
      * TODO: Remove this, it belongs in SurveyInputField
      * @return the list of survey rules that are used by this input field or null if this is not applicable.
      */
-    @Nullable
+    @NonNull
     ImmutableList<? extends SurveyRule> getSurveyRules();
 
     /**

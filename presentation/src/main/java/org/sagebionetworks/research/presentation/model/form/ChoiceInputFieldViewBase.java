@@ -48,7 +48,7 @@ import java.util.List;
 public class ChoiceInputFieldViewBase<E extends Comparable<E>> extends InputFieldViewBase<E> {
     private final ImmutableList<ChoiceView<E>> choices;
 
-    private final ChoiceView<E> defaultAnswer;
+    private final E defaultAnswer;
 
     public ChoiceInputFieldViewBase(final String identifier,
             final DisplayString prompt, final DisplayString promptDetail,
@@ -56,7 +56,7 @@ public class ChoiceInputFieldViewBase<E extends Comparable<E>> extends InputFiel
             @NonNull final InputDataType formDataType, final String uiHint,
             final TextFieldOptions textFieldOptions, final Range range,
             final ImmutableList<? extends SurveyRule> surveyRules,
-            final ImmutableList<ChoiceView<E>> choices, final ChoiceView<E> defaultAnswer) {
+            final ImmutableList<ChoiceView<E>> choices, final E defaultAnswer) {
         super(identifier, prompt, promptDetail, placeholderText, isOptional, formDataType, uiHint, textFieldOptions,
                 range, surveyRules);
         this.choices = choices;
@@ -64,7 +64,7 @@ public class ChoiceInputFieldViewBase<E extends Comparable<E>> extends InputFiel
     }
 
     public ChoiceInputFieldViewBase(final Parcel in,
-            final ImmutableList<ChoiceView<E>> choices, final ChoiceView<E> defaultAnswer) {
+            final ImmutableList<ChoiceView<E>> choices, final E defaultAnswer) {
         super(in);
         this.choices = choices;
         this.defaultAnswer = defaultAnswer;
@@ -74,7 +74,7 @@ public class ChoiceInputFieldViewBase<E extends Comparable<E>> extends InputFiel
         return choices;
     }
 
-    public ChoiceView<E> getDefaultAnswer() {
+    public E getDefaultAnswer() {
         return defaultAnswer;
     }
 }

@@ -64,7 +64,7 @@ public class FormUIStepBase extends UIStepBase implements FormUIStep {
         inputFields = ImmutableList.of();
     }
 
-    public FormUIStepBase(@NonNull final String identifier, @NonNull Map<String, Action> actions,
+    public FormUIStepBase(@NonNull final String identifier, @Nullable Map<String, Action> actions,
             @Nullable Set<String> hiddenActions, @Nullable final String title, @Nullable final String text,
             @Nullable final String detail, @Nullable final String footnote, @Nullable final ColorTheme colorTheme,
             @Nullable final ImageTheme imageTheme, @NonNull final ImmutableList<InputField> inputFields) {
