@@ -55,11 +55,4 @@ public class FileResultGsonTests extends IndividualResultGsonTest {
     public void testSerializationDeserializationIntegration_Full() {
         testSerializationThenDeserialization(FULL);
     }
-
-    private void testCommon(Result expected, String filename) {
-        Result result = this.readJsonFile(filename);
-        assertNotNull(result);
-        assertTrue(result instanceof FileResult);
-        assertEquals(expected, result);
-    }
 }

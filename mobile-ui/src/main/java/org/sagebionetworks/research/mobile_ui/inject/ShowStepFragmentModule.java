@@ -35,9 +35,7 @@ package org.sagebionetworks.research.mobile_ui.inject;
 import android.support.annotation.NonNull;
 
 import dagger.multibindings.Multibinds;
-import org.sagebionetworks.research.domain.inject.DependencyInjectionType;
-import org.sagebionetworks.research.domain.step.implementations.CompletionStepBase;
-import org.sagebionetworks.research.mobile_ui.perform_task.PerformTaskFragment;
+
 import org.sagebionetworks.research.mobile_ui.show_step.view.ShowActiveUIStepFragment;
 import org.sagebionetworks.research.mobile_ui.show_step.view.ShowCompletionStepFragment;
 import org.sagebionetworks.research.mobile_ui.show_step.view.ShowCountdownStepFragment;
@@ -69,40 +67,28 @@ public abstract class ShowStepFragmentModule {
     }
 
     @Multibinds
-    @DependencyInjectionType.Default
-    abstract Map<String, ShowStepFragmentFactory> defaultMap();
-
-    @Multibinds
-    @DependencyInjectionType.Override
-    abstract Map<String, ShowStepFragmentFactory> overrideMap();
+    abstract Map<String, ShowStepFragmentFactory> fragmentFactoryMap();
 
     public interface ShowStepFragmentFactory {
         @NonNull
-        ShowStepFragmentBase create(@NonNull StepView stepView,
-                                    @NonNull PerformTaskFragment performTaskFragment);
+        ShowStepFragmentBase create(@NonNull StepView stepView);
     }
 
     @Provides
     public static ShowStepFragmentFactory provideShowStepFragmentFactory(
-            @DependencyInjectionType.Default Map<String, ShowStepFragmentFactory> showStepFragmentFactoryMap,
-            @DependencyInjectionType.Override Map<String, ShowStepFragmentFactory> showStepFragmentFactoryOverrideMap) {
-        return (@NonNull StepView stepView, @NonNull PerformTaskFragment performTaskFragment) -> {
-            if (showStepFragmentFactoryOverrideMap.containsKey(stepView.getType())) {
-                return showStepFragmentFactoryOverrideMap.get(stepView.getType()).create(stepView,
-                        performTaskFragment);
-            } else if (showStepFragmentFactoryMap.containsKey(stepView.getType())) {
-                return showStepFragmentFactoryMap.get(stepView.getType()).create(stepView,
-                        performTaskFragment);
+            Map<String, ShowStepFragmentFactory> showStepFragmentFactoryMap) {
+        return (@NonNull StepView stepView) -> {
+            if (showStepFragmentFactoryMap.containsKey(stepView.getType())) {
+                return showStepFragmentFactoryMap.get(stepView.getType()).create(stepView);
             }
 
             // If we don't have a factory we default to the most general ShowStepFragment.
-            return ShowUIStepFragment.newInstance(stepView, performTaskFragment);
+            return ShowUIStepFragment.newInstance(stepView);
         };
     }
 
     @Provides
     @IntoMap
-    @DependencyInjectionType.Default
     @StepViewKey(ActiveUIStepViewBase.TYPE)
     static ShowStepFragmentFactory provideShowActiveUIStepFragmentFactory() {
         return ShowActiveUIStepFragment::newInstance;
@@ -110,7 +96,6 @@ public abstract class ShowStepFragmentModule {
 
     @Provides
     @IntoMap
-    @DependencyInjectionType.Default
     @StepViewKey(UIStepViewBase.TYPE)
     static ShowStepFragmentFactory provideShowUIStepFragmentFactory() {
         return ShowUIStepFragment::newInstance;
@@ -118,7 +103,6 @@ public abstract class ShowStepFragmentModule {
 
     @Provides
     @IntoMap
-    @DependencyInjectionType.Default
     @StepViewKey(CompletionStepViewBase.TYPE)
     static ShowStepFragmentFactory provideShowCompletionStepFragmentFactory() {
         return ShowCompletionStepFragment::newInstance;
@@ -126,7 +110,6 @@ public abstract class ShowStepFragmentModule {
 
     @Provides
     @IntoMap
-    @DependencyInjectionType.Default
     @StepViewKey(FormUIStepViewBase.TYPE)
     static ShowStepFragmentFactory provideShowFormUIStepFragmentFactory() {
         return ShowFormUIStepFragment::newInstance;
@@ -134,7 +117,6 @@ public abstract class ShowStepFragmentModule {
 
     @Provides
     @IntoMap
-    @DependencyInjectionType.Default
     @StepViewKey(CountdownStepViewBase.TYPE)
     static ShowStepFragmentFactory provideShowCountdownStepFragmentFactory() {
         return ShowCountdownStepFragment::newInstance;

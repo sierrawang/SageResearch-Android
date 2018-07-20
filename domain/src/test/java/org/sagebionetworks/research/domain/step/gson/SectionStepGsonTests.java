@@ -32,10 +32,6 @@
 
 package org.sagebionetworks.research.domain.step.gson;
 
-import static junit.framework.Assert.assertEquals;
-import static junit.framework.Assert.assertNotNull;
-import static junit.framework.Assert.assertTrue;
-
 import org.junit.Test;
 import org.sagebionetworks.research.domain.step.interfaces.ActiveUIStep;
 import org.sagebionetworks.research.domain.step.interfaces.SectionStep;
@@ -44,20 +40,36 @@ import org.sagebionetworks.research.domain.step.interfaces.UIStep;
 
 import java.util.List;
 
+import static junit.framework.Assert.*;
+import static org.junit.Assert.assertNotEquals;
+import static org.sagebionetworks.research.domain.JsonAssetUtil.readJsonFile;
+
 public class SectionStepGsonTests extends IndividualStepGsonTest {
     @Test
     public void testEmpty() {
-        Step step = this.readJsonFile("EmptySectionStep.json");
+        Step step = readJsonFile(stepTestComponent.gson(), "steps/EmptySectionStep.json", Step.class);
+
         assertNotNull(step);
         assertTrue(step instanceof SectionStep);
         SectionStep sectionStep = (SectionStep) step;
         assertEquals("emptySectionStep", sectionStep.getIdentifier());
         assertTrue(sectionStep.getSteps().isEmpty());
+
+        testCommon(sectionStep, "EmptySectionStep.json");
+    }
+
+    @Test
+    public void testEquality() {
+        Step step1 = readJsonFile(stepTestComponent.gson(), "steps/EmptySectionStep.json", Step.class);
+        Step step2 = readJsonFile(stepTestComponent.gson(), "steps/EmptySectionStep.json", Step.class);
+        
+        assertEquals(step1, step2);
+        assertNotEquals(step1, step1.copyWithIdentifier("differentId"));
     }
 
     @Test
     public void testExample_1() {
-        Step step = this.readJsonFile("SectionStep_1.json");
+        Step step = readJsonFile(stepTestComponent.gson(), "steps/SectionStep_1.json", Step.class);
         assertNotNull(step);
         assertTrue(step instanceof SectionStep);
         SectionStep sectionStep = (SectionStep) step;

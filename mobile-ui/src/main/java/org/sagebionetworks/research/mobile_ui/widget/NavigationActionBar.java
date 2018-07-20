@@ -100,7 +100,6 @@ public class NavigationActionBar extends ConstraintLayout {
     @NonNull
     ActionButton skipButton;
 
-    @NonNull
     private ActionButtonClickListener actionButtonClickListener;
 
     private boolean isBackwardHidden;
@@ -160,8 +159,7 @@ public class NavigationActionBar extends ConstraintLayout {
      * @param actionButtonClickListener
      *         The new ActionClickButtonListener to use with this object.
      */
-    public void setActionButtonClickListener(
-            final ActionButtonClickListener actionButtonClickListener) {
+    public void setActionButtonClickListener(@NonNull final ActionButtonClickListener actionButtonClickListener) {
         this.actionButtonClickListener = actionButtonClickListener;
     }
 

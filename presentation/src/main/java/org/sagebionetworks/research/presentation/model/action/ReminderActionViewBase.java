@@ -34,10 +34,10 @@ package org.sagebionetworks.research.presentation.model.action;
 
 import com.google.auto.value.AutoValue;
 
-import org.sagebionetworks.research.domain.presentation.R;
-import org.sagebionetworks.research.domain.step.ui.action.interfaces.ReminderAction;
+import org.sagebionetworks.research.domain.step.ui.action.ReminderAction;
 import org.sagebionetworks.research.presentation.DisplayDrawable;
 import org.sagebionetworks.research.presentation.DisplayString;
+import org.sagebionetworks.research.presentation.R;
 
 import javax.annotation.Nullable;
 

@@ -47,16 +47,14 @@ import org.sagebionetworks.research.presentation.show_step.show_step_view_models
 public class ShowUIStepFragment extends
         ShowUIStepFragmentBase<UIStepView, ShowUIStepViewModel<UIStepView>, UIStepViewBinding<UIStepView>> {
     @NonNull
-    public static ShowUIStepFragment newInstance(@NonNull StepView stepView,
-                                                 @NonNull PerformTaskFragment performTaskFragment) {
+    public static ShowUIStepFragment newInstance(@NonNull StepView stepView) {
         if (!(stepView instanceof UIStepView)) {
             throw new IllegalArgumentException("Step view: " + stepView + " is not a UIStepView.");
         }
 
         ShowUIStepFragment fragment = new ShowUIStepFragment();
-        Bundle arguments = ShowStepFragmentBase.createArguments(stepView, performTaskFragment);
+        Bundle arguments = ShowStepFragmentBase.createArguments(stepView);
         fragment.setArguments(arguments);
-        fragment.initialize();
         return fragment;
     }
 

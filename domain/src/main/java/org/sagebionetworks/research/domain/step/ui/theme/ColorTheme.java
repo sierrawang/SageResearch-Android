@@ -44,7 +44,7 @@ import java.util.Map;
 @AutoValue
 public abstract class ColorTheme {
     @AutoValue.Builder
-    public static abstract class Builder {
+    public abstract static class Builder {
         public abstract ColorTheme build();
 
         public abstract Builder setColorStyles(@Nullable Map<String, String> colorStyles);

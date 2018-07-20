@@ -95,11 +95,4 @@ public class AnswerResultGsonTests extends IndividualResultGsonTest {
     public void testSerializationDeserializationIntegration_String() {
         testSerializationThenDeserialization(STRING);
     }
-
-    private void testCommon(Result expected, String filename) {
-        Result result = this.readJsonFile(filename);
-        assertNotNull(result);
-        assertTrue(result instanceof AnswerResult);
-        assertEquals(expected, result);
-    }
 }

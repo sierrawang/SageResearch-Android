@@ -33,6 +33,7 @@
 package org.sagebionetworks.research.mobile_ui.show_step.view;
 
 import static com.google.common.base.Preconditions.checkNotNull;
+import static com.google.common.base.Preconditions.checkState;
 
 import android.arch.lifecycle.ViewModelProviders;
 import android.content.Context;
@@ -66,16 +67,13 @@ import dagger.android.support.AndroidSupportInjection;
  * A ShowStepFragmentBase implements the functionality common to showing all step fragments in terms of 2 other
  * unknown operations (instantiateBinding, getLayoutID).
  *
- * @param <S>
+ * @param <StepT>
  *         The type of StepView that this fragment uses.
- * @param <VM>
+ * @param <ViewModelT>
  *         The type of StepViewModel that this fragment uses.
- * @param <SB>
- *         The type of StepViewBinding that this fragment uses.
  */
-public abstract class ShowStepFragmentBase
-        <S extends StepView, VM extends ShowStepViewModel<S>, SB extends StepViewBinding<S>>
-        extends Fragment {
+public abstract class ShowStepFragmentBase<StepT extends StepView, ViewModelT extends ShowStepViewModel<StepT>,
+        StepViewBindingT extends StepViewBinding<StepT>> extends Fragment {
     private static final Logger LOGGER = LoggerFactory.getLogger(ShowStepFragmentBase.class);
 
     private static final String ARGUMENT_STEP_VIEW = "STEP_VIEW";
@@ -86,13 +84,14 @@ public abstract class ShowStepFragmentBase
 
     protected PerformTaskViewModel performTaskViewModel;
 
-    protected VM showStepViewModel;
+    protected ViewModelT showStepViewModel;
 
-    protected S stepView;
+    @Inject
+    protected ShowStepViewModelFactory showStepViewModelFactory;
 
-    protected SB stepViewBinding;
+    protected StepT stepView;
 
-    protected boolean initialized;
+    protected StepViewBindingT stepViewBinding;
 
     private Unbinder stepViewUnbinder;
 
@@ -103,42 +102,16 @@ public abstract class ShowStepFragmentBase
      *         The StepView to put in the bundle.
      * @return a Bundle containing the given StepView.
      */
-    public static Bundle createArguments(@NonNull StepView stepView,
-                                         @NonNull PerformTaskFragment performTaskFragment) {
+    public static Bundle createArguments(@NonNull StepView stepView) {
         checkNotNull(stepView);
-        checkNotNull(performTaskFragment);
 
         Bundle args = new Bundle();
         args.putParcelable(ARGUMENT_STEP_VIEW, stepView);
-        args.putSerializable(ARGUMENT_TASK_FRAGMENT, performTaskFragment);
         return args;
     }
 
-    protected void initialize() {
-        if (!this.initialized) {
-            if (getArguments() != null) {
-                this.performTaskFragment = (PerformTaskFragment)
-                        this.getArguments().getSerializable(ARGUMENT_TASK_FRAGMENT);
-                this.stepView = this.getArguments().getParcelable(ARGUMENT_STEP_VIEW);
-            } else {
-                LOGGER.warn("ShowStepFragment created with null arguments: {}", this);
-                return;
-            }
-
-            if (this.performTaskFragment != null) {
-                // gets the PerformTaskViewModel instance of performTaskFragment
-                this.performTaskViewModel = ViewModelProviders.of(this.performTaskFragment)
-                        .get(PerformTaskViewModel.class);
-            } else {
-                LOGGER.warn("ShowStepFragment not passed PerformTaskFragment: {}", this);
-            }
-        }
-
-        this.initialized = true;
-    }
-
     public ShowStepFragmentBase() {
-        this.initialized = false;
+
     }
 
     @Override
@@ -146,25 +119,33 @@ public abstract class ShowStepFragmentBase
         AndroidSupportInjection.inject(this);
 
         super.onAttach(context);
+
+        // gets the PerformTaskViewModel instance of performTaskFragment
+        this.performTaskViewModel = ViewModelProviders.of(this.performTaskFragment).get(PerformTaskViewModel.class);
     }
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        this.initialize();
 
-        if (this.stepView != null) {
-            ShowStepViewModelFactory showStepViewModelFactory = this.performTaskViewModel
-                    .getShowStepViewModelFactory();
-            //noinspection unchecked
-            this.showStepViewModel = (VM) ViewModelProviders
-                    .of(this, showStepViewModelFactory.create(this.performTaskViewModel,
-                            this.stepView))
-                    .get(this.stepView.getIdentifier(),
-                            showStepViewModelFactory.getViewModelClass(this.stepView));
+        StepT stepView = null;
+
+        if (savedInstanceState == null) {
+            Bundle arguments = getArguments();
+            if (arguments != null) {
+                stepView = this.getArguments().getParcelable(ARGUMENT_STEP_VIEW);
+            }
         } else {
-            LOGGER.warn("ShowStepFragment not passed StepView: {}", this);
+            stepView = savedInstanceState.getParcelable(ARGUMENT_STEP_VIEW);
         }
+        this.stepView = stepView;
+
+        checkState(stepView != null, "stepView cannot be null");
+
+        //noinspection unchecked
+        this.showStepViewModel = (ViewModelT) ViewModelProviders
+                .of(this, this.showStepViewModelFactory.create(this.performTaskViewModel, stepView))
+                .get(stepView.getIdentifier(), this.showStepViewModelFactory.getViewModelClass(stepView));
     }
 
     @Override
@@ -184,6 +165,10 @@ public abstract class ShowStepFragmentBase
     public void onDestroyView() {
         super.onDestroyView();
         this.stepViewBinding.unbind();
+    }
+
+    public void setPerformTaskFragment(PerformTaskFragment performTaskFragment) {
+        this.performTaskFragment = performTaskFragment;
     }
 
     /**
@@ -247,9 +232,9 @@ public abstract class ShowStepFragmentBase
      * @return An instance of the correct type of StepViewBinding for this fragment.
      */
     @NonNull
-    protected abstract SB instantiateAndBindBinding(View view);
+    protected abstract StepViewBindingT instantiateAndBindBinding(View view);
 
-    protected void update(S stepView) {
+    protected void update(StepT stepView) {
         this.stepViewBinding.update(stepView);
     }
 }

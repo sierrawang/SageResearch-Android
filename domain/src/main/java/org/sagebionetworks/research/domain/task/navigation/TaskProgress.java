@@ -36,16 +36,16 @@ import com.google.common.base.MoreObjects;
 import com.google.common.base.Objects;
 
 public class TaskProgress {
-    private final boolean isEstimated;
+    private final boolean estimated;
 
     private final int progress;
 
     private final int total;
 
-    public TaskProgress(int progress, int total, boolean isEstimated) {
+    public TaskProgress(int progress, int total, boolean estimated) {
         this.progress = progress;
         this.total = total;
-        this.isEstimated = isEstimated;
+        this.estimated = estimated;
     }
 
     public int getProgress() {
@@ -58,7 +58,7 @@ public class TaskProgress {
 
     @Override
     public int hashCode() {
-        return Objects.hashCode(progress, total, isEstimated);
+        return Objects.hashCode(progress, total, estimated);
     }
 
     @Override
@@ -72,7 +72,7 @@ public class TaskProgress {
         TaskProgress progress1 = (TaskProgress) o;
         return progress == progress1.progress &&
                 total == progress1.total &&
-                isEstimated == progress1.isEstimated;
+                estimated == progress1.estimated;
     }
 
     @Override
@@ -80,11 +80,11 @@ public class TaskProgress {
         return MoreObjects.toStringHelper(this)
                 .add("progress", progress)
                 .add("total", total)
-                .add("isEstimated", isEstimated)
+                .add("estimated", estimated)
                 .toString();
     }
 
     public boolean isEstimated() {
-        return isEstimated;
+        return estimated;
     }
 }

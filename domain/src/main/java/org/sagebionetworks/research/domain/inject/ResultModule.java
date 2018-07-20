@@ -146,6 +146,76 @@ public class ResultModule {
         return TaskResultBase.TYPE_KEY;
     }
 
+    @Provides
+    @IntoMap
+    @ClassKey(AnswerResult.class)
+    static JsonDeserializer<?> provideAnswerResultDeserializer() {
+        return createPassThroughDeserializer(AnswerResultBase.class);
+    }
+
+    @Provides
+    @IntoMap
+    @ClassKey(CollectionResult.class)
+    static JsonDeserializer<?> provideCollectionResultDeserializer() {
+        return createPassThroughDeserializer(CollectionResultBase.class);
+    }
+
+    @Provides
+    @IntoMap
+    @ClassKey(ErrorResult.class)
+    static JsonDeserializer<?> provideErrorResultDeserializer() {
+        return createPassThroughDeserializer(ErrorResultBase.class);
+    }
+
+    @Provides
+    @IntoMap
+    @ClassKey(FileResult.class)
+    static JsonDeserializer<?> provideFileResultDeserializer() {
+        return createPassThroughDeserializer(FileResultBase.class);
+    }
+
+    @Provides
+    @IntoMap
+    @ClassKey(TaskResult.class)
+    static JsonDeserializer<?> provideTaskResultDeserializer() {
+        return createPassThroughDeserializer(TaskResultBase.class);
+    }
+
+    @Provides
+    @IntoMap
+    @ClassKey(CollectionResult.class)
+    static JsonSerializer<?> provideCollectionResultSerializer() {
+        return createPassThroughSerializer(CollectionResultBase.class);
+    }
+
+    @Provides
+    @IntoMap
+    @ClassKey(AnswerResult.class)
+    static JsonSerializer<?> provideAnswerResultSerializer() {
+        return createPassThroughSerializer(AnswerResultBase.class);
+    }
+
+    @Provides
+    @IntoMap
+    @ClassKey(ErrorResult.class)
+    static JsonSerializer<?> provideErrorResultSerializer() {
+        return createPassThroughSerializer(ErrorResultBase.class);
+    }
+
+    @Provides
+    @IntoMap
+    @ClassKey(FileResult.class)
+    static JsonSerializer<?> provideFileResultSerializer() {
+        return createPassThroughSerializer(FileResultBase.class);
+    }
+
+    @Provides
+    @IntoMap
+    @ClassKey(TaskResult.class)
+    static JsonSerializer<?> provideTaskResultSerializer() {
+        return createPassThroughSerializer(TaskResultBase.class);
+    }
+
     /**
      * @return The RuntimeTypeAdapterFactor for Result.class
      */

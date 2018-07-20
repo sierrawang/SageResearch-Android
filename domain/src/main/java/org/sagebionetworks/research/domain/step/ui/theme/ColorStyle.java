@@ -34,6 +34,10 @@ package org.sagebionetworks.research.domain.step.ui.theme;
 
 import android.support.annotation.StringDef;
 
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
+
+@Retention(RetentionPolicy.SOURCE)
 @StringDef({ColorStyle.LIGHT_BACKGROUND, ColorStyle.DARK_BACKGROUND, ColorStyle.CUSTOM_BACKGROUND})
 public @interface ColorStyle {
     String DARK_BACKGROUND = "darkBackground";

@@ -53,12 +53,11 @@ public class PerformActiveTaskViewModel extends PerformTaskViewModel {
     public PerformActiveTaskViewModel(@NonNull final TaskView taskView,
                                       @NonNull final UUID taskRunUUID,
                                       @NonNull final StepNavigatorFactory stepNavigatorFactory,
-                                      @NonNull final ShowStepViewModelFactory showStepViewModelFactory,
                                       @NonNull final TaskRepository taskRepository,
                                       @NonNull final TaskMapper taskMapper,
                                       @NonNull final StepViewFactory stepViewFactory,
                                       @Nullable final ZonedDateTime lastRunDate) {
-        super(taskView, taskRunUUID, stepNavigatorFactory, showStepViewModelFactory, taskRepository,
+        super(taskView, taskRunUUID, stepNavigatorFactory, taskRepository,
                 taskMapper, stepViewFactory, lastRunDate);
     }
 

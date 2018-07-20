@@ -20,7 +20,7 @@
       "image": "before",
       "actions": {
         "goForward": {
-          "type": "base",
+          "type": "default",
           "buttonTitle": "Go, Dogs!"
         }
       }
@@ -114,7 +114,7 @@
       },
       "actions": {
         "goForward": {
-          "type": "base",
+          "type": "default",
           "buttonTitle": "Start"
         }
       }

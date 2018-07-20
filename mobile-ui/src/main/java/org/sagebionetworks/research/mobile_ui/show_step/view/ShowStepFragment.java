@@ -53,12 +53,10 @@ public class ShowStepFragment extends ShowStepFragmentBase<StepView, ShowGeneric
     private static final String ARGUMENT_STEP_VIEW = "STEP_VIEW";
 
     @NonNull
-    public static ShowStepFragment newInstance(@NonNull StepView stepView,
-                                               @NonNull PerformTaskFragment performTaskFragment) {
+    public static ShowStepFragment newInstance(@NonNull StepView stepView) {
         ShowStepFragment fragment = new ShowStepFragment();
-        Bundle arguments = ShowStepFragmentBase.createArguments(stepView, performTaskFragment);
+        Bundle arguments = ShowStepFragmentBase.createArguments(stepView);
         fragment.setArguments(arguments);
-        fragment.initialize();
         return fragment;
     }
 

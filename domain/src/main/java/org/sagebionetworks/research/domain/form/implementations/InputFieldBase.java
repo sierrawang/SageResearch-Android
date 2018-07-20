@@ -40,7 +40,7 @@ import com.google.common.base.Objects;
 import com.google.common.collect.Range;
 import com.google.gson.annotations.SerializedName;
 
-import org.sagebionetworks.research.domain.form.DataTypes.InputDataType;
+import org.sagebionetworks.research.domain.form.data_types.InputDataType;
 import org.sagebionetworks.research.domain.form.InputUIHint;
 import org.sagebionetworks.research.domain.form.TextField.TextFieldOptions;
 import org.sagebionetworks.research.domain.form.interfaces.InputField;
@@ -68,7 +68,7 @@ public class InputFieldBase extends ObjectHelper implements InputField {
     private final String identifier;
 
     @SerializedName("optional")
-    private final boolean isOptional;
+    private final boolean optional;
 
     @Nullable
     @SerializedName("placeholder")
@@ -98,7 +98,7 @@ public class InputFieldBase extends ObjectHelper implements InputField {
         this.prompt = null;
         this.promptDetail = null;
         this.placeholderText = null;
-        this.isOptional = false;
+        this.optional = false;
         this.formDataType = null;
         this.formUIHint = null;
         this.textFieldOptions = null;
@@ -108,7 +108,7 @@ public class InputFieldBase extends ObjectHelper implements InputField {
 
     public InputFieldBase(@Nullable final String identifier, @Nullable final String prompt,
             @Nullable final String promptDetail,
-            @Nullable final String placeholderText, final boolean isOptional,
+            @Nullable final String placeholderText, final boolean optional,
             @NonNull final InputDataType formDataType,
             @Nullable final String formUIHint,
             @Nullable final TextFieldOptions textFieldOptions, @Nullable final Range range,
@@ -118,7 +118,7 @@ public class InputFieldBase extends ObjectHelper implements InputField {
         this.prompt = prompt;
         this.promptDetail = promptDetail;
         this.placeholderText = placeholderText;
-        this.isOptional = isOptional;
+        this.optional = optional;
         this.formDataType = formDataType;
         this.formUIHint = formUIHint;
         this.textFieldOptions = textFieldOptions;
@@ -183,7 +183,7 @@ public class InputFieldBase extends ObjectHelper implements InputField {
 
     @Override
     public boolean isOptional() {
-        return this.isOptional;
+        return this.optional;
     }
 
     @Override
@@ -209,7 +209,7 @@ public class InputFieldBase extends ObjectHelper implements InputField {
     @Override
     protected HashCodeHelper hashCodeHelper() {
         return super.hashCodeHelper()
-                .addFields(this.identifier, this.prompt, this.promptDetail, this.placeholderText, this.isOptional,
+                .addFields(this.identifier, this.prompt, this.promptDetail, this.placeholderText, this.optional,
                         this.formDataType, this.formUIHint, this.textFieldOptions, this.range, this.surveyRules);
     }
 
@@ -220,7 +220,7 @@ public class InputFieldBase extends ObjectHelper implements InputField {
                 .add("prompt", prompt)
                 .add("promptDetail", promptDetail)
                 .add("placeholder", placeholderText)
-                .add("optional", isOptional)
+                .add("optional", optional)
                 .add("dataType", formDataType)
                 .add("uiHint", formUIHint)
                 .add("textFieldOptions", textFieldOptions)

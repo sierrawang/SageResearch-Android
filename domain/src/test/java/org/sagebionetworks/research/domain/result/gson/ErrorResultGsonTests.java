@@ -32,27 +32,37 @@
 
 package org.sagebionetworks.research.domain.result.gson;
 
-import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
+import static org.sagebionetworks.research.domain.JsonAssetUtil.readJsonFile;
 
 import org.junit.Test;
 import org.sagebionetworks.research.domain.result.implementations.ErrorResultBase;
 import org.sagebionetworks.research.domain.result.interfaces.ErrorResult;
+import org.sagebionetworks.research.domain.result.interfaces.ErrorResult.ErrorResultThrowable;
 import org.sagebionetworks.research.domain.result.interfaces.Result;
 import org.threeten.bp.Instant;
 
 public class ErrorResultGsonTests extends IndividualResultGsonTest {
+    private static final String ERROR_MESSAGE = "An error happened";
+
     private static final Result FULL = new ErrorResultBase("errorResult", Instant.ofEpochSecond(20),
-            Instant.ofEpochSecond(30), "An error happened",
-            new Throwable("An error happened"));
+            Instant.ofEpochSecond(30), ERROR_MESSAGE,
+            new ErrorResultThrowable(ERROR_MESSAGE));
 
     private static final Result NO_THROWABLE = new ErrorResultBase("errorResult", Instant.ofEpochSecond(20),
-            Instant.ofEpochSecond(30), "An error happened", null);
+            Instant.ofEpochSecond(30), ERROR_MESSAGE, null);
 
     @Test
     public void testErrorResult_Full() {
-        testCommon(FULL, "ErrorResult_Full.json");
+        Result result = readJsonFile(resultTestComponent.gson(), "results/ErrorResult_Full.json", Result.class);
+
+        assertTrue(result instanceof ErrorResult);
+
+        ErrorResult errorResult = (ErrorResult) result;
+        assertEquals(ERROR_MESSAGE, errorResult.getErrorDescription());
+        assertNotNull(errorResult.getThrowable());
+        assertEquals(ERROR_MESSAGE, errorResult.getThrowable().getMessage());
     }
 
     @Test
@@ -70,10 +80,6 @@ public class ErrorResultGsonTests extends IndividualResultGsonTest {
         testSerializationThenDeserialization(NO_THROWABLE);
     }
 
-    private void testCommon(Result expected, String filename) {
-        Result result = this.readJsonFile(filename);
-        assertNotNull(result);
-        assertTrue(result instanceof ErrorResult);
-        assertEquals(expected, result);
+    private void assertEquals(final String an_error_happened, final String errorDescription) {
     }
 }

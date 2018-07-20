@@ -43,6 +43,7 @@ import dagger.android.AndroidInjector;
 public abstract class ShowCountdownStepFragmentSubcomponent implements AndroidInjector<ShowCountdownStepFragment> {
     @Subcomponent.Builder
     public static abstract class Builder extends AndroidInjector.Builder<ShowCountdownStepFragment> {
+        @Override
         public abstract ShowCountdownStepFragmentSubcomponent build();
     }
 }

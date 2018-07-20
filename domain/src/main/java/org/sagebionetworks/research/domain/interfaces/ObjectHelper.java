@@ -36,21 +36,18 @@ import com.google.common.base.MoreObjects;
 import com.google.common.base.MoreObjects.ToStringHelper;
 
 public abstract class ObjectHelper {
-    // It is assumed that all classes that extend object helper are immutable. This is done in order
-    // to make storing a hash code possible.
-    protected final int hashCode;
-
-    /**
-     * Initializes the hashCode for this object. Subclasses should make sure to call this from all of their
-     * constructors.
-     */
-    public ObjectHelper() {
-        this.hashCode = this.hashCodeHelper().hash();
-    }
+    private volatile HashCodeHelper hashCodeHelper;
 
     @Override
     public int hashCode() {
-        return this.hashCode;
+        if (hashCodeHelper == null) {
+            synchronized (this) {
+                if (hashCodeHelper == null) {
+                    hashCodeHelper = hashCodeHelper();
+                }
+            }
+        }
+        return hashCodeHelper.hash();
     }
 
     @Override
@@ -74,8 +71,7 @@ public abstract class ObjectHelper {
      * Returns true if this objects fields are equal to the fields of the given object, false otherwise. Expected that
      * subclasses will override to add their own fields. Requires: this.getClass() == o.getClass()
      *
-     * @param o
-     *         The object to check for equality with.
+     * @param o The object to check for equality with.
      * @return true if this object's fields are equal to the fields of the given object.
      */
     protected abstract boolean equalsHelper(Object o);
@@ -87,7 +83,7 @@ public abstract class ObjectHelper {
      * @return The HashCodeHelper that can be used to produce the hashCode for this object.
      */
     protected HashCodeHelper hashCodeHelper() {
-        return new HashCodeHelper();
+        return hashCodeHelper;
     }
 
     /**

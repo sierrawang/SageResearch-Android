@@ -32,15 +32,12 @@
 
 package org.sagebionetworks.research.domain.step.gson;
 
-import static junit.framework.Assert.assertEquals;
-import static junit.framework.Assert.assertTrue;
-
-import static org.junit.Assert.assertNotNull;
+import static org.sagebionetworks.research.domain.JsonAssetUtil.readJsonFile;
 
 import com.google.gson.JsonParseException;
 
 import org.junit.Test;
-import org.sagebionetworks.research.domain.form.DataTypes.CollectionInputDataType;
+import org.sagebionetworks.research.domain.form.data_types.CollectionInputDataType;
 import org.sagebionetworks.research.domain.form.implementations.ChoiceBase;
 import org.sagebionetworks.research.domain.form.implementations.ChoiceInputField;
 import org.sagebionetworks.research.domain.form.interfaces.Choice;
@@ -76,17 +73,14 @@ public class FormUIStepGsonTests extends IndividualStepGsonTest {
         expectedInputFields.add(new ChoiceInputField<Integer>(null, null, null, null,
                 false, new CollectionInputDataType("singleChoice", "integer"), "picker",
                 null, null, null, expectedChoices, null));
-        FormUIStep expected = new FormUIStepBase("imageList", null, "Single Choice with Images",
+        FormUIStep expected = new FormUIStepBase("imageList", null, null, "Single Choice with Images",
                 "Select a single option", null, null, null, null, expectedInputFields);
         testCommon(expected, "FormIcons.json");
     }
 
     @Test(expected = JsonParseException.class)
     public void testIncorrectChoiceType_StringIntoInteger() throws IOException {
-        ClassLoader loader = this.getClass().getClassLoader();
-        URL url = loader.getResource("steps/FormStringIntoInteger.json");
-        Reader in = new FileReader(new File(url.getPath()));
-        this.stepTestComponent.gson().fromJson(in, Step.class);
+        readJsonFile(stepTestComponent.gson(),"steps/FormStringIntoInteger.json", Step.class);
     }
 
     @Test
@@ -97,17 +91,17 @@ public class FormUIStepGsonTests extends IndividualStepGsonTest {
         expectedChoices.add(new ChoiceBase<>(3, "Gamma", null, null, false));
         expectedChoices.add(new ChoiceBase<>(0, "None of the above", null, null, true));
         List<InputField> expectedInputFields = new ArrayList<>();
-        expectedInputFields.add(new ChoiceInputField<Integer>(null, null, null, null, false,
+        expectedInputFields.add(new ChoiceInputField<>(null, null, null, null, false,
                 new CollectionInputDataType("multipleChoice", "integer"), "list",
                 null, null, null, expectedChoices, null));
-        FormUIStep expected = new FormUIStepBase("selectMultiple", null, "Multiple Choice",
+        FormUIStep expected = new FormUIStepBase("selectMultiple", null, null, "Multiple Choice",
                 "Select as many as you want", null, null, null, null, expectedInputFields);
         testCommon(expected, "FormStepInteger.json");
     }
 
     @Test
     public void testString() {
-        List<Choice> expectedChoices = new ArrayList<>();
+        List<Choice<String>> expectedChoices = new ArrayList<>();
         expectedChoices.add(new ChoiceBase<>("left", "I can only perform this activity with my LEFT hand.",
                 null, null, false));
         expectedChoices.add(new ChoiceBase<>("right", "I can only perform this activity with my RIGHT hand.",
@@ -115,11 +109,11 @@ public class FormUIStepGsonTests extends IndividualStepGsonTest {
         expectedChoices.add(new ChoiceBase<>("both", "I can perform this activity with both hands.",
                 null, null, false));
         List<InputField> expectedInputFields = new ArrayList<>();
-        expectedInputFields.add(new ChoiceInputField(null, null, null,
+        expectedInputFields.add(new ChoiceInputField<>(null, null, null,
                 null, false,
                 new CollectionInputDataType("singleChoice", "string"), "list",
                 null, null, null, expectedChoices, null));
-        FormUIStep expected = new FormUIStepBase("handSelection", null,
+        FormUIStep expected = new FormUIStepBase("handSelection", null, null,
                 "Which hands are you capable of doing this task with?",
                 null, null, null, null, null, expectedInputFields);
         testCommon(expected, "FormStepString.json");
@@ -127,24 +121,17 @@ public class FormUIStepGsonTests extends IndividualStepGsonTest {
 
     @Test
     public void testString_Shorthand() {
-        List<Choice> expectedChocies = new ArrayList<>();
+        List<Choice<String>> expectedChocies = new ArrayList<>();
         expectedChocies.add(new ChoiceBase<>("alpha", "alpha", null, null, false));
         expectedChocies.add(new ChoiceBase<>("beta", "beta", null, null, false));
         expectedChocies.add(new ChoiceBase<>("charlie", "charlie", null, null, false));
         expectedChocies.add(new ChoiceBase<>("delta", "delta", null, null, false));
         List<InputField> expectedInputFields = new ArrayList<>();
-        expectedInputFields.add(new ChoiceInputField(null, null, null, null,
+        expectedInputFields.add(new ChoiceInputField<>(null, null, null, null,
                 false, new CollectionInputDataType("multipleChoice", null), null,
                 null, null, null, expectedChocies, null));
-        FormUIStep expected = new FormUIStepBase("step3", null, "Step 3", null, null, null, null, null,
+        FormUIStep expected = new FormUIStepBase("step3", null, null, "Step 3", null, null, null, null, null,
                 expectedInputFields);
         testCommon(expected, "FormStepStringShorthand.json");
-    }
-
-    private void testCommon(FormUIStep expected, String filename) {
-        Step step = this.readJsonFile(filename);
-        assertNotNull(step);
-        assertTrue(step instanceof FormUIStep);
-        assertEquals(expected, step);
     }
 }
