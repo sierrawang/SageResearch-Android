@@ -30,7 +30,7 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.sagebionetworks.research.domain.task.navigation.strategy.next_step;
+package org.sagebionetworks.research.domain.task.navigation.strategy.factory.next_step;
 
 import android.support.annotation.Nullable;
 
@@ -48,7 +48,7 @@ public final class ConstantNextStepStrategy implements NextStepStrategy {
 
     @Nullable
     @Override
-    public String getNextStepIdentifier(@org.jetbrains.annotations.Nullable final TaskResult taskResult) {
+    public String getNextStepIdentifier(@Nullable final TaskResult taskResult) {
         return nextStepIdentifier;
     }
 

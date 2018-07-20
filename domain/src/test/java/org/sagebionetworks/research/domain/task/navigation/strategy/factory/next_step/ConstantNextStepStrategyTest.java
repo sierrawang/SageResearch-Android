@@ -30,24 +30,22 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.sagebionetworks.research.domain.step.interfaces;
+package org.sagebionetworks.research.domain.task.navigation.strategy.factory.next_step;
 
-import android.support.annotation.NonNull;
+import static junit.framework.Assert.assertNotNull;
+import static org.junit.Assert.assertEquals;
+import static org.mockito.Mockito.mock;
 
-import com.google.common.collect.ImmutableList;
+import org.junit.Test;
+import org.sagebionetworks.research.domain.result.interfaces.TaskResult;
+import org.sagebionetworks.research.domain.task.navigation.strategy.StepNavigationStrategy.NextStepStrategy;
 
-import org.sagebionetworks.research.domain.form.interfaces.InputField;
+public class ConstantNextStepStrategyTest {
 
-import java.util.List;
-
-/**
- * A FormUIStep is a step which asks the user questions. This is useful for surveys or prompting the user during a
- * task.
- */
-public interface FormUIStep extends ThemedUIStep {
-    /**
-     * @return The list of InputFields for this form step.
-     */
-    @NonNull
-    ImmutableList<InputField> getInputFields();
+    @Test
+    public void getNextStepIdentifier() {
+        String nextIdentifier = "nextIdentifier";
+        NextStepStrategy constantNextStepStrategy = new ConstantNextStepStrategy(nextIdentifier);
+        assertEquals(nextIdentifier, constantNextStepStrategy.getNextStepIdentifier(mock(TaskResult.class)));
+    }
 }

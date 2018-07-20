@@ -1,0 +1,43 @@
+[
+  {
+    "uiHint": "list",
+    "dataType": "singleChoice.string",
+    "choices": [
+      {
+        "text": "I can only perform this activity with my LEFT hand.",
+        "value": "left"
+      },
+      {
+        "text": "I can only perform this activity with my RIGHT hand.",
+        "value": "right"
+      },
+      {
+        "text": "I can perform this activity with both hands.",
+        "value": "both"
+      }
+    ]
+  },
+  {
+    "uiHint": "list",
+    "dataType": "multipleChoice.integer",
+    "choices": [
+      {
+        "text": "Alpha",
+        "value": 1
+      },
+      {
+        "text": "Beta",
+        "value": 2
+      },
+      {
+        "text": "Gamma",
+        "value": 3
+      },
+      {
+        "text": "None of the above",
+        "value": 0,
+        "isExclusive": true
+      }
+    ]
+  }
+]

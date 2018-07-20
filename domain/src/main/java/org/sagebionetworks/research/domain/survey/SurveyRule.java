@@ -30,15 +30,24 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.sagebionetworks.research.domain.form;
+package org.sagebionetworks.research.domain.survey;
 
 import android.support.annotation.Nullable;
+import android.support.annotation.StringDef;
 
 import com.google.common.collect.ImmutableSet;
 
 import org.sagebionetworks.research.domain.result.interfaces.Result;
 
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
+
+/**
+ * A survey rule defines the navigation and cohorts for a survey. Used to allow surveys to have logic behind which
+ * questions get asked depending on user data and answers to previous questions.
+ */
 public interface SurveyRule {
+
     /**
      * A class to store the result of a call to evaluate cohorts.
      */
@@ -51,6 +60,26 @@ public interface SurveyRule {
             this.add = add;
             this.remove = remove;
         }
+    }
+
+    @Retention(RetentionPolicy.SOURCE)
+    @StringDef({
+            Operator.SKIPS,
+            Operator.EQUALS,
+            Operator.NOT_EQUALS,
+            Operator.LESS_THAN,
+            Operator.GREATER_THAN,
+            Operator.LESS_THAN_EQUALS,
+            Operator.GREATER_THAN_EQUALS
+    })
+    @interface Operator {
+        String SKIPS = "de";
+        String EQUALS = "eq";
+        String NOT_EQUALS = "ne";
+        String LESS_THAN = "lt";
+        String GREATER_THAN = "gt";
+        String LESS_THAN_EQUALS = "le";
+        String GREATER_THAN_EQUALS = "ge";
     }
 
     /**
