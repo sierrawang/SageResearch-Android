@@ -32,19 +32,36 @@
 
 package org.sagebionetworks.research.domain.impl;
 
-import org.junit.Before;
-import org.sagebionetworks.research.domain.JsonAssetUtil;
-import org.sagebionetworks.research.domain.step.ui.action.Action;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
 
-public class IndividualActionTests {
-    protected ActionTestComponent actionTestComponent;
+import org.junit.Test;
 
-    @Before
-    public void setup() {
-        this.actionTestComponent = DaggerActionTestComponent.builder().build();
+public class ReminderActionImplTest extends IndividualActionTest {
+    public static final ReminderActionImpl COMPLETE = ReminderActionImpl.builder().setButtonIconName("icon")
+            .setButtonTitle("title")
+            .setReminderIdentifier("reminder").build();
+
+    public static final ReminderActionImpl NO_REMINDER = ReminderActionImpl.builder().setButtonIconName("icon")
+            .setButtonTitle("title")
+            .build();
+
+    public static final ReminderActionImpl NO_TITLE = ReminderActionImpl.builder().setButtonIconName("icon")
+            .setReminderIdentifier("reminder").build();
+
+    @Test
+    public void testReminderAction_Complete() {
+        testCommon(COMPLETE, "ReminderAction_Complete.json");
     }
 
-    protected void testCommon(Action expected, String filename) {
-        JsonAssetUtil.assertJsonFileEqualRef(expected, actionTestComponent.gson(), "actions/" + filename, Action.class);
+    @Test
+    public void testReminderAction_NoReminder() {
+        testCommon(NO_REMINDER, "ReminderAction_NoReminder.json");
+    }
+
+    @Test
+    public void testReminderAction_NoTitle() {
+        testCommon(NO_TITLE, "ReminderAction_NoTitle.json");
     }
 }

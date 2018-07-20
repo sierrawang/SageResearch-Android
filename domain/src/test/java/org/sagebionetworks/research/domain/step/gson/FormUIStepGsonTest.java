@@ -54,7 +54,7 @@ import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 
-public class FormUIStepGsonTests extends IndividualStepGsonTest {
+public class FormUIStepGsonTest extends IndividualStepGsonTest {
 
     @Test
     public void testIcons() {

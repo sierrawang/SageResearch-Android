@@ -26,7 +26,7 @@ import org.sagebionetworks.research.domain.task.navigation.strategy.StrategyBase
 import java.util.ArrayList;
 import java.util.List;
 
-public class StrategyBasedNavigatorTests extends IndividualNavigatorTests {
+public class StrategyBasedNavigatorTest extends IndividualNavigatorTest {
     private static final String SKIP_RESULT_IDENTIFIER = "skip";
 
     private static final String TEST_STEP_TYPE = "test step";
@@ -35,7 +35,7 @@ public class StrategyBasedNavigatorTests extends IndividualNavigatorTests {
 
     private static final StrategyBasedNavigator STRATEGY_TEST_NAVIGATOR;
 
-    public StrategyBasedNavigatorTests() {
+    public StrategyBasedNavigatorTest() {
         super(new StrategyBasedNavigator(TEST_STEPS, TEST_PROGRESS_MARKERS));
     }
 

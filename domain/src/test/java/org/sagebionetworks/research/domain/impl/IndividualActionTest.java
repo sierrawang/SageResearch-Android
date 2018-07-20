@@ -32,11 +32,19 @@
 
 package org.sagebionetworks.research.domain.impl;
 
-import org.junit.runner.RunWith;
-import org.junit.runners.Suite;
-import org.junit.runners.Suite.SuiteClasses;
+import org.junit.Before;
+import org.sagebionetworks.research.domain.JsonAssetUtil;
+import org.sagebionetworks.research.domain.step.ui.action.Action;
 
-@RunWith(Suite.class)
-@SuiteClasses({ActionImplTests.class, ReminderActionImplTests.class, SkipToStepActionImplTests.class})
-public class AllActionGsonTests {
+public class IndividualActionTest {
+    protected ActionTestComponent actionTestComponent;
+
+    @Before
+    public void setup() {
+        this.actionTestComponent = DaggerActionTestComponent.builder().build();
+    }
+
+    protected void testCommon(Action expected, String filename) {
+        JsonAssetUtil.assertJsonFileEqualRef(expected, actionTestComponent.gson(), "actions/" + filename, Action.class);
+    }
 }

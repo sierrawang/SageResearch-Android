@@ -44,7 +44,7 @@ import static junit.framework.Assert.*;
 import static org.junit.Assert.assertNotEquals;
 import static org.sagebionetworks.research.domain.JsonAssetUtil.readJsonFile;
 
-public class SectionStepGsonTests extends IndividualStepGsonTest {
+public class SectionStepGsonTest extends IndividualStepGsonTest {
     @Test
     public void testEmpty() {
         Step step = readJsonFile(stepTestComponent.gson(), "steps/EmptySectionStep.json", Step.class);

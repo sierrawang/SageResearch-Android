@@ -35,7 +35,7 @@ package org.sagebionetworks.research.domain.step.gson;
 import static org.junit.Assert.assertTrue;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
-import static org.sagebionetworks.research.domain.step.gson.UIStepGsonTests.UI_STEP_ASSERT_EQUALS;
+import static org.sagebionetworks.research.domain.step.gson.UIStepGsonTest.UI_STEP_ASSERT_EQUALS;
 
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.ImmutableSet;
@@ -46,7 +46,7 @@ import org.sagebionetworks.research.domain.step.interfaces.Step;
 import org.sagebionetworks.research.domain.step.interfaces.UIStep;
 import org.sagebionetworks.research.domain.step.ui.action.Action;
 
-public class CompletionStepGsonTests extends IndividualStepGsonTest {
+public class CompletionStepGsonTest extends IndividualStepGsonTest {
     @Test
     public void testExample_1() {
         CompletionStep expected = mock(CompletionStep.class);

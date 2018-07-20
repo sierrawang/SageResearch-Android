@@ -30,27 +30,15 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.sagebionetworks.research.domain.step.gson;
+package org.sagebionetworks.research.domain.result.gson;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
+import org.junit.runner.RunWith;
+import org.junit.runners.Suite;
+import org.junit.runners.Suite.SuiteClasses;
 
-import org.junit.Test;
-import org.sagebionetworks.research.domain.step.implementations.TransformerStepBase;
-import org.sagebionetworks.research.domain.step.interfaces.Step;
-import org.sagebionetworks.research.domain.step.interfaces.TransformerStep;
+@RunWith(Suite.class)
+@SuiteClasses({AnswerResultGsonTest.class, CollectionResultGsonTest.class, ErrorResultGsonTest.class,
+        FileResultGsonTest.class, ResultGsonTest.class, TaskResultGsonTest.class})
+public class ResultGsonTestSuite {
 
-public class TransformerStepGsonTests extends IndividualStepGsonTest {
-    @Test
-    public void testTransformer_1() {
-        TransformerStep expected = new TransformerStepBase("left", "TappingSectionStep.json");
-        testCommon(expected, "Transformer_1.json");
-    }
-
-    @Test
-    public void testTransformer_2() {
-        TransformerStep expected = new TransformerStepBase("right", "TremorSectionStep.json");
-        testCommon(expected, "Transformer_2.json");
-    }
 }
