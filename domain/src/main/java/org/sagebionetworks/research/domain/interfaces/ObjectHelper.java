@@ -36,17 +36,18 @@ import com.google.common.base.MoreObjects;
 import com.google.common.base.MoreObjects.ToStringHelper;
 
 public abstract class ObjectHelper {
-    private final HashCodeHelper hashCodeHelper;
-    private final ToStringHelper toStringHelper;
-
-    public ObjectHelper() {
-        hashCodeHelper = new HashCodeHelper();
-        toStringHelper = MoreObjects.toStringHelper(this);
-    }
+    private volatile HashCodeHelper hashCodeHelper;
 
     @Override
     public int hashCode() {
-        return hashCodeHelper().hash();
+        if (hashCodeHelper == null) {
+            synchronized (this) {
+                if (hashCodeHelper == null) {
+                    hashCodeHelper = hashCodeHelper();
+                }
+            }
+        }
+        return hashCodeHelper.hash();
     }
 
     @Override
@@ -70,8 +71,7 @@ public abstract class ObjectHelper {
      * Returns true if this objects fields are equal to the fields of the given object, false otherwise. Expected that
      * subclasses will override to add their own fields. Requires: this.getClass() == o.getClass()
      *
-     * @param o
-     *         The object to check for equality with.
+     * @param o The object to check for equality with.
      * @return true if this object's fields are equal to the fields of the given object.
      */
     protected abstract boolean equalsHelper(Object o);
@@ -93,6 +93,6 @@ public abstract class ObjectHelper {
      * @return The ToStringHelper that can be used to produce the toString for this object.
      */
     protected ToStringHelper toStringHelper() {
-        return toStringHelper;
+        return MoreObjects.toStringHelper(this);
     }
 }

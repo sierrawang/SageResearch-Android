@@ -66,6 +66,7 @@ dependencies {
     implementation fileTree(dir: 'libs', include: ['*.jar'])
     api project(':domain')
     api "com.android.support:support-annotations:$support_library_version"
+    implementation "com.android.support:appcompat-v7:$support_library_version"
     implementation 'com.google.guava:guava:24.1-android'
 
     implementation "android.arch.lifecycle:extensions:1.1.1" // ViewModel and LiveData
