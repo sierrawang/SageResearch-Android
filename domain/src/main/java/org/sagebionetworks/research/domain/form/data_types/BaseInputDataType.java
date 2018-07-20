@@ -36,14 +36,12 @@ import android.os.Parcel;
 import android.support.annotation.StringDef;
 
 import com.google.common.base.Objects;
+import com.google.common.collect.ImmutableSet;
 
 import org.sagebionetworks.research.domain.interfaces.HashCodeHelper;
 
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
-import java.util.Arrays;
-import java.util.HashSet;
-import java.util.Set;
 
 public class BaseInputDataType extends InputDataType {
     @Retention(RetentionPolicy.SOURCE)
@@ -59,9 +57,7 @@ public class BaseInputDataType extends InputDataType {
         String STRING = "string";
         String YEAR = "year";
 
-        Set<String> ALL = new HashSet<String>(
-                Arrays.asList(BOOLEAN, DATE, DECIMAL, DURATION, FRACTION, INTEGER, STRING,
-                        YEAR));
+        ImmutableSet<String> ALL = ImmutableSet.of(BOOLEAN, DATE, DECIMAL, DURATION, FRACTION, INTEGER, STRING, YEAR);
     }
 
     public static final Creator<BaseInputDataType> CREATOR = new Creator<BaseInputDataType>() {

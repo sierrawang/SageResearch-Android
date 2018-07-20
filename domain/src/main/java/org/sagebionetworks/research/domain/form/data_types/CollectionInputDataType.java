@@ -39,6 +39,7 @@ import android.support.annotation.Nullable;
 import android.support.annotation.StringDef;
 
 import com.google.common.base.Objects;
+import com.google.common.collect.ImmutableSet;
 
 import org.sagebionetworks.research.domain.form.data_types.BaseInputDataType.BaseType;
 import org.sagebionetworks.research.domain.interfaces.HashCodeHelper;
@@ -58,8 +59,7 @@ public class CollectionInputDataType extends InputDataType {
         String MULTIPLE_CHOICE = "multipleChoice";
         String MULTIPLE_COMPONENT = "multipleComponent";
 
-        Set<String> ALL = new HashSet<String>(Arrays.asList(
-                new String[]{SINGLE_CHOICE, MULTIPLE_CHOICE, MULTIPLE_COMPONENT}));
+        ImmutableSet<String> ALL = ImmutableSet.of(SINGLE_CHOICE, MULTIPLE_CHOICE, MULTIPLE_COMPONENT);
     }
 
     public static final String DELIMINATOR = ".";

@@ -34,6 +34,8 @@ package org.sagebionetworks.research.domain.result;
 
 import android.support.annotation.StringDef;
 
+import com.google.common.collect.ImmutableSet;
+
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.util.Arrays;
@@ -55,5 +57,5 @@ public @interface AnswerResultType {
     String STRING = "string";
     String JSON = "json";
 
-    Set<String> ALL = new HashSet<>(Arrays.asList(BOOLEAN, DATA, DATE, DECIMAL, INTEGER, STRING, JSON));
+    ImmutableSet<String> ALL = ImmutableSet.of(BOOLEAN, DATA, DATE, DECIMAL, INTEGER, STRING, JSON);
 }
