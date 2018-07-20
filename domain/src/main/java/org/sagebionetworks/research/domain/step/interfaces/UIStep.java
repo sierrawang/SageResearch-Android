@@ -32,12 +32,9 @@
 
 package org.sagebionetworks.research.domain.step.interfaces;
 
-import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 
-import com.google.common.collect.ImmutableMap;
-
-import org.sagebionetworks.research.domain.step.ui.action.interfaces.Action;
+import org.sagebionetworks.research.domain.step.ui.action.ActionHandler;
 
 /**
  * A UIStep defines a display unit.
@@ -45,13 +42,7 @@ import org.sagebionetworks.research.domain.step.ui.action.interfaces.Action;
  * Depending upon the available real-estate, more than one ui step may be displayed at a time. For example, on an
  * tablet, you may choose to group a set of questions using a @see SectionStep.
  */
-public interface UIStep extends Step {
-    /**
-     * @return custom UI actions for this step
-     */
-    @NonNull
-    ImmutableMap<String, Action> getActions();
-
+public interface UIStep extends Step, ActionHandler {
     /**
      * Additional detailed explanation for the step.
      * <p>

@@ -37,7 +37,7 @@ import android.support.annotation.Nullable;
 
 import com.google.common.collect.Range;
 
-import org.sagebionetworks.research.domain.form.DataTypes.InputDataType;
+import org.sagebionetworks.research.domain.form.data_types.InputDataType;
 import org.sagebionetworks.research.domain.form.InputUIHint;
 import org.sagebionetworks.research.domain.form.TextField.TextFieldOptions;
 
@@ -48,7 +48,7 @@ import java.util.List;
  * displayed.
  */
 public interface InputField {
-    final String KEY_TYPE = "dataType";
+    String KEY_TYPE = "dataType";
 
     /**
      * @return data type for this input field. The data type can have an associated ui hint

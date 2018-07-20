@@ -37,15 +37,14 @@ import static org.sagebionetworks.research.domain.inject.GsonModule.createPassTh
 import com.google.gson.JsonDeserializer;
 
 import org.sagebionetworks.research.domain.RuntimeTypeAdapterFactory;
+import org.sagebionetworks.research.domain.impl.StepAutoValueModule;
 import org.sagebionetworks.research.domain.inject.GsonModule.ClassKey;
-import org.sagebionetworks.research.domain.step.implementations.ActiveUIStepBase;
 import org.sagebionetworks.research.domain.step.implementations.CompletionStepBase;
-import org.sagebionetworks.research.domain.step.implementations.CountdownStepBase;
+import org.sagebionetworks.research.domain.step.implementations.CountdownStepImpl;
 import org.sagebionetworks.research.domain.step.implementations.FormUIStepBase;
 import org.sagebionetworks.research.domain.step.implementations.SectionStepBase;
 import org.sagebionetworks.research.domain.step.implementations.TransformerStepBase;
 import org.sagebionetworks.research.domain.step.implementations.UIStepBase;
-import org.sagebionetworks.research.domain.step.interfaces.ActiveUIStep;
 import org.sagebionetworks.research.domain.step.interfaces.CompletionStep;
 import org.sagebionetworks.research.domain.step.interfaces.CountdownStep;
 import org.sagebionetworks.research.domain.step.interfaces.FormUIStep;
@@ -66,7 +65,7 @@ import dagger.Provides;
 import dagger.multibindings.IntoMap;
 import dagger.multibindings.IntoSet;
 
-@Module(includes = {GsonModule.class})
+@Module(includes = {GsonModule.class, StepAutoValueModule.class})
 public class StepModule {
     @MapKey
     public @interface StepClassKey {
@@ -87,13 +86,6 @@ public class StepModule {
 
     @Provides
     @IntoMap
-    @StepClassKey(ActiveUIStep.class)
-    static String provideActiveUIStepTypeKey() {
-        return ActiveUIStepBase.TYPE_KEY;
-    }
-
-    @Provides
-    @IntoMap
     @ImageThemeClassKey(AnimationImageTheme.class)
     static String provideAnimationImageThemeTypeKey() {
         return AnimationImageTheme.TYPE_KEY;
@@ -108,16 +100,16 @@ public class StepModule {
 
     @Provides
     @IntoMap
-    @StepClassKey(FormUIStep.class)
-    static String provideFormUIStepTypeKey() {
-        return FormUIStepBase.TYPE_KEY;
+    @StepClassKey(CompletionStep.class)
+    static String provideCompletionStepTypeKey() {
+        return CompletionStepBase.TYPE_KEY;
     }
 
     @Provides
     @IntoMap
-    @StepClassKey(CompletionStep.class)
-    static String provideCompletionStepTypeKey() {
-        return CompletionStepBase.TYPE_KEY;
+    @StepClassKey(FormUIStep.class)
+    static String provideFormUIStepTypeKey() {
+        return FormUIStepBase.TYPE_KEY;
     }
 
     @Provides
@@ -148,11 +140,38 @@ public class StepModule {
 
     @Provides
     @IntoMap
-    @StepClassKey(CountdownStep.class)
-    static String provideCountdownStepTypeKey() {
-        return CountdownStepBase.TYPE_KEY;
+    @ClassKey(SectionStep.class)
+    static JsonDeserializer<?> provideSectionStepDeserializer() {
+        return createPassThroughDeserializer(SectionStepBase.class);
     }
 
+    @Provides
+    @IntoMap
+    @ClassKey(TransformerStep.class)
+    static JsonDeserializer<?> provideTransformerStepDeserializer() {
+        return TransformerStepBase.getJsonDeserializer();
+    }
+
+    @Provides
+    @IntoMap
+    @ClassKey(FormUIStep.class)
+    static JsonDeserializer<?> providedFormUIStepDeserializer() {
+        return createPassThroughDeserializer(FormUIStepBase.class);
+    }
+
+    @Provides
+    @IntoMap
+    @ClassKey(UIStep.class)
+    static JsonDeserializer<?> providedUIStepDeserializer() {
+        return createPassThroughDeserializer(UIStepBase.class);
+    }
+
+    @Provides
+    @IntoMap
+    @ClassKey(CompletionStep.class)
+    static JsonDeserializer<?> provideCompletionStepDeserializer() {
+        return createPassThroughDeserializer(CompletionStepBase.class);
+    }
     /**
      * @return GSON runtime type adapter factory for polymorphic deserialization of Step classes
      */

@@ -46,6 +46,7 @@ import java.util.Set;
 public interface ShowStepContract {
     @Keep
     interface Presenter<T extends View> extends BasePresenter<T> {
+        @Override
         void finish();
 
         void handleAction(@ActionType String actionType);

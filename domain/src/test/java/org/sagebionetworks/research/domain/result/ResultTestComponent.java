@@ -35,14 +35,13 @@ package org.sagebionetworks.research.domain.result;
 import com.google.gson.Gson;
 
 import org.sagebionetworks.research.domain.inject.GsonModule;
-import org.sagebionetworks.research.domain.inject.JsonModule;
 import org.sagebionetworks.research.domain.inject.ResultModule;
 
 import javax.inject.Singleton;
 
 import dagger.Component;
 
-@Component(modules = {ResultModule.class, JsonModule.class, GsonModule.class})
+@Component(modules = {ResultModule.class, GsonModule.class})
 @Singleton
 public interface ResultTestComponent {
     Gson gson();

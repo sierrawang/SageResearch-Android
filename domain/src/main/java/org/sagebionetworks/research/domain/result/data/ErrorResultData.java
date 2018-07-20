@@ -40,6 +40,8 @@ import com.google.common.base.Objects;
 import com.google.gson.Gson;
 import com.google.gson.TypeAdapter;
 
+import org.sagebionetworks.research.domain.result.interfaces.ErrorResult.ErrorResultThrowable;
+
 /**
  * An ErrorResultData stores the state unique to an ErrorResult
  */
@@ -51,14 +53,14 @@ public abstract class ErrorResultData {
 
         public abstract Builder setErrorDescription(@NonNull final String errorDescription);
 
-        public abstract Builder setThrowable(@Nullable final Throwable throwable);
+        public abstract Builder setThrowable(@Nullable final ErrorResultThrowable throwable);
     }
 
     public static Builder builder() {
         return new AutoValue_ErrorResultData.Builder();
     }
 
-    public static ErrorResultData create(final String errorDescription, final Throwable throwable) {
+    public static ErrorResultData create(final String errorDescription, final ErrorResultThrowable throwable) {
         return ErrorResultData.builder()
                 .setErrorDescription(errorDescription)
                 .setThrowable(throwable)
@@ -67,6 +69,17 @@ public abstract class ErrorResultData {
 
     public static TypeAdapter<ErrorResultData> typeAdapter(Gson gson) {
         return new AutoValue_ErrorResultData.GsonTypeAdapter(gson);
+    }
+
+    @NonNull
+    public abstract String getErrorDescription();
+
+    @Nullable
+    public abstract ErrorResultThrowable getThrowable();
+
+    @Override
+    public int hashCode() {
+        return Objects.hashCode(this.getErrorDescription(), this.getThrowable());
     }
 
     @Override
@@ -78,14 +91,9 @@ public abstract class ErrorResultData {
         ErrorResultData errorResult = (ErrorResultData) o;
         // Throwable doesn't implement an equals beyond == so comparing based on this would produce
         // undesired results.
-        return Objects.equal(this.getErrorDescription(), errorResult.getErrorDescription());
+        return Objects.equal(this.getErrorDescription(), errorResult.getErrorDescription())
+                && Objects.equal(this.getThrowable(), errorResult.getThrowable());
     }
-
-    @NonNull
-    public abstract String getErrorDescription();
-
-    @Nullable
-    public abstract Throwable getThrowable();
 
     public abstract Builder toBuilder();
 }

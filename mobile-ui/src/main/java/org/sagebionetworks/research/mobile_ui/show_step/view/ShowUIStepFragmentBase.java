@@ -56,9 +56,9 @@ import org.sagebionetworks.research.presentation.show_step.show_step_view_models
 
 import java.util.List;
 
-public abstract class ShowUIStepFragmentBase<S extends UIStepView,
-        VM extends ShowUIStepViewModel<S>, SB extends UIStepViewBinding<S>> extends
-        ShowStepFragmentBase<S, VM, SB> {
+public abstract class ShowUIStepFragmentBase<UIStepViewT extends UIStepView,
+        VM extends ShowUIStepViewModel<UIStepViewT>, SB extends UIStepViewBinding<UIStepViewT>> extends
+        ShowStepFragmentBase<UIStepViewT, VM, SB> {
     protected ActionView getBackwardButtonActionView(UIStepView stepView) {
         ActionView result = this.getDefaultActionView(stepView, ActionType.BACKWARD);
         if (result != null) {
@@ -141,7 +141,7 @@ public abstract class ShowUIStepFragmentBase<S extends UIStepView,
     }
 
     @Override
-    protected void update(S stepView) {
+    protected void update(UIStepViewT stepView) {
         super.update(stepView);
         this.updateNavigationButtons(stepView);
         TaskProgress progress = this.performTaskViewModel.getTaskProgress().getValue();
@@ -182,11 +182,13 @@ public abstract class ShowUIStepFragmentBase<S extends UIStepView,
                     animation.start();
                 } else if (imageTheme instanceof FetchableImageThemeView) {
                     DisplayDrawable drawable = ((FetchableImageThemeView) imageTheme).getImageResource();
-                    Integer imageResourceId = drawable.getDrawable();
-                    if (imageResourceId != null) {
-                        imageView.setImageResource(imageResourceId);
-                    } else {
-                        System.err.println("DisplayDrawable has null drawableRes and null defaultDrawableRes");
+                    if (drawable != null) {
+                        Integer imageResourceId = drawable.getDrawable();
+                        if (imageResourceId != null) {
+                            imageView.setImageResource(imageResourceId);
+                        } else {
+                            System.err.println("DisplayDrawable has null drawableRes and null defaultDrawableRes");
+                        }
                     }
                 }
             }

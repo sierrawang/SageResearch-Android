@@ -15,16 +15,14 @@ import org.sagebionetworks.research.presentation.show_step.show_step_view_models
 public class ShowCountdownStepFragment extends ShowActiveUIStepFragmentBase<CountdownStepView,
         ShowActiveUIStepViewModel<CountdownStepView>, ActiveUIStepViewBinding<CountdownStepView>> {
     @NonNull
-    public static ShowCountdownStepFragment newInstance(@NonNull StepView stepView,
-                                                       @NonNull PerformTaskFragment performTaskFragment) {
+    public static ShowCountdownStepFragment newInstance(@NonNull StepView stepView) {
         if (!(stepView instanceof CountdownStepView)) {
             throw new IllegalArgumentException("Step view: " + stepView + " is not a CountdownStepView.");
         }
 
         ShowCountdownStepFragment fragment = new ShowCountdownStepFragment();
-        Bundle arguments = ShowStepFragmentBase.createArguments(stepView, performTaskFragment);
+        Bundle arguments = ShowStepFragmentBase.createArguments(stepView);
         fragment.setArguments(arguments);
-        fragment.initialize();
         return fragment;
     }
 

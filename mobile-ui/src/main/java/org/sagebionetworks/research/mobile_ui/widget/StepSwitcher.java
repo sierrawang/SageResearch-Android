@@ -171,9 +171,7 @@ public class StepSwitcher extends FrameLayout {
                         .setInterpolator(interpolator)
                         .setDuration(animationTime)
                         .translationX(-1 * newTranslationX)
-                        .withEndAction(() -> {
-                            removeView(currentStep);
-                        });
+                        .withEndAction(() -> removeView(currentStep));
             }
         });
     }

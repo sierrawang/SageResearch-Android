@@ -35,11 +35,49 @@ package org.sagebionetworks.research.domain.result.interfaces;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 
+import com.google.common.base.Objects;
+
+import java.util.Arrays;
+
 /**
  * An ErrorResult is used to indicate that an error occurred. It allows for an error description and a Throwable to be
  * set to describe the error that occurred.
  */
 public interface ErrorResult extends Result {
+    class ErrorResultThrowable extends Throwable {
+        public ErrorResultThrowable(String message) {
+            super(message);
+        }
+
+        public ErrorResultThrowable(String message, Throwable cause) {
+            super(message, cause);
+        }
+
+        public ErrorResultThrowable(Throwable cause) {
+            super(cause);
+        }
+
+        @Override
+        public int hashCode() {
+            return Objects.hashCode(getMessage(), Arrays.hashCode(getStackTrace()),
+                    Arrays.hashCode(getSuppressed()));
+        }
+
+        @Override
+        public boolean equals(Object o) {
+            if (this == o) {
+                return true;
+            }
+            if (o == null || getClass() != o.getClass()) {
+                return false;
+            }
+            ErrorResultThrowable t = (ErrorResultThrowable) o;
+            return Objects.equal(getMessage(), t.getMessage())
+                    && Arrays.equals(getStackTrace(), t.getStackTrace())
+                    && Arrays.equals(getSuppressed(), t.getSuppressed());
+        }
+    }
+
     /**
      * @return A description of the Error that this result represents.
      */
@@ -50,5 +88,5 @@ public interface ErrorResult extends Result {
      * @return The throwable corresponding to the Error that this result represents.
      */
     @Nullable
-    Throwable getThrowable();
+    ErrorResultThrowable getThrowable();
 }

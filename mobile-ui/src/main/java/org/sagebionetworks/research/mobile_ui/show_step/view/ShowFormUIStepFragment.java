@@ -47,16 +47,14 @@ public class ShowFormUIStepFragment extends
         ShowStepFragmentBase<FormUIStepView, ShowUIStepViewModel<FormUIStepView>,
                         FormUIStepViewBinding<FormUIStepView>> {
     @NonNull
-    public static ShowFormUIStepFragment newInstance(@NonNull StepView stepView,
-                                                     @NonNull PerformTaskFragment performTaskFragment) {
+    public static ShowFormUIStepFragment newInstance(@NonNull StepView stepView) {
         if (!(stepView instanceof FormUIStepView)) {
             throw new IllegalArgumentException("Step view: " + stepView + " is not a FormUIStepView.");
         }
 
         ShowFormUIStepFragment fragment = new ShowFormUIStepFragment();
-        Bundle arguments = ShowStepFragmentBase.createArguments(stepView, performTaskFragment);
+        Bundle arguments = ShowStepFragmentBase.createArguments(stepView);
         fragment.setArguments(arguments);
-        fragment.initialize();
         return fragment;
     }
 

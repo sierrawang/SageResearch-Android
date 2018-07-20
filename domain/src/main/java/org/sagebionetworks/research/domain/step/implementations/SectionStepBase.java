@@ -64,7 +64,7 @@ public class SectionStepBase extends StepBase implements SectionStep {
 
     @NonNull
     @Override
-    public SectionStepBase copyWithIdentifier(String identifier) {
+    public SectionStep copyWithIdentifier(String identifier) {
         SectionStepBase result = new SectionStepBase(identifier, steps);
         // If the user forgets to override copy with identifier, the type of the step will change when it goes through
         // the resource transformer. This is a really confusing bug so this code is present to make it clearer why

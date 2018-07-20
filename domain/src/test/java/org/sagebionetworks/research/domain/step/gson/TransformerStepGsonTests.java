@@ -53,11 +53,4 @@ public class TransformerStepGsonTests extends IndividualStepGsonTest {
         TransformerStep expected = new TransformerStepBase("right", "TremorSectionStep.json");
         testCommon(expected, "Transformer_2.json");
     }
-
-    private void testCommon(TransformerStep expected, String filename) {
-        Step step = this.readJsonFile(filename);
-        assertNotNull(step);
-        assertTrue(step instanceof TransformerStep);
-        assertEquals(expected, step);
-    }
 }

@@ -32,6 +32,8 @@
 
 package org.sagebionetworks.research.data;
 
+import static java.nio.charset.StandardCharsets.UTF_8;
+
 import android.content.Context;
 import android.content.res.AssetManager;
 import android.content.res.Resources.NotFoundException;
@@ -184,7 +186,7 @@ public class ResourceTaskRepository implements TaskRepository {
     @NonNull
     private InputStreamReader getAsset(String assetPath) throws IOException {
         AssetManager assetManager = context.getAssets();
-        return new InputStreamReader(assetManager.open(assetPath));
+        return new InputStreamReader(assetManager.open(assetPath), UTF_8);
     }
 
     /**
@@ -193,8 +195,8 @@ public class ResourceTaskRepository implements TaskRepository {
      *
      * @param step
      *         The step to replace all the transformer substeps of.
-     * @return The givne step with all the transformer substeps replaced with the result of turning their resources
-     * into section steps.
+     * @return The givne step with all the transformer substeps replaced with the result of turning their
+     *         resourcesinto section steps.
      * @throws IOException
      *         If any of the transformer steps has a resource that cannot be opened.
      */

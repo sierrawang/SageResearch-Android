@@ -6,7 +6,6 @@ import android.support.annotation.Nullable;
 import com.google.common.collect.ImmutableMap;
 
 import org.sagebionetworks.research.domain.step.StepType;
-import org.sagebionetworks.research.domain.step.implementations.ActiveUIStepBase;
 import org.sagebionetworks.research.domain.step.interfaces.CountdownStep;
 import org.sagebionetworks.research.domain.step.interfaces.Step;
 import org.sagebionetworks.research.presentation.DisplayString;

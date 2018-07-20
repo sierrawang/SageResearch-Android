@@ -32,7 +32,6 @@
 
 package org.sagebionetworks.research.mobile_ui.inject.subcomponents;
 
-import org.sagebionetworks.research.mobile_ui.show_step.view.ShowActiveUIStepFragment;
 import org.sagebionetworks.research.mobile_ui.show_step.view.ShowCompletionStepFragment;
 import org.sagebionetworks.research.presentation.inject.ShowStepViewModelModule;
 
@@ -43,7 +42,8 @@ import dagger.android.AndroidInjector;
 @Subcomponent(modules = ShowStepViewModelModule.class)
 public abstract class ShowCompletionStepFragmentSubcomponent implements AndroidInjector<ShowCompletionStepFragment> {
     @Subcomponent.Builder
-    public static abstract class Builder extends AndroidInjector.Builder<ShowCompletionStepFragment> {
+    public abstract static class Builder extends AndroidInjector.Builder<ShowCompletionStepFragment> {
+        @Override
         public abstract ShowCompletionStepFragmentSubcomponent build();
     }
 }

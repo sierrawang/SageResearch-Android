@@ -52,10 +52,30 @@ import dagger.multibindings.IntoMap;
 
 @Module(includes = {GsonModule.class})
 public abstract class TaskModule {
-
     @Singleton
     @Provides
     static StepNavigatorFactory provideStepNavigatorFactory() {
         return new StrategyBasedNavigator.Factory();
     }
+
+    /**
+     * @return The json Deserializer for a task.
+     */
+    @Provides
+    @IntoMap
+    @ClassKey(Task.class)
+    static JsonDeserializer<?> provideTaskDeserializer() {
+        return createPassThroughDeserializer(TaskBase.class);
+    }
+
+    /**
+     * @return The json Deserializer for a task info.
+     */
+    @Provides
+    @IntoMap
+    @ClassKey(TaskInfo.class)
+    static JsonDeserializer<?> provideTaskInfoDeserializer() {
+        return createPassThroughDeserializer(TaskInfoBase.class);
+    }
+
 }

@@ -42,19 +42,17 @@ import org.sagebionetworks.research.domain.form.interfaces.InputField;
 import org.sagebionetworks.research.domain.interfaces.HashCodeHelper;
 import org.sagebionetworks.research.domain.step.StepType;
 import org.sagebionetworks.research.domain.step.interfaces.FormUIStep;
-import org.sagebionetworks.research.domain.step.ui.action.interfaces.Action;
+import org.sagebionetworks.research.domain.step.ui.action.Action;
 import org.sagebionetworks.research.domain.step.ui.theme.ColorTheme;
 import org.sagebionetworks.research.domain.step.ui.theme.ImageTheme;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 public class FormUIStepBase extends UIStepBase implements FormUIStep {
     public static final String TYPE_KEY = StepType.FORM;
-    private static final Logger LOGGER = LoggerFactory.getLogger(FormUIStepBase.class);
 
     @NonNull
     private final List<InputField> inputFields;
@@ -66,26 +64,19 @@ public class FormUIStepBase extends UIStepBase implements FormUIStep {
     }
 
     public FormUIStepBase(@NonNull final String identifier, @NonNull Map<String, Action> actions,
-            @Nullable final String title, @Nullable final String text, @Nullable final String detail,
-            @Nullable final String footnote, @Nullable final ColorTheme colorTheme,
+            @Nullable Set<String> hiddenActions, @Nullable final String title, @Nullable final String text,
+            @Nullable final String detail, @Nullable final String footnote, @Nullable final ColorTheme colorTheme,
             @Nullable final ImageTheme imageTheme, @NonNull final List<InputField> inputFields) {
-        super(identifier, actions, title, text, detail, footnote, colorTheme, imageTheme);
+        super(identifier, actions, hiddenActions, title, text, detail, footnote, colorTheme, imageTheme);
         this.inputFields = inputFields;
     }
 
+    @NonNull
     @Override
-    public FormUIStepBase copyWithIdentifier(@NonNull String identifier) {
-        FormUIStepBase result = new FormUIStepBase(identifier, this.getActions(), this.getTitle(), this.getText(), this.getDetail(),
-                this.getFootnote(), this.getColorTheme(), this.getImageTheme(), this.inputFields);
-        // If the user forgets to override copy with identifier, the type of the step will change when it goes through
-        // the resource transformer. This is a really confusing bug so this code is present to make it clearer why
-        // this is happening.
-        if (result.getClass() != this.getClass()) {
-            LOGGER.warn("Result of copy with identifier has different type than original input, did you"
-                    + "forget to override CopyWithIdentifier");
-        }
-
-        return result;
+    public FormUIStepBase copyWithIdentifierOperation(@NonNull String identifier) {
+        return new FormUIStepBase(identifier, this.getActions(), this.getHiddenActions(), this.getTitle(),
+                this.getText(), this.getDetail(), this.getFootnote(), this.getColorTheme(), this.getImageTheme(),
+                this.inputFields);
     }
 
     @NonNull
