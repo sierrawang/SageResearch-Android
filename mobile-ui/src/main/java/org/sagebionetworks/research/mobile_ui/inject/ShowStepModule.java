@@ -34,11 +34,13 @@ package org.sagebionetworks.research.mobile_ui.inject;
 
 import org.sagebionetworks.research.mobile_ui.inject.subcomponents.ShowActiveUIStepFragmentSubcomponent;
 import org.sagebionetworks.research.mobile_ui.inject.subcomponents.ShowCompletionStepFragmentSubcomponent;
+import org.sagebionetworks.research.mobile_ui.inject.subcomponents.ShowCountdownStepFragmentSubcomponent;
 import org.sagebionetworks.research.mobile_ui.inject.subcomponents.ShowFormUIStepFragmentSubcomponent;
 import org.sagebionetworks.research.mobile_ui.inject.subcomponents.ShowStepFragmentSubcomponent;
 import org.sagebionetworks.research.mobile_ui.inject.subcomponents.ShowUIStepFragmentSubcomponent;
 import org.sagebionetworks.research.mobile_ui.show_step.view.ShowActiveUIStepFragment;
 import org.sagebionetworks.research.mobile_ui.show_step.view.ShowCompletionStepFragment;
+import org.sagebionetworks.research.mobile_ui.show_step.view.ShowCountdownStepFragment;
 import org.sagebionetworks.research.mobile_ui.show_step.view.ShowStepFragment;
 import org.sagebionetworks.research.mobile_ui.show_step.view.ShowUIStepFragment;
 import org.sagebionetworks.research.mobile_ui.show_step.view.ShowFormUIStepFragment;
@@ -51,7 +53,7 @@ import dagger.multibindings.IntoMap;
 
 @Module(subcomponents = {ShowStepFragmentSubcomponent.class, ShowCompletionStepFragmentSubcomponent.class,
         ShowUIStepFragmentSubcomponent.class, ShowFormUIStepFragmentSubcomponent.class,
-        ShowActiveUIStepFragmentSubcomponent.class})
+        ShowActiveUIStepFragmentSubcomponent.class, ShowCompletionStepFragmentSubcomponent.class})
 public abstract class ShowStepModule {
     @Binds
     @IntoMap
@@ -82,4 +84,10 @@ public abstract class ShowStepModule {
     @FragmentKey(ShowFormUIStepFragment.class)
     abstract AndroidInjector.Factory<? extends android.support.v4.app.Fragment>
     bindShowFormUIStepFragmentInjectorFactory(ShowFormUIStepFragmentSubcomponent.Builder builder);
+
+    @Binds
+    @IntoMap
+    @FragmentKey(ShowCountdownStepFragment.class)
+    abstract AndroidInjector.Factory<? extends android.support.v4.app.Fragment>
+    bindShowCountdownStepFragmentInjectorFactory(ShowCountdownStepFragmentSubcomponent.Builder builder);
 }
