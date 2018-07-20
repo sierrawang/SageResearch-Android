@@ -53,7 +53,7 @@ import dagger.multibindings.IntoMap;
 
 @Module(subcomponents = {ShowStepFragmentSubcomponent.class, ShowCompletionStepFragmentSubcomponent.class,
         ShowUIStepFragmentSubcomponent.class, ShowFormUIStepFragmentSubcomponent.class,
-        ShowActiveUIStepFragmentSubcomponent.class, ShowCompletionStepFragmentSubcomponent.class})
+        ShowActiveUIStepFragmentSubcomponent.class, ShowCountdownStepFragmentSubcomponent.class})
 public abstract class ShowStepModule {
     @Binds
     @IntoMap
