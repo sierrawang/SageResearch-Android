@@ -78,6 +78,7 @@ import java.util.UUID;
 
 import io.reactivex.Completable;
 import io.reactivex.disposables.CompositeDisposable;
+import io.reactivex.schedulers.Schedulers;
 
 @MainThread
 public class PerformTaskViewModel extends ViewModel {

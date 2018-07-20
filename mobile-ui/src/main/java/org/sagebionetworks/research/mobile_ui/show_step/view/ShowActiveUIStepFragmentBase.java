@@ -34,31 +34,18 @@ package org.sagebionetworks.research.mobile_ui.show_step.view;
 
 import android.animation.ObjectAnimator;
 import android.arch.lifecycle.LiveData;
-import android.arch.lifecycle.Observer;
-import android.graphics.Paint;
-import android.os.Bundle;
-import android.support.annotation.LayoutRes;
-import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
-import android.view.View;
 import android.view.animation.LinearInterpolator;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
-import org.sagebionetworks.research.domain.mobile_ui.R;
-import org.sagebionetworks.research.mobile_ui.perform_task.PerformTaskFragment;
 import org.sagebionetworks.research.mobile_ui.show_step.view.view_binding.ActiveUIStepViewBinding;
-import org.sagebionetworks.research.mobile_ui.widget.ActionButton;
 import org.sagebionetworks.research.presentation.model.interfaces.ActiveUIStepView;
-import org.sagebionetworks.research.presentation.model.interfaces.StepView;
 import org.sagebionetworks.research.presentation.show_step.show_step_view_models.ShowActiveUIStepViewModel;
-import org.sagebionetworks.research.presentation.show_step.show_step_view_models.ShowStepViewModel;
-import org.sagebionetworks.research.presentation.show_step.show_step_view_models.ShowUIStepViewModel;
 
 public abstract class ShowActiveUIStepFragmentBase<S extends ActiveUIStepView, VM extends ShowActiveUIStepViewModel<S>,
         SB extends ActiveUIStepViewBinding<S>> extends
         ShowUIStepFragmentBase<S, VM, SB> {
-    public static final int PROGRESS_BAR_ANIMATION_MULTIPILER = 1000;
+    public static final int PROGRESS_BAR_ANIMATION_MULTIPLIER = 1000;
 
     protected LiveData<Long> countdown;
 
@@ -69,9 +56,9 @@ public abstract class ShowActiveUIStepFragmentBase<S extends ActiveUIStepView, V
         ProgressBar countdownDial = this.stepViewBinding.getCountdownDial();
         Integer duration = ((Long)this.stepView.getDuration().getSeconds()).intValue();
         if (countdownDial != null) {
-            countdownDial.setMax(duration * PROGRESS_BAR_ANIMATION_MULTIPILER);
+            countdownDial.setMax(duration * PROGRESS_BAR_ANIMATION_MULTIPLIER);
             ObjectAnimator animator = ObjectAnimator.ofInt(countdownDial, "progress", 0,
-                    duration * PROGRESS_BAR_ANIMATION_MULTIPILER);
+                    duration * PROGRESS_BAR_ANIMATION_MULTIPLIER);
             animator.setDuration(duration * 1000);
             animator.setStartDelay(0);
             animator.setInterpolator(new LinearInterpolator());
