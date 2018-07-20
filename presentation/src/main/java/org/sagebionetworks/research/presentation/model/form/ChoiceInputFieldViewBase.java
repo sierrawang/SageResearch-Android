@@ -33,20 +33,20 @@
 package org.sagebionetworks.research.presentation.model.form;
 
 import android.os.Parcel;
-import android.os.Parcelable;
 import android.support.annotation.NonNull;
 
+import com.google.common.collect.ImmutableList;
 import com.google.common.collect.Range;
 
 import org.sagebionetworks.research.domain.form.data_types.InputDataType;
 import org.sagebionetworks.research.domain.form.TextField.TextFieldOptions;
-import org.sagebionetworks.research.domain.form.interfaces.SurveyRule;
+import org.sagebionetworks.research.domain.survey.SurveyRule;
 import org.sagebionetworks.research.presentation.DisplayString;
 
 import java.util.List;
 
 public class ChoiceInputFieldViewBase<E> extends InputFieldViewBase {
-    private final List<ChoiceView<E>> choices;
+    private final ImmutableList<ChoiceView<E>> choices;
 
     private final ChoiceView<E> defaultAnswer;
 
@@ -55,8 +55,8 @@ public class ChoiceInputFieldViewBase<E> extends InputFieldViewBase {
             final DisplayString placeholderText, final boolean isOptional,
             @NonNull final InputDataType formDataType, final String uiHint,
             final TextFieldOptions textFieldOptions, final Range range,
-            final List<SurveyRule> surveyRules,
-            final List<ChoiceView<E>> choices, final ChoiceView<E> defaultAnswer) {
+            final ImmutableList<? extends SurveyRule> surveyRules,
+            final ImmutableList<ChoiceView<E>> choices, final ChoiceView<E> defaultAnswer) {
         super(identifier, prompt, promptDetail, placeholderText, isOptional, formDataType, uiHint, textFieldOptions,
                 range, surveyRules);
         this.choices = choices;
@@ -64,7 +64,7 @@ public class ChoiceInputFieldViewBase<E> extends InputFieldViewBase {
     }
 
     public ChoiceInputFieldViewBase(final Parcel in,
-            final List<ChoiceView<E>> choices, final ChoiceView<E> defaultAnswer) {
+            final ImmutableList<ChoiceView<E>> choices, final ChoiceView<E> defaultAnswer) {
         super(in);
         this.choices = choices;
         this.defaultAnswer = defaultAnswer;

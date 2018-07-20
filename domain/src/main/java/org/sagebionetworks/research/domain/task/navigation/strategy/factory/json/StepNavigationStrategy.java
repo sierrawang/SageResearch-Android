@@ -30,32 +30,37 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.sagebionetworks.research.domain.task.navigation.strategy.next_step;
+package org.sagebionetworks.research.domain.task.navigation.strategy.factory.json;
 
+import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 
-import com.google.common.base.MoreObjects;
+import com.google.auto.value.AutoValue;
+import com.google.common.base.Strings;
+import com.google.gson.Gson;
+import com.google.gson.TypeAdapter;
+import com.ryanharter.auto.value.gson.Ignore;
 
-import org.sagebionetworks.research.domain.result.interfaces.TaskResult;
-import org.sagebionetworks.research.domain.task.navigation.strategy.StepNavigationStrategy.NextStepStrategy;
+@AutoValue
+public abstract class StepNavigationStrategy {
+    @AutoValue.Builder
+    public abstract static class Builder {
+        @NonNull
+        public abstract StepNavigationStrategy build();
 
-public final class ConstantNextStepStrategy implements NextStepStrategy {
-    private final String nextStepIdentifier;
+        @NonNull
+        public abstract Builder setNextStepIdentifier(@Nullable String nextStepIdentifier);
+    }
 
-    public ConstantNextStepStrategy(@Nullable String nextStepIdentifier) {
-        this.nextStepIdentifier = nextStepIdentifier;
+    public static TypeAdapter<StepNavigationStrategy> typeAdapter(Gson gson) {
+        return new AutoValue_StepNavigationStrategy.GsonTypeAdapter(gson);
     }
 
     @Nullable
-    @Override
-    public String getNextStepIdentifier(@org.jetbrains.annotations.Nullable final TaskResult taskResult) {
-        return nextStepIdentifier;
-    }
+    public abstract String getNextStepIdentifier();
 
-    @Override
-    public String toString() {
-        return MoreObjects.toStringHelper(this)
-                .add("nextStepIdentifier", nextStepIdentifier)
-                .toString();
+    @Ignore
+    public boolean hasNextStepIdentifier() {
+        return !Strings.isNullOrEmpty(getNextStepIdentifier());
     }
 }

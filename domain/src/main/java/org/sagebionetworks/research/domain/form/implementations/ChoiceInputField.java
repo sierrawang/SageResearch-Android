@@ -37,13 +37,14 @@ import android.support.annotation.Nullable;
 
 import com.google.common.base.MoreObjects.ToStringHelper;
 import com.google.common.base.Objects;
+import com.google.common.collect.ImmutableList;
 import com.google.common.collect.Range;
 
 import org.sagebionetworks.research.domain.form.data_types.InputDataType;
 import org.sagebionetworks.research.domain.form.TextField.TextFieldOptions;
 import org.sagebionetworks.research.domain.form.interfaces.Choice;
 import org.sagebionetworks.research.domain.form.interfaces.ChoiceOptions;
-import org.sagebionetworks.research.domain.form.interfaces.SurveyRule;
+import org.sagebionetworks.research.domain.survey.SurveyRule;
 import org.sagebionetworks.research.domain.interfaces.HashCodeHelper;
 
 import java.util.List;
@@ -56,7 +57,7 @@ import java.util.List;
  */
 public class ChoiceInputField<E> extends InputFieldBase implements ChoiceOptions<E> {
     @NonNull
-    private final List<Choice<E>> choices;
+    private final ImmutableList<Choice<E>> choices;
 
     @Nullable
     private final Choice<E> defaultAnswer;
@@ -78,8 +79,8 @@ public class ChoiceInputField<E> extends InputFieldBase implements ChoiceOptions
             @Nullable final String formUIHint,
             @Nullable final TextFieldOptions textFieldOptions,
             @Nullable final Range range,
-            @Nullable final List<SurveyRule> surveyRules,
-            @NonNull final List<Choice<E>> choices,
+            @Nullable final ImmutableList<SurveyRule> surveyRules,
+            @NonNull final ImmutableList<Choice<E>> choices,
             @Nullable final Choice<E> defaultAnswer) {
         super(identifier, prompt, promptDetail, placeholderText, isOptional, formDataType, formUIHint,
                 textFieldOptions,

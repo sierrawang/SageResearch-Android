@@ -30,50 +30,22 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.sagebionetworks.research.domain.form.interfaces;
+package org.sagebionetworks.research.domain.task.navigation.strategy.factory.next_step;
 
-import android.support.annotation.Nullable;
+import static junit.framework.Assert.assertNotNull;
+import static org.junit.Assert.assertEquals;
+import static org.mockito.Mockito.mock;
 
-import com.google.common.collect.ImmutableSet;
+import org.junit.Test;
+import org.sagebionetworks.research.domain.result.interfaces.TaskResult;
+import org.sagebionetworks.research.domain.task.navigation.strategy.StepNavigationStrategy.NextStepStrategy;
 
-import org.sagebionetworks.research.domain.result.interfaces.Result;
+public class ConstantNextStepStrategyTest {
 
-/**
- * A survey rule defines the navigation and cohorts for a survey. Used to allow surveys to have logic behind which
- * questions get asked depending on user data and answers to previous questions.
- */
-public interface SurveyRule {
-    /**
-     * A class to store the result of a call to evaluate cohorts.
-     */
-    class CohortResult {
-        public final ImmutableSet<String> add;
-
-        public final ImmutableSet<String> remove;
-
-        public CohortResult(ImmutableSet<String> add, ImmutableSet<String> remove) {
-            this.add = add;
-            this.remove = remove;
-        }
+    @Test
+    public void getNextStepIdentifier() {
+        String nextIdentifier = "nextIdentifier";
+        NextStepStrategy constantNextStepStrategy = new ConstantNextStepStrategy(nextIdentifier);
+        assertEquals(nextIdentifier, constantNextStepStrategy.getNextStepIdentifier(mock(TaskResult.class)));
     }
-
-    /**
-     * For the given result, what are the cohorts to add or remove?
-     *
-     * @param result
-     *         The result to evaluate
-     * @return The cohorts to add, and remove
-     */
-    @Nullable
-    CohortResult evaluateCohorts(Result result);
-
-    /**
-     * For the given result, what is the next step the survey should go to.
-     *
-     * @param result
-     *         The result to evaluate
-     * @return The identifier to skip to or null if this is not applicable.
-     */
-    @Nullable
-    String evaluateRule(Result result);
 }

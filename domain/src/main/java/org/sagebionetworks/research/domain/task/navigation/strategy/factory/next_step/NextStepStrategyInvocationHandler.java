@@ -30,7 +30,7 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.sagebionetworks.research.domain.task.navigation.strategy.next_step;
+package org.sagebionetworks.research.domain.task.navigation.strategy.factory.next_step;
 
 import static com.google.common.base.Preconditions.checkNotNull;
 

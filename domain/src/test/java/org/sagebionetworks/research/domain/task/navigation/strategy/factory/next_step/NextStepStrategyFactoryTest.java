@@ -30,8 +30,9 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.sagebionetworks.research.domain.task.navigation.strategy.next_step;
+package org.sagebionetworks.research.domain.task.navigation.strategy.factory.next_step;
 
+import static junit.framework.Assert.assertNotNull;
 import static org.junit.Assert.assertEquals;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
@@ -40,10 +41,15 @@ import static org.mockito.Mockito.when;
 import org.junit.Before;
 import org.junit.Test;
 import org.sagebionetworks.research.domain.result.interfaces.TaskResult;
+import org.sagebionetworks.research.domain.step.gson.IndividualStepGsonTest;
 import org.sagebionetworks.research.domain.step.interfaces.Step;
 import org.sagebionetworks.research.domain.task.navigation.strategy.StepNavigationStrategy.NextStepStrategy;
 
-public class NextStepStrategyFactoryTest {
+import java.lang.reflect.InvocationHandler;
+import java.lang.reflect.Method;
+import java.lang.reflect.Proxy;
+
+public class NextStepStrategyFactoryTest extends IndividualStepGsonTest {
 
     private NextStepStrategyFactory nextStepStrategyFactory;
 
@@ -80,5 +86,6 @@ public class NextStepStrategyFactoryTest {
     @Before
     public void setup() {
         nextStepStrategyFactory = new NextStepStrategyFactory();
+        super.setup();
     }
 }

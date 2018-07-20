@@ -30,47 +30,32 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.sagebionetworks.research.domain.task.navigation.strategy.next_step;
+package org.sagebionetworks.research.domain.task.navigation.strategy.factory.next_step;
 
-import static com.google.common.base.Preconditions.checkNotNull;
-
-import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 
-import org.sagebionetworks.research.domain.step.interfaces.Step;
+import com.google.common.base.MoreObjects;
+
+import org.sagebionetworks.research.domain.result.interfaces.TaskResult;
 import org.sagebionetworks.research.domain.task.navigation.strategy.StepNavigationStrategy.NextStepStrategy;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
-import java.lang.reflect.Proxy;
+public final class ConstantNextStepStrategy implements NextStepStrategy {
+    private final String nextStepIdentifier;
 
-/**
- * Created by liujoshua on 10/13/2017.
- */
-
-public class NextStepStrategyFactory {
-    private static final Logger LOGGER = LoggerFactory.getLogger(NextStepStrategyFactory.class);
-
-    @Nullable
-    public NextStepStrategy create(@NonNull Step step, @NonNull NextStepStrategy nextStepStrategy) {
-        checkNotNull(step);
-        checkNotNull(nextStepStrategy);
-
-        NextStepStrategyInvocationHandler handler = new NextStepStrategyInvocationHandler(nextStepStrategy);
-
-        NextStepStrategy rule = (NextStepStrategy) Proxy
-                .newProxyInstance(NextStepStrategy.class.getClassLoader(), new Class[]{NextStepStrategy.class},
-                        handler);
-
-        LOGGER.debug("Creating next rule for step: " + step, ", created: " + rule);
-        return rule;
+    public ConstantNextStepStrategy(@Nullable String nextStepIdentifier) {
+        this.nextStepIdentifier = nextStepIdentifier;
     }
 
     @Nullable
-    public NextStepStrategy create(@NonNull Step step, @Nullable String nextStepIdentifier) {
-        checkNotNull(step);
-
-        return create(step, new ConstantNextStepStrategy(nextStepIdentifier));
+    @Override
+    public String getNextStepIdentifier(@Nullable final TaskResult taskResult) {
+        return nextStepIdentifier;
     }
 
+    @Override
+    public String toString() {
+        return MoreObjects.toStringHelper(this)
+                .add("nextStepIdentifier", nextStepIdentifier)
+                .toString();
+    }
 }

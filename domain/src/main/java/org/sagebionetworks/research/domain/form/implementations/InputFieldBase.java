@@ -37,6 +37,7 @@ import android.support.annotation.Nullable;
 
 import com.google.common.base.MoreObjects.ToStringHelper;
 import com.google.common.base.Objects;
+import com.google.common.collect.ImmutableList;
 import com.google.common.collect.Range;
 import com.google.gson.annotations.SerializedName;
 
@@ -44,7 +45,7 @@ import org.sagebionetworks.research.domain.form.data_types.InputDataType;
 import org.sagebionetworks.research.domain.form.InputUIHint;
 import org.sagebionetworks.research.domain.form.TextField.TextFieldOptions;
 import org.sagebionetworks.research.domain.form.interfaces.InputField;
-import org.sagebionetworks.research.domain.form.interfaces.SurveyRule;
+import org.sagebionetworks.research.domain.survey.SurveyRule;
 import org.sagebionetworks.research.domain.interfaces.HashCodeHelper;
 import org.sagebionetworks.research.domain.interfaces.ObjectHelper;
 
@@ -84,7 +85,7 @@ public class InputFieldBase extends ObjectHelper implements InputField {
     private final Range range;
 
     @Nullable
-    private final List<SurveyRule> surveyRules;
+    private final ImmutableList<SurveyRule> surveyRules;
 
     @Nullable
     private final TextFieldOptions textFieldOptions;
@@ -112,7 +113,7 @@ public class InputFieldBase extends ObjectHelper implements InputField {
             @NonNull final InputDataType formDataType,
             @Nullable final String formUIHint,
             @Nullable final TextFieldOptions textFieldOptions, @Nullable final Range range,
-            @Nullable final List<SurveyRule> surveyRules) {
+            @Nullable final ImmutableList<SurveyRule> surveyRules) {
         super();
         this.identifier = identifier;
         this.prompt = prompt;
@@ -171,7 +172,7 @@ public class InputFieldBase extends ObjectHelper implements InputField {
 
     @Nullable
     @Override
-    public List<SurveyRule> getSurveyRules() {
+    public ImmutableList<SurveyRule> getSurveyRules() {
         return this.surveyRules;
     }
 

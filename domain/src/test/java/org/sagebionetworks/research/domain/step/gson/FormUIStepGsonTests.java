@@ -34,6 +34,8 @@ package org.sagebionetworks.research.domain.step.gson;
 
 import static org.sagebionetworks.research.domain.JsonAssetUtil.readJsonFile;
 
+import com.google.common.collect.ImmutableList;
+import com.google.common.collect.ImmutableList.Builder;
 import com.google.gson.JsonParseException;
 
 import org.junit.Test;
@@ -46,92 +48,86 @@ import org.sagebionetworks.research.domain.step.implementations.FormUIStepBase;
 import org.sagebionetworks.research.domain.step.interfaces.FormUIStep;
 import org.sagebionetworks.research.domain.step.interfaces.Step;
 
-import java.io.File;
-import java.io.FileReader;
 import java.io.IOException;
-import java.io.Reader;
-import java.net.URL;
-import java.util.ArrayList;
-import java.util.List;
 
 public class FormUIStepGsonTests extends IndividualStepGsonTest {
 
     @Test
     public void testIcons() {
-        List<Choice<Integer>> expectedChoices = new ArrayList<>();
-        expectedChoices.add(new ChoiceBase<>(1, "delighted", "Nothing could be better!",
+        ImmutableList.Builder<Choice<Integer>> choiceBuilder = new ImmutableList.Builder<>();
+        choiceBuilder.add(new ChoiceBase<>(1, "delighted", "Nothing could be better!",
                 "moodScale1", false));
-        expectedChoices.add(new ChoiceBase<>(2, "good", "Life is good.",
+        choiceBuilder.add(new ChoiceBase<>(2, "good", "Life is good.",
                 "moodScale2", false));
-        expectedChoices.add(new ChoiceBase<>(3, "so-so", "Things are okay, I guess.",
+        choiceBuilder.add(new ChoiceBase<>(3, "so-so", "Things are okay, I guess.",
                 "moodScale3", false));
-        expectedChoices.add(new ChoiceBase<>(4, "sad", "I'm feeling a bit down.",
+        choiceBuilder.add(new ChoiceBase<>(4, "sad", "I'm feeling a bit down.",
                 "moodScale4", false));
-        expectedChoices.add(new ChoiceBase<>(5, "miserable", "I cry into my pillow every night.",
+        choiceBuilder.add(new ChoiceBase<>(5, "miserable", "I cry into my pillow every night.",
                 "moodScale5", false));
-        List<InputField> expectedInputFields = new ArrayList<>();
+        ImmutableList.Builder<InputField> expectedInputFields = new ImmutableList.Builder<>();
         expectedInputFields.add(new ChoiceInputField<Integer>(null, null, null, null,
                 false, new CollectionInputDataType("singleChoice", "integer"), "picker",
-                null, null, null, expectedChoices, null));
+                null, null, null, choiceBuilder.build(), null));
         FormUIStep expected = new FormUIStepBase("imageList", null, null, "Single Choice with Images",
-                "Select a single option", null, null, null, null, expectedInputFields);
+                "Select a single option", null, null, null, null, expectedInputFields.build());
         testCommon(expected, "FormIcons.json");
     }
 
     @Test(expected = JsonParseException.class)
     public void testIncorrectChoiceType_StringIntoInteger() throws IOException {
-        readJsonFile(stepTestComponent.gson(),"steps/FormStringIntoInteger.json", Step.class);
+        readJsonFile(stepTestComponent.gson(), "steps/FormStringIntoInteger.json", Step.class);
     }
 
     @Test
     public void testInteger() {
-        List<Choice<Integer>> expectedChoices = new ArrayList<>();
+        ImmutableList.Builder<Choice<Integer>> expectedChoices = new Builder<>();
         expectedChoices.add(new ChoiceBase<>(1, "Alpha", null, null, false));
         expectedChoices.add(new ChoiceBase<>(2, "Beta", null, null, false));
         expectedChoices.add(new ChoiceBase<>(3, "Gamma", null, null, false));
         expectedChoices.add(new ChoiceBase<>(0, "None of the above", null, null, true));
-        List<InputField> expectedInputFields = new ArrayList<>();
+        ImmutableList.Builder<InputField> expectedInputFields = new ImmutableList.Builder<>();
         expectedInputFields.add(new ChoiceInputField<>(null, null, null, null, false,
                 new CollectionInputDataType("multipleChoice", "integer"), "list",
-                null, null, null, expectedChoices, null));
+                null, null, null, expectedChoices.build(), null));
         FormUIStep expected = new FormUIStepBase("selectMultiple", null, null, "Multiple Choice",
-                "Select as many as you want", null, null, null, null, expectedInputFields);
+                "Select as many as you want", null, null, null, null, expectedInputFields.build());
         testCommon(expected, "FormStepInteger.json");
     }
 
     @Test
     public void testString() {
-        List<Choice<String>> expectedChoices = new ArrayList<>();
+        ImmutableList.Builder<Choice<String>> expectedChoices = new ImmutableList.Builder<>();
         expectedChoices.add(new ChoiceBase<>("left", "I can only perform this activity with my LEFT hand.",
                 null, null, false));
         expectedChoices.add(new ChoiceBase<>("right", "I can only perform this activity with my RIGHT hand.",
                 null, null, false));
         expectedChoices.add(new ChoiceBase<>("both", "I can perform this activity with both hands.",
                 null, null, false));
-        List<InputField> expectedInputFields = new ArrayList<>();
+        ImmutableList.Builder<InputField> expectedInputFields = new ImmutableList.Builder<>();
         expectedInputFields.add(new ChoiceInputField<>(null, null, null,
                 null, false,
                 new CollectionInputDataType("singleChoice", "string"), "list",
-                null, null, null, expectedChoices, null));
+                null, null, null, expectedChoices.build(), null));
         FormUIStep expected = new FormUIStepBase("handSelection", null, null,
                 "Which hands are you capable of doing this task with?",
-                null, null, null, null, null, expectedInputFields);
+                null, null, null, null, null, expectedInputFields.build());
         testCommon(expected, "FormStepString.json");
     }
 
     @Test
     public void testString_Shorthand() {
-        List<Choice<String>> expectedChocies = new ArrayList<>();
+        ImmutableList.Builder<Choice<String>> expectedChocies = new ImmutableList.Builder<>();
         expectedChocies.add(new ChoiceBase<>("alpha", "alpha", null, null, false));
         expectedChocies.add(new ChoiceBase<>("beta", "beta", null, null, false));
         expectedChocies.add(new ChoiceBase<>("charlie", "charlie", null, null, false));
         expectedChocies.add(new ChoiceBase<>("delta", "delta", null, null, false));
-        List<InputField> expectedInputFields = new ArrayList<>();
+        ImmutableList.Builder<InputField> expectedInputFields = new ImmutableList.Builder<>();
         expectedInputFields.add(new ChoiceInputField<>(null, null, null, null,
                 false, new CollectionInputDataType("multipleChoice", null), null,
-                null, null, null, expectedChocies, null));
+                null, null, null, expectedChocies.build(), null));
         FormUIStep expected = new FormUIStepBase("step3", null, null, "Step 3", null, null, null, null, null,
-                expectedInputFields);
+                expectedInputFields.build());
         testCommon(expected, "FormStepStringShorthand.json");
     }
 }
