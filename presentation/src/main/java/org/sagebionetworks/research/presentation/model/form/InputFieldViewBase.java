@@ -50,10 +50,9 @@ import org.sagebionetworks.research.domain.survey.SurveyRule;
 import org.sagebionetworks.research.presentation.DisplayString;
 import org.sagebionetworks.research.presentation.mapper.DrawableMapper;
 
-import java.util.ArrayList;
 import java.util.List;
 
-public class InputFieldViewBase implements InputFieldView, Parcelable {
+public class InputFieldViewBase<E extends Comparable> implements InputFieldView<E>, Parcelable {
     public static final Creator<InputFieldViewBase> CREATOR = new Creator<InputFieldViewBase>() {
         @Override
         public InputFieldViewBase createFromParcel(Parcel source) {
@@ -97,7 +96,8 @@ public class InputFieldViewBase implements InputFieldView, Parcelable {
     @InputUIHint
     private final String uiHint;
 
-    public static InputFieldViewBase fromInputField(InputField inputField, DrawableMapper mapper) {
+    public static <E extends Comparable<E>> InputFieldViewBase<E> fromInputField(InputField<E> inputField,
+            DrawableMapper mapper) {
         String identifier = inputField.getIdentifier();
         boolean isOptional = inputField.isOptional();
         InputDataType formDataType = inputField.getFormDataType();
@@ -109,27 +109,18 @@ public class InputFieldViewBase implements InputFieldView, Parcelable {
         DisplayString prompt = DisplayString.create(0, inputField.getPrompt());
         DisplayString promptDetail = DisplayString.create(0, inputField.getPromptDetail());
         DisplayString placeholderText = DisplayString.create(0, inputField.getPlaceholderText());
-        if (inputField instanceof ChoiceInputField<?>) {
-            ChoiceInputField<Object> choiceInputField = (ChoiceInputField<Object>)inputField;
-            ImmutableList<ChoiceView<Object>> choices =
+        if (inputField instanceof ChoiceInputField) {
+            ChoiceInputField<E> choiceInputField = (ChoiceInputField<E>) inputField;
+            ImmutableList<ChoiceView<E>> choices =
                     processChoices(choiceInputField.getChoices(), mapper);
-            ChoiceView<Object> defaultAnswer = ChoiceView.fromChoice(choiceInputField.getDefaultAnswer(), mapper);
-            return new ChoiceInputFieldViewBase<>(identifier, prompt, promptDetail, placeholderText, isOptional,
+            ChoiceView<E> defaultAnswer = ChoiceView
+                    .fromChoice(choiceInputField.getDefaultAnswer(), mapper);
+            return new ChoiceInputFieldViewBase<E>(identifier, prompt, promptDetail, placeholderText, isOptional,
                     formDataType, uiHint, textFieldOptions, range, surveyRules, choices, defaultAnswer);
         }
 
-        return new InputFieldViewBase(identifier, prompt, promptDetail, placeholderText, isOptional, formDataType,
+        return new InputFieldViewBase<>(identifier, prompt, promptDetail, placeholderText, isOptional, formDataType,
                 uiHint, textFieldOptions, range, surveyRules);
-    }
-
-    private static <T> ImmutableList<ChoiceView<T>> processChoices(List<Choice<T>> choices,
-            DrawableMapper mapper) {
-        ImmutableList.Builder<ChoiceView<T>> builder = ImmutableList.builder();
-        for (Choice<T> choice : choices) {
-            builder.add(ChoiceView.fromChoice(choice, mapper));
-        }
-
-        return builder.build();
     }
 
     public InputFieldViewBase(@Nullable final String identifier, @Nullable final DisplayString prompt,
@@ -240,5 +231,15 @@ public class InputFieldViewBase implements InputFieldView, Parcelable {
     @Nullable
     public boolean isOptional() {
         return isOptional;
+    }
+
+    private static <T extends Comparable> ImmutableList<ChoiceView<T>> processChoices(List<Choice<T>> choices,
+            DrawableMapper mapper) {
+        ImmutableList.Builder<ChoiceView<T>> builder = ImmutableList.builder();
+        for (Choice<T> choice : choices) {
+            builder.add(ChoiceView.fromChoice(choice, mapper));
+        }
+
+        return builder.build();
     }
 }

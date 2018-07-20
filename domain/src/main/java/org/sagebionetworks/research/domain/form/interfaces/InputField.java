@@ -49,7 +49,7 @@ import java.util.List;
  * Describes a form input within a step. Contains information about data type and hints on how the UI should be
  * displayed.
  */
-public interface InputField {
+public interface InputField<E extends Comparable<E>> {
     String KEY_TYPE = "dataType";
 
     /**
@@ -95,7 +95,7 @@ public interface InputField {
      * validation, or null if this is not applicable
      */
     @Nullable
-    Range getRange();
+    Range<E> getRange();
 
     /**
      * TODO: Remove this, it belongs in SurveyInputField

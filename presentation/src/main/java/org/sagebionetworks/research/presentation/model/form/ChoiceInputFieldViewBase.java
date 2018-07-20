@@ -45,7 +45,7 @@ import org.sagebionetworks.research.presentation.DisplayString;
 
 import java.util.List;
 
-public class ChoiceInputFieldViewBase<E> extends InputFieldViewBase {
+public class ChoiceInputFieldViewBase<E extends Comparable<E>> extends InputFieldViewBase<E> {
     private final ImmutableList<ChoiceView<E>> choices;
 
     private final ChoiceView<E> defaultAnswer;

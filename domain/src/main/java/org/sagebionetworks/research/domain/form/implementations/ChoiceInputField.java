@@ -55,7 +55,7 @@ import java.util.List;
  * @param <E>
  *         The type of the choices that the user may select.
  */
-public class ChoiceInputField<E> extends InputFieldBase implements ChoiceOptions<E> {
+public class ChoiceInputField<E extends Comparable<E>> extends InputFieldBase<E> implements ChoiceOptions<E> {
     @NonNull
     private final ImmutableList<Choice<E>> choices;
 

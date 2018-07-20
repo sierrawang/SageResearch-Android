@@ -55,7 +55,7 @@ import java.util.List;
  * This class is the concrete implementation of a basic input field that is part of a form. An input field represents
  * a question or text box that the user enters information into.
  */
-public class InputFieldBase extends ObjectHelper implements InputField {
+public class InputFieldBase<E extends Comparable<E>> extends ObjectHelper implements InputField<E> {
     @SerializedName("dataType")
     @NonNull
     private final InputDataType formDataType;
@@ -82,7 +82,7 @@ public class InputFieldBase extends ObjectHelper implements InputField {
     private final String promptDetail;
 
     @Nullable
-    private final Range range;
+    private final Range<E> range;
 
     @Nullable
     private final ImmutableList<SurveyRule> surveyRules;
@@ -112,7 +112,7 @@ public class InputFieldBase extends ObjectHelper implements InputField {
             @Nullable final String placeholderText, final boolean optional,
             @NonNull final InputDataType formDataType,
             @Nullable final String formUIHint,
-            @Nullable final TextFieldOptions textFieldOptions, @Nullable final Range range,
+            @Nullable final TextFieldOptions textFieldOptions, @Nullable final Range<E> range,
             @Nullable final ImmutableList<SurveyRule> surveyRules) {
         super();
         this.identifier = identifier;
@@ -166,7 +166,7 @@ public class InputFieldBase extends ObjectHelper implements InputField {
 
     @Nullable
     @Override
-    public Range getRange() {
+    public Range<E> getRange() {
         return this.range;
     }
 

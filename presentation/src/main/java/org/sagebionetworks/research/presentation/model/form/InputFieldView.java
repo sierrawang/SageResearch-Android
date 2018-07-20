@@ -46,7 +46,7 @@ import org.sagebionetworks.research.presentation.DisplayString;
 
 import java.util.List;
 
-public interface InputFieldView {
+public interface InputFieldView<E extends Comparable> {
     /**
      * @return data type for this input field. The data type can have an associated ui hint
      */
@@ -90,7 +90,7 @@ public interface InputFieldView {
      * validation, or null if this is not applicable
      */
     @Nullable
-    Range getRange();
+    Range<E> getRange();
 
     /**
      * @return the list of survey rules that are used by this input field or null if this is not applicable.
