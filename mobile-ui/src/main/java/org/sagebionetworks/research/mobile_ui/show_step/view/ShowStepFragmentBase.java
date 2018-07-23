@@ -47,6 +47,8 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import org.sagebionetworks.research.domain.mobile_ui.R;
+import org.sagebionetworks.research.domain.result.interfaces.Result;
+import org.sagebionetworks.research.domain.result.interfaces.TaskResult;
 import org.sagebionetworks.research.mobile_ui.perform_task.PerformTaskFragment;
 import org.sagebionetworks.research.mobile_ui.show_step.view.view_binding.StepViewBinding;
 import org.sagebionetworks.research.mobile_ui.widget.ActionButton;
@@ -113,6 +115,21 @@ public abstract class ShowStepFragmentBase<StepT extends StepView, ViewModelT ex
     public ShowStepFragmentBase() {
 
     }
+
+    /**
+     * Returns the step result from the TaskResult with the same identifier as this fragment's stepView.
+     * @return the step result from the TaskResult with the same identifier as this fragment's stepView.
+     */
+    @Nullable
+    protected Result findStepResult() {
+        TaskResult taskResult = this.performTaskViewModel.getTaskResult().getValue();
+        if (taskResult != null) {
+            return taskResult.getResult(this.stepView.getIdentifier());
+        }
+
+        return null;
+    }
+
 
     @Override
     public void onAttach(Context context) {

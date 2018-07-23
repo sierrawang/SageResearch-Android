@@ -34,6 +34,8 @@ package org.sagebionetworks.research.domain.step.interfaces;
 
 import android.support.annotation.Nullable;
 
+import com.google.gson.annotations.SerializedName;
+
 import org.sagebionetworks.research.domain.step.ui.theme.ColorTheme;
 import org.sagebionetworks.research.domain.step.ui.theme.ImageTheme;
 
@@ -46,5 +48,6 @@ public interface ThemedUIStep extends UIStep {
     ColorTheme getColorTheme();
 
     @Nullable
+    @SerializedName("image")
     ImageTheme getImageTheme();
 }

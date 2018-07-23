@@ -32,6 +32,7 @@
 
 package org.sagebionetworks.research.mobile_ui.show_step.view.view_binding;
 
+import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.view.View;
 import android.widget.ImageView;
@@ -67,6 +68,13 @@ import butterknife.Unbinder;
  */
 public class UIStepViewBinding<S extends UIStepView> implements StepViewBinding<S> {
     protected static class UIStepViewHolder {
+        /**
+         * All views should have a root view with id rs2_root_view
+         */
+        @NonNull
+        @BindView(id.rs2_root_view)
+        public View rootView;
+
         /**
          * Views can optionally have a button with the id `rs2_step_navigation_action_backward`. This button generally
          * causes the task to navigate to the previous step when pressed.
@@ -195,6 +203,11 @@ public class UIStepViewBinding<S extends UIStepView> implements StepViewBinding<
     public UIStepViewBinding(View view) {
         this.uiStepViewHolder = new UIStepViewHolder();
         this.uiStepViewHolderUnbinder = ButterKnife.bind(this.uiStepViewHolder, view);
+    }
+
+    @NonNull
+    public View getRootView() {
+        return this.uiStepViewHolder.rootView;
     }
 
     @Nullable

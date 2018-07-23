@@ -62,7 +62,7 @@ public abstract class TaskBase implements Task {
 
         public abstract Builder setAsyncActions(@NonNull List<AsyncAction> asyncActions);
 
-        public abstract Builder setHiddenActions(@NonNull                Set<String> hiddenActions);
+        public abstract Builder setHiddenActions(@NonNull Set<String> hiddenActions);
 
         public abstract Builder setIdentifier(@NonNull String identifier);
 
@@ -73,6 +73,11 @@ public abstract class TaskBase implements Task {
 
     public static Builder builder() {
         return new AutoValue_TaskBase.Builder()
+                .setHiddenActions(ImmutableSet.of())
+                .setProgressMarkers(ImmutableList.of())
+                .setSteps(ImmutableList.of())
+                .setActions(ImmutableMap.of())
+                .setHiddenActions(ImmutableSet.of())
                 .setAsyncActions(Collections.<AsyncAction>emptyList());
     }
 
