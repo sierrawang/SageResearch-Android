@@ -32,8 +32,15 @@
 
 package org.sagebionetworks.research.mobile_ui.show_step.view;
 
+import android.animation.Animator;
 import android.animation.ObjectAnimator;
 import android.arch.lifecycle.LiveData;
+import android.arch.lifecycle.Observer;
+import android.os.Bundle;
+import android.support.annotation.Nullable;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.view.ViewGroup;
 import android.view.animation.LinearInterpolator;
 import android.widget.ProgressBar;
 import android.widget.TextView;
@@ -50,43 +57,83 @@ public abstract class ShowActiveUIStepFragmentBase<S extends ActiveUIStepView, V
     protected LiveData<Long> countdown;
 
     @Override
-    public void onStart() {
-        super.onStart();
-        this.countdown = this.showStepViewModel.getCountdown();
+    public View onCreateView(LayoutInflater inflater, ViewGroup viewGroup, Bundle savedInstanceState) {
+        View result = super.onCreateView(inflater, viewGroup, savedInstanceState);
+        Long duration = this.stepView.getDuration().getSeconds();
         ProgressBar countdownDial = this.stepViewBinding.getCountdownDial();
-        Integer duration = ((Long)this.stepView.getDuration().getSeconds()).intValue();
         if (countdownDial != null) {
-            countdownDial.setMax(duration * PROGRESS_BAR_ANIMATION_MULTIPLIER);
-            ObjectAnimator animator = ObjectAnimator.ofInt(countdownDial, "progress", 0,
-                    duration * PROGRESS_BAR_ANIMATION_MULTIPLIER);
-            animator.setDuration(duration * 1000);
-            animator.setStartDelay(0);
-            animator.setInterpolator(new LinearInterpolator());
-            animator.start();
+            countdownDial.setProgress(0);
+            countdownDial.setMax(duration.intValue() * PROGRESS_BAR_ANIMATION_MULTIPLIER);
         }
 
-        TextView countdownLabel = this.stepViewBinding.getCountdownLabel();
-        if (countdownLabel != null) {
-            countdownLabel.setText(duration.toString());
+        TextView countLabel = this.stepViewBinding.getCountLabel();
+        if (countLabel != null) {
+            countLabel.setText(duration.toString());
         }
 
-        TextView unitLabel = this.stepViewBinding.getUnitLabel();
-        this.countdown.observe(this, count -> {
+        return result;
+    }
+
+    /**
+     * Returns The observer to use on the countdown. By default the observer sets the count label to
+     * the current value of the countdown, or null if no observer should be set.
+     * @return The observer to use on the countdown or null if no observer should be set.
+     */
+    @Nullable
+    protected Observer<Long> getCountdownObserver() {
+        return count -> {
             if (count == null) {
                 return;
             }
 
             if (count == 0) {
+                // TODO rkolmos 07/24/2018 implement commands and fix this to not always go forward
                 this.performTaskViewModel.goForward();
                 return;
             }
 
-            if (countdownLabel != null) {
-                countdownLabel.setText(count.toString());
+            TextView countLabel = this.stepViewBinding.getCountLabel();
+            if (countLabel != null) {
+                countLabel.setText(count.toString());
             }
+        };
+    }
 
-            if (countdownDial != null) {
-            }
-        });
+    /**
+     * Returns the Animator to use to animate the countdown. By default the animate animates the
+     * Countdown dial to progress fom 0% to 100% over the duration of the countdown, or null if no
+     * animation should be used.
+     * @return the Animator to use to animate the countdown or null if no animation should be used.
+     */
+    @Nullable
+    protected Animator getCountdownAnimator() {
+        ProgressBar countdownDial = this.stepViewBinding.getCountdownDial();
+        if (countdownDial != null) {
+            Integer duration = ((Long)this.stepView.getDuration().getSeconds()).intValue();
+            ObjectAnimator animator = ObjectAnimator.ofInt(countdownDial, "progress",
+                   0, duration * PROGRESS_BAR_ANIMATION_MULTIPLIER);
+            animator.setDuration(duration * 1000);
+            animator.setStartDelay(0);
+            animator.setInterpolator(new LinearInterpolator());
+            return animator;
+        }
+
+        return null;
+    }
+
+    /**
+     * Called when the countdown should be started.
+     */
+    protected void startCountdown() {
+        this.countdown = this.showStepViewModel.getCountdown();
+        Animator countdownAnimator = this.getCountdownAnimator();
+        if (countdownAnimator != null) {
+            countdownAnimator.start();
+        }
+
+        Observer<Long> countdownObserver = this.getCountdownObserver();
+        if (countdownObserver != null) {
+            this.countdown.observe(this, this.getCountdownObserver());
+        }
     }
 }

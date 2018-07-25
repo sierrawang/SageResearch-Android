@@ -14,6 +14,12 @@ import org.sagebionetworks.research.presentation.show_step.show_step_view_models
 
 public class ShowCountdownStepFragment extends ShowActiveUIStepFragmentBase<CountdownStepView,
         ShowActiveUIStepViewModel<CountdownStepView>, ActiveUIStepViewBinding<CountdownStepView>> {
+    @Override
+    public void onStart() {
+        super.onStart();
+        this.startCountdown();
+    }
+
     @NonNull
     public static ShowCountdownStepFragment newInstance(@NonNull StepView stepView) {
         if (!(stepView instanceof CountdownStepView)) {

@@ -6,8 +6,6 @@ import android.support.annotation.NonNull;
 import android.view.View;
 
 import org.sagebionetworks.research.domain.mobile_ui.R;
-import org.sagebionetworks.research.mobile_ui.perform_task.PerformTaskFragment;
-import org.sagebionetworks.research.mobile_ui.show_step.view.ShowActiveUIStepFragmentBase;
 import org.sagebionetworks.research.mobile_ui.show_step.view.view_binding.ActiveUIStepViewBinding;
 import org.sagebionetworks.research.presentation.model.interfaces.ActiveUIStepView;
 import org.sagebionetworks.research.presentation.model.interfaces.StepView;
@@ -27,6 +25,11 @@ public class ShowActiveUIStepFragment extends ShowActiveUIStepFragmentBase<Activ
         return fragment;
     }
 
+    @Override
+    public void onStart() {
+        super.onStart();
+        this.startCountdown();
+    }
 
     @Override
     @LayoutRes

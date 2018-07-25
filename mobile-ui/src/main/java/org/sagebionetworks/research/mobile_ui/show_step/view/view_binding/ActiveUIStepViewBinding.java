@@ -99,7 +99,7 @@ public class ActiveUIStepViewBinding<S extends ActiveUIStepView> extends UIStepV
     }
 
     @Nullable
-    public TextView getCountdownLabel() {
+    public TextView getCountLabel() {
         return this.activeUIStepViewHolder.countdownLabel;
     }
 

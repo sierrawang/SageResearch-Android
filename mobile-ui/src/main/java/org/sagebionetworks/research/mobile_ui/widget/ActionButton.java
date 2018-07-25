@@ -50,4 +50,9 @@ public class ActionButton extends AppCompatTextView {
     public ActionButton(final Context context, final AttributeSet attrs, final int defStyleAttr) {
         super(context, attrs, defStyleAttr);
     }
+
+    @Override
+    public boolean performClick() {
+        return super.performClick();
+    }
 }
