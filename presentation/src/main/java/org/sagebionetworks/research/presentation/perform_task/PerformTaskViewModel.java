@@ -46,6 +46,7 @@ import android.support.annotation.VisibleForTesting;
 import org.sagebionetworks.research.domain.repository.TaskRepository;
 import org.sagebionetworks.research.domain.result.AnswerResultType;
 import org.sagebionetworks.research.domain.result.implementations.AnswerResultBase;
+import org.sagebionetworks.research.domain.result.implementations.ResultBase;
 import org.sagebionetworks.research.domain.result.implementations.TaskResultBase;
 import org.sagebionetworks.research.domain.result.interfaces.Result;
 import org.sagebionetworks.research.domain.result.interfaces.TaskResult;
@@ -257,13 +258,16 @@ public class PerformTaskViewModel extends ViewModel {
     public void goForward() {
         LOGGER.debug("goForward called");
         Step currentStep = currentStepLiveData.getValue();
-        if (currentStep != null) {
-            // If we have a current step we write a result for it.
-            this.addStepResult(currentStep.instantiateStepResult());
-        }
-
         TaskResult taskResult = taskResultLiveData.getValue();
         checkState(taskResult != null);
+        if (currentStep != null) {
+            // We write a step result if we don't already have one
+            Result previousResult = taskResult.getResult(currentStep);
+            if (previousResult == null || previousResult instanceof ResultBase) {
+                this.addStepResult(currentStep.instantiateStepResult());
+            }
+        }
+
         Step nextStep = stepNavigator.getNextStep(currentStep, taskResult);
         this.updateCurrentStep(nextStep, taskResult);
     }
