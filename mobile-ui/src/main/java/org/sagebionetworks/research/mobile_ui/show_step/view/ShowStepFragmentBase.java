@@ -174,7 +174,6 @@ public abstract class ShowStepFragmentBase<StepT extends StepView, ViewModelT ex
         this.stepViewBinding.setActionButtonClickListener(this::handleActionButtonClick);
         this.showStepViewModel.getStepView().observe(this, this::update);
         this.stepViewBinding.setActionButtonClickListener(this::handleActionButtonClick);
-        this.update(this.showStepViewModel.getStepView().getValue());
         return view;
     }
 

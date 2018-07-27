@@ -32,9 +32,19 @@
 
 package org.sagebionetworks.research.mobile_ui.show_step.view;
 
+import android.annotation.TargetApi;
+import android.graphics.Rect;
 import android.graphics.drawable.AnimationDrawable;
 import android.graphics.drawable.Drawable;
+import android.os.Build;
+import android.os.Bundle;
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
+import android.support.v4.view.ViewCompat;
+import android.support.v4.view.WindowInsetsCompat;
+import android.view.LayoutInflater;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
@@ -72,7 +82,20 @@ public abstract class ShowUIStepFragmentBase<UIStepViewT extends UIStepView,
         } else {
             return null;
         }
+    }
 
+    @Override
+    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+        View result = super.onCreateView(inflater, container, savedInstanceState);
+        SystemWindowHelper.adjustViewInsets(this.stepViewBinding.getCancelButton());
+        SystemWindowHelper.adjustViewInsets(this.stepViewBinding.getInfoButton());
+        return result;
+    }
+
+    @Override
+    public void onViewCreated(@NonNull View view, Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
+        ViewCompat.requestApplyInsets(view);
     }
 
     protected ActionView getCancelButtonActionView(UIStepView stepView) {
@@ -81,7 +104,6 @@ public abstract class ShowUIStepFragmentBase<UIStepViewT extends UIStepView,
             return result;
         }
 
-        // TODO rkolmos 06/10/2018
         Integer iconResId = R.drawable.rs2_cancel_icon;
         return ActionViewBase.builder().setButtonIcon(DisplayDrawable.create(null, iconResId)).build();
     }
