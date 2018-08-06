@@ -32,16 +32,12 @@
 
 package org.sagebionetworks.research.mobile_ui.show_step.view;
 
-import android.annotation.TargetApi;
-import android.graphics.Rect;
 import android.graphics.drawable.AnimationDrawable;
 import android.graphics.drawable.Drawable;
-import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
+import android.support.v4.view.OnApplyWindowInsetsListener;
 import android.support.v4.view.ViewCompat;
-import android.support.v4.view.WindowInsetsCompat;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -60,7 +56,7 @@ import org.sagebionetworks.research.presentation.model.AnimationImageThemeView;
 import org.sagebionetworks.research.presentation.model.ImageThemeView;
 import org.sagebionetworks.research.presentation.model.action.ActionView;
 import org.sagebionetworks.research.presentation.model.action.ActionViewBase;
-import org.sagebionetworks.research.presentation.model.interfaces.FetchableImageThemeView;
+import org.sagebionetworks.research.presentation.model.FetchableImageThemeView;
 import org.sagebionetworks.research.presentation.model.interfaces.UIStepView;
 import org.sagebionetworks.research.presentation.show_step.show_step_view_models.ShowUIStepViewModel;
 
@@ -87,8 +83,18 @@ public abstract class ShowUIStepFragmentBase<UIStepViewT extends UIStepView,
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View result = super.onCreateView(inflater, container, savedInstanceState);
-        SystemWindowHelper.adjustViewInsets(this.stepViewBinding.getCancelButton());
-        SystemWindowHelper.adjustViewInsets(this.stepViewBinding.getInfoButton());
+        ActionButton cancelButton = this.stepViewBinding.getCancelButton();
+        OnApplyWindowInsetsListener topInsetListener =
+                SystemWindowHelper.getOnApplyWindowInsetsListener(SystemWindowHelper.Direction.TOP);
+        if (cancelButton != null) {
+            ViewCompat.setOnApplyWindowInsetsListener(cancelButton, topInsetListener);
+        }
+
+        ActionButton infoButton = this.stepViewBinding.getInfoButton();
+        if (infoButton != null) {
+            ViewCompat.setOnApplyWindowInsetsListener(infoButton, topInsetListener);
+        }
+
         return result;
     }
 

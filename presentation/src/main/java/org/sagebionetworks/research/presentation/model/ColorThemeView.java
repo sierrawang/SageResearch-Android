@@ -39,8 +39,10 @@ import com.google.auto.value.AutoValue;
 
 import org.sagebionetworks.research.domain.step.ui.theme.ColorTheme;
 
+import java.io.Serializable;
+
 @AutoValue
-public abstract class ColorThemeView implements Parcelable {
+public abstract class ColorThemeView implements Serializable {
     @AutoValue.Builder
     public abstract static class Builder {
         public abstract ColorThemeView build();

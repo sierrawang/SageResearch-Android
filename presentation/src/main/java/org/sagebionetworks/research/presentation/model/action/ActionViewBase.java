@@ -32,6 +32,7 @@
 
 package org.sagebionetworks.research.presentation.model.action;
 
+import android.os.Parcelable;
 import android.support.annotation.Nullable;
 
 import com.google.auto.value.AutoValue;
@@ -40,8 +41,10 @@ import org.sagebionetworks.research.domain.step.ui.action.Action;
 import org.sagebionetworks.research.presentation.DisplayDrawable;
 import org.sagebionetworks.research.presentation.DisplayString;
 
+import java.io.Serializable;
+
 @AutoValue
-public abstract class ActionViewBase implements ActionView {
+public abstract class ActionViewBase implements ActionView, Serializable {
     @AutoValue.Builder
     public abstract static class Builder {
         public abstract ActionViewBase build();

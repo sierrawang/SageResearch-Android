@@ -89,5 +89,5 @@
     <id name="title" />
     <id name="description" />
 
-    <id name="rs2_system_window_helper_layout_params_tag_key"/>
+    <id name="rs2_system_window_helper_insets_tag_key"/>
 </resources>

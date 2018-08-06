@@ -32,7 +32,6 @@
 
 package org.sagebionetworks.research.presentation.model;
 
-import android.os.Parcelable;
 import android.support.annotation.Nullable;
 
 import org.sagebionetworks.research.domain.step.ui.theme.AnimationImageTheme;
@@ -40,9 +39,10 @@ import org.sagebionetworks.research.domain.step.ui.theme.ColorPlacement;
 import org.sagebionetworks.research.domain.step.ui.theme.FetchableImageTheme;
 import org.sagebionetworks.research.domain.step.ui.theme.ImageTheme;
 import org.sagebionetworks.research.presentation.mapper.DrawableMapper;
-import org.sagebionetworks.research.presentation.model.interfaces.FetchableImageThemeView;
 
-public abstract class ImageThemeView implements Parcelable {
+import java.io.Serializable;
+
+public abstract class ImageThemeView implements Serializable {
     /**
      * Creates an ImageThemeView from an ImageTheme.
      *

@@ -108,7 +108,7 @@ public abstract class ShowStepFragmentBase<StepT extends StepView, ViewModelT ex
         checkNotNull(stepView);
 
         Bundle args = new Bundle();
-        args.putParcelable(ARGUMENT_STEP_VIEW, stepView);
+        args.putSerializable(ARGUMENT_STEP_VIEW, stepView);
         return args;
     }
 
@@ -150,10 +150,12 @@ public abstract class ShowStepFragmentBase<StepT extends StepView, ViewModelT ex
         if (savedInstanceState == null) {
             Bundle arguments = getArguments();
             if (arguments != null) {
-                stepView = this.getArguments().getParcelable(ARGUMENT_STEP_VIEW);
+                // noinspection unchecked
+                stepView = (StepT)this.getArguments().getSerializable(ARGUMENT_STEP_VIEW);
             }
         } else {
-            stepView = savedInstanceState.getParcelable(ARGUMENT_STEP_VIEW);
+            // noinspection unchecked
+            stepView = (StepT)savedInstanceState.getSerializable(ARGUMENT_STEP_VIEW);
         }
         this.stepView = stepView;
 

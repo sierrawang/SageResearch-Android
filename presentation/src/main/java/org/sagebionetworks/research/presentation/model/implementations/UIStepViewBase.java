@@ -66,18 +66,6 @@ import java.util.Map.Entry;
 public class UIStepViewBase implements UIStepView {
     public static final String TYPE = StepType.UI;
 
-    public static final Creator<UIStepViewBase> CREATOR = new Creator<UIStepViewBase>() {
-        @Override
-        public UIStepViewBase createFromParcel(Parcel source) {
-            return new UIStepViewBase(source);
-        }
-
-        @Override
-        public UIStepViewBase[] newArray(int size) {
-            return new UIStepViewBase[size];
-        }
-    };
-
     @NonNull
     private final ImmutableMap<String, ActionView> actions;
 
@@ -179,24 +167,6 @@ public class UIStepViewBase implements UIStepView {
         this.footnote = in.readParcelable(DisplayString.class.getClassLoader());
         this.colorTheme = in.readParcelable(ColorThemeView.class.getClassLoader());
         this.imageTheme = in.readParcelable(ImageThemeView.class.getClassLoader());
-    }
-
-    @Override
-    public int describeContents() {
-        return 0;
-    }
-
-    @Override
-    public void writeToParcel(Parcel dest, int flags) {
-        dest.writeString(this.identifier);
-        dest.writeInt(this.navDirection);
-        dest.writeSerializable(this.actions);
-        dest.writeParcelable(this.title, flags);
-        dest.writeParcelable(this.text, flags);
-        dest.writeParcelable(this.detail, flags);
-        dest.writeParcelable(this.footnote, flags);
-        dest.writeParcelable(this.colorTheme, flags);
-        dest.writeParcelable(this.imageTheme, flags);
     }
 
     @Nullable

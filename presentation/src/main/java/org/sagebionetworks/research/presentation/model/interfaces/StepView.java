@@ -43,12 +43,13 @@ import org.sagebionetworks.research.domain.result.interfaces.Result;
 import org.sagebionetworks.research.domain.result.interfaces.TaskResult;
 import org.sagebionetworks.research.domain.step.StepType;
 
+import java.io.Serializable;
 import java.lang.annotation.Retention;
 
 /**
  * Map a {@link org.sagebionetworks.research.domain.step.interfaces.Step} to a {@link StepView} when data is moving from the Domain layer to this layer.
  */
-public interface StepView extends Parcelable {
+public interface StepView extends Serializable {
     @Retention(SOURCE)
     @IntDef({NavDirection.SHIFT_LEFT, NavDirection.SHIFT_RIGHT})
     @interface NavDirection {

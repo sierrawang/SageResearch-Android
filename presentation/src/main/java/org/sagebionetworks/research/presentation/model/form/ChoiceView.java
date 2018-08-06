@@ -42,7 +42,7 @@ import org.sagebionetworks.research.presentation.DisplayString;
 import org.sagebionetworks.research.presentation.mapper.DrawableMapper;
 
 @AutoValue
-public abstract class ChoiceView<E> {
+public abstract class ChoiceView<E> implements Serializable {
     @AutoValue.Builder
     public abstract static class Builder<E> {
         public abstract ChoiceView<E> build();

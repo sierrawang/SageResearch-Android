@@ -44,9 +44,10 @@ import org.sagebionetworks.research.domain.form.data_types.BaseInputDataType.Bas
 import org.sagebionetworks.research.domain.form.data_types.CollectionInputDataType.CollectionType;
 import org.sagebionetworks.research.domain.interfaces.ObjectHelper;
 
+import java.io.Serializable;
 import java.lang.reflect.Type;
 
-public abstract class InputDataType extends ObjectHelper implements Parcelable {
+public abstract class InputDataType extends ObjectHelper implements Serializable {
     @Nullable
     public static JsonDeserializer<? extends InputDataType> getJsonDeserializer() {
         return new JsonDeserializer<InputDataType>() {
