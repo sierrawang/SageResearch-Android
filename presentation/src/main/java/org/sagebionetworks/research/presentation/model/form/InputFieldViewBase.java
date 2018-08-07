@@ -55,7 +55,7 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
-public class InputFieldViewBase implements InputFieldView, Serializable {
+public class InputFieldViewBase<E> implements InputFieldView, Serializable {
     @NonNull
     private final InputDataType formDataType;
 

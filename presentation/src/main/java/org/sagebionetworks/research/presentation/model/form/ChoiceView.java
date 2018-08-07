@@ -41,6 +41,8 @@ import org.sagebionetworks.research.domain.form.interfaces.Choice;
 import org.sagebionetworks.research.presentation.DisplayString;
 import org.sagebionetworks.research.presentation.mapper.DrawableMapper;
 
+import java.io.Serializable;
+
 @AutoValue
 public abstract class ChoiceView<E> implements Serializable {
     @AutoValue.Builder
