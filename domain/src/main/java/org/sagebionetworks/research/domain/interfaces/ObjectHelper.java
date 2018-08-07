@@ -84,7 +84,7 @@ public abstract class ObjectHelper {
      * @return The HashCodeHelper that can be used to produce the hashCode for this object.
      */
     protected HashCodeHelper hashCodeHelper() {
-        return new HashCodeHelper();
+        return hashCodeHelper;
     }
 
     /**

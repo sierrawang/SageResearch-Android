@@ -30,28 +30,47 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.sagebionetworks.research.domain.task.navigation.strategy.next_step;
+package org.sagebionetworks.research.domain.task.navigation.strategy.factory.next_step;
 
 import static com.google.common.base.Preconditions.checkNotNull;
 
 import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 
+import org.sagebionetworks.research.domain.step.interfaces.Step;
 import org.sagebionetworks.research.domain.task.navigation.strategy.StepNavigationStrategy.NextStepStrategy;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
-import java.lang.reflect.InvocationHandler;
-import java.lang.reflect.Method;
+import java.lang.reflect.Proxy;
 
-public final class NextStepStrategyInvocationHandler implements InvocationHandler {
-    private final NextStepStrategy nextStepStrategy;
+/**
+ * Created by liujoshua on 10/13/2017.
+ */
 
-    NextStepStrategyInvocationHandler(@NonNull NextStepStrategy nextStepStrategy) {
+public class NextStepStrategyFactory {
+    private static final Logger LOGGER = LoggerFactory.getLogger(NextStepStrategyFactory.class);
+
+    @Nullable
+    public NextStepStrategy create(@NonNull Step step, @NonNull NextStepStrategy nextStepStrategy) {
+        checkNotNull(step);
         checkNotNull(nextStepStrategy);
 
-        this.nextStepStrategy = nextStepStrategy;
+        NextStepStrategyInvocationHandler handler = new NextStepStrategyInvocationHandler(nextStepStrategy);
+
+        NextStepStrategy rule = (NextStepStrategy) Proxy
+                .newProxyInstance(NextStepStrategy.class.getClassLoader(), new Class[]{NextStepStrategy.class},
+                        handler);
+
+        LOGGER.debug("Creating next rule for step: " + step, ", created: " + rule);
+        return rule;
     }
 
-    @Override
-    public Object invoke(final Object o, final Method method, final Object[] args) throws Throwable {
-        return method.invoke(nextStepStrategy, args);
+    @Nullable
+    public NextStepStrategy create(@NonNull Step step, @Nullable String nextStepIdentifier) {
+        checkNotNull(step);
+
+        return create(step, new ConstantNextStepStrategy(nextStepIdentifier));
     }
+
 }

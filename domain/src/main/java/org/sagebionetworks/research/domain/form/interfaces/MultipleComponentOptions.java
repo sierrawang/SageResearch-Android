@@ -30,47 +30,24 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.sagebionetworks.research.domain.task.navigation.strategy.next_step;
-
-import static com.google.common.base.Preconditions.checkNotNull;
+package org.sagebionetworks.research.domain.form.interfaces;
 
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 
-import org.sagebionetworks.research.domain.step.interfaces.Step;
-import org.sagebionetworks.research.domain.task.navigation.strategy.StepNavigationStrategy.NextStepStrategy;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
-import java.lang.reflect.Proxy;
+import com.google.common.collect.ImmutableList;
 
 /**
- * Created by liujoshua on 10/13/2017.
+ * The ChoiceOptions interface is a simple interface which requires an implementing class to define whether or not it
+ * is optional, and a list of choices. This is intended for use by ChoiceInputFields.
+ *
+ * @param <E>
+ *         The type of choices that this object stores.
  */
-
-public class NextStepStrategyFactory {
-    private static final Logger LOGGER = LoggerFactory.getLogger(NextStepStrategyFactory.class);
-
-    @Nullable
-    public NextStepStrategy create(@NonNull Step step, @NonNull NextStepStrategy nextStepStrategy) {
-        checkNotNull(step);
-        checkNotNull(nextStepStrategy);
-
-        NextStepStrategyInvocationHandler handler = new NextStepStrategyInvocationHandler(nextStepStrategy);
-
-        NextStepStrategy rule = (NextStepStrategy) Proxy
-                .newProxyInstance(NextStepStrategy.class.getClassLoader(), new Class[]{NextStepStrategy.class},
-                        handler);
-
-        LOGGER.debug("Creating next rule for step: " + step, ", created: " + rule);
-        return rule;
-    }
+public interface MultipleComponentOptions<E> {
+    @NonNull
+    ImmutableList<ImmutableList<Choice<E>>> getChoices();
 
     @Nullable
-    public NextStepStrategy create(@NonNull Step step, @Nullable String nextStepIdentifier) {
-        checkNotNull(step);
-
-        return create(step, new ConstantNextStepStrategy(nextStepIdentifier));
-    }
-
+    E getDefaultAnswer();
 }

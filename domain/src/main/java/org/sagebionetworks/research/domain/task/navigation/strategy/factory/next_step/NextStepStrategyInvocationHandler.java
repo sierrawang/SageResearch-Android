@@ -30,33 +30,28 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.sagebionetworks.research.domain.task.navigation.strategy.next_step;
+package org.sagebionetworks.research.domain.task.navigation.strategy.factory.next_step;
 
-import android.support.annotation.Nullable;
+import static com.google.common.base.Preconditions.checkNotNull;
 
-import com.google.common.base.MoreObjects;
+import android.support.annotation.NonNull;
 
-import org.sagebionetworks.research.domain.result.interfaces.TaskResult;
-import org.sagebionetworks.research.domain.task.Task;
 import org.sagebionetworks.research.domain.task.navigation.strategy.StepNavigationStrategy.NextStepStrategy;
 
-public final class ConstantNextStepStrategy implements NextStepStrategy {
-    private final String nextStepIdentifier;
+import java.lang.reflect.InvocationHandler;
+import java.lang.reflect.Method;
 
-    public ConstantNextStepStrategy(@Nullable String nextStepIdentifier) {
-        this.nextStepIdentifier = nextStepIdentifier;
+public final class NextStepStrategyInvocationHandler implements InvocationHandler {
+    private final NextStepStrategy nextStepStrategy;
+
+    NextStepStrategyInvocationHandler(@NonNull NextStepStrategy nextStepStrategy) {
+        checkNotNull(nextStepStrategy);
+
+        this.nextStepStrategy = nextStepStrategy;
     }
 
-    @Nullable
     @Override
-    public String getNextStepIdentifier(final Task task, @org.jetbrains.annotations.Nullable final TaskResult taskResult) {
-        return nextStepIdentifier;
-    }
-
-    @Override
-    public String toString() {
-        return MoreObjects.toStringHelper(this)
-                .add("nextStepIdentifier", nextStepIdentifier)
-                .toString();
+    public Object invoke(final Object o, final Method method, final Object[] args) throws Throwable {
+        return method.invoke(nextStepStrategy, args);
     }
 }

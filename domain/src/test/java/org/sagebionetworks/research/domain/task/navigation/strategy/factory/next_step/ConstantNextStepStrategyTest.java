@@ -30,57 +30,23 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.sagebionetworks.research.domain.task.navigation.strategy.next_step;
+package org.sagebionetworks.research.domain.task.navigation.strategy.factory.next_step;
 
+import static junit.framework.Assert.assertNotNull;
 import static org.junit.Assert.assertEquals;
 import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
 
-import org.junit.Before;
 import org.junit.Test;
 import org.sagebionetworks.research.domain.result.interfaces.TaskResult;
-import org.sagebionetworks.research.domain.step.interfaces.Step;
 import org.sagebionetworks.research.domain.task.Task;
 import org.sagebionetworks.research.domain.task.navigation.strategy.StepNavigationStrategy.NextStepStrategy;
 
-public class NextStepStrategyFactoryTest {
-
-    private NextStepStrategyFactory nextStepStrategyFactory;
+public class ConstantNextStepStrategyTest {
 
     @Test
-    public void createWithNextStepIdentifier() {
-        Step step = mock(Step.class);
-        when(step.getIdentifier()).thenReturn("identifier");
-
+    public void getNextStepIdentifier() {
         String nextIdentifier = "nextIdentifier";
-
-        NextStepStrategy nextStepStrategy = nextStepStrategyFactory.create(step, nextIdentifier);
-
-        assertEquals(nextIdentifier, nextStepStrategy.getNextStepIdentifier(null,null));
-    }
-
-    @Test
-    public void createWithNextStepStrategy() {
-        String nextIdentifier = "nextIdentifier";
-        TaskResult taskResult = mock(TaskResult.class);
-        Task task = mock(Task.class);
-
-        NextStepStrategy nextStepStrategy = mock(NextStepStrategy.class);
-        when(nextStepStrategy.getNextStepIdentifier(task, taskResult)).thenReturn(nextIdentifier);
-
-        Step step = mock(Step.class);
-        when(step.getIdentifier()).thenReturn("identifier");
-
-        NextStepStrategy nextStepStrategyResult = nextStepStrategyFactory.create(step, nextStepStrategy);
-
-        assertEquals(nextIdentifier, nextStepStrategyResult.getNextStepIdentifier(task, taskResult));
-
-        verify(nextStepStrategy).getNextStepIdentifier(task, taskResult);
-    }
-
-    @Before
-    public void setup() {
-        nextStepStrategyFactory = new NextStepStrategyFactory();
+        NextStepStrategy constantNextStepStrategy = new ConstantNextStepStrategy(nextIdentifier);
+        assertEquals(nextIdentifier, constantNextStepStrategy.getNextStepIdentifier(mock(Task.class), mock(TaskResult.class)));
     }
 }

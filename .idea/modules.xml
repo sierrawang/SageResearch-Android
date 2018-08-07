@@ -7,7 +7,6 @@
       <module fileurl="file://$PROJECT_DIR$/data/data.iml" filepath="$PROJECT_DIR$/data/data.iml" />
       <module fileurl="file://$PROJECT_DIR$/domain/domain.iml" filepath="$PROJECT_DIR$/domain/domain.iml" />
       <module fileurl="file://$PROJECT_DIR$/mobile-ui/mobile-ui.iml" filepath="$PROJECT_DIR$/mobile-ui/mobile-ui.iml" />
-      <module fileurl="file://$PROJECT_DIR$/mpower/mpower.iml" filepath="$PROJECT_DIR$/mpower/mpower.iml" />
       <module fileurl="file://$PROJECT_DIR$/presentation/presentation.iml" filepath="$PROJECT_DIR$/presentation/presentation.iml" />
     </modules>
   </component>

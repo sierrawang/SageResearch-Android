@@ -161,9 +161,60 @@ public class StepModule {
 
     @Provides
     @IntoMap
+    @StepClassKey(TransformerStep.class)
+    static String provideTransformerStepTypeKey() {
+        return TransformerStepBase.TYPE_KEY;
+    }
+    // endregion
+
+    /**
+     * @return GSON runtime type adapter factory for polymorphic deserialization of Step classes
+     */
+    @Provides
+    @IntoSet
+    static RuntimeTypeAdapterFactory provideType(Map<Class<? extends Step>, String> stepClassKeys) {
+        RuntimeTypeAdapterFactory<Step> stepAdapterFactory = RuntimeTypeAdapterFactory.of(Step.class, Step.KEY_TYPE);
+
+        for (Entry<Class<? extends Step>, String> stepClassEntry : stepClassKeys.entrySet()) {
+            stepAdapterFactory.registerSubtype(stepClassEntry.getKey(), stepClassEntry.getValue());
+        }
+
+        return stepAdapterFactory.registerDefaultType(UIStep.class);
+    }
+
+    @Provides
+    @IntoMap
+    @ClassKey(FormUIStep.class)
+    static JsonDeserializer<?> providedFormUIStepDeserializer() {
+        return createPassThroughDeserializer(FormUIStepBase.class);
+    }
+
+    @Provides
+    @IntoMap
+    @StepClassKey(FormUIStep.class)
+    static String provideFormUIStepTypeKey() {
+        return FormUIStepBase.TYPE_KEY;
+    }
+
+    @Provides
+    @IntoMap
+    @StepClassKey(UIStep.class)
+    static String provideUIStepTypeKey() {
+        return UIStepBase.TYPE_KEY;
+    }
+
+    @Provides
+    @IntoMap
     @ClassKey(UIStep.class)
-    static JsonDeserializer<?> providedUIStepDeserializer() {
+    static JsonDeserializer<?> provideUIStepDeserializer() {
         return createPassThroughDeserializer(UIStepBase.class);
+    }
+
+    @Provides
+    @IntoMap
+    @StepClassKey(CompletionStep.class)
+    static String provideCompletionStepTypeKey() {
+        return CompletionStep.TYPE_KEY;
     }
 
     @Provides

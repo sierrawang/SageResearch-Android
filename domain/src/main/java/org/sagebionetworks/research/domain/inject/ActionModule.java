@@ -37,6 +37,8 @@ import org.sagebionetworks.research.domain.step.ui.action.Action;
 import org.sagebionetworks.research.domain.impl.ActionAutoValueModule;
 import org.sagebionetworks.research.domain.step.ui.action.ReminderAction;
 import org.sagebionetworks.research.domain.step.ui.action.SkipToStepAction;
+import org.sagebionetworks.research.domain.step.ui.action.Action;
+import org.sagebionetworks.research.domain.impl.ActionAutoValueModule;
 
 import java.util.Map;
 import java.util.Map.Entry;
@@ -44,7 +46,6 @@ import java.util.Map.Entry;
 import dagger.MapKey;
 import dagger.Module;
 import dagger.Provides;
-import dagger.multibindings.IntoMap;
 import dagger.multibindings.IntoSet;
 
 @Module(includes = {GsonModule.class, ActionAutoValueModule.class})

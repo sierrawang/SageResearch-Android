@@ -123,7 +123,7 @@ public class PerformTaskViewModel extends ViewModel {
     public PerformTaskViewModel(@NonNull TaskView taskView, @NonNull UUID taskRunUUID,
             @NonNull StepNavigatorFactory stepNavigatorFactory, @NonNull TaskRepository taskRepository,
             @NonNull TaskMapper taskMapper, StepViewFactory stepViewFactory,
-            @NonNull ZonedDateTime lastRun) {
+            @Nullable ZonedDateTime lastRun) {
         this.taskView = checkNotNull(taskView);
         this.taskRunUuid = checkNotNull(taskRunUUID);
         this.stepNavigatorFactory = checkNotNull(stepNavigatorFactory);
@@ -277,6 +277,7 @@ public class PerformTaskViewModel extends ViewModel {
         TaskResult taskResult = taskResultLiveData.getValue();
         checkState(currentStep != null);
         checkState(taskResult != null);
+
         Step backStep = stepNavigator.getPreviousStep(currentStep, taskResult);
         if (backStep != null) {
             this.updateCurrentStep(backStep, taskResult);

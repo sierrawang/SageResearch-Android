@@ -37,16 +37,16 @@ import android.support.annotation.Nullable;
 
 import com.google.common.base.MoreObjects.ToStringHelper;
 import com.google.common.base.Objects;
+import com.google.common.collect.ImmutableList;
 import com.google.common.collect.Range;
 
 import org.sagebionetworks.research.domain.form.data_types.InputDataType;
 import org.sagebionetworks.research.domain.form.TextField.TextFieldOptions;
+import org.sagebionetworks.research.domain.form.data_types.InputDataType;
 import org.sagebionetworks.research.domain.form.interfaces.Choice;
 import org.sagebionetworks.research.domain.form.interfaces.ChoiceOptions;
-import org.sagebionetworks.research.domain.form.interfaces.SurveyRule;
 import org.sagebionetworks.research.domain.interfaces.HashCodeHelper;
-
-import java.util.List;
+import org.sagebionetworks.research.domain.survey.SurveyRule;
 
 /**
  * This class is the concrete implementation of an input field that has multiple choices for the user to select.
@@ -54,12 +54,12 @@ import java.util.List;
  * @param <E>
  *         The type of the choices that the user may select.
  */
-public class ChoiceInputField<E> extends InputFieldBase implements ChoiceOptions<E> {
+public class ChoiceInputField<E extends Comparable<E>> extends InputFieldBase<E> implements ChoiceOptions<E> {
     @NonNull
-    private final List<Choice<E>> choices;
+    private final ImmutableList<Choice<E>> choices;
 
     @Nullable
-    private final Choice<E> defaultAnswer;
+    private final E defaultAnswer;
 
     /**
      * Default intializer for gson.
@@ -78,19 +78,18 @@ public class ChoiceInputField<E> extends InputFieldBase implements ChoiceOptions
             @Nullable final String formUIHint,
             @Nullable final TextFieldOptions textFieldOptions,
             @Nullable final Range range,
-            @Nullable final List<SurveyRule> surveyRules,
-            @NonNull final List<Choice<E>> choices,
-            @Nullable final Choice<E> defaultAnswer) {
+            @NonNull final ImmutableList<SurveyRule> surveyRules,
+            @NonNull final ImmutableList<Choice<E>> choices,
+            @Nullable final E defaultAnswer) {
         super(identifier, prompt, promptDetail, placeholderText, isOptional, formDataType, formUIHint,
-                textFieldOptions,
-                range, surveyRules);
+                textFieldOptions, range, surveyRules);
         this.choices = choices;
         this.defaultAnswer = defaultAnswer;
     }
 
     @NonNull
     @Override
-    public List<Choice<E>> getChoices() {
+    public ImmutableList<Choice<E>> getChoices() {
         return this.choices;
     }
 
@@ -98,7 +97,8 @@ public class ChoiceInputField<E> extends InputFieldBase implements ChoiceOptions
      * @return The default answer this ChoiceInputField.
      */
     @Nullable
-    public Choice<E> getDefaultAnswer() {
+    @Override
+    public E getDefaultAnswer() {
         return this.defaultAnswer;
     }
 

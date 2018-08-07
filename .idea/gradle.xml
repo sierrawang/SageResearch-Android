@@ -12,7 +12,6 @@
             <option value="$PROJECT_DIR$/data" />
             <option value="$PROJECT_DIR$/domain" />
             <option value="$PROJECT_DIR$/mobile-ui" />
-            <option value="$PROJECT_DIR$/mpower" />
             <option value="$PROJECT_DIR$/presentation" />
           </set>
         </option>
