@@ -124,18 +124,4 @@ public class InputFieldsModule {
         typeAdapterFactory.registerDefaultType(InputFieldBase.class);
         return typeAdapterFactory;
     }
-
-    @Provides
-    @IntoMap
-    @ClassKey(Choice.class)
-    static JsonDeserializer<?> provideChoiceDeserializer() {
-        return ChoiceBase.getJsonDeserializer();
-    }
-
-    @Provides
-    @IntoMap
-    @ClassKey(InputDataType.class)
-    static JsonDeserializer<?> provideInputDataTypeDeserializer() {
-        return InputDataType.getJsonDeserializer();
-    }
 }
