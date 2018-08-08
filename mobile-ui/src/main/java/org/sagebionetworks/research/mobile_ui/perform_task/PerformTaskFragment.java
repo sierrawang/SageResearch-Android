@@ -44,7 +44,6 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.annotation.VisibleForTesting;
 import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -54,15 +53,12 @@ import org.sagebionetworks.research.domain.mobile_ui.R;
 import org.sagebionetworks.research.domain.result.implementations.TaskResultBase;
 import org.sagebionetworks.research.domain.result.interfaces.TaskResult;
 import org.sagebionetworks.research.mobile_ui.inject.ShowStepFragmentModule.ShowStepFragmentFactory;
-import org.sagebionetworks.research.mobile_ui.show_step.view.FragmentNavigationRule;
-import org.sagebionetworks.research.mobile_ui.show_step.view.FragmentSkipRule;
 import org.sagebionetworks.research.mobile_ui.show_step.view.ShowStepFragmentBase;
 import org.sagebionetworks.research.presentation.model.TaskView;
 import org.sagebionetworks.research.presentation.model.interfaces.StepView;
 import org.sagebionetworks.research.presentation.model.interfaces.StepView.NavDirection;
 import org.sagebionetworks.research.presentation.perform_task.PerformTaskViewModel;
 import org.sagebionetworks.research.presentation.perform_task.PerformTaskViewModelFactory;
-import org.sagebionetworks.research.presentation.show_step.show_step_view_model_factories.ShowStepViewModelFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.threeten.bp.Instant;
@@ -192,7 +188,7 @@ public class PerformTaskFragment extends Fragment implements HasSupportFragmentI
     public AndroidInjector<Fragment> supportFragmentInjector() {
         return fragmentDispatchingAndroidInjector;
     }
-    
+
     @VisibleForTesting
     void showStep(StepView stepView) {
         if (stepView == null) {
