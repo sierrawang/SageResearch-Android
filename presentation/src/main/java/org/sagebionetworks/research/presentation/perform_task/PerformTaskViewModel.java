@@ -229,7 +229,6 @@ public class PerformTaskViewModel extends ViewModel {
      * @param taskResult The task result before this switch occured.
      */
     protected void updateCurrentStep(@Nullable Step nextStep, @NonNull TaskResult taskResult) {
-        nextStep = resolveSection(nextStep);
         if (nextStep == null) {
             this.currentStepLiveData.setValue(null);
             this.stepViewLiveData.setValue(null);
@@ -242,14 +241,6 @@ public class PerformTaskViewModel extends ViewModel {
             StepView stepView = this.stepViewMapping.get(nextStep);
             this.stepViewLiveData.setValue(stepView);
         }
-    }
-
-    protected Step resolveSection(@Nullable Step step) {
-        while (step instanceof SectionStep) {
-            step = ((SectionStep) step).getSteps().get(0);
-        }
-
-        return step;
     }
 
     /**

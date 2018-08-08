@@ -38,6 +38,7 @@ import android.support.annotation.Nullable;
 import org.jetbrains.annotations.NotNull;
 import org.sagebionetworks.research.domain.result.interfaces.Result;
 import org.sagebionetworks.research.domain.result.interfaces.TaskResult;
+import org.sagebionetworks.research.domain.step.interfaces.SectionStep;
 import org.sagebionetworks.research.domain.step.interfaces.Step;
 import org.sagebionetworks.research.domain.task.Task;
 import org.sagebionetworks.research.domain.task.navigation.StepNavigator;
@@ -86,6 +87,13 @@ public class StrategyBasedNavigator implements StepNavigator {
 
     @Override
     public Step getNextStep(final Step step, @NonNull TaskResult taskResult) {
+        Step result = this.getNextStepHelper(step, taskResult);
+        // In the event that the helper returns a SectionStep we traverse through the section's children to get a
+        // non-section step.
+        return StrategyBasedNavigator.resolveSection(result);
+    }
+
+    private Step getNextStepHelper(final Step step, @NonNull TaskResult taskResult) {
         Step nextStep = null;
         // First we try to get the next step from the step by casting it to a NextStepStrategy.
         if (step instanceof NextStepStrategy) {
@@ -118,6 +126,13 @@ public class StrategyBasedNavigator implements StepNavigator {
 
     @Override
     public Step getPreviousStep(@NonNull final Step step, @NonNull TaskResult taskResult) {
+        Step result = this.getPreviousStepHelper(step, taskResult);
+        // In the event that the helper returns a SectionStep we traverse through the section's children to get a
+        // non-section step.
+        return StrategyBasedNavigator.resolveSection(result);
+    }
+
+    private Step getPreviousStepHelper(@NonNull final Step step, @NonNull TaskResult taskResult) {
         // First we make sure that the given step allows backward navigation.
         if (step instanceof BackStepStrategy && !((BackStepStrategy) step).isBackAllowed(task, taskResult)) {
             return null;
@@ -151,5 +166,13 @@ public class StrategyBasedNavigator implements StepNavigator {
     @Override
     public List<Step> getSteps() {
         return this.treeNavigator.getSteps();
+    }
+
+    protected static Step resolveSection(@Nullable Step step) {
+        while (step instanceof SectionStep) {
+            step = ((SectionStep) step).getSteps().get(0);
+        }
+
+        return step;
     }
 }
