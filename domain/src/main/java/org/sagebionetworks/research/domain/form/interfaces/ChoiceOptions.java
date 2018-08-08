@@ -32,7 +32,10 @@
 
 package org.sagebionetworks.research.domain.form.interfaces;
 
-import java.util.List;
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
+
+import com.google.common.collect.ImmutableList;
 
 /**
  * The ChoiceOptions interface is a simple interface which requires an implementing class to define whether or not it
@@ -42,7 +45,11 @@ import java.util.List;
  *         The type of choices that this object stores.
  */
 public interface ChoiceOptions<E> {
-    List<Choice<E>> getChoices();
+    @NonNull
+    ImmutableList<Choice<E>> getChoices();
 
     boolean isOptional();
+
+    @Nullable
+    E getDefaultAnswer();
 }

@@ -30,28 +30,24 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.sagebionetworks.research.domain.task.navigation.strategy.next_step;
-
-import static com.google.common.base.Preconditions.checkNotNull;
+package org.sagebionetworks.research.domain.form.interfaces;
 
 import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 
-import org.sagebionetworks.research.domain.task.navigation.strategy.StepNavigationStrategy.NextStepStrategy;
+import com.google.common.collect.ImmutableList;
 
-import java.lang.reflect.InvocationHandler;
-import java.lang.reflect.Method;
+/**
+ * The ChoiceOptions interface is a simple interface which requires an implementing class to define whether or not it
+ * is optional, and a list of choices. This is intended for use by ChoiceInputFields.
+ *
+ * @param <E>
+ *         The type of choices that this object stores.
+ */
+public interface MultipleComponentOptions<E> {
+    @NonNull
+    ImmutableList<ImmutableList<Choice<E>>> getChoices();
 
-public final class NextStepStrategyInvocationHandler implements InvocationHandler {
-    private final NextStepStrategy nextStepStrategy;
-
-    NextStepStrategyInvocationHandler(@NonNull NextStepStrategy nextStepStrategy) {
-        checkNotNull(nextStepStrategy);
-
-        this.nextStepStrategy = nextStepStrategy;
-    }
-
-    @Override
-    public Object invoke(final Object o, final Method method, final Object[] args) throws Throwable {
-        return method.invoke(nextStepStrategy, args);
-    }
+    @Nullable
+    E getDefaultAnswer();
 }

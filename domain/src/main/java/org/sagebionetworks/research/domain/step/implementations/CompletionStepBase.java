@@ -35,13 +35,18 @@ package org.sagebionetworks.research.domain.step.implementations;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 
+import com.google.common.collect.Lists;
+
 import org.sagebionetworks.research.domain.step.interfaces.CompletionStep;
+import org.sagebionetworks.research.domain.step.interfaces.Step;
+import org.sagebionetworks.research.domain.step.interfaces.UIStep;
 import org.sagebionetworks.research.domain.step.ui.action.Action;
 import org.sagebionetworks.research.domain.step.ui.theme.ColorTheme;
 import org.sagebionetworks.research.domain.step.ui.theme.ImageTheme;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 

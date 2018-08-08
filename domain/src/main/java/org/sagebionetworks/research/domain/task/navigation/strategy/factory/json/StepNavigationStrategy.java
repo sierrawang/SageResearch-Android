@@ -30,50 +30,37 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.sagebionetworks.research.domain.form.interfaces;
+package org.sagebionetworks.research.domain.task.navigation.strategy.factory.json;
 
+import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 
-import com.google.common.collect.ImmutableSet;
+import com.google.auto.value.AutoValue;
+import com.google.common.base.Strings;
+import com.google.gson.Gson;
+import com.google.gson.TypeAdapter;
+import com.ryanharter.auto.value.gson.Ignore;
 
-import org.sagebionetworks.research.domain.result.interfaces.Result;
+@AutoValue
+public abstract class StepNavigationStrategy {
+    @AutoValue.Builder
+    public abstract static class Builder {
+        @NonNull
+        public abstract StepNavigationStrategy build();
 
-/**
- * A survey rule defines the navigation and cohorts for a survey. Used to allow surveys to have logic behind which
- * questions get asked depending on user data and answers to previous questions.
- */
-public interface SurveyRule {
-    /**
-     * A class to store the result of a call to evaluate cohorts.
-     */
-    class CohortResult {
-        public final ImmutableSet<String> add;
-
-        public final ImmutableSet<String> remove;
-
-        public CohortResult(ImmutableSet<String> add, ImmutableSet<String> remove) {
-            this.add = add;
-            this.remove = remove;
-        }
+        @NonNull
+        public abstract Builder setNextStepIdentifier(@Nullable String nextStepIdentifier);
     }
 
-    /**
-     * For the given result, what are the cohorts to add or remove?
-     *
-     * @param result
-     *         The result to evaluate
-     * @return The cohorts to add, and remove
-     */
-    @Nullable
-    CohortResult evaluateCohorts(Result result);
+    public static TypeAdapter<StepNavigationStrategy> typeAdapter(Gson gson) {
+        return new AutoValue_StepNavigationStrategy.GsonTypeAdapter(gson);
+    }
 
-    /**
-     * For the given result, what is the next step the survey should go to.
-     *
-     * @param result
-     *         The result to evaluate
-     * @return The identifier to skip to or null if this is not applicable.
-     */
     @Nullable
-    String evaluateRule(Result result);
+    public abstract String getNextStepIdentifier();
+
+    @Ignore
+    public boolean hasNextStepIdentifier() {
+        return !Strings.isNullOrEmpty(getNextStepIdentifier());
+    }
 }
