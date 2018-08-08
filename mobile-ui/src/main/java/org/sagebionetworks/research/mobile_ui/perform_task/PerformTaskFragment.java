@@ -103,7 +103,7 @@ public class PerformTaskFragment extends Fragment implements HasSupportFragmentI
 
     @Inject
     PerformTaskViewModelFactory taskViewModelFactory;
-    
+
     private ShowStepFragmentBase currentStepFragment;
 
     private PerformTaskViewModel performTaskViewModel;
@@ -192,13 +192,7 @@ public class PerformTaskFragment extends Fragment implements HasSupportFragmentI
     public AndroidInjector<Fragment> supportFragmentInjector() {
         return fragmentDispatchingAndroidInjector;
     }
-
-    public void endPerformTask() {
-        // TODO handle end of perform task.
-        FragmentManager manager = getFragmentManager();
-        manager.beginTransaction().remove(this).commit();
-    }
-
+    
     @VisibleForTesting
     void showStep(StepView stepView) {
         if (stepView == null) {
@@ -212,7 +206,7 @@ public class PerformTaskFragment extends Fragment implements HasSupportFragmentI
             SharedPreferences sharedPreferences = getContext().getSharedPreferences(sharedPreferencesKey,
                     Context.MODE_PRIVATE);
             sharedPreferences.edit().putLong(LAST_RUN_KEY, Instant.now().toEpochMilli()).apply();
-            this.endPerformTask();
+            // TODO handle end of perform task.
             return;
         }
 
