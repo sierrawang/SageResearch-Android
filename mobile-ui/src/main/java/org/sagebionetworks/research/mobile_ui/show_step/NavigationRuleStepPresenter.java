@@ -70,17 +70,17 @@ public class NavigationRuleStepPresenter extends StepPresenter
 
     @Nullable
     @Override
-    public String getNextStepIdentifier(@Nullable final Task Task, @Nullable final TaskResult taskResult) {
+    public String getNextStepIdentifier(@Nullable final TaskResult taskResult) {
         return null;
     }
 
     @Override
-    public boolean isBackAllowed(@Nullable final Task task, @Nullable final TaskResult taskResult) {
+    public boolean isBackAllowed(@Nullable final TaskResult taskResult) {
         return false;
     }
 
     @Override
-    public boolean shouldSkip(@Nullable final Task task, @Nullable final TaskResult taskResult) {
+    public boolean shouldSkip(@Nullable final TaskResult taskResult) {
         return false;
     }
 }

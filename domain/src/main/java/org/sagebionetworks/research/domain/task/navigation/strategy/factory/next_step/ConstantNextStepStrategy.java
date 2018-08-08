@@ -49,7 +49,7 @@ public final class ConstantNextStepStrategy implements NextStepStrategy {
 
     @Nullable
     @Override
-    public String getNextStepIdentifier(@Nullable final Task task, @Nullable final TaskResult taskResult) {
+    public String getNextStepIdentifier(@Nullable final TaskResult taskResult) {
         return nextStepIdentifier;
     }
 

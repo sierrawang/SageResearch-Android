@@ -49,11 +49,10 @@ class StepNavigationStrategy {
         /**
          * NextStepStrategy step to navigate to based on the current task result.
          *
-         * @param task current task
          * @param taskResult current task result
          * @return identifier of next step, or null if this is the last step
          */
-        fun getNextStepIdentifier(task: Task, taskResult: TaskResult): String?
+        fun getNextStepIdentifier(taskResult: TaskResult): String?
     }
 
     /**
@@ -62,11 +61,10 @@ class StepNavigationStrategy {
     interface SkipStepStrategy {
 
         /**
-         * @param task current task
          * @param taskResult current task result
          * @return true if step should be skipped
          */
-        fun shouldSkip(task: Task, taskResult: TaskResult): Boolean
+        fun shouldSkip(taskResult: TaskResult): Boolean
     }
 
     /**
@@ -77,10 +75,9 @@ class StepNavigationStrategy {
         /**
          * Should this step allow backward navigation?
          *
-         * @param task current task
          * @param taskResult current task result
          */
-        fun isBackAllowed(task: Task, taskResult: TaskResult): Boolean
+        fun isBackAllowed(taskResult: TaskResult): Boolean
     }
 
     // make class non-instantiable

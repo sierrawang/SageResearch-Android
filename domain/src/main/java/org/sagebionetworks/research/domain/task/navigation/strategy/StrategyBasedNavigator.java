@@ -97,7 +97,7 @@ public class StrategyBasedNavigator implements StepNavigator {
         Step nextStep = null;
         // First we try to get the next step from the step by casting it to a NextStepStrategy.
         if (step instanceof NextStepStrategy) {
-            String nextStepId = ((NextStepStrategy)step).getNextStepIdentifier(task, taskResult);
+            String nextStepId = ((NextStepStrategy)step).getNextStepIdentifier(taskResult);
             if (nextStepId != null) {
                 nextStep = this.getStep(nextStepId);
             }
@@ -112,7 +112,7 @@ public class StrategyBasedNavigator implements StepNavigator {
         if (nextStep != null) {
             // As long as the next step we have found shouldn't be skipped we return it.
             if (!(nextStep instanceof SkipStepStrategy) ||
-                    !((SkipStepStrategy) nextStep).shouldSkip(task, taskResult)) {
+                    !((SkipStepStrategy) nextStep).shouldSkip(taskResult)) {
                 return nextStep;
             }
 
@@ -134,7 +134,7 @@ public class StrategyBasedNavigator implements StepNavigator {
 
     private Step getPreviousStepHelper(@NonNull final Step step, @NonNull TaskResult taskResult) {
         // First we make sure that the given step allows backward navigation.
-        if (step instanceof BackStepStrategy && !((BackStepStrategy) step).isBackAllowed(task, taskResult)) {
+        if (step instanceof BackStepStrategy && !((BackStepStrategy) step).isBackAllowed(taskResult)) {
             return null;
         }
 
