@@ -89,12 +89,6 @@ public class SectionStepBase extends StepBase implements SectionStep {
         return TYPE_KEY;
     }
 
-    @NonNull
-    @Override
-    public Result instantiateStepResult() {
-        return new ResultBase(this.getIdentifier(), Instant.now(), Instant.now());
-    }
-
     @Override
     protected boolean equalsHelper(Object o) {
         SectionStepBase sectionStep = (SectionStepBase) o;

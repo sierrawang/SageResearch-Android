@@ -261,10 +261,12 @@ public class PerformTaskViewModel extends ViewModel {
         TaskResult taskResult = taskResultLiveData.getValue();
         checkState(taskResult != null);
         if (currentStep != null) {
-            // We write a step result if we don't already have one
             Result previousResult = taskResult.getResult(currentStep);
-            if (previousResult == null || previousResult instanceof ResultBase) {
-                this.addStepResult(currentStep.instantiateStepResult());
+            if (previousResult == null) {
+                // If for whatever reason the step didn't create a result matching it's identifier we create a ResultBase
+                // to mark that the step completed.
+                // TODO rkolmos 08/08/2018 fix the result start time to be correct.
+                this.addStepResult(new ResultBase(currentStep.getIdentifier(), Instant.now(), Instant.now()));
             }
         }
 

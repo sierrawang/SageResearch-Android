@@ -106,12 +106,6 @@ public class TransformerStepBase extends StepBase implements TransformerStep {
         return TYPE_KEY;
     }
 
-    @NonNull
-    @Override
-    public Result instantiateStepResult() {
-        throw new UnsupportedOperationException();
-    }
-
     @Override
     protected boolean equalsHelper(Object o) {
         TransformerStepBase transformerStep = (TransformerStepBase) o;

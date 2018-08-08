@@ -228,10 +228,4 @@ public class UIStepBase extends StepBase implements ThemedUIStep {
                 .add("colorTheme", this.getColorTheme())
                 .add("imageTheme", this.getImageTheme());
     }
-
-    @Override
-    public Result instantiateStepResult() {
-        // TODO rkolmos 07/10/2018 figure out how to get the times right or remove them from result.
-        return new ResultBase(this.getIdentifier(), Instant.now(), Instant.now());
-    }
-}
+                           }

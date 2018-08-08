@@ -115,12 +115,6 @@ abstract class ActiveUIStepImpl implements ActiveUIStep {
                 .setDefaultSpokenInstructions(ImmutableMap.of());
     }
 
-    @Override
-    @NonNull
-    public Result instantiateStepResult() {
-        return new ResultBase(this.getIdentifier(), Instant.now(), Instant.now());
-    }
-
     @NonNull
     @Override
     public ActiveUIStep copyWithIdentifier(@NonNull String identifier) {

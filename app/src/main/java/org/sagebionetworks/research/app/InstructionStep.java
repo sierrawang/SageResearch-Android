@@ -124,11 +124,6 @@ public abstract class InstructionStep implements ActiveUIStep {
         return toBuilder().setIdentifier(identifier).build();
     }
 
-    @Override
-    public Result instantiateStepResult() {
-        return new ResultBase(this.getIdentifier(), Instant.now(), Instant.now());
-    }
-
     @NonNull
     @Override
     public final String getType() {

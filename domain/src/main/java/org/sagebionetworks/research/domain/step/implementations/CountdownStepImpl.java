@@ -83,12 +83,6 @@ public abstract class CountdownStepImpl implements CountdownStep {
         return new AutoValue_CountdownStepImpl.Builder();
     }
 
-    @Override
-    @NonNull
-    public Result instantiateStepResult() {
-        return new ResultBase(this.getIdentifier(), Instant.now(), Instant.now());
-    }
-
     public abstract Builder toBuilder();
 
     @Override
