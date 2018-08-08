@@ -53,6 +53,7 @@ import org.sagebionetworks.research.domain.mobile_ui.R;
 import org.sagebionetworks.research.domain.result.implementations.TaskResultBase;
 import org.sagebionetworks.research.domain.result.interfaces.TaskResult;
 import org.sagebionetworks.research.mobile_ui.inject.ShowStepFragmentModule.ShowStepFragmentFactory;
+import org.sagebionetworks.research.mobile_ui.perform_task.PerformTaskFragment.OnPerformTaskExitListener.Status;
 import org.sagebionetworks.research.mobile_ui.show_step.view.ShowStepFragmentBase;
 import org.sagebionetworks.research.presentation.model.TaskView;
 import org.sagebionetworks.research.presentation.model.interfaces.StepView;
@@ -81,6 +82,14 @@ import dagger.android.support.HasSupportFragmentInjector;
  * A placeholder fragment containing a simple view.
  */
 public class PerformTaskFragment extends Fragment implements HasSupportFragmentInjector {
+    public interface OnPerformTaskExitListener {
+        enum Status {
+            CANCELLED, FINISHED
+        }
+
+        void onTaskExit(@NonNull Status status, @NonNull TaskResult taskResult);
+    }
+
     private static final Logger LOGGER = LoggerFactory.getLogger(PerformTaskFragment.class);
 
     private static final String ARGUMENT_TASK_VIEW = "TASK_VIEW";
@@ -88,7 +97,6 @@ public class PerformTaskFragment extends Fragment implements HasSupportFragmentI
     private static final String ARGUMENT_TASK_RUN_UUID = "TASK_RUN_UUID";
 
     public static final String LAST_RUN_KEY = "LAST_RUN";
-
 
     @Inject
     DispatchingAndroidInjector<Fragment> fragmentDispatchingAndroidInjector;
@@ -115,7 +123,9 @@ public class PerformTaskFragment extends Fragment implements HasSupportFragmentI
 
         Bundle arguments = new Bundle();
         arguments.putParcelable(ARGUMENT_TASK_VIEW, taskView);
-        arguments.putParcelable(ARGUMENT_TASK_RUN_UUID, new ParcelUuid(taskRunUUID));
+        if (taskRunUUID != null) {
+            arguments.putParcelable(ARGUMENT_TASK_RUN_UUID, new ParcelUuid(taskRunUUID));
+        }
 
         PerformTaskFragment fragment = new PerformTaskFragment();
         fragment.setArguments(arguments);
@@ -191,6 +201,7 @@ public class PerformTaskFragment extends Fragment implements HasSupportFragmentI
 
     @VisibleForTesting
     void showStep(StepView stepView) {
+        // No next step, task has ended
         if (stepView == null) {
             if (currentStepFragment != null) {
                 getChildFragmentManager().beginTransaction().remove(currentStepFragment).commit();
@@ -203,6 +214,10 @@ public class PerformTaskFragment extends Fragment implements HasSupportFragmentI
                     Context.MODE_PRIVATE);
             sharedPreferences.edit().putLong(LAST_RUN_KEY, Instant.now().toEpochMilli()).apply();
             // TODO handle end of perform task.
+            if (getActivity() instanceof OnPerformTaskExitListener) {
+                ((OnPerformTaskExitListener) getActivity()).onTaskExit(Status.FINISHED,
+                        performTaskViewModel.getTaskResult().getValue());
+            }
             return;
         }
 
@@ -222,6 +237,7 @@ public class PerformTaskFragment extends Fragment implements HasSupportFragmentI
                 .commit();
     }
 
+    // TODO refactor last run persistence and insertion into TaskResult into task completion handler
     private ZonedDateTime getLastRun() {
         String sharedPreferencesKey = this.taskView.getIdentifier();
         SharedPreferences sharedPreferences = getContext().getSharedPreferences(sharedPreferencesKey,

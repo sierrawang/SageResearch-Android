@@ -102,7 +102,7 @@ public class PerformTaskActivity extends AppCompatActivity {
                 .findFragmentById(R.id.rs2_task_content_frame);
 
         if (performTaskFragment == null) {
-            //TODO: use factory to get type of TaskFragment, e.g. PerformActiveTaskFragment for an ActiveUITaskView
+            // TODO: use factory to get type of TaskFragment, e.g. PerformActiveTaskFragment for an ActiveUITaskView
             performTaskFragment = PerformTaskFragment.newInstance(taskView, taskRunUuid);
 
             getSupportFragmentManager()

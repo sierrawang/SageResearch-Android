@@ -46,7 +46,6 @@ import org.sagebionetworks.research.domain.step.interfaces.Step;
 import org.sagebionetworks.research.domain.step.ui.action.Action;
 import org.sagebionetworks.research.domain.task.Task;
 
-import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -62,7 +61,7 @@ public abstract class TaskBase implements Task {
 
         public abstract Builder setAsyncActions(@NonNull List<AsyncAction> asyncActions);
 
-        public abstract Builder setHiddenActions(@NonNull                Set<String> hiddenActions);
+        public abstract Builder setHiddenActions(@NonNull Set<String> hiddenActions);
 
         public abstract Builder setIdentifier(@NonNull String identifier);
 
@@ -72,8 +71,7 @@ public abstract class TaskBase implements Task {
     }
 
     public static Builder builder() {
-        return new AutoValue_TaskBase.Builder()
-                .setAsyncActions(Collections.<AsyncAction>emptyList());
+        return new AutoValue_TaskBase.Builder();
     }
 
     public static TypeAdapter<TaskBase> typeAdapter(Gson gson) {
@@ -88,11 +86,10 @@ public abstract class TaskBase implements Task {
     @NonNull
     @Override
     public Task copyWithSteps(final List<Step> steps) {
-        return this.builder()
-                .setIdentifier(this.getIdentifier())
-                .setAsyncActions(this.getAsyncActions())
+        return this.toBuilder()
                 .setSteps(steps)
-                .setProgressMarkers(this.getProgressMarkers())
                 .build();
     }
+
+    public abstract Builder toBuilder();
 }

@@ -126,6 +126,8 @@ public class PerformTaskViewModel extends ViewModel {
         this.stepViewFactory = stepViewFactory;
         this.lastRun = lastRun;
 
+        // TODO migrate these LiveData to StepNavigationViewModel @liujoshua 2018/08/07
+
         taskLiveData = new MutableLiveData<>();
         taskResultLiveData = new MutableLiveData<>();
 
@@ -226,6 +228,7 @@ public class PerformTaskViewModel extends ViewModel {
             LOGGER.debug("Setting backStep: {}", backStep);
             currentStepLiveData.setValue(backStep);
             stepView = this.stepViewMapping.get(backStep);
+            // TODO: move shouldSKip in goBack and goForward into StrategyStepNavigator @liujoshua 2018/08/07
             if (stepView.shouldSkip(taskResult)) {
                 this.goBack();
                 return;
@@ -336,6 +339,8 @@ public class PerformTaskViewModel extends ViewModel {
 
     @VisibleForTesting
     void taskInitSuccess() {
+        // TODO if there is a TaskResult with a task path (from a previous taskRunUuid), set current step to the last
+        // step the user was at @liujoshua 2018/08/07
         goForward();
     }
 }
