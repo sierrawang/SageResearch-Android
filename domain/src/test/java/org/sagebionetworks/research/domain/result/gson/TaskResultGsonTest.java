@@ -43,7 +43,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
-public class TaskResultGsonTests extends IndividualResultGsonTest {
+public class TaskResultGsonTest extends IndividualResultGsonTest {
     private static final Result EMPTY = new TaskResultBase("taskResult", Instant.ofEpochSecond(20),
             Instant.ofEpochSecond(35), UUID.fromString("1a17cac2-b430-484d-9f68-322ee6217592"),
             new Schema("schema", 1), new ArrayList<Result>(), new ArrayList<Result>());

@@ -30,40 +30,17 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.sagebionetworks.research.domain.impl;
+package org.sagebionetworks.research.domain;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
+import org.junit.runner.RunWith;
+import org.junit.runners.Suite;
+import org.junit.runners.Suite.SuiteClasses;
+import org.sagebionetworks.research.domain.impl.ActionGsonTestSuite;
+import org.sagebionetworks.research.domain.navigation.NavigatorTestSuite;
+import org.sagebionetworks.research.domain.result.gson.ResultGsonTestSuite;
+import org.sagebionetworks.research.domain.step.gson.StepGsonTestSuite;
 
-import org.junit.Test;
-import org.sagebionetworks.research.domain.JsonAssetUtil;
-import org.sagebionetworks.research.domain.step.ui.action.Action;
-
-public class ReminderActionImplTests extends IndividualActionTests {
-    public static final ReminderActionImpl COMPLETE = ReminderActionImpl.builder().setButtonIconName("icon")
-            .setButtonTitle("title")
-            .setReminderIdentifier("reminder").build();
-
-    public static final ReminderActionImpl NO_REMINDER = ReminderActionImpl.builder().setButtonIconName("icon")
-            .setButtonTitle("title")
-            .build();
-
-    public static final ReminderActionImpl NO_TITLE = ReminderActionImpl.builder().setButtonIconName("icon")
-            .setReminderIdentifier("reminder").build();
-
-    @Test
-    public void testReminderAction_Complete() {
-        testCommon(COMPLETE, "ReminderAction_Complete.json");
-    }
-
-    @Test
-    public void testReminderAction_NoReminder() {
-        testCommon(NO_REMINDER, "ReminderAction_NoReminder.json");
-    }
-
-    @Test
-    public void testReminderAction_NoTitle() {
-        testCommon(NO_TITLE, "ReminderAction_NoTitle.json");
-    }
+@RunWith(Suite.class)
+@SuiteClasses({NavigatorTestSuite.class, StepGsonTestSuite.class, ResultGsonTestSuite.class, ActionGsonTestSuite.class})
+public class DimainTestSuite {
 }

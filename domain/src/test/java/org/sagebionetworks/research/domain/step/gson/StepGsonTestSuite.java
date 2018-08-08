@@ -30,17 +30,15 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.sagebionetworks.research.domain;
+package org.sagebionetworks.research.domain.step.gson;
 
 import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
 import org.junit.runners.Suite.SuiteClasses;
-import org.sagebionetworks.research.domain.impl.AllActionGsonTests;
-import org.sagebionetworks.research.domain.navigation.AllNavigatorTests;
-import org.sagebionetworks.research.domain.result.gson.AllResultGsonTests;
-import org.sagebionetworks.research.domain.step.gson.AllStepGsonTests;
 
 @RunWith(Suite.class)
-@SuiteClasses({AllNavigatorTests.class, AllStepGsonTests.class, AllResultGsonTests.class, AllActionGsonTests.class})
-public class AllDomainTests {
+@SuiteClasses({ActiveUIStepGsonTest.class, CompletionStepGsonTest.class, FormUIStepGsonTest.class,
+        SectionStepGsonTest.class, TransformerStepGsonTest.class, UIStepGsonTest.class})
+public class StepGsonTestSuite {
+
 }

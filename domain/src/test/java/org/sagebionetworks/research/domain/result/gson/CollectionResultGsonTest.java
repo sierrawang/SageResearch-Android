@@ -33,66 +33,69 @@
 package org.sagebionetworks.research.domain.result.gson;
 
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
 import org.junit.Test;
-import org.sagebionetworks.research.domain.result.AnswerResultType;
-import org.sagebionetworks.research.domain.result.implementations.AnswerResultBase;
-import org.sagebionetworks.research.domain.result.interfaces.AnswerResult;
+import org.sagebionetworks.research.domain.result.implementations.CollectionResultBase;
+import org.sagebionetworks.research.domain.result.implementations.ResultBase;
+import org.sagebionetworks.research.domain.result.interfaces.CollectionResult;
 import org.sagebionetworks.research.domain.result.interfaces.Result;
 import org.threeten.bp.Instant;
 
-public class AnswerResultGsonTests extends IndividualResultGsonTest {
-    private static final Result INTEGER = new AnswerResultBase<>("answerResult", Instant.ofEpochSecond(20),
-            Instant.ofEpochSecond(30), 1, AnswerResultType.INTEGER);
+import java.util.ArrayList;
+import java.util.List;
 
-    private static final Result STRING = new AnswerResultBase<>("answerResult", Instant.ofEpochSecond(20),
-            Instant.ofEpochSecond(30), "This is a string", AnswerResultType.STRING);
+public class CollectionResultGsonTest extends IndividualResultGsonTest {
+    private static final Result EMPTY = new CollectionResultBase("collectionResult",
+            Instant.ofEpochSecond(20), Instant.ofEpochSecond(30), new ArrayList<Result>());
 
-    private static final Result BOOLEAN = new AnswerResultBase<>("answerResult", Instant.ofEpochSecond(20),
-            Instant.ofEpochSecond(30), true, AnswerResultType.BOOLEAN);
+    private static final Result SINGLE;
 
-    private static final Result DOUBLE = new AnswerResultBase<>("answerResult", Instant.ofEpochSecond(20),
-            Instant.ofEpochSecond(30), 2.0, AnswerResultType.DECIMAL);
+    private static final Result DOUBLE;
 
     @Test
-    public void testAnswerResult_Boolean() {
-        testCommon(BOOLEAN, "AnswerResult_Boolean.json");
+    public void testCollectionResult_Empty() {
+        testCommon(EMPTY, "CollectionResult_Empty.json");
     }
 
     @Test
-    public void testAnswerResult_Double() {
-        testCommon(DOUBLE, "AnswerResult_Double.json");
+    public void testCollectionResult_SingleInputResult() {
+        testCommon(SINGLE, "CollectionResult_SingleInputResult.json");
     }
 
     @Test
-    public void testAnswerResult_Integer() {
-        testCommon(INTEGER, "AnswerResult_Integer.json");
+    public void testCollectionResult_TwoInputResults() {
+        testCommon(DOUBLE, "CollectionResult_TwoInputResults.json");
     }
 
     @Test
-    public void testAnswerResult_String() {
-        testCommon(STRING, "AnswerResult_String.json");
+    public void testSerializationDeserialzation_Empty() {
+        testSerializationThenDeserialization(EMPTY);
     }
 
     @Test
-    public void testSerializationDeserializationIntegration_Boolean() {
-        testSerializationThenDeserialization(BOOLEAN);
+    public void testSerializationDeserialzation_SingleInputField() {
+        testSerializationThenDeserialization(SINGLE);
     }
 
     @Test
-    public void testSerializationDeserializationIntegration_Double() {
+    public void testSerializationDeserialzation_TwoInputFields() {
         testSerializationThenDeserialization(DOUBLE);
     }
 
-    @Test
-    public void testSerializationDeserializationIntegration_Integer() {
-        testSerializationThenDeserialization(INTEGER);
+    static {
+        List<Result> expectedSubResults = new ArrayList<Result>();
+        expectedSubResults.add(new ResultBase("subResult1", Instant.ofEpochSecond(20), null));
+        SINGLE = new CollectionResultBase("collectionResult", Instant.ofEpochSecond(20),
+                Instant.ofEpochSecond(30), expectedSubResults);
     }
 
-    @Test
-    public void testSerializationDeserializationIntegration_String() {
-        testSerializationThenDeserialization(STRING);
+    static {
+        List<Result> expectedSubResults = new ArrayList<Result>();
+        expectedSubResults.add(new ResultBase("subResult1", Instant.ofEpochSecond(20),
+                Instant.ofEpochSecond(25)));
+        expectedSubResults.add(new ResultBase("subResult2", Instant.ofEpochSecond(25), null));
+        DOUBLE = new CollectionResultBase("collectionResult", Instant.ofEpochSecond(20),
+                Instant.ofEpochSecond(30), expectedSubResults);
     }
 }

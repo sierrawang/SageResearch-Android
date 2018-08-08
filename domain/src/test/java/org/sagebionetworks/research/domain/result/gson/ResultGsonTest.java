@@ -32,54 +32,36 @@
 
 package org.sagebionetworks.research.domain.result.gson;
 
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
-import static org.sagebionetworks.research.domain.JsonAssetUtil.readJsonFile;
+import static org.junit.Assert.assertEquals;
 
 import org.junit.Test;
-import org.sagebionetworks.research.domain.result.implementations.ErrorResultBase;
-import org.sagebionetworks.research.domain.result.interfaces.ErrorResult;
-import org.sagebionetworks.research.domain.result.interfaces.ErrorResult.ErrorResultThrowable;
+import org.sagebionetworks.research.domain.result.implementations.ResultBase;
 import org.sagebionetworks.research.domain.result.interfaces.Result;
 import org.threeten.bp.Instant;
 
-public class ErrorResultGsonTests extends IndividualResultGsonTest {
-    private static final String ERROR_MESSAGE = "An error happened";
+public class ResultGsonTest extends IndividualResultGsonTest {
+    private static final Result FULL = new ResultBase("result", Instant.ofEpochSecond(20),
+            Instant.ofEpochSecond(30));
 
-    private static final Result FULL = new ErrorResultBase("errorResult", Instant.ofEpochSecond(20),
-            Instant.ofEpochSecond(30), ERROR_MESSAGE,
-            new ErrorResultThrowable(ERROR_MESSAGE));
-
-    private static final Result NO_THROWABLE = new ErrorResultBase("errorResult", Instant.ofEpochSecond(20),
-            Instant.ofEpochSecond(30), ERROR_MESSAGE, null);
+    private static final Result NO_END_TIME = new ResultBase("result", Instant.ofEpochSecond(10), null);
 
     @Test
-    public void testErrorResult_Full() {
-        Result result = readJsonFile(resultTestComponent.gson(), "results/ErrorResult_Full.json", Result.class);
-
-        assertTrue(result instanceof ErrorResult);
-
-        ErrorResult errorResult = (ErrorResult) result;
-        assertEquals(ERROR_MESSAGE, errorResult.getErrorDescription());
-        assertNotNull(errorResult.getThrowable());
-        assertEquals(ERROR_MESSAGE, errorResult.getThrowable().getMessage());
+    public void testResult_Full() {
+        testCommon(FULL, "Result_Full.json");
     }
 
     @Test
-    public void testErrorResult_NoThrowable() {
-        testCommon(NO_THROWABLE, "ErrorResult_NoThrowable.json");
+    public void testResult_NoEndTime() {
+        testCommon(NO_END_TIME, "Result_NoEndTime.json");
     }
 
     @Test
-    public void testSerializationDeserializationIntegration_Full() {
+    public void testSerializeDeserializeIntegration_FULL() {
         testSerializationThenDeserialization(FULL);
     }
 
     @Test
-    public void testSerializationDeserializationIntegration_NoThrowable() {
-        testSerializationThenDeserialization(NO_THROWABLE);
-    }
-
-    private void assertEquals(final String an_error_happened, final String errorDescription) {
+    public void testSerializeDeserializeIntegration_NoEndTime() {
+        testSerializationThenDeserialization(NO_END_TIME);
     }
 }
