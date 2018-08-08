@@ -36,7 +36,7 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
-import static org.sagebionetworks.research.domain.step.gson.UIStepGsonTests.UI_STEP_ASSERT_EQUALS;
+import static org.sagebionetworks.research.domain.step.gson.UIStepGsonTest.UI_STEP_ASSERT_EQUALS;
 
 import android.support.annotation.NonNull;
 
@@ -47,11 +47,10 @@ import org.junit.Test;
 import org.sagebionetworks.research.domain.step.StepType;
 import org.sagebionetworks.research.domain.step.interfaces.ActiveUIStep;
 import org.sagebionetworks.research.domain.step.interfaces.Step;
-import org.sagebionetworks.research.domain.step.ui.action.ActionDeserializationType;
 
 import java.util.function.BiConsumer;
 
-public class ActiveUIStepGsonTests extends IndividualStepGsonTest {
+public class ActiveUIStepGsonTest extends IndividualStepGsonTest {
     public static final BiConsumer<ActiveUIStep, ActiveUIStep> ACTIVE_UI_STEP_ASSERT_EQUALS
             = (@NonNull ActiveUIStep expected, @NonNull ActiveUIStep actual) -> {
         // inherited getters

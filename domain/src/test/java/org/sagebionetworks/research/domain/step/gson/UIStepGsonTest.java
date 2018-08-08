@@ -53,7 +53,7 @@ import org.sagebionetworks.research.domain.step.ui.action.ActionHandler;
 import java.util.Map;
 import java.util.function.BiConsumer;
 
-public class UIStepGsonTests extends IndividualStepGsonTest {
+public class UIStepGsonTest extends IndividualStepGsonTest {
 
     public static BiConsumer<Action, Action> ACTION_ASSERT_EQUALS
             = (@NonNull Action expected, @NonNull Action actual) -> {

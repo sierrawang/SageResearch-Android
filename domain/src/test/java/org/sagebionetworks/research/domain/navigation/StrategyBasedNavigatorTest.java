@@ -14,12 +14,15 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 import static org.mockito.Mockito.withSettings;
 
+import com.google.common.collect.ImmutableList;
+
 import org.junit.Test;
 import org.mockito.ArgumentMatcher;
 import org.sagebionetworks.research.domain.result.interfaces.Result;
 import org.sagebionetworks.research.domain.result.interfaces.TaskResult;
 import org.sagebionetworks.research.domain.step.interfaces.SectionStep;
 import org.sagebionetworks.research.domain.step.interfaces.Step;
+import org.sagebionetworks.research.domain.task.Task;
 import org.sagebionetworks.research.domain.task.Task;
 import org.sagebionetworks.research.domain.task.navigation.TaskProgress;
 import org.sagebionetworks.research.domain.task.navigation.strategy.StepNavigationStrategy.BackStepStrategy;
@@ -30,7 +33,7 @@ import org.sagebionetworks.research.domain.task.navigation.strategy.StrategyBase
 import java.util.ArrayList;
 import java.util.List;
 
-public class StrategyBasedNavigatorTests extends IndividualNavigatorTests {
+public class StrategyBasedNavigatorTest extends IndividualNavigatorTest {
     private static final String SKIP_RESULT_IDENTIFIER = "skip";
 
     private static final String TEST_STEP_TYPE = "test step";
@@ -41,7 +44,7 @@ public class StrategyBasedNavigatorTests extends IndividualNavigatorTests {
 
     private static final Task TEST_TASK = mockTask(TEST_STEPS, TEST_PROGRESS_MARKERS);
 
-    public StrategyBasedNavigatorTests() {
+    public StrategyBasedNavigatorTest() {
        super(new StrategyBasedNavigator(TEST_TASK, TEST_PROGRESS_MARKERS));
     }
 

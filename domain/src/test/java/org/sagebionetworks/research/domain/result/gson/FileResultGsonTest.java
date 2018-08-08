@@ -32,13 +32,27 @@
 
 package org.sagebionetworks.research.domain.result.gson;
 
-import org.junit.runner.RunWith;
-import org.junit.runners.Suite;
-import org.junit.runners.Suite.SuiteClasses;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
 
-@RunWith(Suite.class)
-@SuiteClasses({AnswerResultGsonTests.class, CollectionResultGsonTests.class, ErrorResultGsonTests.class,
-        FileResultGsonTests.class, ResultGsonTests.class, TaskResultGsonTests.class})
-public class AllResultGsonTests {
+import org.junit.Test;
+import org.sagebionetworks.research.domain.result.implementations.FileResultBase;
+import org.sagebionetworks.research.domain.result.interfaces.FileResult;
+import org.sagebionetworks.research.domain.result.interfaces.Result;
+import org.threeten.bp.Instant;
 
+public class FileResultGsonTest extends IndividualResultGsonTest {
+    private static final Result FULL = new FileResultBase("fileResult", Instant.ofEpochSecond(20),
+            Instant.ofEpochSecond(30), "text", "C:/Test/Folder/");
+
+    @Test
+    public void testFileResult_Full() {
+        testCommon(FULL, "FileResult_Full.json");
+    }
+
+    @Test
+    public void testSerializationDeserializationIntegration_Full() {
+        testSerializationThenDeserialization(FULL);
+    }
 }

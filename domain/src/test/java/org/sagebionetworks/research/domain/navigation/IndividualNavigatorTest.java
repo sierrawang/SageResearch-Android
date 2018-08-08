@@ -24,7 +24,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-public abstract class IndividualNavigatorTests {
+public abstract class IndividualNavigatorTest {
     private static final String STEP_TYPE = "step";
 
     protected static final List<Step> TEST_STEPS;
@@ -102,7 +102,7 @@ public abstract class IndividualNavigatorTests {
         return taskResult;
     }
 
-    public IndividualNavigatorTests(StepNavigator navigator) {
+    public IndividualNavigatorTest(StepNavigator navigator) {
         this.navigator = navigator;
         this.steps = TEST_STEPS;
     }

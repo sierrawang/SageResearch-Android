@@ -34,7 +34,7 @@ package org.sagebionetworks.research.domain.impl;
 
 import org.junit.Test;
 
-public class SkipToStepActionImplTests extends IndividualActionTests {
+public class SkipToStepActionImplTest extends IndividualActionTest {
     public static final SkipToStepActionImpl COMPLETE = SkipToStepActionImpl.builder().setButtonIconName("icon")
             .setButtonTitle("title").setSkipToStepIdentifier("skipTo").build();
 

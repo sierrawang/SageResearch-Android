@@ -30,15 +30,37 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.sagebionetworks.research.domain.step.gson;
+package org.sagebionetworks.research.domain.impl;
 
-import org.junit.runner.RunWith;
-import org.junit.runners.Suite;
-import org.junit.runners.Suite.SuiteClasses;
+import org.junit.Test;
 
-@RunWith(Suite.class)
-@SuiteClasses({ActiveUIStepGsonTests.class, CompletionStepGsonTests.class, FormUIStepGsonTests.class,
-        SectionStepGsonTests.class, TransformerStepGsonTests.class, UIStepGsonTests.class})
-public class AllStepGsonTests {
+public class ActionImplTest extends IndividualActionTest {
+    public static final ActionImpl COMPLETE = ActionImpl.builder().setButtonIconName("icon").setButtonTitle("title")
+            .build();
 
+    public static final ActionImpl NO_TITLE = ActionImpl.builder().setButtonIconName("icon").build();
+
+    public static final ActionImpl NO_ICON = ActionImpl.builder().setButtonTitle("title").build();
+
+    public static final ActionImpl EMPTY = ActionImpl.builder().build();
+
+    @Test
+    public void testAction_Complete() {
+        this.testCommon(COMPLETE, "Action_Complete.json");
+    }
+
+    @Test
+    public void testAction_Empty() {
+        this.testCommon(EMPTY, "Action_Empty.json");
+    }
+
+    @Test
+    public void testAction_NoIcon() {
+        this.testCommon(NO_ICON, "Action_NoIcon.json");
+    }
+
+    @Test
+    public void testAction_NoTitle() {
+        this.testCommon(NO_TITLE, "Action_NoTitle.json");
+    }
 }

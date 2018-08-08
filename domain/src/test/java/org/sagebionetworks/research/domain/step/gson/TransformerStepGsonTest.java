@@ -30,38 +30,27 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.sagebionetworks.research.domain.result.gson;
+package org.sagebionetworks.research.domain.step.gson;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
 
 import org.junit.Test;
-import org.sagebionetworks.research.domain.result.implementations.ResultBase;
-import org.sagebionetworks.research.domain.result.interfaces.Result;
-import org.threeten.bp.Instant;
+import org.sagebionetworks.research.domain.step.implementations.TransformerStepBase;
+import org.sagebionetworks.research.domain.step.interfaces.Step;
+import org.sagebionetworks.research.domain.step.interfaces.TransformerStep;
 
-public class ResultGsonTests extends IndividualResultGsonTest {
-    private static final Result FULL = new ResultBase("result", Instant.ofEpochSecond(20),
-            Instant.ofEpochSecond(30));
-
-    private static final Result NO_END_TIME = new ResultBase("result", Instant.ofEpochSecond(10), null);
-
+public class TransformerStepGsonTest extends IndividualStepGsonTest {
     @Test
-    public void testResult_Full() {
-        testCommon(FULL, "Result_Full.json");
+    public void testTransformer_1() {
+        TransformerStep expected = new TransformerStepBase("left", "TappingSectionStep.json");
+        testCommon(expected, "Transformer_1.json");
     }
 
     @Test
-    public void testResult_NoEndTime() {
-        testCommon(NO_END_TIME, "Result_NoEndTime.json");
-    }
-
-    @Test
-    public void testSerializeDeserializeIntegration_FULL() {
-        testSerializationThenDeserialization(FULL);
-    }
-
-    @Test
-    public void testSerializeDeserializeIntegration_NoEndTime() {
-        testSerializationThenDeserialization(NO_END_TIME);
+    public void testTransformer_2() {
+        TransformerStep expected = new TransformerStepBase("right", "TremorSectionStep.json");
+        testCommon(expected, "Transformer_2.json");
     }
 }

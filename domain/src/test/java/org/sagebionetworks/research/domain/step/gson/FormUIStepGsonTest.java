@@ -52,7 +52,7 @@ import org.sagebionetworks.research.domain.step.interfaces.Step;
 
 import java.io.IOException;
 
-public class FormUIStepGsonTests extends IndividualStepGsonTest {
+public class FormUIStepGsonTest extends IndividualStepGsonTest {
 
     @Test
     public void testIcons() {

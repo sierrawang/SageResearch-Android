@@ -12,9 +12,9 @@ import org.sagebionetworks.research.domain.task.navigation.TreeNavigator;
 
 import java.util.List;
 
-public class TreeNavigatorTests extends IndividualNavigatorTests {
+public class TreeNavigatorTest extends IndividualNavigatorTest {
 
-    public TreeNavigatorTests() {
+    public TreeNavigatorTest() {
         super(new TreeNavigator(TEST_STEPS, TEST_PROGRESS_MARKERS));
     }
 
