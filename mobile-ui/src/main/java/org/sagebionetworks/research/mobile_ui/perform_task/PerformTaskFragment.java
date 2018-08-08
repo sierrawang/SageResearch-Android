@@ -103,10 +103,7 @@ public class PerformTaskFragment extends Fragment implements HasSupportFragmentI
 
     @Inject
     PerformTaskViewModelFactory taskViewModelFactory;
-
-    @Inject
-    ShowStepViewModelFactory showStepViewModelFactory;
-
+    
     private ShowStepFragmentBase currentStepFragment;
 
     private PerformTaskViewModel performTaskViewModel;
@@ -116,7 +113,6 @@ public class PerformTaskFragment extends Fragment implements HasSupportFragmentI
     private TaskView taskView;
 
     private Unbinder unbinder;
-
 
     public static PerformTaskFragment newInstance(@NonNull TaskView taskView, @Nullable UUID taskRunUUID) {
         checkNotNull(taskView);
