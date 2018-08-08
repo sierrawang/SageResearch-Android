@@ -228,7 +228,8 @@ public class PerformTaskViewModel extends ViewModel {
             LOGGER.debug("Setting backStep: {}", backStep);
             currentStepLiveData.setValue(backStep);
             stepView = this.stepViewMapping.get(backStep);
-            // TODO: move shouldSKip in goBack and goForward into StrategyStepNavigator @liujoshua 2018/08/07
+            // TODO: remove shouldSkip and other navigation from stepView, since they are handled by Step
+            // @liujoshua 2018/08/07
             if (stepView.shouldSkip(taskResult)) {
                 this.goBack();
                 return;
