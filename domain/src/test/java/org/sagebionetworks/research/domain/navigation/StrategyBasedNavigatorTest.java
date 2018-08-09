@@ -44,6 +44,12 @@ public class StrategyBasedNavigatorTest extends IndividualNavigatorTest {
 
     private static final Task TEST_TASK = mockTask(TEST_STEPS, TEST_PROGRESS_MARKERS);
 
+    private static ArgumentMatcher<TaskResult> TASK_RESULT_MATCHER =
+            taskResult -> taskResult != null && taskResult.getResult(SKIP_RESULT_IDENTIFIER) != null;
+
+    private static ArgumentMatcher<TaskResult> INVERSE_TASK_RESULT_MATCHER =
+            taskResult -> taskResult == null || taskResult.getResult(SKIP_RESULT_IDENTIFIER) == null;
+
     public StrategyBasedNavigatorTest() {
        super(new StrategyBasedNavigator(TEST_TASK, TEST_PROGRESS_MARKERS));
     }
@@ -274,14 +280,6 @@ public class StrategyBasedNavigatorTest extends IndividualNavigatorTest {
         return mockTaskResult(sectionStep.getIdentifier(), sectionStep.getSteps().subList(from, to));
     }
 
-    private static ArgumentMatcher<Task> TASK_MATCHER = task -> true;
-
-    private static ArgumentMatcher<TaskResult> TASK_RESULT_MATCHER =
-            taskResult -> taskResult != null && taskResult.getResult(SKIP_RESULT_IDENTIFIER) != null;
-
-    private static ArgumentMatcher<TaskResult> INVERSE_TASK_RESULT_MATCHER =
-            taskResult -> taskResult == null || taskResult.getResult(SKIP_RESULT_IDENTIFIER) == null;
-
     // region Mocking
     private static Step mockTestStep(String identifier, boolean isBackAllowed, String nextStepId,
             boolean shouldAddSkipRule) {
@@ -290,16 +288,16 @@ public class StrategyBasedNavigatorTest extends IndividualNavigatorTest {
         when(step.getIdentifier()).thenReturn(identifier);
         when(step.getType()).thenReturn(TEST_STEP_TYPE);
         when(step.toString()).thenReturn(identifier + ": " + TEST_STEP_TYPE);
-        when(((BackStepStrategy) step).isBackAllowed(any(Task.class), any(TaskResult.class))).thenReturn(isBackAllowed);
-        when(((NextStepStrategy) step).getNextStepIdentifier(argThat(TASK_MATCHER), any(TaskResult.class))).thenReturn(nextStepId);
+        when(((BackStepStrategy) step).isBackAllowed(any(TaskResult.class))).thenReturn(isBackAllowed);
+        when(((NextStepStrategy) step).getNextStepIdentifier(any(TaskResult.class))).thenReturn(nextStepId);
         if (shouldAddSkipRule) {
-            when(((SkipStepStrategy) step).shouldSkip(argThat(TASK_MATCHER), argThat(TASK_RESULT_MATCHER)))
+            when(((SkipStepStrategy) step).shouldSkip(argThat(TASK_RESULT_MATCHER)))
                     .thenReturn(true);
-            when(((SkipStepStrategy) step).shouldSkip(argThat(TASK_MATCHER), argThat(INVERSE_TASK_RESULT_MATCHER)))
+            when(((SkipStepStrategy) step).shouldSkip(argThat(INVERSE_TASK_RESULT_MATCHER)))
                     .thenReturn(false);
         } else {
             // If we aren't adding a skip rule we always return false.
-            when(((SkipStepStrategy) step).shouldSkip(any(Task.class), any(TaskResult.class))).thenReturn(false);
+            when(((SkipStepStrategy) step).shouldSkip(any(TaskResult.class))).thenReturn(false);
         }
 
         return step;

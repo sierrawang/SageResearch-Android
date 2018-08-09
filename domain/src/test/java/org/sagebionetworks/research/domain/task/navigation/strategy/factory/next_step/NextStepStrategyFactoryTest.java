@@ -63,7 +63,7 @@ public class NextStepStrategyFactoryTest extends IndividualStepGsonTest {
 
         NextStepStrategy nextStepStrategy = nextStepStrategyFactory.create(step, nextIdentifier);
 
-        assertEquals(nextIdentifier, nextStepStrategy.getNextStepIdentifier(null,null));
+        assertEquals(nextIdentifier, nextStepStrategy.getNextStepIdentifier(null));
     }
 
     @Test
@@ -73,16 +73,16 @@ public class NextStepStrategyFactoryTest extends IndividualStepGsonTest {
         Task task = mock(Task.class);
 
         NextStepStrategy nextStepStrategy = mock(NextStepStrategy.class);
-        when(nextStepStrategy.getNextStepIdentifier(task, taskResult)).thenReturn(nextIdentifier);
+        when(nextStepStrategy.getNextStepIdentifier(taskResult)).thenReturn(nextIdentifier);
 
         Step step = mock(Step.class);
         when(step.getIdentifier()).thenReturn("identifier");
 
         NextStepStrategy nextStepStrategyResult = nextStepStrategyFactory.create(step, nextStepStrategy);
 
-        assertEquals(nextIdentifier, nextStepStrategyResult.getNextStepIdentifier(task, taskResult));
+        assertEquals(nextIdentifier, nextStepStrategyResult.getNextStepIdentifier(taskResult));
 
-        verify(nextStepStrategy).getNextStepIdentifier(task, taskResult);
+        verify(nextStepStrategy).getNextStepIdentifier(taskResult);
     }
 
     @Before
