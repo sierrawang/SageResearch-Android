@@ -39,7 +39,11 @@ import com.google.gson.JsonDeserializer;
 import org.sagebionetworks.research.domain.inject.GsonModule;
 import org.sagebionetworks.research.domain.inject.GsonModule.ClassKey;
 import org.sagebionetworks.research.domain.inject.StepModule.StepClassKey;
+import org.sagebionetworks.research.domain.step.implementations.CompletionStepBase;
+import org.sagebionetworks.research.domain.step.implementations.CountdownStepImpl;
 import org.sagebionetworks.research.domain.step.interfaces.ActiveUIStep;
+import org.sagebionetworks.research.domain.step.interfaces.CompletionStep;
+import org.sagebionetworks.research.domain.step.interfaces.CountdownStep;
 
 import dagger.Module;
 import dagger.Provides;
@@ -59,5 +63,19 @@ public class StepAutoValueModule {
     @StepClassKey(ActiveUIStep.class)
     static String provideActiveUIStepTypeKey() {
         return ActiveUIStepImpl.TYPE_KEY;
+    }
+
+    @Provides
+    @IntoMap
+    @StepClassKey(CountdownStep.class)
+    static String provideCountdownStepTypeKey() {
+        return CountdownStepImpl.TYPE_KEY;
+    }
+
+    @Provides
+    @IntoMap
+    @ClassKey(CountdownStep.class)
+    static JsonDeserializer<?> provideCountdownStepDeserializer() {
+        return createPassThroughDeserializer(CountdownStepImpl.class);
     }
 }

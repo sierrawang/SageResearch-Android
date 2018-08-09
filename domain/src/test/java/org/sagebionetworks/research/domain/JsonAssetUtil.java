@@ -3,6 +3,7 @@ package org.sagebionetworks.research.domain;
 import static com.google.common.base.Preconditions.checkState;
 
 import static org.junit.Assert.assertEquals;
+import static org.mockito.ArgumentMatchers.refEq;
 
 import static java.nio.charset.StandardCharsets.UTF_8;
 

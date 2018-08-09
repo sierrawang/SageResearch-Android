@@ -40,11 +40,13 @@ import org.sagebionetworks.research.domain.RuntimeTypeAdapterFactory;
 import org.sagebionetworks.research.domain.impl.StepAutoValueModule;
 import org.sagebionetworks.research.domain.inject.GsonModule.ClassKey;
 import org.sagebionetworks.research.domain.step.implementations.CompletionStepBase;
+import org.sagebionetworks.research.domain.step.implementations.CountdownStepImpl;
 import org.sagebionetworks.research.domain.step.implementations.FormUIStepBase;
 import org.sagebionetworks.research.domain.step.implementations.SectionStepBase;
 import org.sagebionetworks.research.domain.step.implementations.TransformerStepBase;
 import org.sagebionetworks.research.domain.step.implementations.UIStepBase;
 import org.sagebionetworks.research.domain.step.interfaces.CompletionStep;
+import org.sagebionetworks.research.domain.step.interfaces.CountdownStep;
 import org.sagebionetworks.research.domain.step.interfaces.FormUIStep;
 import org.sagebionetworks.research.domain.step.interfaces.SectionStep;
 import org.sagebionetworks.research.domain.step.interfaces.Step;
@@ -77,6 +79,13 @@ public class StepModule {
 
     @Provides
     @IntoMap
+    @StepClassKey(SectionStep.class)
+    static String provideSectionStepTypeKey() {
+        return SectionStepBase.TYPE_KEY;
+    }
+
+    @Provides
+    @IntoMap
     @ImageThemeClassKey(AnimationImageTheme.class)
     static String provideAnimationImageThemeTypeKey() {
         return AnimationImageTheme.TYPE_KEY;
@@ -87,6 +96,27 @@ public class StepModule {
     @ImageThemeClassKey(FetchableImageTheme.class)
     static String provideFetchableImageThemeTypeKey() {
         return FetchableImageTheme.TYPE_KEY;
+    }
+
+    @Provides
+    @IntoMap
+    @StepClassKey(CompletionStep.class)
+    static String provideCompletionStepTypeKey() {
+        return CompletionStepBase.TYPE_KEY;
+    }
+
+    @Provides
+    @IntoMap
+    @StepClassKey(FormUIStep.class)
+    static String provideFormUIStepTypeKey() {
+        return FormUIStepBase.TYPE_KEY;
+    }
+
+    @Provides
+    @IntoMap
+    @StepClassKey(TransformerStep.class)
+    static String provideTransformerStepTypeKey() {
+        return TransformerStepBase.TYPE_KEY;
     }
 
     @Provides
@@ -101,18 +131,12 @@ public class StepModule {
         return factory;
     }
 
+
     @Provides
     @IntoMap
     @ClassKey(SectionStep.class)
     static JsonDeserializer<?> provideSectionStepDeserializer() {
         return createPassThroughDeserializer(SectionStepBase.class);
-    }
-
-    @Provides
-    @IntoMap
-    @StepClassKey(SectionStep.class)
-    static String provideSectionStepTypeKey() {
-        return SectionStepBase.TYPE_KEY;
     }
 
     @Provides
@@ -124,10 +148,11 @@ public class StepModule {
 
     @Provides
     @IntoMap
-    @StepClassKey(TransformerStep.class)
-    static String provideTransformerStepTypeKey() {
-        return TransformerStepBase.TYPE_KEY;
+    @ClassKey(FormUIStep.class)
+    static JsonDeserializer<?> providedFormUIStepDeserializer() {
+        return createPassThroughDeserializer(FormUIStepBase.class);
     }
+
     // endregion
 
     /**
@@ -147,20 +172,6 @@ public class StepModule {
 
     @Provides
     @IntoMap
-    @ClassKey(FormUIStep.class)
-    static JsonDeserializer<?> providedFormUIStepDeserializer() {
-        return createPassThroughDeserializer(FormUIStepBase.class);
-    }
-
-    @Provides
-    @IntoMap
-    @StepClassKey(FormUIStep.class)
-    static String provideFormUIStepTypeKey() {
-        return FormUIStepBase.TYPE_KEY;
-    }
-
-    @Provides
-    @IntoMap
     @StepClassKey(UIStep.class)
     static String provideUIStepTypeKey() {
         return UIStepBase.TYPE_KEY;
@@ -171,13 +182,6 @@ public class StepModule {
     @ClassKey(UIStep.class)
     static JsonDeserializer<?> provideUIStepDeserializer() {
         return createPassThroughDeserializer(UIStepBase.class);
-    }
-
-    @Provides
-    @IntoMap
-    @StepClassKey(CompletionStep.class)
-    static String provideCompletionStepTypeKey() {
-        return CompletionStep.TYPE_KEY;
     }
 
     @Provides

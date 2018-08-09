@@ -57,18 +57,6 @@ import java.util.List;
 public class FormUIStepViewBase extends UIStepViewBase implements FormUIStepView {
     public static final String TYPE = StepType.FORM;
 
-    public static final Creator<FormUIStepViewBase> CREATOR = new Creator<FormUIStepViewBase>() {
-        @Override
-        public FormUIStepViewBase createFromParcel(Parcel source) {
-            return new FormUIStepViewBase(source);
-        }
-
-        @Override
-        public FormUIStepViewBase[] newArray(int size) {
-            return new FormUIStepViewBase[size];
-        }
-    };
-
     private final List<InputFieldView> inputFields;
 
     public static FormUIStepViewBase fromFormUIStep(Step step, DrawableMapper mapper) {
@@ -108,21 +96,10 @@ public class FormUIStepViewBase extends UIStepViewBase implements FormUIStepView
         in.readList(this.inputFields, InputFieldView.class.getClassLoader());
     }
 
-    @Override
-    public int describeContents() {
-        return 0;
-    }
-
     @NonNull
     @Override
     public String getType() {
         return TYPE;
-    }
-
-    @Override
-    public void writeToParcel(Parcel dest, int flags) {
-        super.writeToParcel(dest, flags);
-        dest.writeList(this.inputFields);
     }
 
     @NonNull

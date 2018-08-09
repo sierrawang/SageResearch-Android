@@ -34,20 +34,21 @@ package org.sagebionetworks.research.mobile_ui.inject;
 
 import android.support.annotation.NonNull;
 
-import org.sagebionetworks.research.domain.step.implementations.CompletionStepBase;
+import dagger.multibindings.Multibinds;
+
 import org.sagebionetworks.research.mobile_ui.show_step.view.ShowActiveUIStepFragment;
 import org.sagebionetworks.research.mobile_ui.show_step.view.ShowCompletionStepFragment;
+import org.sagebionetworks.research.mobile_ui.show_step.view.ShowCountdownStepFragment;
 import org.sagebionetworks.research.mobile_ui.show_step.view.ShowStepFragmentBase;
 import org.sagebionetworks.research.mobile_ui.show_step.view.ShowUIStepFragment;
-import org.sagebionetworks.research.mobile_ui.show_step.view.form.ShowFormUIStepFragment;
+import org.sagebionetworks.research.mobile_ui.show_step.view.ShowFormUIStepFragment;
 import org.sagebionetworks.research.presentation.inject.DrawableModule;
 import org.sagebionetworks.research.presentation.model.implementations.ActiveUIStepViewBase;
 import org.sagebionetworks.research.presentation.model.implementations.CompletionStepViewBase;
+import org.sagebionetworks.research.presentation.model.implementations.CountdownStepViewBase;
 import org.sagebionetworks.research.presentation.model.implementations.FormUIStepViewBase;
 import org.sagebionetworks.research.presentation.model.implementations.UIStepViewBase;
-import org.sagebionetworks.research.presentation.model.interfaces.ActiveUIStepView;
 import org.sagebionetworks.research.presentation.model.interfaces.StepView;
-import org.sagebionetworks.research.presentation.model.interfaces.UIStepView;
 
 import java.util.Map;
 
@@ -59,11 +60,14 @@ import dagger.multibindings.IntoMap;
 // The ShowUIStepViewFragment needs the drawable module so it doesn't make sense to use one of these modules without
 // the other.
 @Module(includes = DrawableModule.class)
-public class ShowStepFragmentModule {
+public abstract class ShowStepFragmentModule {
     @MapKey
     public @interface StepViewKey {
         String value();
     }
+
+    @Multibinds
+    abstract Map<String, ShowStepFragmentFactory> fragmentFactoryMap();
 
     public interface ShowStepFragmentFactory {
         @NonNull
@@ -109,5 +113,12 @@ public class ShowStepFragmentModule {
     @StepViewKey(FormUIStepViewBase.TYPE)
     static ShowStepFragmentFactory provideShowFormUIStepFragmentFactory() {
         return ShowFormUIStepFragment::newInstance;
+    }
+
+    @Provides
+    @IntoMap
+    @StepViewKey(CountdownStepViewBase.TYPE)
+    static ShowStepFragmentFactory provideShowCountdownStepFragmentFactory() {
+        return ShowCountdownStepFragment::newInstance;
     }
 }

@@ -32,6 +32,7 @@
 
 package org.sagebionetworks.research.domain.result.interfaces;
 
+import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 
 import org.sagebionetworks.research.domain.Schema;
@@ -39,6 +40,8 @@ import org.sagebionetworks.research.domain.step.interfaces.Step;
 
 import java.util.List;
 import java.util.UUID;
+
+import javax.annotation.RegEx;
 
 /**
  * A TaskResult is the result from an entire task rather than a single step.
@@ -136,4 +139,14 @@ public interface TaskResult extends Result {
      */
     @Nullable
     TaskResult removeStepHistory(Result result);
+
+    /**
+     * Returns a list of Results from this task result whose identifier match the given regex. If
+     * no results match the empty list will be returned.
+     * @param regex The regex to match in the results identifiers.
+     * @return A list of Results whose identifiers match the given regex. If no results match the
+     * empty list will be returned.
+     */
+    @NonNull
+    List<Result> getResultsMatchingRegex(@RegEx String regex);
 }

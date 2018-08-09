@@ -98,6 +98,7 @@ public class PerformTaskFragment extends Fragment implements HasSupportFragmentI
 
     public static final String LAST_RUN_KEY = "LAST_RUN";
 
+
     @Inject
     DispatchingAndroidInjector<Fragment> fragmentDispatchingAndroidInjector;
 

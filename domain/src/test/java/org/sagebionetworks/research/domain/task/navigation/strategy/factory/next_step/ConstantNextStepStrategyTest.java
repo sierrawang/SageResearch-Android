@@ -38,6 +38,7 @@ import static org.mockito.Mockito.mock;
 
 import org.junit.Test;
 import org.sagebionetworks.research.domain.result.interfaces.TaskResult;
+import org.sagebionetworks.research.domain.task.Task;
 import org.sagebionetworks.research.domain.task.navigation.strategy.StepNavigationStrategy.NextStepStrategy;
 
 public class ConstantNextStepStrategyTest {

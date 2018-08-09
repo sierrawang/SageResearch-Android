@@ -45,6 +45,7 @@ import org.sagebionetworks.research.domain.result.interfaces.CollectionResult;
 import org.sagebionetworks.research.domain.result.interfaces.Result;
 import org.threeten.bp.Instant;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -68,6 +69,15 @@ public class CollectionResultBase extends ResultBase implements CollectionResult
     @Override
     public ImmutableList<Result> getInputResults() {
         return this.collectionResultData.getInputResults();
+    }
+
+    @Override
+    @NonNull
+    public CollectionResult appendInputResult(@NonNull Result inputResult) {
+        List<Result> inputResults = new ArrayList<>(this.getInputResults());
+        inputResults.add(inputResult);
+        return new CollectionResultBase(this.getIdentifier(), this.getStartTime(),
+                this.getEndTime(), inputResults);
     }
 
     @NonNull

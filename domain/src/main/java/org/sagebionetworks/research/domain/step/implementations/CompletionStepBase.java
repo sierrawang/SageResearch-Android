@@ -35,9 +35,11 @@ package org.sagebionetworks.research.domain.step.implementations;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 
+import org.sagebionetworks.research.domain.step.StepType;
 import com.google.common.collect.Lists;
 
 import org.sagebionetworks.research.domain.step.interfaces.CompletionStep;
+import org.sagebionetworks.research.domain.step.ui.action.Action;
 import org.sagebionetworks.research.domain.step.interfaces.Step;
 import org.sagebionetworks.research.domain.step.interfaces.UIStep;
 import org.sagebionetworks.research.domain.step.ui.action.Action;
@@ -51,6 +53,7 @@ import java.util.Map;
 import java.util.Set;
 
 public class CompletionStepBase extends UIStepBase implements CompletionStep {
+    public static final String TYPE_KEY = StepType.COMPLETION;
 
     private static final Logger LOGGER = LoggerFactory.getLogger(CompletionStepBase.class);
 
@@ -81,6 +84,6 @@ public class CompletionStepBase extends UIStepBase implements CompletionStep {
     @Override
     @NonNull
     public String getType() {
-        return CompletionStep.TYPE_KEY;
+        return TYPE_KEY;
     }
 }

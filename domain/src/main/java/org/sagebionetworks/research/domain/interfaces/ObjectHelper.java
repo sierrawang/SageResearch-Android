@@ -70,8 +70,8 @@ public abstract class ObjectHelper {
     protected abstract boolean equalsHelper(Object o);
 
     /**
-     * Returns a HashCodeHelper that can be used to produce the hashCode for this object. Expected that subclasses
-     * will override to add their own fields to the hash code, as with equals and toString helpers.
+     * Instantiates and returns a HashCodeHelper that can be used to produce the hashCode for this object.
+     * Expected that subclasses will override to add their own fields to the hash code, as with equals and toString helpers.
      *
      * @return The HashCodeHelper that can be used to produce the hashCode for this object.
      */

@@ -34,15 +34,16 @@ package org.sagebionetworks.research.presentation.show_step.show_step_view_model
 
 
 import org.sagebionetworks.research.presentation.model.interfaces.ActiveUIStepView;
+import org.sagebionetworks.research.presentation.model.interfaces.StepView;
 import org.sagebionetworks.research.presentation.perform_task.PerformTaskViewModel;
 import org.sagebionetworks.research.presentation.show_step.show_step_view_models.ShowActiveUIStepViewModel;
 
 
-public class ShowActiveUIStepViewModelFactory implements
-        AbstractShowStepViewModelFactory<ShowActiveUIStepViewModel<ActiveUIStepView>, ActiveUIStepView> {
+public class ShowActiveUIStepViewModelFactory<S extends ActiveUIStepView> implements
+        AbstractShowStepViewModelFactory<ShowActiveUIStepViewModel<S>, S> {
     @Override
-    public ShowActiveUIStepViewModel<ActiveUIStepView> create(final PerformTaskViewModel performTaskViewModel,
-            final ActiveUIStepView stepView) {
+    public ShowActiveUIStepViewModel<S> create(final PerformTaskViewModel performTaskViewModel,
+            final S stepView) {
         return new ShowActiveUIStepViewModel<>(performTaskViewModel, stepView);
     }
 
