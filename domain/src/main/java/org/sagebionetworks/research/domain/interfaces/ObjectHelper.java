@@ -40,15 +40,7 @@ public abstract class ObjectHelper {
 
     @Override
     public int hashCode() {
-        if (hashCodeHelper == null) {
-            synchronized (this) {
-                if (hashCodeHelper == null) {
-                    hashCodeHelper = hashCodeHelper();
-                }
-            }
-        }
-
-        return hashCodeHelper.hash();
+        return hashCodeHelper().hash();
     }
 
     @Override
@@ -84,6 +76,13 @@ public abstract class ObjectHelper {
      * @return The HashCodeHelper that can be used to produce the hashCode for this object.
      */
     protected HashCodeHelper hashCodeHelper() {
+        if (hashCodeHelper == null) {
+            synchronized (this) {
+                if (hashCodeHelper == null) {
+                    hashCodeHelper = new HashCodeHelper();
+                }
+            }
+        }
         return hashCodeHelper;
     }
 
