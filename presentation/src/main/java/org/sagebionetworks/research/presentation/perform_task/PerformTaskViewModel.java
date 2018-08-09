@@ -46,9 +46,11 @@ import android.support.annotation.VisibleForTesting;
 import org.sagebionetworks.research.domain.repository.TaskRepository;
 import org.sagebionetworks.research.domain.result.AnswerResultType;
 import org.sagebionetworks.research.domain.result.implementations.AnswerResultBase;
+import org.sagebionetworks.research.domain.result.implementations.ResultBase;
 import org.sagebionetworks.research.domain.result.implementations.TaskResultBase;
 import org.sagebionetworks.research.domain.result.interfaces.Result;
 import org.sagebionetworks.research.domain.result.interfaces.TaskResult;
+import org.sagebionetworks.research.domain.step.interfaces.SectionStep;
 import org.sagebionetworks.research.domain.step.interfaces.Step;
 import org.sagebionetworks.research.domain.step.interfaces.ThemedUIStep;
 import org.sagebionetworks.research.domain.task.Task;
@@ -63,11 +65,13 @@ import org.sagebionetworks.research.presentation.mapper.TaskMapper;
 import org.sagebionetworks.research.presentation.model.TaskView;
 import org.sagebionetworks.research.presentation.model.action.ActionView;
 import org.sagebionetworks.research.presentation.model.interfaces.StepView;
+import org.sagebionetworks.research.presentation.show_step.show_step_view_model_factories.ShowStepViewModelFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.threeten.bp.Instant;
 import org.threeten.bp.ZonedDateTime;
 
+import java.io.Serializable;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -75,6 +79,7 @@ import java.util.UUID;
 
 import io.reactivex.Completable;
 import io.reactivex.disposables.CompositeDisposable;
+import io.reactivex.schedulers.Schedulers;
 
 @MainThread
 public class PerformTaskViewModel extends ViewModel {
@@ -111,6 +116,8 @@ public class PerformTaskViewModel extends ViewModel {
     private final UUID taskRunUuid;
 
     private final TaskView taskView;
+
+    private Task task;
 
     private final MutableLiveData<LoadableResource<TaskView>> taskViewLiveData;
 
@@ -192,8 +199,12 @@ public class PerformTaskViewModel extends ViewModel {
     }
 
     @NonNull
-    public LiveData<TaskInfo> getTask() {
+    public LiveData<TaskInfo> getTaskInfo() {
         return taskLiveData;
+    }
+
+    public Task getTask() {
+        return task;
     }
 
     @NonNull
@@ -211,6 +222,52 @@ public class PerformTaskViewModel extends ViewModel {
         return taskView;
     }
 
+    /**
+     * Sets the value of taskProgress, currentStep, and stepView live datas to match switching the step to the
+     * given next step.
+     * @param nextStep The step to use as the new current step.
+     * @param taskResult The task result before this switch occured.
+     */
+    protected void updateCurrentStep(@Nullable Step nextStep, @NonNull TaskResult taskResult) {
+        if (nextStep == null) {
+            this.currentStepLiveData.setValue(null);
+            this.stepViewLiveData.setValue(null);
+            this.taskProgressLiveData.setValue(null);
+        } else {
+            TaskProgress nextProgress = this.stepNavigator.getProgress(nextStep, taskResult);
+            this.taskProgressLiveData.setValue(nextProgress);
+            LOGGER.debug("Setting step: {}", nextStep);
+            this.currentStepLiveData.setValue(nextStep);
+            StepView stepView = this.stepViewMapping.get(nextStep);
+            this.stepViewLiveData.setValue(stepView);
+        }
+    }
+
+    /**
+     * Navigates forward in the task writing a result for the current step.
+     */
+    public void goForward() {
+        LOGGER.debug("goForward called");
+        Step currentStep = currentStepLiveData.getValue();
+        TaskResult taskResult = taskResultLiveData.getValue();
+        checkState(taskResult != null);
+        if (currentStep != null) {
+            Result previousResult = taskResult.getResult(currentStep);
+            if (previousResult == null) {
+                // If for whatever reason the step didn't create a result matching it's identifier we create a ResultBase
+                // to mark that the step completed.
+                // TODO rkolmos 08/08/2018 fix the result start time to be correct.
+                this.addStepResult(new ResultBase(currentStep.getIdentifier(), Instant.now(), Instant.now()));
+            }
+        }
+
+        Step nextStep = stepNavigator.getNextStep(currentStep, taskResult);
+        this.updateCurrentStep(nextStep, taskResult);
+    }
+
+    /**
+     * Navigates backward in the task without writing a result for the current step.
+     */
     public void goBack() {
         LOGGER.debug("goBack called");
         Step currentStep = currentStepLiveData.getValue();
@@ -219,43 +276,11 @@ public class PerformTaskViewModel extends ViewModel {
         checkState(taskResult != null);
 
         Step backStep = stepNavigator.getPreviousStep(currentStep, taskResult);
-        StepView stepView = null;
         if (backStep != null) {
-            TaskProgress backProgress = stepNavigator.getProgress(backStep, taskResult);
-            taskProgressLiveData.setValue(backProgress);
-            LOGGER.debug("Setting backStep: {}", backStep);
-            currentStepLiveData.setValue(backStep);
-            stepView = this.stepViewMapping.get(backStep);
-            if (stepView.shouldSkip(taskResult)) {
-                this.goBack();
-                return;
-            }
+            this.updateCurrentStep(backStep, taskResult);
+        } else {
+            LOGGER.warn("goBack called from first step");
         }
-
-        stepViewLiveData.setValue(stepView);
-    }
-
-    public void goForward() {
-        LOGGER.debug("goForward called");
-        Step currentStep = currentStepLiveData.getValue();
-        TaskResult taskResult = taskResultLiveData.getValue();
-        checkState(taskResult != null);
-
-        Step nextStep = stepNavigator.getNextStep(currentStep, taskResult);
-        StepView stepView = null;
-        if (nextStep != null) {
-            TaskProgress nextProgress = stepNavigator.getProgress(nextStep, taskResult);
-            taskProgressLiveData.setValue(nextProgress);
-            LOGGER.debug("Setting forwardStep: {}", nextStep);
-            currentStepLiveData.setValue(nextStep);
-            stepView = this.stepViewMapping.get(nextStep);
-            if (stepView.shouldSkip(taskResult)) {
-                this.goForward();
-                return;
-            }
-        }
-
-        stepViewLiveData.setValue(stepView);
     }
 
     /**
@@ -289,8 +314,8 @@ public class PerformTaskViewModel extends ViewModel {
     @VisibleForTesting
     void handleTaskLoad(Task task) {
         LOGGER.debug("Loaded task: {}", task);
-        List<Step> steps = task.getSteps();
-        stepNavigator = stepNavigatorFactory.create(steps, task.getProgressMarkers());
+        this.task = task;
+        stepNavigator = stepNavigatorFactory.create(task, task.getProgressMarkers());
         this.stepViewMapping = new HashMap<>();
         for (Step step : this.stepNavigator.getSteps()) {
             // This if statement is necessary to ensure we can call stepViewFactory.apply on the step.

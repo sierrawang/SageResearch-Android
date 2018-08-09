@@ -52,18 +52,6 @@ import org.threeten.bp.Duration;
 public class ActiveUIStepViewBase extends UIStepViewBase implements ActiveUIStepView {
     public static final String TYPE = StepType.ACTIVE;
 
-    public static final Creator<ActiveUIStepViewBase> CREATOR = new Creator<ActiveUIStepViewBase>() {
-        @Override
-        public ActiveUIStepViewBase createFromParcel(Parcel source) {
-            return new ActiveUIStepViewBase(source);
-        }
-
-        @Override
-        public ActiveUIStepViewBase[] newArray(int size) {
-            return new ActiveUIStepViewBase[size];
-        }
-    };
-
     @NonNull
     private final Duration duration;
 
@@ -106,22 +94,10 @@ public class ActiveUIStepViewBase extends UIStepViewBase implements ActiveUIStep
         this.isBackgroundAudioRequired = in.readByte() != 0;
     }
 
-    @Override
-    public int describeContents() {
-        return 0;
-    }
-
     @NonNull
     @Override
     public String getType() {
         return TYPE;
-    }
-
-    @Override
-    public void writeToParcel(Parcel dest, int flags) {
-        super.writeToParcel(dest, flags);
-        dest.writeSerializable(this.duration);
-        dest.writeByte(this.isBackgroundAudioRequired ? (byte) 1 : (byte) 0);
     }
 
     @Override

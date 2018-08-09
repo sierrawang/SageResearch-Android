@@ -52,7 +52,6 @@ import dagger.multibindings.IntoMap;
 
 @Module(includes = {GsonModule.class})
 public abstract class TaskModule {
-
     @Singleton
     @Provides
     static StepNavigatorFactory provideStepNavigatorFactory() {
@@ -78,4 +77,5 @@ public abstract class TaskModule {
     static JsonDeserializer<?> provideTaskInfoDeserializer() {
         return createPassThroughDeserializer(TaskInfoBase.class);
     }
+
 }

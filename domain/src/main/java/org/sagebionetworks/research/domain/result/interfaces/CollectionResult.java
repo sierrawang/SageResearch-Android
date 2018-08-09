@@ -46,4 +46,11 @@ public interface CollectionResult extends Result {
      */
     @NonNull
     ImmutableList<Result> getInputResults();
+
+    /**
+     * @param inputResult The result to append to this CollectionResult
+     * @return A new CollectionResult with the given result appended to the input results.
+     */
+    @NonNull
+    CollectionResult appendInputResult(@NonNull Result inputResult);
 }

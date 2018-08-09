@@ -36,6 +36,7 @@ import org.sagebionetworks.research.domain.inject.StepModule.StepClassKey;
 import org.sagebionetworks.research.presentation.model.BaseStepView;
 import org.sagebionetworks.research.presentation.model.implementations.ActiveUIStepViewBase;
 import org.sagebionetworks.research.presentation.model.implementations.CompletionStepViewBase;
+import org.sagebionetworks.research.presentation.model.implementations.CountdownStepViewBase;
 import org.sagebionetworks.research.presentation.model.implementations.FormUIStepViewBase;
 import org.sagebionetworks.research.presentation.model.implementations.UIStepViewBase;
 import org.sagebionetworks.research.presentation.model.interfaces.ActiveUIStepView;
@@ -66,7 +67,7 @@ public abstract class ShowStepViewModelModule {
     @IntoMap
     @StepViewClassKey(ActiveUIStepViewBase.TYPE)
     static AbstractShowStepViewModelFactory<?, ? extends StepView> provideActiveUIStepVMF() {
-        return new ShowActiveUIStepViewModelFactory();
+        return new ShowActiveUIStepViewModelFactory<>();
     }
 
     // TODO: rkolmos 06/01/2018 Implement a view model for FormUISteps.
@@ -102,5 +103,12 @@ public abstract class ShowStepViewModelModule {
     @StepViewClassKey(CompletionStepViewBase.TYPE)
     static AbstractShowStepViewModelFactory<?, ? extends StepView> provideCompletionStepVMF() {
         return new ShowUIStepViewModelFactory<>();
+    }
+
+    @Provides
+    @IntoMap
+    @StepViewClassKey(CountdownStepViewBase.TYPE)
+    static AbstractShowStepViewModelFactory<?, ? extends StepView> provideCountdownStepVMF() {
+        return new ShowActiveUIStepViewModelFactory<>();
     }
 }

@@ -11,6 +11,7 @@ import static org.mockito.Mockito.when;
 import com.google.common.collect.ImmutableList;
 
 import org.junit.Test;
+import org.sagebionetworks.research.domain.result.ResultType;
 import org.sagebionetworks.research.domain.result.interfaces.Result;
 import org.sagebionetworks.research.domain.result.interfaces.TaskResult;
 import org.sagebionetworks.research.domain.step.StepType;
@@ -30,7 +31,7 @@ public abstract class IndividualNavigatorTest {
 
     protected static final List<String> TEST_PROGRESS_MARKERS;
 
-    private final StepNavigator navigator;
+    protected final StepNavigator navigator;
 
     private final List<Step> steps;
 
@@ -42,12 +43,18 @@ public abstract class IndividualNavigatorTest {
         return steps;
     }
 
+    public static Result mockResult(String identifier) {
+        Result result = mock(Result.class);
+        when(result.getIdentifier()).thenReturn(identifier);
+        when(result.getType()).thenReturn(ResultType.BASE);
+        return result;
+    }
+
     public static Result mockResult(Step step) {
         Result result = mock(Result.class);
         String identifier = step.getIdentifier();
         when(result.getIdentifier()).thenReturn(identifier);
-        String type = step.getType();
-        when(result.getType()).thenReturn(type);
+        when(result.getType()).thenReturn(ResultType.BASE);
         return result;
     }
 
@@ -83,7 +90,8 @@ public abstract class IndividualNavigatorTest {
     public static TaskResult mockTaskResultFromResults(String identifier, List<Result> subResults) {
         TaskResult taskResult = mock(TaskResult.class);
         for (Result stepResult : subResults) {
-            when(taskResult.getResult(stepResult.getIdentifier())).thenReturn(stepResult);
+            String resultIdentifier = stepResult.getIdentifier();
+            when(taskResult.getResult(resultIdentifier)).thenReturn(stepResult);
         }
 
         ImmutableList.Builder<Result> builder = new ImmutableList.Builder<>();

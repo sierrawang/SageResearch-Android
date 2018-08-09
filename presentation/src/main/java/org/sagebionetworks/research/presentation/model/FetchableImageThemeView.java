@@ -30,7 +30,7 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.sagebionetworks.research.presentation.model.interfaces;
+package org.sagebionetworks.research.presentation.model;
 
 import android.support.annotation.Nullable;
 
@@ -40,7 +40,6 @@ import org.sagebionetworks.research.domain.step.ui.theme.ColorPlacement;
 import org.sagebionetworks.research.domain.step.ui.theme.FetchableImageTheme;
 import org.sagebionetworks.research.presentation.DisplayDrawable;
 import org.sagebionetworks.research.presentation.mapper.DrawableMapper;
-import org.sagebionetworks.research.presentation.model.ImageThemeView;
 
 @AutoValue
 public abstract class FetchableImageThemeView extends ImageThemeView {

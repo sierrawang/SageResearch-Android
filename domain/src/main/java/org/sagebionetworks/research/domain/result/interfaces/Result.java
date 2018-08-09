@@ -64,6 +64,5 @@ public interface Result {
      * @return A String representing the result type of this result.
      */
     @NonNull
-    @ResultType
     String getType();
 }

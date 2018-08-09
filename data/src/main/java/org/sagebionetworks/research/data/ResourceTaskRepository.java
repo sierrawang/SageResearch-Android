@@ -206,7 +206,7 @@ public class ResourceTaskRepository implements TaskRepository {
             // For now the transformer only supports SectionSteps.
             SectionStep result = gson.fromJson(
                     this.getJsonTransformerAsset(transformer.getResourceName()), SectionStep.class);
-            result = result.copyWithIdentifier(transformer.getIdentifier());
+            result = result.copyWithIdentifier(prefix + transformer.getIdentifier());
             return resolveTransformers(result, prefix);
         } else if (step instanceof SectionStep) {
             SectionStep section = (SectionStep) step;
@@ -218,6 +218,12 @@ public class ResourceTaskRepository implements TaskRepository {
 
             return new SectionStepBase(section.getIdentifier(), builder.build());
         } else {
+            Step copiedStep = step.copyWithIdentifier(prefix + step.getIdentifier());
+            if (copiedStep.getClass() != step.getClass()) {
+                LOGGER.warn("Copied step ({}) has different class than the original" +
+                        "({})", copiedStep, step);
+            }
+
             return step.copyWithIdentifier(prefix + step.getIdentifier());
         }
     }

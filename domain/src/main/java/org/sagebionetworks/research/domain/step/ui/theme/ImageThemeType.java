@@ -40,6 +40,6 @@ import java.lang.annotation.RetentionPolicy;
 @Retention(RetentionPolicy.SOURCE)
 @StringDef({ImageThemeType.ANIMATION, ImageThemeType.FETCHABLE})
 public @interface ImageThemeType {
-    String ANIMATION = "animation";
+    String ANIMATION = "animated";
     String FETCHABLE = "fetchable";
 }

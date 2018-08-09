@@ -42,5 +42,5 @@ import java.lang.annotation.RetentionPolicy;
 public @interface ActionDeserializationType {
     String DEFAULT = "default";
     String REMINDER = "reminder";
-    String SKIP = "skip";
+    String SKIP = "navigation";
 }

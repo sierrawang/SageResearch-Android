@@ -30,25 +30,20 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.sagebionetworks.research.mobile_ui.show_step;
+package org.sagebionetworks.research.mobile_ui.inject.subcomponents;
 
+import org.sagebionetworks.research.mobile_ui.show_step.view.ShowCountdownStepFragment;
+import org.sagebionetworks.research.presentation.inject.ShowStepViewModelModule;
 
-import org.sagebionetworks.research.mobile_ui.mapper.StepMapper;
-import org.sagebionetworks.research.mobile_ui.model.StepViewModel;
-import org.sagebionetworks.research.presentation.model.interfaces.StepView;
+import dagger.Subcomponent;
+import dagger.android.AndroidInjector;
 
-import javax.inject.Inject;
-
-public class StepFactory {
-    private final StepMapper mapper;
-
-    @Inject
-    public StepFactory(final StepMapper mapper) {
-        this.mapper = mapper;
-    }
-
-    public StepViewModel create(StepView stepView) {
-        // TODO implement
-        return null;
+@ShowCountdownStepFragmentScope
+@Subcomponent(modules = ShowStepViewModelModule.class)
+public abstract class ShowCountdownStepFragmentSubcomponent implements AndroidInjector<ShowCountdownStepFragment> {
+    @Subcomponent.Builder
+    public static abstract class Builder extends AndroidInjector.Builder<ShowCountdownStepFragment> {
+        @Override
+        public abstract ShowCountdownStepFragmentSubcomponent build();
     }
 }

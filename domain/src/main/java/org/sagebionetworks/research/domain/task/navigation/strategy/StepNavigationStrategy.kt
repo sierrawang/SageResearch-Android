@@ -33,6 +33,7 @@
 package org.sagebionetworks.research.domain.task.navigation.strategy
 
 import org.sagebionetworks.research.domain.result.interfaces.TaskResult
+import org.sagebionetworks.research.domain.task.Task
 
 /**
  * Navigation rules that can be implemented by a step, which will be used by the conditional step navigator.
@@ -51,7 +52,7 @@ class StepNavigationStrategy {
          * @param taskResult current task result
          * @return identifier of next step, or null if this is the last step
          */
-        fun getNextStepIdentifier(taskResult: TaskResult?): String?
+        fun getNextStepIdentifier(taskResult: TaskResult): String?
     }
 
     /**
@@ -63,7 +64,7 @@ class StepNavigationStrategy {
          * @param taskResult current task result
          * @return true if step should be skipped
          */
-        fun shouldSkip(taskResult: TaskResult?): Boolean
+        fun shouldSkip(taskResult: TaskResult): Boolean
     }
 
     /**
@@ -76,7 +77,7 @@ class StepNavigationStrategy {
          *
          * @param taskResult current task result
          */
-        fun isBackAllowed(taskResult: TaskResult?): Boolean
+        fun isBackAllowed(taskResult: TaskResult): Boolean
     }
 
     // make class non-instantiable

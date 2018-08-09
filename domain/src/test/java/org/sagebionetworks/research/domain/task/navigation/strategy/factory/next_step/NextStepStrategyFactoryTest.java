@@ -43,6 +43,7 @@ import org.junit.Test;
 import org.sagebionetworks.research.domain.result.interfaces.TaskResult;
 import org.sagebionetworks.research.domain.step.gson.IndividualStepGsonTest;
 import org.sagebionetworks.research.domain.step.interfaces.Step;
+import org.sagebionetworks.research.domain.task.Task;
 import org.sagebionetworks.research.domain.task.navigation.strategy.StepNavigationStrategy.NextStepStrategy;
 
 import java.lang.reflect.InvocationHandler;
@@ -69,6 +70,7 @@ public class NextStepStrategyFactoryTest extends IndividualStepGsonTest {
     public void createWithNextStepStrategy() {
         String nextIdentifier = "nextIdentifier";
         TaskResult taskResult = mock(TaskResult.class);
+        Task task = mock(Task.class);
 
         NextStepStrategy nextStepStrategy = mock(NextStepStrategy.class);
         when(nextStepStrategy.getNextStepIdentifier(taskResult)).thenReturn(nextIdentifier);

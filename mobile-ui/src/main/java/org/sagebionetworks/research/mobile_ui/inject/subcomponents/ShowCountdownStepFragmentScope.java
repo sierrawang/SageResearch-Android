@@ -30,22 +30,14 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.sagebionetworks.research.mobile_ui.show_step.view.form;
+package org.sagebionetworks.research.mobile_ui.inject.subcomponents;
 
-import android.support.v7.widget.RecyclerView;
-import android.widget.Button;
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
 
-import org.sagebionetworks.research.mobile_ui.widget.ActionButton;
+import javax.inject.Scope;
 
-public class FormUIViewHolder extends RecyclerView.ViewHolder {
-    private final ActionButton button;
-
-    public FormUIViewHolder(final ActionButton button) {
-        super(button);
-        this.button = button;
-    }
-
-    public ActionButton getButton() {
-        return this.button;
-    }
+@Scope
+@Retention(RetentionPolicy.RUNTIME)
+public @interface ShowCountdownStepFragmentScope {
 }

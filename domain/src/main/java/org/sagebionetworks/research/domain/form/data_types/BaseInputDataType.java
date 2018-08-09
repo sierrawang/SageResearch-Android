@@ -60,18 +60,6 @@ public class BaseInputDataType extends InputDataType {
         ImmutableSet<String> ALL = ImmutableSet.of(BOOLEAN, DATE, DECIMAL, DURATION, FRACTION, INTEGER, STRING, YEAR);
     }
 
-    public static final Creator<BaseInputDataType> CREATOR = new Creator<BaseInputDataType>() {
-        @Override
-        public BaseInputDataType createFromParcel(Parcel source) {
-            return new BaseInputDataType(source);
-        }
-
-        @Override
-        public BaseInputDataType[] newArray(int size) {
-            return new BaseInputDataType[size];
-        }
-    };
-
     @BaseType
     private final String baseType;
 
@@ -90,16 +78,6 @@ public class BaseInputDataType extends InputDataType {
 
     protected BaseInputDataType(Parcel in) {
         this.baseType = in.readString();
-    }
-
-    @Override
-    public int describeContents() {
-        return 0;
-    }
-
-    @Override
-    public void writeToParcel(Parcel dest, int flags) {
-        dest.writeString(this.baseType);
     }
 
     @Override

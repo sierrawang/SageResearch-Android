@@ -34,6 +34,8 @@ package org.sagebionetworks.research.domain.step.gson;
 
 import static org.sagebionetworks.research.domain.JsonAssetUtil.readJsonFile;
 
+import static org.sagebionetworks.research.domain.JsonAssetUtil.readJsonFile;
+
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableList.Builder;
 import com.google.gson.JsonParseException;
