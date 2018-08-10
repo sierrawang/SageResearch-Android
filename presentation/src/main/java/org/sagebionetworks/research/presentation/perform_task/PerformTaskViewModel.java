@@ -252,6 +252,9 @@ public class PerformTaskViewModel extends ViewModel {
                 // to mark that the step completed.
                 // TODO rkolmos 08/08/2018 fix the result start time to be correct.
                 this.addStepResult(new ResultBase(currentStep.getIdentifier(), Instant.now(), Instant.now()));
+                // After adding the step result we need to update the value of the task result.
+                taskResult = taskResultLiveData.getValue();
+                checkState(taskResult != null);
             }
         }
 
