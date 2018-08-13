@@ -38,6 +38,7 @@ import com.google.common.base.MoreObjects.ToStringHelper;
 import com.google.common.base.Objects;
 import com.google.common.collect.ImmutableList;
 
+import org.sagebionetworks.research.domain.async.AsyncActionConfiguration;
 import org.sagebionetworks.research.domain.interfaces.HashCodeHelper;
 import org.sagebionetworks.research.domain.result.implementations.ResultBase;
 import org.sagebionetworks.research.domain.result.interfaces.Result;
@@ -56,6 +57,12 @@ public class SectionStepBase extends StepBase implements SectionStep {
 
     @NonNull
     private final ImmutableList<Step> steps;
+
+    // Default initializer for gson.
+    public SectionStepBase() {
+        super("");
+        this.steps = ImmutableList.of();
+    }
 
     public SectionStepBase(@NonNull final String identifier, @NonNull final List<Step> steps) {
         super(identifier);

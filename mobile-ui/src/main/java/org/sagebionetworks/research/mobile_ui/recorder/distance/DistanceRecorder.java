@@ -30,21 +30,45 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.sagebionetworks.research.domain.async;
+package org.sagebionetworks.research.mobile_ui.recorder.distance;
 
+import android.content.Context;
+import android.location.Location;
+import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 
-/**
- * Created by liujoshua on 10/11/2017.
- */
+import org.sagebionetworks.research.domain.async.RecorderConfiguration;
+import org.sagebionetworks.research.mobile_ui.recorder.ReactiveRecorder;
+import org.sagebionetworks.research.mobile_ui.recorder.data.DataLogger;
 
-public interface Recorder extends AsyncAction {
+import io.reactivex.Flowable;
+
+/**
+ * Records the user's location and distance travelled via a Stream of Location's that the user is measured at.
+ */
+public abstract class DistanceRecorder extends ReactiveRecorder<Location> {
+    protected final Context context;
+    protected final Flowable<Path> pathFlowable;
+
+    public DistanceRecorder(RecorderConfiguration config, Context context, @Nullable final DataLogger dataLogger) {
+        super(config.getIdentifier(), config.getStartStepIdentifier(), config.getStopStepIdentifier(), dataLogger);
+        this.context = context;
+        this.pathFlowable = this.getEventFlowable().scan(Path.ZERO, new PathAccumulator());
+    }
+
     /**
-     * An identifier marking the step at which to stop the asyncAction. If `nil`, then the asyncAction will be stopped
-     * when the task is stopped.
-     *
-     * @return step identifier, or null
+     * Returns a Flowable<Path> that can be used to obtain information about the user's path while the recorder
+     * is running.
+     * @return a Flowable<Path> that can be used to obtain information about the user's path while the recorder
+     * is running.
      */
-    @Nullable
-    String getStopStepIdentifier();
+    public Flowable<Path> getPathFlowable() {
+        return this.pathFlowable;
+    }
+
+    @Override
+    @NonNull
+    public Flowable<Location> intializeEventFlowable() {
+        return LocationSensor.getLocation(this.context);
+    }
 }

@@ -40,7 +40,7 @@ import org.threeten.bp.Duration;
  * Created by liujoshua on 10/11/2017.
  */
 
-public interface Request extends AsyncAction {
+public interface Request extends AsyncActionConfiguration {
     /**
      * A time interval after which the asyncAction should be reset. For example, if the asyncAction queries a weather
      * service and the user backgrounds the app for more than the reset time, then the weather service should be

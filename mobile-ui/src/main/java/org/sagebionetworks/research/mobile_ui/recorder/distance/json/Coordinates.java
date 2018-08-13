@@ -30,66 +30,67 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.sagebionetworks.research.domain.task.navigation;
+package org.sagebionetworks.research.mobile_ui.recorder.distance.json;
 
-import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 
 import com.google.auto.value.AutoValue;
-import com.google.common.collect.ImmutableList;
-import com.google.common.collect.ImmutableMap;
-import com.google.common.collect.ImmutableSet;
 import com.google.gson.Gson;
 import com.google.gson.TypeAdapter;
+import com.google.gson.annotations.SerializedName;
 
-import org.sagebionetworks.research.domain.async.AsyncActionConfiguration;
-import org.sagebionetworks.research.domain.step.interfaces.Step;
-import org.sagebionetworks.research.domain.step.ui.action.Action;
-import org.sagebionetworks.research.domain.task.Task;
-
-import java.util.Collections;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-
+/**
+ * Helper class for ensuring coordinates get serialized with the correct key names.
+ */
 @AutoValue
-public abstract class TaskBase implements Task {
+public abstract class Coordinates {
+    public static final String LONGITUDE_KEY = "longitude";
+    public static final String LATITUDE_KEY = "latitude";
+    public static final String RELATIVE_LATITUDE_KEY = "relativeLatitude";
+    public static final String RELATIVE_LONGITUDE_KEY = "relativeLongitude";
 
     @AutoValue.Builder
     public abstract static class Builder {
-        public abstract TaskBase build();
+        public abstract Coordinates build();
 
-        public abstract Builder setActions(@NonNull Map<String, Action> actions);
+        public abstract Builder setLongitude(@Nullable Double longitude);
 
-        public abstract Builder setAsyncActions(@NonNull List<AsyncActionConfiguration> asyncActions);
+        public abstract Builder setLatitude(@Nullable Double latitude);
 
-        public abstract Builder setHiddenActions(@NonNull Set<String> hiddenActions);
+        public abstract Builder setRelativeLongitude(@Nullable Double relativeLongitude);
 
-        public abstract Builder setIdentifier(@NonNull String identifier);
-
-        public abstract Builder setProgressMarkers(@NonNull List<String> progressMarkers);
-
-        public abstract Builder setSteps(@NonNull List<Step> steps);
+        public abstract Builder setRelativeLatitude(@Nullable Double relativeLatitude);
     }
 
-    public static Builder builder() {
-        return new AutoValue_TaskBase.Builder()
-                .setAsyncActions(Collections.emptyList());
+    private static Builder builder() {
+        return new AutoValue_Coordinates.Builder();
     }
 
-    public static TypeAdapter<TaskBase> typeAdapter(Gson gson) {
-        return new AutoValue_TaskBase.GsonTypeAdapter(gson)
-                .setDefaultSteps(ImmutableList.of())
-                .setDefaultProgressMarkers(ImmutableList.of())
-                .setDefaultAsyncActions(ImmutableList.of());
+    public static TypeAdapter<Coordinates> typeAdapter(Gson gson) {
+        return new AutoValue_Coordinates.GsonTypeAdapter(gson);
     }
 
-    @NonNull
-    @Override
-    public Task copyWithSteps(final List<Step> steps) {
-        return this.toBuilder()
-                .setSteps(steps)
-                .build();
+    public static Coordinates create(double longitude, double latitude, boolean usesRelativeCoordinates) {
+        if (usesRelativeCoordinates) {
+            return builder().setRelativeLongitude(longitude).setRelativeLatitude(latitude).build();
+        } else {
+            return builder().setLongitude(longitude).setLatitude(latitude).build();
+        }
     }
 
-    public abstract Builder toBuilder();
+    @SerializedName(LONGITUDE_KEY)
+    @Nullable
+    public abstract Double getLongitude();
+
+    @SerializedName(LATITUDE_KEY)
+    @Nullable
+    public abstract Double getLatitude();
+
+    @SerializedName(RELATIVE_LONGITUDE_KEY)
+    @Nullable
+    public abstract Double getRelativeLongitude();
+
+    @SerializedName(RELATIVE_LATITUDE_KEY)
+    @Nullable
+    public abstract Double getRelativeLatitude();
 }

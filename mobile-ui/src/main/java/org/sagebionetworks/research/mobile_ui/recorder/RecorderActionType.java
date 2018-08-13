@@ -30,50 +30,17 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.sagebionetworks.research.presentation.perform_task.active.async.runner;
+package org.sagebionetworks.research.mobile_ui.recorder;
 
-import static com.google.common.base.Preconditions.checkNotNull;
+import android.support.annotation.StringDef;
 
-import android.support.annotation.CallSuper;
-import android.support.annotation.NonNull;
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
 
-import org.sagebionetworks.research.domain.async.AsyncActionConfiguration;
-import org.sagebionetworks.research.domain.step.interfaces.Step;
-import org.sagebionetworks.research.presentation.perform_task.active.async.StepChangeListener;
-
-/**
- * Created by liujoshua on 10/11/2017.
- */
-
-public abstract class AsyncActionRunner implements StepChangeListener {
-    private final AsyncActionConfiguration asyncActionConfiguration;
-
-    public AsyncActionRunner(@NonNull AsyncActionConfiguration asyncActionConfiguration) {
-        checkNotNull(asyncActionConfiguration);
-        this.asyncActionConfiguration = asyncActionConfiguration;
-    }
-
-    @Override
-    @CallSuper
-    public void onCancelStep(Step step) {
-        //no-op
-    }
-
-    @Override
-    @CallSuper
-    public void onFinishStep(Step step) {
-        //no-op
-    }
-
-    @Override
-    @CallSuper
-    public void onShowStep(Step step) {
-        if (step.getIdentifier().equals(this.asyncActionConfiguration.getStartStepIdentifier())) {
-            runAction();
-        }
-        // TODO: run async actions without a startStepIdentifier for first step, e.g. introduce a AsyncAction
-        // model for presentation layer that defaults in startStepIdentifier
-    }
-
-    protected abstract void runAction();
+@Retention(RetentionPolicy.SOURCE)
+@StringDef({RecorderActionType.START, RecorderActionType.STOP, RecorderActionType.CANCEL})
+public @interface RecorderActionType {
+    String START = "start";
+    String STOP = "stop";
+    String CANCEL = "cancel";
 }

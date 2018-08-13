@@ -1,0 +1,8 @@
+{
+  "identifier":"motionRecorder1",
+  "type":"motion",
+  "startStepIdentifier":"startStepIdentifier",
+  "stopStepIdentifier":"stopStepIdentifier",
+  "requiresBackgroundAudio":"true",
+  "recorderTypes":["gravity", "gyro"]
+}

@@ -30,50 +30,29 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.sagebionetworks.research.presentation.perform_task.active.async.runner;
+package org.sagebionetworks.research.domain.async;
 
-import static com.google.common.base.Preconditions.checkNotNull;
-
-import android.support.annotation.CallSuper;
 import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 
-import org.sagebionetworks.research.domain.async.AsyncActionConfiguration;
-import org.sagebionetworks.research.domain.step.interfaces.Step;
-import org.sagebionetworks.research.presentation.perform_task.active.async.StepChangeListener;
 
-/**
- * Created by liujoshua on 10/11/2017.
- */
-
-public abstract class AsyncActionRunner implements StepChangeListener {
-    private final AsyncActionConfiguration asyncActionConfiguration;
-
-    public AsyncActionRunner(@NonNull AsyncActionConfiguration asyncActionConfiguration) {
-        checkNotNull(asyncActionConfiguration);
-        this.asyncActionConfiguration = asyncActionConfiguration;
-    }
-
+public interface RecorderConfiguration extends AsyncActionConfiguration {
+    /**
+     * Returns the type of recorder that this config is for.
+     *
+     * @Return the type of recorder that this config is for.
+     */
     @Override
-    @CallSuper
-    public void onCancelStep(Step step) {
-        //no-op
-    }
+    @NonNull
+    @RecorderType
+    String getType();
 
-    @Override
-    @CallSuper
-    public void onFinishStep(Step step) {
-        //no-op
-    }
-
-    @Override
-    @CallSuper
-    public void onShowStep(Step step) {
-        if (step.getIdentifier().equals(this.asyncActionConfiguration.getStartStepIdentifier())) {
-            runAction();
-        }
-        // TODO: run async actions without a startStepIdentifier for first step, e.g. introduce a AsyncAction
-        // model for presentation layer that defaults in startStepIdentifier
-    }
-
-    protected abstract void runAction();
+    /**
+     * An identifier marking the step at which to stop the asyncAction. If `nil`, then the asyncAction will be stopped
+     * when the task is stopped.
+     *
+     * @return step identifier, or null
+     */
+    @Nullable
+    String getStopStepIdentifier();
 }

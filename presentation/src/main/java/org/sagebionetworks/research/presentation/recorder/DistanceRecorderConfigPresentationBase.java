@@ -30,50 +30,39 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.sagebionetworks.research.presentation.perform_task.active.async.runner;
+package org.sagebionetworks.research.presentation.recorder;
 
-import static com.google.common.base.Preconditions.checkNotNull;
-
-import android.support.annotation.CallSuper;
 import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 
-import org.sagebionetworks.research.domain.async.AsyncActionConfiguration;
-import org.sagebionetworks.research.domain.step.interfaces.Step;
-import org.sagebionetworks.research.presentation.perform_task.active.async.StepChangeListener;
+import com.google.auto.value.AutoValue;
 
-/**
- * Created by liujoshua on 10/11/2017.
- */
+import org.sagebionetworks.research.domain.async.DistanceRecorderConfiguration;
 
-public abstract class AsyncActionRunner implements StepChangeListener {
-    private final AsyncActionConfiguration asyncActionConfiguration;
+@AutoValue
+public abstract class DistanceRecorderConfigPresentationBase implements  AsyncActionPresentation {
+    // TODO rkolmos 06/27/2018 change this name
+    @AutoValue.Builder
+    public abstract static class Builder {
+        public abstract DistanceRecorderConfigPresentationBase build();
 
-    public AsyncActionRunner(@NonNull AsyncActionConfiguration asyncActionConfiguration) {
-        checkNotNull(asyncActionConfiguration);
-        this.asyncActionConfiguration = asyncActionConfiguration;
+        public abstract Builder setIdentifier(@NonNull String identifier);
+
+        public abstract Builder setStartStepIdentifier(@Nullable String startStepIdentifier);
+
+        public abstract Builder setStopStepIdentifier(@Nullable String stopStepIdentifier);
     }
 
-    @Override
-    @CallSuper
-    public void onCancelStep(Step step) {
-        //no-op
+    public static Builder builder() {
+        return new AutoValue_DistanceRecorderConfigPresentationBase.Builder();
     }
 
-    @Override
-    @CallSuper
-    public void onFinishStep(Step step) {
-        //no-op
+    public static DistanceRecorderConfigPresentationBase fromDistanceRecorderConfig(DistanceRecorderConfiguration
+            config) {
+        return DistanceRecorderConfigPresentationBase.builder()
+                .setIdentifier(config.getIdentifier())
+                .setStartStepIdentifier(config.getStartStepIdentifier())
+                .setStopStepIdentifier(config.getStopStepIdentifier())
+                .build();
     }
-
-    @Override
-    @CallSuper
-    public void onShowStep(Step step) {
-        if (step.getIdentifier().equals(this.asyncActionConfiguration.getStartStepIdentifier())) {
-            runAction();
-        }
-        // TODO: run async actions without a startStepIdentifier for first step, e.g. introduce a AsyncAction
-        // model for presentation layer that defaults in startStepIdentifier
-    }
-
-    protected abstract void runAction();
 }

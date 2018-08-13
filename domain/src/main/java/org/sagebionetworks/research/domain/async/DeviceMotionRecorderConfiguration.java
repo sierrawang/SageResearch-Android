@@ -30,50 +30,25 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.sagebionetworks.research.presentation.perform_task.active.async.runner;
+package org.sagebionetworks.research.domain.async;
 
-import static com.google.common.base.Preconditions.checkNotNull;
+import android.support.annotation.Nullable;
 
-import android.support.annotation.CallSuper;
-import android.support.annotation.NonNull;
+import java.util.Set;
 
-import org.sagebionetworks.research.domain.async.AsyncActionConfiguration;
-import org.sagebionetworks.research.domain.step.interfaces.Step;
-import org.sagebionetworks.research.presentation.perform_task.active.async.StepChangeListener;
+public interface DeviceMotionRecorderConfiguration extends RecorderConfiguration {
+    /**
+     * Returns the frequency for this recorder. A value of null results in a default frequency being used.
+     *
+     * @return the frequency for this recorder.
+     */
+    @Nullable
+    Double getFrequency();
 
-/**
- * Created by liujoshua on 10/11/2017.
- */
-
-public abstract class AsyncActionRunner implements StepChangeListener {
-    private final AsyncActionConfiguration asyncActionConfiguration;
-
-    public AsyncActionRunner(@NonNull AsyncActionConfiguration asyncActionConfiguration) {
-        checkNotNull(asyncActionConfiguration);
-        this.asyncActionConfiguration = asyncActionConfiguration;
-    }
-
-    @Override
-    @CallSuper
-    public void onCancelStep(Step step) {
-        //no-op
-    }
-
-    @Override
-    @CallSuper
-    public void onFinishStep(Step step) {
-        //no-op
-    }
-
-    @Override
-    @CallSuper
-    public void onShowStep(Step step) {
-        if (step.getIdentifier().equals(this.asyncActionConfiguration.getStartStepIdentifier())) {
-            runAction();
-        }
-        // TODO: run async actions without a startStepIdentifier for first step, e.g. introduce a AsyncAction
-        // model for presentation layer that defaults in startStepIdentifier
-    }
-
-    protected abstract void runAction();
+    /**
+     * Returns the set of recorder types this device motion recorder will record.
+     *
+     * @return the set of recorder types this device motion recorder will record.
+     */
+    Set<String> getRecorderTypes();
 }
