@@ -30,7 +30,7 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.sagebionetworks.research.mobile_ui.recorder.distance.json;
+package org.sagebionetworks.research.presentation.recorder.distance.json;
 
 import android.support.annotation.Nullable;
 

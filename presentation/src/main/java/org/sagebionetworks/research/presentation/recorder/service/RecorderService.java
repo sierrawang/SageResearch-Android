@@ -30,7 +30,7 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.sagebionetworks.research.mobile_ui.recorder.service;
+package org.sagebionetworks.research.presentation.recorder.service;
 
 import android.app.Service;
 import android.content.Intent;
@@ -41,11 +41,10 @@ import android.support.annotation.Nullable;
 
 import com.google.common.collect.ImmutableMap;
 
-import org.sagebionetworks.research.domain.async.RecorderConfiguration;
 import org.sagebionetworks.research.domain.async.RecorderType;
-import org.sagebionetworks.research.mobile_ui.inject.RecorderModule.RecorderFactory;
-import org.sagebionetworks.research.mobile_ui.recorder.Recorder;
-import org.sagebionetworks.research.mobile_ui.recorder.RecorderActionType;
+import org.sagebionetworks.research.presentation.inject.RecorderModule.RecorderFactory;
+import org.sagebionetworks.research.presentation.recorder.Recorder;
+import org.sagebionetworks.research.presentation.recorder.RecorderActionType;
 import org.sagebionetworks.research.presentation.recorder.RecorderConfigPresentation;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -54,8 +53,6 @@ import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
-
-import javax.inject.Inject;
 
 /**
  * The RecorderService handles the recorders that are needed for the task. Recorders can do things such as record
@@ -234,7 +231,7 @@ public class RecorderService extends Service {
 
     public Recorder createRecorder(@NonNull UUID taskIdentifier, @NonNull RecorderConfigPresentation recorderConfiguration)
             throws IOException {
-        Recorder recorder = this.recorderFactory.create(recorderConfiguration);
+        Recorder recorder = this.recorderFactory.create(recorderConfiguration, taskIdentifier);
 
         if (!this.recorderMapping.containsKey(taskIdentifier)) {
             this.recorderMapping.put(taskIdentifier, new HashMap<>());

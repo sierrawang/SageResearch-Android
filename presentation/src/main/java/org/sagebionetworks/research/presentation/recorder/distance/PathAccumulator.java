@@ -30,38 +30,25 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.sagebionetworks.research.mobile_ui.recorder.device_motion;
+package org.sagebionetworks.research.presentation.recorder.distance;
 
-import android.content.Context;
-import android.support.annotation.NonNull;
+import android.location.Location;
 
-import com.github.pwittchen.reactivesensors.library.ReactiveSensorEvent;
-
-import org.sagebionetworks.research.mobile_ui.recorder.data.DataLogger;
-import org.sagebionetworks.research.presentation.recorder.DeviceMotionRecorderConfigPresentation;
-
-import java.io.IOException;
+import io.reactivex.functions.BiFunction;
 
 /**
- * DeviceMotionJsonRecorder recorders the devices motion as Json into a file. It provides no summary result.
+ * Provides the ability to use Observable.scan() on the LocationObservable from locationSensor in order to obtain
+ * an observable that provides information about the path that the Locations form.
  */
-public class DeviceMotionJsonRecorder extends DeviceMotionRecorder {
-    public static final String JSON_FILE_START = "[";
-
-    public static final String JSON_FILE_END = "]";
-
-    public static final String JSON_OBJECT_DELIMINATOR = ",";
-
-    public DeviceMotionJsonRecorder(
-            final DeviceMotionRecorderConfigPresentation config, final Context context) throws IOException {
-        // TODO rkolmos 06/26/2018 make this recorder output to the correct file.
-        super(config, context, new DataLogger(config.getIdentifier(), null, JSON_FILE_START,
-                JSON_FILE_END, JSON_OBJECT_DELIMINATOR));
-    }
-
-    @NonNull
+public class PathAccumulator implements BiFunction<Path, Location, Path> {
     @Override
-    protected String getDataString(@NonNull final ReactiveSensorEvent event) {
-        return DeviceMotionJsonAdapter.createJsonObject(event).toString();
+    public Path apply(final Path path, final Location location) {
+        if (path.equals(Path.ZERO)) {
+            // If this is the initial value we initialize the locations.
+            return Path.builder().setDistance(0f).setFirstLocation(location).setLastLocation(location)
+                    .setDuration(0).build();
+        }
+
+        return path.addLocation(location);
     }
 }

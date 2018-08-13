@@ -30,7 +30,7 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.sagebionetworks.research.mobile_ui.recorder.device_motion;
+package org.sagebionetworks.research.presentation.recorder.device_motion;
 
 import android.hardware.Sensor;
 import android.hardware.SensorEvent;
@@ -45,7 +45,7 @@ import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.ImmutableSet;
 import com.google.gson.JsonObject;
 
-import org.sagebionetworks.research.mobile_ui.recorder.data.FormatHelper;
+import org.sagebionetworks.research.presentation.recorder.data.FormatHelper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

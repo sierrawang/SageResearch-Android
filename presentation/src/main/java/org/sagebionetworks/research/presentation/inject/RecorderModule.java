@@ -30,52 +30,46 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.sagebionetworks.research.mobile_ui.inject;
+package org.sagebionetworks.research.presentation.inject;
 
 import android.content.Context;
 
 import com.google.gson.Gson;
 
-import org.sagebionetworks.research.domain.async.DeviceMotionRecorderConfiguration;
-import org.sagebionetworks.research.domain.async.RecorderConfiguration;
 import org.sagebionetworks.research.domain.async.RecorderType;
-import org.sagebionetworks.research.mobile_ui.recorder.Recorder;
-import org.sagebionetworks.research.mobile_ui.recorder.device_motion.DeviceMotionJsonRecorder;
-import org.sagebionetworks.research.mobile_ui.recorder.device_motion.DeviceMotionRecorder;
-import org.sagebionetworks.research.mobile_ui.recorder.distance.json.DistanceJsonRecorder;
-import org.sagebionetworks.research.presentation.recorder.AsyncActionPresentation;
+import org.sagebionetworks.research.presentation.recorder.Recorder;
+import org.sagebionetworks.research.presentation.recorder.device_motion.DeviceMotionJsonRecorder;
+import org.sagebionetworks.research.presentation.recorder.distance.json.DistanceJsonRecorder;
 import org.sagebionetworks.research.presentation.recorder.DeviceMotionRecorderConfigPresentation;
 import org.sagebionetworks.research.presentation.recorder.DistanceRecorderConfigPresentation;
 import org.sagebionetworks.research.presentation.recorder.RecorderConfigPresentation;
 
 import java.io.IOException;
 import java.util.Map;
-
-import javax.inject.Qualifier;
+import java.util.UUID;
 
 import dagger.Module;
 import dagger.Provides;
 import dagger.multibindings.IntoMap;
-import dagger.multibindings.IntoSet;
 import dagger.multibindings.StringKey;
 
 @Module
 public abstract class RecorderModule {
     public interface RecorderFactory {
-        Recorder create(RecorderConfigPresentation recorderConfiguration) throws IOException;
+        Recorder create(RecorderConfigPresentation recorderConfiguration, UUID taskUUID) throws IOException;
     }
 
     @Provides
     @IntoMap
     @StringKey(RecorderType.MOTION)
     static RecorderFactory provideMotionJsonRecorderFactory(Context context) {
-        return recorderConfiguration -> {
+        return (recorderConfiguration, taskUUID) -> {
             if (!(recorderConfiguration instanceof DeviceMotionRecorderConfigPresentation)) {
                 throw new IllegalArgumentException("RecorderConfigPresentation " + recorderConfiguration
                         + " is not a DeviceMotionRecorderConfigPresentation.");
             }
 
-            return new DeviceMotionJsonRecorder((DeviceMotionRecorderConfigPresentation)recorderConfiguration, context);
+            return new DeviceMotionJsonRecorder((DeviceMotionRecorderConfigPresentation)recorderConfiguration, context, taskUUID);
         };
     }
 
@@ -83,25 +77,25 @@ public abstract class RecorderModule {
     @IntoMap
     @StringKey(RecorderType.DISTANCE)
     static RecorderFactory provideDistanceJsonRecorderFactory(Context context, Gson gson) {
-        return recorderConfiguration -> {
+        return (recorderConfiguration, taskUUID) -> {
             if (!(recorderConfiguration instanceof DistanceRecorderConfigPresentation)) {
                 throw new IllegalArgumentException("RecorderConfigPresentation " + recorderConfiguration
                         + " is not a DistanceRecorderConfigPresentation.");
             }
 
-            return new DistanceJsonRecorder((DistanceRecorderConfigPresentation)recorderConfiguration, context, gson);
+            return new DistanceJsonRecorder((DistanceRecorderConfigPresentation)recorderConfiguration, context, gson, taskUUID);
         };
     }
 
     @Provides
     static RecorderFactory provideRecorderFactory(final Map<String, RecorderFactory> recorderFactories) {
-        return recorderConfiguration -> {
+        return (recorderConfiguration, taskUUID) -> {
             String recorderType = recorderConfiguration.getType();
             if (!recorderFactories.containsKey(recorderType)) {
                 throw new IllegalArgumentException("No recorder factory for recorder type " + recorderType);
             }
 
-            return recorderFactories.get(recorderType).create(recorderConfiguration);
+            return recorderFactories.get(recorderType).create(recorderConfiguration, taskUUID);
         };
     }
 }

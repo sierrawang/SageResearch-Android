@@ -30,7 +30,7 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.sagebionetworks.research.mobile_ui.recorder.device_motion;
+package org.sagebionetworks.research.presentation.recorder.device_motion;
 
 import android.content.Context;
 import android.support.annotation.NonNull;

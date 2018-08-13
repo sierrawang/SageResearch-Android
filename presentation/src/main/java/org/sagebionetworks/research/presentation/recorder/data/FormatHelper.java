@@ -30,7 +30,7 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.sagebionetworks.research.mobile_ui.recorder.data;
+package org.sagebionetworks.research.presentation.recorder.data;
 
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;

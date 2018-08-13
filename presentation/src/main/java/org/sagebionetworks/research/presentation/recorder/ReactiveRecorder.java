@@ -30,14 +30,13 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.sagebionetworks.research.mobile_ui.recorder;
+package org.sagebionetworks.research.presentation.recorder;
 
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 
-import org.reactivestreams.Subscriber;
 import org.sagebionetworks.research.domain.result.interfaces.FileResult;
-import org.sagebionetworks.research.mobile_ui.recorder.data.DataLogger;
+import org.sagebionetworks.research.presentation.recorder.data.DataLogger;
 
 import io.reactivex.Flowable;
 import io.reactivex.Single;

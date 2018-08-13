@@ -33,4 +33,5 @@
 package org.sagebionetworks.research.presentation.recorder;
 
 public interface DistanceRecorderConfigPresentation extends RecorderConfigPresentation {
+    boolean getUsesRelativeCoordinates();
 }

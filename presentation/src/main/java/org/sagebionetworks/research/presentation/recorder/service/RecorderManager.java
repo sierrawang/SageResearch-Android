@@ -30,7 +30,7 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.sagebionetworks.research.mobile_ui.recorder.service;
+package org.sagebionetworks.research.presentation.recorder.service;
 
 import android.content.ComponentName;
 import android.content.Context;
@@ -43,15 +43,13 @@ import com.google.common.collect.ImmutableMap;
 
 import org.sagebionetworks.research.domain.async.AsyncActionConfiguration;
 import org.sagebionetworks.research.domain.async.RecorderConfiguration;
-import org.sagebionetworks.research.domain.async.RecorderType;
 import org.sagebionetworks.research.domain.step.interfaces.Step;
 import org.sagebionetworks.research.domain.task.Task;
-import org.sagebionetworks.research.mobile_ui.inject.RecorderModule.RecorderFactory;
-import org.sagebionetworks.research.mobile_ui.recorder.Recorder;
-import org.sagebionetworks.research.mobile_ui.recorder.service.RecorderService.RecorderBinder;
+import org.sagebionetworks.research.presentation.inject.RecorderModule.RecorderFactory;
+import org.sagebionetworks.research.presentation.recorder.Recorder;
+import org.sagebionetworks.research.presentation.recorder.service.RecorderService.RecorderBinder;
 import org.sagebionetworks.research.presentation.inject.RecorderConfigPresentationModule.RecorderConfigPresentationFactory;
 import org.sagebionetworks.research.presentation.model.interfaces.StepView.NavDirection;
-import org.sagebionetworks.research.presentation.perform_task.active.async.AsyncActionService.AsyncAction;
 import org.sagebionetworks.research.presentation.recorder.RecorderConfigPresentation;
 
 import java.io.IOException;
@@ -59,8 +57,6 @@ import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 import java.util.UUID;
-
-import javax.inject.Inject;
 
 /**
  * A RecorderManager handles the work of creating recorders, and making the appropriate RecorderService calls

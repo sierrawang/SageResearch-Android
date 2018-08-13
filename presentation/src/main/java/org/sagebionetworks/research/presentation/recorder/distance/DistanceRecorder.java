@@ -30,46 +30,45 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.sagebionetworks.research.app.inject;
+package org.sagebionetworks.research.presentation.recorder.distance;
 
-import android.app.Activity;
-import android.app.Application;
 import android.content.Context;
+import android.location.Location;
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 
-import com.google.gson.TypeAdapterFactory;
+import org.sagebionetworks.research.presentation.recorder.ReactiveRecorder;
+import org.sagebionetworks.research.presentation.recorder.data.DataLogger;
+import org.sagebionetworks.research.presentation.recorder.DistanceRecorderConfigPresentation;
 
-import org.sagebionetworks.research.app.MainActivity;
-import org.sagebionetworks.research.app.ResearchStackDemoApplication;
-import org.sagebionetworks.research.data.inject.DataModule;
+import io.reactivex.Flowable;
 
-import dagger.Binds;
-import dagger.Module;
-import dagger.Provides;
-import dagger.android.ActivityKey;
-import dagger.android.AndroidInjectionModule;
-import dagger.android.AndroidInjector;
-import dagger.multibindings.IntoMap;
-import dagger.multibindings.IntoSet;
+/**
+ * Records the user's location and distance travelled via a Stream of Location's that the user is measured at.
+ */
+public abstract class DistanceRecorder extends ReactiveRecorder<Location> {
+    protected final Context context;
+    protected final Flowable<Path> pathFlowable;
 
-@Module(includes = {AndroidInjectionModule.class, AppTaskModule.class, DataModule.class},
-        subcomponents = {MainActivitySubcomponent.class})
-public abstract class ResearchStackDemoApplicationModule {
-    @Binds
-    public abstract Context provideApplicationContext(ResearchStackDemoApplication app);
+    public DistanceRecorder(DistanceRecorderConfigPresentation config, Context context, @Nullable final DataLogger dataLogger) {
+        super(config.getIdentifier(), config.getStartStepIdentifier(), config.getStopStepIdentifier(), dataLogger);
+        this.context = context;
+        this.pathFlowable = this.getEventFlowable().scan(Path.ZERO, new PathAccumulator());
+    }
 
-    @Binds
-    public abstract Application provideApplication(ResearchStackDemoApplication app);
+    /**
+     * Returns a Flowable<Path> that can be used to obtain information about the user's path while the recorder
+     * is running.
+     * @return a Flowable<Path> that can be used to obtain information about the user's path while the recorder
+     * is running.
+     */
+    public Flowable<Path> getPathFlowable() {
+        return this.pathFlowable;
+    }
 
-    @Binds
-    @IntoMap
-    @ActivityKey(MainActivity.class)
-    abstract AndroidInjector.Factory<? extends Activity> bindYourActivityInjectorFactory(
-            MainActivitySubcomponent.Builder builder);
-
-
-    @Provides
-    @IntoSet
-    static TypeAdapterFactory provideAutoValueTypeAdapter() {
-        return AppAutoValueTypeAdapterFactory.create();
+    @Override
+    @NonNull
+    public Flowable<Location> intializeEventFlowable() {
+        return LocationSensor.getLocation(this.context);
     }
 }

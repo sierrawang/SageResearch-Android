@@ -30,25 +30,41 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.sagebionetworks.research.mobile_ui.recorder.distance;
+package org.sagebionetworks.research.presentation.recorder.device_motion;
 
-import android.location.Location;
+import android.content.Context;
+import android.support.annotation.NonNull;
 
-import io.reactivex.functions.BiFunction;
+import com.github.pwittchen.reactivesensors.library.ReactiveSensorEvent;
+
+import org.sagebionetworks.research.presentation.recorder.OutputDirectoryUtil;
+import org.sagebionetworks.research.presentation.recorder.data.DataLogger;
+import org.sagebionetworks.research.presentation.recorder.DeviceMotionRecorderConfigPresentation;
+
+import java.io.IOException;
+import java.util.UUID;
 
 /**
- * Provides the ability to use Observable.scan() on the LocationObservable from locationSensor in order to obtain
- * an observable that provides information about the path that the Locations form.
+ * DeviceMotionJsonRecorder recorders the devices motion as Json into a file. It provides no summary result.
  */
-public class PathAccumulator implements BiFunction<Path, Location, Path> {
-    @Override
-    public Path apply(final Path path, final Location location) {
-        if (path.equals(Path.ZERO)) {
-            // If this is the initial value we initialize the locations.
-            return Path.builder().setDistance(0f).setFirstLocation(location).setLastLocation(location)
-                    .setDuration(0).build();
-        }
+public class DeviceMotionJsonRecorder extends DeviceMotionRecorder {
+    public static final String JSON_FILE_START = "[";
 
-        return path.addLocation(location);
+    public static final String JSON_FILE_END = "]";
+
+    public static final String JSON_OBJECT_DELIMINATOR = ",";
+
+    public DeviceMotionJsonRecorder(
+            final DeviceMotionRecorderConfigPresentation config, final Context context, final UUID taskUUID) throws IOException {
+        super(config, context,
+                new DataLogger(config.getIdentifier(), OutputDirectoryUtil
+                        .getRecorderOutputDirectoryFile(taskUUID, config.getIdentifier()),
+                JSON_FILE_START, JSON_FILE_END, JSON_OBJECT_DELIMINATOR));
+    }
+
+    @NonNull
+    @Override
+    protected String getDataString(@NonNull final ReactiveSensorEvent event) {
+        return DeviceMotionJsonAdapter.createJsonObject(event).toString();
     }
 }

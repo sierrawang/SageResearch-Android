@@ -30,16 +30,17 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.sagebionetworks.research.mobile_ui.recorder.device_motion;
+package org.sagebionetworks.research.presentation.recorder.device_motion;
 
 import android.content.Context;
 import android.hardware.SensorManager;
 import android.support.annotation.NonNull;
 
+
 import com.github.pwittchen.reactivesensors.library.ReactiveSensorEvent;
 
-import org.sagebionetworks.research.mobile_ui.recorder.data.DataLogger;
-import org.sagebionetworks.research.mobile_ui.recorder.ReactiveRecorder;
+import org.sagebionetworks.research.presentation.recorder.ReactiveRecorder;
+import org.sagebionetworks.research.presentation.recorder.data.DataLogger;
 import org.sagebionetworks.research.presentation.recorder.DeviceMotionRecorderConfigPresentation;
 
 import java.util.Set;

@@ -30,7 +30,7 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.sagebionetworks.research.mobile_ui.recorder.distance.json;
+package org.sagebionetworks.research.presentation.recorder.distance.json;
 
 import android.content.Context;
 import android.location.Location;
@@ -38,14 +38,14 @@ import android.support.annotation.NonNull;
 
 import com.google.gson.Gson;
 
-import org.sagebionetworks.research.domain.async.RecorderConfiguration;
-import org.sagebionetworks.research.mobile_ui.recorder.data.DataLogger;
-import org.sagebionetworks.research.mobile_ui.recorder.distance.DistanceRecorder;
-import org.sagebionetworks.research.mobile_ui.recorder.distance.Path;
-import org.sagebionetworks.research.mobile_ui.recorder.distance.json.DistanceEvent;
+import org.sagebionetworks.research.presentation.recorder.OutputDirectoryUtil;
+import org.sagebionetworks.research.presentation.recorder.data.DataLogger;
+import org.sagebionetworks.research.presentation.recorder.distance.DistanceRecorder;
+import org.sagebionetworks.research.presentation.recorder.distance.Path;
 import org.sagebionetworks.research.presentation.recorder.DistanceRecorderConfigPresentation;
 
 import java.io.IOException;
+import java.util.UUID;
 
 /**
  * Recorders the user's distance travelled an location in Json to a file, and provides access later in the application
@@ -59,13 +59,13 @@ public class DistanceJsonRecorder extends DistanceRecorder {
 
     protected boolean usesRelativeCoordinates;
 
-    public DistanceJsonRecorder(final DistanceRecorderConfigPresentation config, final Context context, final
-            Gson gson) throws IOException {
-        // TODO rkolmos 06/27/2018 get the output directory right.
-        super(config, context, new DataLogger(config.getIdentifier(), null,
+    public DistanceJsonRecorder(final DistanceRecorderConfigPresentation config, final Context context,
+            final Gson gson, final UUID taskUUID ) throws IOException {
+        super(config, context,
+                new DataLogger(config.getIdentifier(), OutputDirectoryUtil
+                        .getRecorderOutputDirectoryFile(taskUUID, config.getIdentifier()),
                 JSON_FILE_START, JSON_FILE_END, JSON_OBJECT_DELIMINATOR));
-        // TODO rkolmos 06/26/2018 initalize this from config.
-        this.usesRelativeCoordinates = false;
+        this.usesRelativeCoordinates = config.getUsesRelativeCoordinates();
         this.gson = gson;
     }
 

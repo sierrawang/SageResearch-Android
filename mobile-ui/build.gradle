@@ -93,7 +93,6 @@ dependencies {
     annotationProcessor 'com.google.dagger:dagger-android-processor:2.16'
     annotationProcessor "com.google.dagger:dagger-compiler:2.16"
 
-    implementation 'com.github.pwittchen:reactivesensors-rx2:0.2.0'
     implementation 'com.jakewharton:butterknife:8.8.1'
     implementation "com.android.support:support-v4:$support_library_version"
     annotationProcessor 'com.jakewharton:butterknife-compiler:8.8.1'

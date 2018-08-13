@@ -35,6 +35,8 @@ package org.sagebionetworks.research.presentation.perform_task;
 import static com.google.common.base.Preconditions.checkNotNull;
 import static com.google.common.base.Preconditions.checkState;
 
+import android.app.Application;
+import android.arch.lifecycle.AndroidViewModel;
 import android.arch.lifecycle.LiveData;
 import android.arch.lifecycle.MutableLiveData;
 import android.arch.lifecycle.ViewModel;
@@ -59,11 +61,15 @@ import org.sagebionetworks.research.domain.task.navigation.StepNavigatorFactory;
 import org.sagebionetworks.research.domain.task.navigation.TaskProgress;
 import org.sagebionetworks.research.presentation.ActionType;
 import org.sagebionetworks.research.presentation.contract.model.LoadableResource;
+import org.sagebionetworks.research.presentation.inject.RecorderConfigPresentationModule.RecorderConfigPresentationFactory;
+import org.sagebionetworks.research.presentation.inject.RecorderModule.RecorderFactory;
 import org.sagebionetworks.research.presentation.inject.StepViewModule.StepViewFactory;
 import org.sagebionetworks.research.presentation.mapper.TaskMapper;
 import org.sagebionetworks.research.presentation.model.TaskView;
 import org.sagebionetworks.research.presentation.model.action.ActionView;
 import org.sagebionetworks.research.presentation.model.interfaces.StepView;
+import org.sagebionetworks.research.presentation.model.interfaces.StepView.NavDirection;
+import org.sagebionetworks.research.presentation.recorder.service.RecorderManager;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.threeten.bp.Instant;
@@ -77,7 +83,7 @@ import io.reactivex.Completable;
 import io.reactivex.disposables.CompositeDisposable;
 
 @MainThread
-public class PerformTaskViewModel extends ViewModel {
+public class PerformTaskViewModel extends AndroidViewModel {
     public static final String LAST_RUN_RESULT_ID = "lastRun";
 
     private static final Logger LOGGER = LoggerFactory.getLogger(PerformTaskViewModel.class);
@@ -116,10 +122,21 @@ public class PerformTaskViewModel extends ViewModel {
 
     private final MutableLiveData<LoadableResource<TaskView>> taskViewLiveData;
 
-    public PerformTaskViewModel(@NonNull TaskView taskView, @NonNull UUID taskRunUUID,
+    private final RecorderFactory recorderFactory;
+
+    private final RecorderConfigPresentationFactory recorderConfigPresentationFactory;
+
+    private RecorderManager recorderManager;
+
+    public PerformTaskViewModel(Application application, @NonNull TaskView taskView, @NonNull UUID taskRunUUID,
             @NonNull StepNavigatorFactory stepNavigatorFactory, @NonNull TaskRepository taskRepository,
-            @NonNull TaskMapper taskMapper, StepViewFactory stepViewFactory,
+            @NonNull TaskMapper taskMapper, @NonNull RecorderFactory recorderFactory,
+            @NonNull RecorderConfigPresentationFactory recorderConfigPresentationFactory,
+            StepViewFactory stepViewFactory,
             @Nullable ZonedDateTime lastRun) {
+        super(application);
+        this.recorderFactory = checkNotNull(recorderFactory);
+        this.recorderConfigPresentationFactory = checkNotNull(recorderConfigPresentationFactory);
         this.taskView = checkNotNull(taskView);
         this.taskRunUuid = checkNotNull(taskRunUUID);
         this.stepNavigatorFactory = checkNotNull(stepNavigatorFactory);
@@ -231,6 +248,7 @@ public class PerformTaskViewModel extends ViewModel {
 
         Step backStep = stepNavigator.getPreviousStep(currentStep, taskResult);
         if (backStep != null) {
+            this.recorderManager.onStepTransition(currentStep, backStep, NavDirection.SHIFT_RIGHT);
             this.updateCurrentStep(backStep, taskResult);
         } else {
             LOGGER.warn("goBack called from first step");
@@ -259,6 +277,7 @@ public class PerformTaskViewModel extends ViewModel {
         }
 
         Step nextStep = stepNavigator.getNextStep(currentStep, taskResult);
+        this.recorderManager.onStepTransition(currentStep, nextStep, NavDirection.SHIFT_LEFT);
         this.updateCurrentStep(nextStep, taskResult);
     }
 
@@ -318,6 +337,7 @@ public class PerformTaskViewModel extends ViewModel {
     void handleTaskLoad(Task task) {
         LOGGER.debug("Loaded task: {}", task);
         this.task = task;
+        this.recorderManager = new RecorderManager(this.task, this.getApplication(), this.recorderFactory, this.recorderConfigPresentationFactory);
         stepNavigator = stepNavigatorFactory.create(task, task.getProgressMarkers());
         this.stepViewMapping = new HashMap<>();
         for (Step step : this.stepNavigator.getSteps()) {

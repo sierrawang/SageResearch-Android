@@ -48,6 +48,8 @@ public abstract class DistanceRecorderConfigPresentationBase implements Distance
     public abstract static class Builder {
         public abstract DistanceRecorderConfigPresentationBase build();
 
+        public abstract Builder setUsesRelativeCoordinates(boolean usesRelativeCoordinates);
+
         public abstract Builder setIdentifier(@NonNull String identifier);
 
         public abstract Builder setStartStepIdentifier(@Nullable String startStepIdentifier);

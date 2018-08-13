@@ -30,69 +30,17 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.sagebionetworks.research.mobile_ui.recorder;
+package org.sagebionetworks.research.presentation.recorder;
 
-import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
+import android.support.annotation.StringDef;
 
-/**
- * RecorderBase contains some of the common code amongst recorder implementations.
- */
-public abstract class RecorderBase implements Recorder {
-    @NonNull
-    protected final String identifier;
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
 
-    protected boolean isRecording;
-
-    @Nullable
-    protected final String startStepIdentifier;
-
-    @Nullable
-    protected final String stopStepIdentifier;
-
-    public RecorderBase(@NonNull String identifier, @Nullable String startStepIdentifier,
-            @Nullable String stopStepIdentifier) {
-        this.identifier = identifier;
-        this.startStepIdentifier = startStepIdentifier;
-        this.stopStepIdentifier = stopStepIdentifier;
-        this.isRecording = false;
-    }
-
-    @Override
-    public void cancel() {
-        this.isRecording = false;
-    }
-
-    @Override
-    @NonNull
-    public String getIdentifier() {
-        return this.identifier;
-    }
-
-    @Override
-    @Nullable
-    public String getStartStepIdentifier() {
-        return this.startStepIdentifier;
-    }
-
-    @Override
-    @Nullable
-    public String getStopStepIdentifier() {
-        return this.stopStepIdentifier;
-    }
-
-    @Override
-    public boolean isRecording() {
-        return this.isRecording;
-    }
-
-    @Override
-    public void start() {
-        this.isRecording = true;
-    }
-
-    @Override
-    public void stop() {
-        this.isRecording = false;
-    }
+@Retention(RetentionPolicy.SOURCE)
+@StringDef({RecorderActionType.START, RecorderActionType.STOP, RecorderActionType.CANCEL})
+public @interface RecorderActionType {
+    String START = "start";
+    String STOP = "stop";
+    String CANCEL = "cancel";
 }
