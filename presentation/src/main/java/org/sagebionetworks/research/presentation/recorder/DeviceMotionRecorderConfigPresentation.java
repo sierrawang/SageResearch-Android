@@ -36,7 +36,7 @@ import org.sagebionetworks.research.presentation.perform_task.active.async.Async
 
 import java.util.Set;
 
-public interface DeviceMotionRecorderConfigPresentation extends AsyncActionPresentation {
+public interface DeviceMotionRecorderConfigPresentation extends RecorderConfigPresentation {
     /**
      * Returns the frequency with which this recorder should measure motion. A value of  represents measuring as
      * frequently as possible.

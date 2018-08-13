@@ -30,46 +30,11 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.sagebionetworks.research.mobile_ui.recorder.distance;
+package org.sagebionetworks.research.presentation.recorder;
 
-import android.content.Context;
-import android.location.Location;
-import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 
-import org.sagebionetworks.research.domain.async.RecorderConfiguration;
-import org.sagebionetworks.research.mobile_ui.recorder.ReactiveRecorder;
-import org.sagebionetworks.research.mobile_ui.recorder.data.DataLogger;
-import org.sagebionetworks.research.presentation.recorder.DistanceRecorderConfigPresentation;
-
-import io.reactivex.Flowable;
-
-/**
- * Records the user's location and distance travelled via a Stream of Location's that the user is measured at.
- */
-public abstract class DistanceRecorder extends ReactiveRecorder<Location> {
-    protected final Context context;
-    protected final Flowable<Path> pathFlowable;
-
-    public DistanceRecorder(DistanceRecorderConfigPresentation config, Context context, @Nullable final DataLogger dataLogger) {
-        super(config.getIdentifier(), config.getStartStepIdentifier(), config.getStopStepIdentifier(), dataLogger);
-        this.context = context;
-        this.pathFlowable = this.getEventFlowable().scan(Path.ZERO, new PathAccumulator());
-    }
-
-    /**
-     * Returns a Flowable<Path> that can be used to obtain information about the user's path while the recorder
-     * is running.
-     * @return a Flowable<Path> that can be used to obtain information about the user's path while the recorder
-     * is running.
-     */
-    public Flowable<Path> getPathFlowable() {
-        return this.pathFlowable;
-    }
-
-    @Override
-    @NonNull
-    public Flowable<Location> intializeEventFlowable() {
-        return LocationSensor.getLocation(this.context);
-    }
+public interface RecorderConfigPresentation extends AsyncActionPresentation {
+    @Nullable
+    String getStopStepIdentifier();
 }

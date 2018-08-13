@@ -62,6 +62,20 @@ public abstract class DistanceRecorderConfigurationImpl implements DistanceRecor
         return new AutoValue_DistanceRecorderConfigurationImpl.GsonTypeAdapter(gson);
     }
 
+    public abstract Builder toBuilder();
+
+    @Override
+    @NonNull
+    public DistanceRecorderConfigurationImpl copyWithStartStepIdentifier(@Nullable String startStepIdentifier) {
+        return this.toBuilder().setStartStepIdentifier(startStepIdentifier).build();
+    }
+
+    @Override
+    @NonNull
+    public DistanceRecorderConfigurationImpl copyWithStopStepIdentifier(@Nullable String stopStepIdentifier) {
+        return this.toBuilder().setStopStepIdentifier(stopStepIdentifier).build();
+    }
+
     @Override
     @NonNull
     @RecorderType

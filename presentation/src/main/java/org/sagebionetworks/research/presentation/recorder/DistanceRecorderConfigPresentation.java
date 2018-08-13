@@ -32,13 +32,5 @@
 
 package org.sagebionetworks.research.presentation.recorder;
 
-import android.support.annotation.NonNull;
-
-public interface AsyncActionPresentation {
-    String getIdentifier();
-
-    @NonNull
-    String getType();
-
-    String getStartStepIdentifier();
+public interface DistanceRecorderConfigPresentation extends RecorderConfigPresentation {
 }

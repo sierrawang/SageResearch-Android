@@ -38,9 +38,11 @@ import android.support.annotation.Nullable;
 import com.google.auto.value.AutoValue;
 
 import org.sagebionetworks.research.domain.async.DistanceRecorderConfiguration;
+import org.sagebionetworks.research.domain.async.RecorderConfiguration;
+import org.sagebionetworks.research.domain.async.RecorderType;
 
 @AutoValue
-public abstract class DistanceRecorderConfigPresentationBase implements  AsyncActionPresentation {
+public abstract class DistanceRecorderConfigPresentationBase implements DistanceRecorderConfigPresentation{
     // TODO rkolmos 06/27/2018 change this name
     @AutoValue.Builder
     public abstract static class Builder {
@@ -53,12 +55,21 @@ public abstract class DistanceRecorderConfigPresentationBase implements  AsyncAc
         public abstract Builder setStopStepIdentifier(@Nullable String stopStepIdentifier);
     }
 
+    @Override
+    @NonNull
+    public String getType() {
+        return RecorderType.DISTANCE;
+    }
+
     public static Builder builder() {
         return new AutoValue_DistanceRecorderConfigPresentationBase.Builder();
     }
 
-    public static DistanceRecorderConfigPresentationBase fromDistanceRecorderConfig(DistanceRecorderConfiguration
-            config) {
+    public static DistanceRecorderConfigPresentationBase fromDistanceRecorderConfiguration(RecorderConfiguration config) {
+        if (!(config instanceof DistanceRecorderConfiguration)) {
+            throw new IllegalArgumentException("Provided RecorderConfiguration " + config + " is not a DistanceRecorderConfiguration");
+        }
+
         return DistanceRecorderConfigPresentationBase.builder()
                 .setIdentifier(config.getIdentifier())
                 .setStartStepIdentifier(config.getStartStepIdentifier())

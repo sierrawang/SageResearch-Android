@@ -114,6 +114,7 @@ abstract class ActiveUIStepImpl implements ActiveUIStep {
     public static TypeAdapter<ActiveUIStepImpl> typeAdapter(Gson gson) {
         return new AutoValue_ActiveUIStepImpl.GsonTypeAdapter(gson)
                 .setDefaultActions(ImmutableMap.of())
+                .setDefaultAsyncActions(ImmutableSet.of())
                 .setDefaultCommands(ImmutableSet.of())
                 .setDefaultHiddenActions(ImmutableSet.of())
                 .setDefaultSpokenInstructions(ImmutableMap.of());

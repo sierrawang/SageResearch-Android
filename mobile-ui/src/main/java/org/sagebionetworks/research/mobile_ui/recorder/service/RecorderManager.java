@@ -41,17 +41,26 @@ import android.support.annotation.Nullable;
 
 import com.google.common.collect.ImmutableMap;
 
+import org.sagebionetworks.research.domain.async.AsyncActionConfiguration;
+import org.sagebionetworks.research.domain.async.RecorderConfiguration;
 import org.sagebionetworks.research.domain.async.RecorderType;
 import org.sagebionetworks.research.domain.step.interfaces.Step;
 import org.sagebionetworks.research.domain.task.Task;
+import org.sagebionetworks.research.mobile_ui.inject.RecorderModule.RecorderFactory;
 import org.sagebionetworks.research.mobile_ui.recorder.Recorder;
 import org.sagebionetworks.research.mobile_ui.recorder.service.RecorderService.RecorderBinder;
+import org.sagebionetworks.research.presentation.inject.RecorderConfigPresentationModule.RecorderConfigPresentationFactory;
 import org.sagebionetworks.research.presentation.model.interfaces.StepView.NavDirection;
+import org.sagebionetworks.research.presentation.perform_task.active.async.AsyncActionService.AsyncAction;
+import org.sagebionetworks.research.presentation.recorder.RecorderConfigPresentation;
 
+import java.io.IOException;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 import java.util.UUID;
+
+import javax.inject.Inject;
 
 /**
  * A RecorderManager handles the work of creating recorders, and making the appropriate RecorderService calls
@@ -70,12 +79,30 @@ public class RecorderManager implements ServiceConnection {
     private Context context;
     private Task task;
     private UUID taskRunUUID;
+    private RecorderFactory recorderFactory;
+    private RecorderConfigPresentationFactory recorderConfigPresentationFactory;
+    private Set<RecorderConfigPresentation> recorderConfigs;
 
-    public RecorderManager(Task task, Context context) {
+    public RecorderManager(Task task, Context context, RecorderFactory recorderFactory,
+            RecorderConfigPresentationFactory recorderConfigPresentationFactory) {
         this.context = context;
+        this.recorderFactory = recorderFactory;
+        this.recorderConfigPresentationFactory = recorderConfigPresentationFactory;
         this.task = task;
         Intent bindIntent = new Intent(context, RecorderService.class);
         this.bound = this.context.bindService(bindIntent, this, Context.BIND_AUTO_CREATE);
+        this.recorderConfigs = this.getRecorderConfigs();
+    }
+
+    private Set<RecorderConfigPresentation> getRecorderConfigs() {
+        Set<RecorderConfigPresentation> recorderConfigs = new HashSet<>();
+        for (AsyncActionConfiguration asyncAction : this.task.getAsyncActions()) {
+            if (asyncAction instanceof RecorderConfiguration) {
+                recorderConfigs.add(recorderConfigPresentationFactory.create((RecorderConfiguration)asyncAction));
+            }
+        }
+
+        return recorderConfigs;
     }
 
     @Override
@@ -83,13 +110,16 @@ public class RecorderManager implements ServiceConnection {
         this.binder = (RecorderBinder)iBinder;
         this.service = this.binder.getService();
         this.bound = true;
-        // TODO rkolmos 06/20/2018 make sure the correct recorders are created.
-        Set<RecorderInfo> recorders = new HashSet<>();
+        this.service.setRecorderFactory(this.recorderFactory);
         Map<String, Recorder> activeRecorders = this.getActiveRecorders();
-        for (RecorderInfo info : recorders) {
-            if (!activeRecorders.containsKey(info.id)) {
-                this.service.createRecorder(this.taskRunUUID, info.id, info.type);
+        try {
+            for (RecorderConfigPresentation config : this.recorderConfigs) {
+                if (!activeRecorders.containsKey(config.getIdentifier())) {
+                    this.service.createRecorder(this.taskRunUUID, config);
+                }
             }
+        } catch (IOException e) {
+            // TODO rkolmos 8/13/2018 handle the IOException.
         }
     }
 
@@ -109,32 +139,30 @@ public class RecorderManager implements ServiceConnection {
      * @param navDirection The direction in which the transition from previousStep to nextStep occurred in.
      */
     public void onStepTransition(@Nullable Step previousStep, @Nullable Step nextStep, @NavDirection int navDirection) {
-        // TODO: 06/18/2018 rkolmos get the equivalent information from the task.
-        Set<RecorderInfo> recorderInfos = new HashSet<>();
+        Set<RecorderConfigPresentation> shouldStart = new HashSet<>();
+        Set<RecorderConfigPresentation> shouldStop = new HashSet<>();
+        Set<RecorderConfigPresentation> shouldCancel = new HashSet<>();
 
-        Set<RecorderInfo> shouldStart = new HashSet<>();
-        Set<RecorderInfo> shouldStop = new HashSet<>();
-        Set<RecorderInfo> shouldCancel = new HashSet<>();
-
-        for (RecorderInfo info : recorderInfos) {
-            String startStepIdentifier = info.startStepId;
-            String stopStepIdentifier = info.stopStepId;
+        for (RecorderConfigPresentation config : this.recorderConfigs) {
+            String startStepIdentifier = config.getStartStepIdentifier();
+            String stopStepIdentifier = config.getStopStepIdentifier();
             if (previousStep == null) {
                 if (startStepIdentifier == null) {
                     // The task has just started so the recorder should be started if it has a null startStepIdentifier.
-                    shouldStart.add(info);
+                    shouldStart.add(config);
                 }
             } else if (nextStep == null) {
                 // The task has just finished so the recorder should be stopped.
-                shouldStop.add(info);
+                shouldStop.add(config);
             } else if (navDirection == NavDirection.SHIFT_LEFT) {
                 String nextStepIdentifier = nextStep.getIdentifier();
-                if (startStepIdentifier.equals(nextStepIdentifier)) {
-                    // The recorder should be started.
-                    shouldStart.add(info);
-                } else if (stopStepIdentifier != null && stopStepIdentifier.equals(nextStepIdentifier)) {
-                    // The recorder should be stopped.
-                    shouldStop.add(info);
+                String previousStepIdentifier = previousStep.getIdentifier();
+                if (startStepIdentifier != null && startStepIdentifier.equals(nextStepIdentifier)) {
+                    // The recorder should be started since we are navigating to it's start step.
+                    shouldStart.add(config);
+                } else if (stopStepIdentifier != null && stopStepIdentifier.equals(previousStepIdentifier)) {
+                    // The recorder should be stopped. Since it's stop step identifier has just ended.
+                    shouldStop.add(config);
                 }
             } else if (navDirection == NavDirection.SHIFT_RIGHT) {
                 // TODO: rkolmos 06/14/2018 Figure out what should happen to recorder when the user goes back.
@@ -142,16 +170,16 @@ public class RecorderManager implements ServiceConnection {
         }
 
         if (this.bound) {
-            for (RecorderInfo info : shouldStart) {
-                this.service.startRecorder(this.taskRunUUID, info.id, info.type);
+            for (RecorderConfigPresentation config : shouldStart) {
+                this.service.startRecorder(this.taskRunUUID, config.getIdentifier());
             }
 
-            for (RecorderInfo info : shouldStop) {
-                this.service.stopRecorder(this.taskRunUUID, info.id);
+            for (RecorderConfigPresentation config : shouldStop) {
+                this.service.stopRecorder(this.taskRunUUID, config.getIdentifier());
             }
 
-            for (RecorderInfo info : shouldCancel) {
-                this.service.cancelRecorder(this.taskRunUUID, info.id);
+            for (RecorderConfigPresentation config : shouldCancel) {
+                this.service.cancelRecorder(this.taskRunUUID, config.getIdentifier());
             }
         } else {
             // TODO: rkolmos 06/20/2018 handle the service being unbound
@@ -165,16 +193,5 @@ public class RecorderManager implements ServiceConnection {
      */
     public ImmutableMap<String, Recorder> getActiveRecorders() {
         return this.service.getActiveRecorders(this.taskRunUUID);
-    }
-
-    /**
-     * TODO rkolmos 06/18/2018 remove this class and get this info from the task.
-     */
-    private static final class RecorderInfo {
-        String startStepId;
-        String stopStepId;
-        String id;
-        @RecorderType
-        String type;
     }
 }

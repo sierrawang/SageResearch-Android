@@ -68,6 +68,20 @@ public abstract class DeviceMotionRecorderConfigurationImpl implements DeviceMot
         return new AutoValue_DeviceMotionRecorderConfigurationImpl.GsonTypeAdapter(gson);
     }
 
+    public abstract Builder toBuilder();
+
+    @Override
+    @NonNull
+    public DeviceMotionRecorderConfigurationImpl copyWithStartStepIdentifier(@Nullable String startStepIdentifier) {
+        return this.toBuilder().setStartStepIdentifier(startStepIdentifier).build();
+    }
+
+    @Override
+    @NonNull
+    public DeviceMotionRecorderConfigurationImpl copyWithStopStepIdentifier(@Nullable String stopStepIdentifier) {
+        return this.toBuilder().setStopStepIdentifier(stopStepIdentifier).build();
+    }
+
     @Override
     @NonNull
     @RecorderType

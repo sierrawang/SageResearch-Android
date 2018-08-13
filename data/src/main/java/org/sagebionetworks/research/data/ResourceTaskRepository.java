@@ -43,6 +43,8 @@ import android.support.annotation.NonNull;
 import com.google.common.collect.ImmutableList;
 import com.google.gson.Gson;
 
+import org.sagebionetworks.research.domain.async.AsyncActionConfiguration;
+import org.sagebionetworks.research.domain.async.RecorderConfiguration;
 import org.sagebionetworks.research.domain.repository.TaskRepository;
 import org.sagebionetworks.research.domain.result.interfaces.TaskResult;
 import org.sagebionetworks.research.domain.step.implementations.SectionStepBase;
@@ -57,7 +59,9 @@ import org.slf4j.LoggerFactory;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 import java.util.UUID;
 
 import javax.inject.Inject;
@@ -138,7 +142,8 @@ public class ResourceTaskRepository implements TaskRepository {
                 steps.add(resolveTransformers(step, ""));
             }
 
-            return task.copyWithSteps(steps);
+            task = task.copyWithSteps(steps);
+            return task.copyWithAsyncActions(getAsyncActions(task));
         });
     }
 
@@ -187,6 +192,54 @@ public class ResourceTaskRepository implements TaskRepository {
     private InputStreamReader getAsset(String assetPath) throws IOException {
         AssetManager assetManager = context.getAssets();
         return new InputStreamReader(assetManager.open(assetPath), UTF_8);
+    }
+
+    private static Set<AsyncActionConfiguration> getAsyncActions(Task task) {
+        return ResourceTaskRepository.getAsyncActionsHelper(task.getSteps(), null, new HashSet<>());
+    }
+
+    private static Set<AsyncActionConfiguration> getAsyncActionsHelper(List<Step> steps, SectionStep parent, Set<AsyncActionConfiguration> accumlator) {
+        Step startStep = parent;
+        while (startStep instanceof SectionStep) {
+            // start step is the first step in the parent section.
+            startStep = ((SectionStep) startStep).getSteps().get(0);
+        }
+
+        String parentStartStepIdentifier = startStep != null ? startStep.getIdentifier() : null;
+        Step stopStep = parent;
+        while (stopStep instanceof SectionStep) {
+            // stop step is the last step in the parent section.
+            List<Step> substeps = ((SectionStep) stopStep).getSteps();
+            stopStep = substeps.get(substeps.size() - 1);
+        }
+
+        String parentStopStepIdentifier = stopStep != null ? stopStep.getIdentifier() : null;
+        for (Step step : steps) {
+            for (AsyncActionConfiguration asyncAction : step.getAsyncActions()) {
+                AsyncActionConfiguration copy = asyncAction;
+                if (asyncAction.getStartStepIdentifier() == null) {
+                    copy = copy.copyWithStartStepIdentifier(parentStartStepIdentifier);
+                }
+
+                if (copy instanceof RecorderConfiguration) {
+                    RecorderConfiguration recorderConfiguration = (RecorderConfiguration)copy;
+                    if (recorderConfiguration.getStopStepIdentifier() == null) {
+                        recorderConfiguration = recorderConfiguration.copyWithStopStepIdentifier(parentStopStepIdentifier);
+                        copy = recorderConfiguration;
+                    }
+                }
+
+                accumlator.add(copy);
+            }
+
+            if (step instanceof SectionStep) {
+                SectionStep sectionStep = (SectionStep)step;
+                // Recurse on the section step with the parent set to the section
+                ResourceTaskRepository.getAsyncActionsHelper(sectionStep.getSteps(), sectionStep, accumlator);
+            }
+        }
+
+        return accumlator;
     }
 
     /**
