@@ -38,11 +38,11 @@ import com.google.gson.JsonDeserializer;
 
 import org.sagebionetworks.research.domain.RuntimeTypeAdapterFactory;
 import org.sagebionetworks.research.domain.async.AsyncActionConfiguration;
+import org.sagebionetworks.research.domain.async.DistanceRecorderConfigurationImpl;
 import org.sagebionetworks.research.domain.inject.GsonModule.ClassKey;
 import org.sagebionetworks.research.domain.async.DeviceMotionRecorderConfiguration;
-import org.sagebionetworks.research.domain.async.DeviceMotionRecorderConfigurationBase;
+import org.sagebionetworks.research.domain.async.DeviceMotionRecorderConfigurationImpl;
 import org.sagebionetworks.research.domain.async.DistanceRecorderConfiguration;
-import org.sagebionetworks.research.domain.async.DistanceRecorderConfigurationBase;
 
 import java.util.Map;
 import java.util.Map.Entry;
@@ -64,28 +64,28 @@ public class AsyncActionModule {
     @IntoMap
     @AsyncActionClassKey(DeviceMotionRecorderConfiguration.class)
     static String provideDeviceMotionRecorderConfigTypeKey() {
-        return DeviceMotionRecorderConfigurationBase.TYPE_KEY;
+        return DeviceMotionRecorderConfigurationImpl.TYPE_KEY;
     }
 
     @Provides
     @IntoMap
     @AsyncActionClassKey(DistanceRecorderConfiguration.class)
     static String provideDistanceRecorderConfigTypeKey() {
-        return DistanceRecorderConfigurationBase.TYPE_KEY;
+        return DistanceRecorderConfigurationImpl.TYPE_KEY;
     }
 
     @Provides
     @IntoMap
     @ClassKey(DeviceMotionRecorderConfiguration.class)
     static JsonDeserializer<?> provideDeviceMotionRecorderConfigDeserializer() {
-        return createPassThroughDeserializer(DeviceMotionRecorderConfigurationBase.class);
+        return createPassThroughDeserializer(DeviceMotionRecorderConfigurationImpl.class);
     }
 
     @Provides
     @IntoMap
     @ClassKey(DistanceRecorderConfiguration.class)
     static JsonDeserializer<?> provideDeviceMotionRecorderConfigDeserizlier() {
-        return createPassThroughDeserializer(DistanceRecorderConfigurationBase.class);
+        return createPassThroughDeserializer(DistanceRecorderConfigurationImpl.class);
     }
 
     @Provides

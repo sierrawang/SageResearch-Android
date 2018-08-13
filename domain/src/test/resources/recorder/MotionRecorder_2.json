@@ -1,0 +1,10 @@
+{
+  "identifier": "motionRecorder2",
+  "type": "motion",
+  "requiresBackgroundAudio": "true",
+  "recorderTypes": [
+    "gravity",
+    "gyro"
+  ],
+  "frequency":"3.0"
+}

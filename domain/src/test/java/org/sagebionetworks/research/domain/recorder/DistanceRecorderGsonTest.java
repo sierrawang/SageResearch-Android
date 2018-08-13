@@ -30,42 +30,17 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.sagebionetworks.research.domain.async;
+package org.sagebionetworks.research.domain.recorder;
 
-import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
-
-import com.google.auto.value.AutoValue;
 import com.google.gson.Gson;
-import com.google.gson.TypeAdapter;
 
-@AutoValue
-public abstract class DistanceRecorderConfigurationBase implements DistanceRecorderConfiguration {
-    public static final String TYPE_KEY = RecorderType.DISTANCE;
+import org.junit.Test;
 
-    @AutoValue.Builder
-    public abstract static class Builder {
-        public abstract DistanceRecorderConfigurationBase build();
+public class DistanceRecorderGsonTest {
+    private static Gson gson = DaggerRecorderTestComponent.builder().build().gson();
 
-        public abstract Builder setIdentifier(@NonNull String identifier);
+    @Test
+    public void testDistanceRecorder_1() {
 
-        public abstract Builder setStartStepIdentifier(@Nullable String startStepIdentifier);
-
-        public abstract Builder setStopStepIdentifier(@Nullable String stopStepIdentifier);
-    }
-
-    public static Builder builder() {
-        return new AutoValue_DistanceRecorderConfigurationBase.Builder();
-    }
-
-    public static TypeAdapter<DistanceRecorderConfigurationBase> typeAdapter(Gson gson) {
-        return new AutoValue_DistanceRecorderConfigurationBase.GsonTypeAdapter(gson);
-    }
-
-    @Override
-    @NonNull
-    @RecorderType
-    public String getType() {
-        return TYPE_KEY;
     }
 }

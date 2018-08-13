@@ -42,10 +42,10 @@ import com.google.gson.TypeAdapter;
 import java.util.Set;
 
 @AutoValue
-public abstract class DeviceMotionRecorderConfigurationBase implements DeviceMotionRecorderConfiguration {
+public abstract class DeviceMotionRecorderConfigurationImpl implements DeviceMotionRecorderConfiguration {
     @AutoValue.Builder
     public abstract static class Builder {
-        public abstract DeviceMotionRecorderConfigurationBase build();
+        public abstract DeviceMotionRecorderConfigurationImpl build();
 
         public abstract Builder setFrequency(@Nullable Double frequency);
 
@@ -61,11 +61,11 @@ public abstract class DeviceMotionRecorderConfigurationBase implements DeviceMot
     public static final String TYPE_KEY = RecorderType.MOTION;
 
     public static Builder builder() {
-        return new AutoValue_DeviceMotionRecorderConfigurationBase.Builder();
+        return new AutoValue_DeviceMotionRecorderConfigurationImpl.Builder();
     }
 
-    public static TypeAdapter<DeviceMotionRecorderConfigurationBase> typeAdapter(Gson gson) {
-        return new AutoValue_DeviceMotionRecorderConfigurationBase.GsonTypeAdapter(gson);
+    public static TypeAdapter<DeviceMotionRecorderConfigurationImpl> typeAdapter(Gson gson) {
+        return new AutoValue_DeviceMotionRecorderConfigurationImpl.GsonTypeAdapter(gson);
     }
 
     @Override
