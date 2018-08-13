@@ -216,7 +216,7 @@ public class ResourceTaskRepository implements TaskRepository {
                 builder.add(resolveTransformers(innerStep, prefix + section.getIdentifier() + "."));
             }
 
-            return new SectionStepBase(section.getIdentifier(), builder.build());
+            return section.copyWithSteps(builder.build());
         } else {
             Step copiedStep = step.copyWithIdentifier(prefix + step.getIdentifier());
             if (copiedStep.getClass() != step.getClass()) {

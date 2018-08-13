@@ -41,6 +41,7 @@ import com.google.common.collect.ImmutableSet;
 import com.google.gson.Gson;
 import com.google.gson.TypeAdapter;
 
+import org.sagebionetworks.research.domain.async.AsyncActionConfiguration;
 import org.sagebionetworks.research.domain.result.implementations.ResultBase;
 import org.sagebionetworks.research.domain.result.interfaces.Result;
 import org.sagebionetworks.research.domain.step.StepType;
@@ -59,6 +60,9 @@ abstract class ActiveUIStepImpl implements ActiveUIStep {
     public abstract static class Builder {
         @NonNull
         public abstract ActiveUIStepImpl build();
+
+        @NonNull
+        public abstract Builder setAsyncActions(@NonNull Set<AsyncActionConfiguration> asyncActions);
 
         @NonNull
         public abstract Builder setActions(@NonNull Map<String, Action> actions);

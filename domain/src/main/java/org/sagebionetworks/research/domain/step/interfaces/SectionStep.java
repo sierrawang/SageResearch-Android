@@ -36,6 +36,8 @@ import android.support.annotation.NonNull;
 
 import com.google.common.collect.ImmutableList;
 
+import java.util.List;
+
 /**
  * Created by liujoshua on 10/4/2017.
  */
@@ -55,6 +57,14 @@ public interface SectionStep extends Step {
     @Override
     @NonNull
     SectionStep copyWithIdentifier(String identifier);
+
+    /**
+     * Copy this section step with the given list of steps replacing the old list of steps.
+     * @param steps The new list of steps for the section step.
+     * @return A section step identical to this one exepct containing the given list of steps.
+     */
+    @NonNull
+    SectionStep copyWithSteps(List<Step> steps);
 
     /**
      * @return list of the steps in the subgrouping

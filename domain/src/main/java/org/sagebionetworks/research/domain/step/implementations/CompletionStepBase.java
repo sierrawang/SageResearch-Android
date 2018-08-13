@@ -35,6 +35,7 @@ package org.sagebionetworks.research.domain.step.implementations;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 
+import org.sagebionetworks.research.domain.async.AsyncActionConfiguration;
 import org.sagebionetworks.research.domain.step.StepType;
 import com.google.common.collect.Lists;
 
@@ -63,6 +64,7 @@ public class CompletionStepBase extends UIStepBase implements CompletionStep {
     }
 
     public CompletionStepBase(@NonNull final String identifier,
+            @NonNull final Set<AsyncActionConfiguration> asyncActions,
             @Nullable final Map<String, Action> actions,
             @Nullable final Set<String> hiddenActions,
             @Nullable final String title,
@@ -71,13 +73,13 @@ public class CompletionStepBase extends UIStepBase implements CompletionStep {
             @Nullable final String footnote,
             @Nullable final ColorTheme colorTheme,
             @Nullable final ImageTheme imageTheme) {
-        super(identifier, actions, hiddenActions, title, text, detail, footnote, colorTheme, imageTheme);
+        super(identifier, asyncActions, actions, hiddenActions, title, text, detail, footnote, colorTheme, imageTheme);
     }
 
     @Override
     @NonNull
     public CompletionStepBase copyWithIdentifierOperation(@NonNull String identifier) {
-        return new CompletionStepBase(identifier, getActions(), getHiddenActions(), getTitle(),
+        return new CompletionStepBase(identifier, getAsyncActions(), getActions(), getHiddenActions(), getTitle(),
                 getText(), getDetail(), getFootnote(), getColorTheme(), getImageTheme());
     }
 

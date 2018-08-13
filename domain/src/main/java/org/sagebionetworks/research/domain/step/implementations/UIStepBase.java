@@ -41,6 +41,7 @@ import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.ImmutableSet;
 import com.google.gson.annotations.SerializedName;
 
+import org.sagebionetworks.research.domain.async.AsyncActionConfiguration;
 import org.sagebionetworks.research.domain.interfaces.HashCodeHelper;
 import org.sagebionetworks.research.domain.result.implementations.ResultBase;
 import org.sagebionetworks.research.domain.result.interfaces.Result;
@@ -53,6 +54,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.threeten.bp.Instant;
 
+import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 
@@ -88,7 +90,7 @@ public class UIStepBase extends StepBase implements ThemedUIStep {
 
     // Gson initialize defaults
     UIStepBase() {
-        super("");
+        super("", new HashSet<>());
         actions = ImmutableMap.of();
         hiddenActions = ImmutableSet.of();
         detail = null;
@@ -99,13 +101,15 @@ public class UIStepBase extends StepBase implements ThemedUIStep {
         imageTheme = null;
     }
 
-    public UIStepBase(@NonNull final String identifier, @Nullable final Map<String, Action> actions,
+    public UIStepBase(@NonNull final String identifier,
+            @NonNull final Set<AsyncActionConfiguration> asyncActions,
+            @Nullable final Map<String, Action> actions,
             @Nullable final Set<String> hiddenActions,
             @Nullable final String title, @Nullable final String text,
             @Nullable final String detail, @Nullable final String footnote,
             @Nullable final ColorTheme colorTheme,
             @Nullable final ImageTheme imageTheme) {
-        super(identifier);
+        super(identifier, asyncActions);
         this.hiddenActions = hiddenActions == null ? ImmutableSet.of() : ImmutableSet.copyOf(hiddenActions);
         this.colorTheme = colorTheme;
         this.imageTheme = imageTheme;
@@ -137,8 +141,9 @@ public class UIStepBase extends StepBase implements ThemedUIStep {
 
     @NonNull
     protected UIStepBase copyWithIdentifierOperation(@NonNull final String identifier) {
-        return new UIStepBase(identifier, this.getActions(), this.getHiddenActions(), this.getTitle(), this.getText(),
-                this.getDetail(), this.getFootnote(), this.getColorTheme(), this.getImageTheme());
+        return new UIStepBase(identifier, this.getAsyncActions(), this.getActions(), this.getHiddenActions(),
+                this.getTitle(), this.getText(), this.getDetail(), this.getFootnote(), this.getColorTheme(),
+                this.getImageTheme());
     }
 
     @NonNull

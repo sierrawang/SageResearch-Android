@@ -36,7 +36,7 @@ import android.app.Activity;
 import android.support.multidex.MultiDexApplication;
 import android.support.v4.app.Fragment;
 
-import org.sagebionetworks.research.app.inject.DaggerResearchStackDemoApplicationComponent;
+//import org.sagebionetworks.research.app.inject.DaggerResearchStackDemoApplicationComponent;
 
 import javax.inject.Inject;
 
@@ -56,11 +56,11 @@ public class ResearchStackDemoApplication extends MultiDexApplication implements
     @Override
     public void onCreate() {
         super.onCreate();
-        DaggerResearchStackDemoApplicationComponent
-                .builder()
-                .application(this)
-                .build()
-                .inject(this);
+//        DaggerResearchStackDemoApplicationComponent
+//                .builder()
+//                .application(this)
+//                .build()
+//                .inject(this);
     }
 
     @Override

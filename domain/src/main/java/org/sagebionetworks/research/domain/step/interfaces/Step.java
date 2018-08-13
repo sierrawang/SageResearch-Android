@@ -33,9 +33,15 @@
 package org.sagebionetworks.research.domain.step.interfaces;
 
 import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 
+import com.google.common.collect.ImmutableSet;
+
+import org.sagebionetworks.research.domain.async.AsyncActionConfiguration;
 import org.sagebionetworks.research.domain.result.interfaces.Result;
 import org.sagebionetworks.research.domain.step.StepType;
+
+import javax.annotation.Nonnegative;
 
 /**
  * Step is the universal interface for all step objects. All it requires is an identifier and a type.
@@ -52,6 +58,13 @@ public interface Step {
      */
     @NonNull
     Step copyWithIdentifier(@NonNull String identifier);
+
+    /**
+     * Returns the AsyncActionConfigurations for this step.
+     * @return the AsyncActionConfigurations for this step.
+     */
+    @NonNull
+    ImmutableSet<AsyncActionConfiguration> getAsyncActions();
 
     /**
      * Returns the unique identifier that distinguishes this step from the other steps in the task.
