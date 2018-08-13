@@ -37,14 +37,15 @@ import android.support.annotation.Nullable;
 
 import com.google.common.base.MoreObjects.ToStringHelper;
 import com.google.common.base.Objects;
+import com.google.common.collect.ImmutableList;
 import com.google.common.collect.Range;
 import com.google.gson.annotations.SerializedName;
 
-import org.sagebionetworks.research.domain.form.DataTypes.InputDataType;
+import org.sagebionetworks.research.domain.form.data_types.InputDataType;
 import org.sagebionetworks.research.domain.form.InputUIHint;
 import org.sagebionetworks.research.domain.form.TextField.TextFieldOptions;
 import org.sagebionetworks.research.domain.form.interfaces.InputField;
-import org.sagebionetworks.research.domain.form.interfaces.SurveyRule;
+import org.sagebionetworks.research.domain.survey.SurveyRule;
 import org.sagebionetworks.research.domain.interfaces.HashCodeHelper;
 import org.sagebionetworks.research.domain.interfaces.ObjectHelper;
 
@@ -54,7 +55,7 @@ import java.util.List;
  * This class is the concrete implementation of a basic input field that is part of a form. An input field represents
  * a question or text box that the user enters information into.
  */
-public class InputFieldBase extends ObjectHelper implements InputField {
+public class InputFieldBase<E extends Comparable<E>> extends ObjectHelper implements InputField<E> {
     @SerializedName("dataType")
     @NonNull
     private final InputDataType formDataType;
@@ -68,7 +69,7 @@ public class InputFieldBase extends ObjectHelper implements InputField {
     private final String identifier;
 
     @SerializedName("optional")
-    private final boolean isOptional;
+    private final boolean optional;
 
     @Nullable
     @SerializedName("placeholder")
@@ -81,10 +82,10 @@ public class InputFieldBase extends ObjectHelper implements InputField {
     private final String promptDetail;
 
     @Nullable
-    private final Range range;
+    private final Range<E> range;
 
-    @Nullable
-    private final List<SurveyRule> surveyRules;
+    @NonNull
+    private final ImmutableList<SurveyRule> surveyRules;
 
     @Nullable
     private final TextFieldOptions textFieldOptions;
@@ -98,27 +99,27 @@ public class InputFieldBase extends ObjectHelper implements InputField {
         this.prompt = null;
         this.promptDetail = null;
         this.placeholderText = null;
-        this.isOptional = false;
+        this.optional = false;
         this.formDataType = null;
         this.formUIHint = null;
         this.textFieldOptions = null;
         this.range = null;
-        this.surveyRules = null;
+        this.surveyRules = ImmutableList.of();
     }
 
     public InputFieldBase(@Nullable final String identifier, @Nullable final String prompt,
             @Nullable final String promptDetail,
-            @Nullable final String placeholderText, final boolean isOptional,
+            @Nullable final String placeholderText, final boolean optional,
             @NonNull final InputDataType formDataType,
             @Nullable final String formUIHint,
-            @Nullable final TextFieldOptions textFieldOptions, @Nullable final Range range,
-            @Nullable final List<SurveyRule> surveyRules) {
+            @Nullable final TextFieldOptions textFieldOptions, @Nullable final Range<E> range,
+            @NonNull final ImmutableList<SurveyRule> surveyRules) {
         super();
         this.identifier = identifier;
         this.prompt = prompt;
         this.promptDetail = promptDetail;
         this.placeholderText = placeholderText;
-        this.isOptional = isOptional;
+        this.optional = optional;
         this.formDataType = formDataType;
         this.formUIHint = formUIHint;
         this.textFieldOptions = textFieldOptions;
@@ -165,13 +166,13 @@ public class InputFieldBase extends ObjectHelper implements InputField {
 
     @Nullable
     @Override
-    public Range getRange() {
+    public Range<E> getRange() {
         return this.range;
     }
 
-    @Nullable
+    @NonNull
     @Override
-    public List<SurveyRule> getSurveyRules() {
+    public ImmutableList<SurveyRule> getSurveyRules() {
         return this.surveyRules;
     }
 
@@ -183,7 +184,7 @@ public class InputFieldBase extends ObjectHelper implements InputField {
 
     @Override
     public boolean isOptional() {
-        return this.isOptional;
+        return this.optional;
     }
 
     @Override
@@ -209,7 +210,7 @@ public class InputFieldBase extends ObjectHelper implements InputField {
     @Override
     protected HashCodeHelper hashCodeHelper() {
         return super.hashCodeHelper()
-                .addFields(this.identifier, this.prompt, this.promptDetail, this.placeholderText, this.isOptional,
+                .addFields(this.identifier, this.prompt, this.promptDetail, this.placeholderText, this.optional,
                         this.formDataType, this.formUIHint, this.textFieldOptions, this.range, this.surveyRules);
     }
 
@@ -220,7 +221,7 @@ public class InputFieldBase extends ObjectHelper implements InputField {
                 .add("prompt", prompt)
                 .add("promptDetail", promptDetail)
                 .add("placeholder", placeholderText)
-                .add("optional", isOptional)
+                .add("optional", optional)
                 .add("dataType", formDataType)
                 .add("uiHint", formUIHint)
                 .add("textFieldOptions", textFieldOptions)

@@ -37,43 +37,47 @@ import android.support.annotation.Nullable;
 
 import com.google.common.base.MoreObjects.ToStringHelper;
 import com.google.common.base.Objects;
+import com.google.common.collect.ImmutableList;
 
 import org.sagebionetworks.research.domain.form.interfaces.InputField;
 import org.sagebionetworks.research.domain.interfaces.HashCodeHelper;
 import org.sagebionetworks.research.domain.step.StepType;
 import org.sagebionetworks.research.domain.step.interfaces.FormUIStep;
-import org.sagebionetworks.research.domain.step.ui.action.interfaces.Action;
+import org.sagebionetworks.research.domain.step.ui.action.Action;
 import org.sagebionetworks.research.domain.step.ui.theme.ColorTheme;
 import org.sagebionetworks.research.domain.step.ui.theme.ImageTheme;
 
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 public class FormUIStepBase extends UIStepBase implements FormUIStep {
     public static final String TYPE_KEY = StepType.FORM;
 
     @NonNull
-    private final List<InputField> inputFields;
+    private final ImmutableList<InputField> inputFields;
 
     // Gson initialize defaults
     FormUIStepBase() {
         super();
-        inputFields = Collections.emptyList();
+        inputFields = ImmutableList.of();
     }
 
-    public FormUIStepBase(@NonNull final String identifier, @NonNull Map<String, Action> actions,
-            @Nullable final String title, @Nullable final String text, @Nullable final String detail,
-            @Nullable final String footnote, @Nullable final ColorTheme colorTheme,
-            @Nullable final ImageTheme imageTheme, @NonNull final List<InputField> inputFields) {
-        super(identifier, actions, title, text, detail, footnote, colorTheme, imageTheme);
+    public FormUIStepBase(@NonNull final String identifier, @Nullable Map<String, Action> actions,
+            @Nullable Set<String> hiddenActions, @Nullable final String title, @Nullable final String text,
+            @Nullable final String detail, @Nullable final String footnote, @Nullable final ColorTheme colorTheme,
+            @Nullable final ImageTheme imageTheme, @NonNull final ImmutableList<InputField> inputFields) {
+        super(identifier, actions, hiddenActions, title, text, detail, footnote, colorTheme, imageTheme);
         this.inputFields = inputFields;
     }
 
+    @NonNull
     @Override
-    public FormUIStepBase copyWithIdentifier(@NonNull String identifier) {
-        return new FormUIStepBase(identifier, this.getActions(), this.getTitle(), this.getText(), this.getDetail(),
-                this.getFootnote(), this.getColorTheme(), this.getImageTheme(), this.inputFields);
+    public FormUIStepBase copyWithIdentifierOperation(@NonNull String identifier) {
+        return new FormUIStepBase(identifier, this.getActions(), this.getHiddenActions(), this.getTitle(),
+                this.getText(), this.getDetail(), this.getFootnote(), this.getColorTheme(), this.getImageTheme(),
+                this.inputFields);
     }
 
     @NonNull
@@ -103,7 +107,7 @@ public class FormUIStepBase extends UIStepBase implements FormUIStep {
 
     @NonNull
     @Override
-    public List<InputField> getInputFields() {
+    public ImmutableList<InputField> getInputFields() {
         return this.inputFields;
     }
 }

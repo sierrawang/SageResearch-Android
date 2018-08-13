@@ -32,6 +32,8 @@
 
 package org.sagebionetworks.research.data;
 
+import static java.nio.charset.StandardCharsets.UTF_8;
+
 import android.content.Context;
 import android.content.res.AssetManager;
 import android.content.res.Resources.NotFoundException;
@@ -184,7 +186,7 @@ public class ResourceTaskRepository implements TaskRepository {
     @NonNull
     private InputStreamReader getAsset(String assetPath) throws IOException {
         AssetManager assetManager = context.getAssets();
-        return new InputStreamReader(assetManager.open(assetPath));
+        return new InputStreamReader(assetManager.open(assetPath), UTF_8);
     }
 
     /**
@@ -193,8 +195,8 @@ public class ResourceTaskRepository implements TaskRepository {
      *
      * @param step
      *         The step to replace all the transformer substeps of.
-     * @return The givne step with all the transformer substeps replaced with the result of turning their resources
-     * into section steps.
+     * @return The givne step with all the transformer substeps replaced with the result of turning their
+     *         resourcesinto section steps.
      * @throws IOException
      *         If any of the transformer steps has a resource that cannot be opened.
      */
@@ -204,7 +206,7 @@ public class ResourceTaskRepository implements TaskRepository {
             // For now the transformer only supports SectionSteps.
             SectionStep result = gson.fromJson(
                     this.getJsonTransformerAsset(transformer.getResourceName()), SectionStep.class);
-            result = result.copyWithIdentifier(transformer.getIdentifier());
+            result = result.copyWithIdentifier(prefix + transformer.getIdentifier());
             return resolveTransformers(result, prefix);
         } else if (step instanceof SectionStep) {
             SectionStep section = (SectionStep) step;
@@ -214,8 +216,14 @@ public class ResourceTaskRepository implements TaskRepository {
                 builder.add(resolveTransformers(innerStep, prefix + section.getIdentifier() + "."));
             }
 
-            return new SectionStepBase(section.getIdentifier(), builder.build(), section.getAsyncActions());
+            return new SectionStepBase(section.getIdentifier(), builder.build());
         } else {
+            Step copiedStep = step.copyWithIdentifier(prefix + step.getIdentifier());
+            if (copiedStep.getClass() != step.getClass()) {
+                LOGGER.warn("Copied step ({}) has different class than the original" +
+                        "({})", copiedStep, step);
+            }
+
             return step.copyWithIdentifier(prefix + step.getIdentifier());
         }
     }

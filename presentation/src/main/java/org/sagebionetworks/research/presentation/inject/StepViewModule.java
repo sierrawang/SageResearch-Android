@@ -38,6 +38,8 @@ import org.sagebionetworks.research.domain.step.StepType;
 import org.sagebionetworks.research.domain.step.interfaces.Step;
 import org.sagebionetworks.research.presentation.mapper.DrawableMapper;
 import org.sagebionetworks.research.presentation.model.implementations.ActiveUIStepViewBase;
+import org.sagebionetworks.research.presentation.model.implementations.CompletionStepViewBase;
+import org.sagebionetworks.research.presentation.model.implementations.CountdownStepViewBase;
 import org.sagebionetworks.research.presentation.model.implementations.FormUIStepViewBase;
 import org.sagebionetworks.research.presentation.model.implementations.UIStepViewBase;
 import org.sagebionetworks.research.presentation.model.interfaces.StepView;
@@ -70,7 +72,7 @@ public abstract class StepViewModule {
     }
 
     @Multibinds
-    abstract Map<String, StepViewFactory> stepToFactoryMap();
+    abstract Map<String, InternalStepViewFactory> stepToFactoryMap();
 
     @Provides
     @IntoMap
@@ -87,7 +89,29 @@ public abstract class StepViewModule {
     }
 
     @Provides
-    static StepViewFactory provideStepViewFactory(final Map<String, InternalStepViewFactory> stepToFactoryMap,
+    @IntoMap
+    @StepTypeKey(StepType.UI)
+    static InternalStepViewFactory provideUIStepFactory() {
+        return UIStepViewBase::fromUIStep;
+    }
+
+    @Provides
+    @IntoMap
+    @StepTypeKey(StepType.COMPLETION)
+    static InternalStepViewFactory provideCompletionStepFactory() {
+        return CompletionStepViewBase::fromCompletionStep;
+    }
+
+    @Provides
+    @IntoMap
+    @StepTypeKey(StepType.COUNTDOWN)
+    static InternalStepViewFactory provideCountdownStepFactory() {
+        return CountdownStepViewBase::fromCountdownStep;
+    }
+
+    @Provides
+    static StepViewFactory provideStepViewFactory(
+            final Map<String, InternalStepViewFactory> stepToFactoryMap,
             final DrawableMapper drawableMapper) {
         return (final Step step) ->
         {
@@ -98,12 +122,5 @@ public abstract class StepViewModule {
                 return UIStepViewBase.fromUIStep(step, drawableMapper);
             }
         };
-    }
-
-    @Provides
-    @IntoMap
-    @StepTypeKey(StepType.UI)
-    static InternalStepViewFactory provideUIStepFactory() {
-        return UIStepViewBase::fromUIStep;
     }
 }

@@ -43,14 +43,14 @@ import com.google.auto.value.AutoValue;
 @AutoValue
 public abstract class TextFieldOptions implements Parcelable {
     @AutoValue.Builder
-    public static abstract class Builder {
+    public abstract static class Builder {
         public abstract TextFieldOptions build();
 
         public abstract Builder setInvalidMessage(final String invalidMessage);
 
         public abstract Builder setMaximumLength(final int maximumLength);
 
-        public abstract Builder setSecureTextEntry(final boolean isSecureTextEntry);
+        public abstract Builder setSecureTextEntry(final boolean secureTextEntry);
 
         public abstract Builder setTextValidator(final TextValidator textValidator);
     }

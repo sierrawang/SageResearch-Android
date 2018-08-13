@@ -32,18 +32,13 @@
 
 package org.sagebionetworks.research.domain.inject;
 
-import static org.sagebionetworks.research.domain.inject.GsonModule.createPassThroughDeserializer;
-
-import com.google.gson.JsonDeserializer;
-
 import org.sagebionetworks.research.domain.RuntimeTypeAdapterFactory;
-import org.sagebionetworks.research.domain.inject.GsonModule.ClassKey;
-import org.sagebionetworks.research.domain.step.ui.action.implementations.ActionBase;
-import org.sagebionetworks.research.domain.step.ui.action.implementations.ReminderActionBase;
-import org.sagebionetworks.research.domain.step.ui.action.implementations.SkipToStepActionBase;
-import org.sagebionetworks.research.domain.step.ui.action.interfaces.Action;
-import org.sagebionetworks.research.domain.step.ui.action.interfaces.ReminderAction;
-import org.sagebionetworks.research.domain.step.ui.action.interfaces.SkipToStepAction;
+import org.sagebionetworks.research.domain.step.ui.action.Action;
+import org.sagebionetworks.research.domain.impl.ActionAutoValueModule;
+import org.sagebionetworks.research.domain.step.ui.action.ReminderAction;
+import org.sagebionetworks.research.domain.step.ui.action.SkipToStepAction;
+import org.sagebionetworks.research.domain.step.ui.action.Action;
+import org.sagebionetworks.research.domain.impl.ActionAutoValueModule;
 
 import java.util.Map;
 import java.util.Map.Entry;
@@ -51,28 +46,13 @@ import java.util.Map.Entry;
 import dagger.MapKey;
 import dagger.Module;
 import dagger.Provides;
-import dagger.multibindings.IntoMap;
 import dagger.multibindings.IntoSet;
 
-@Module(includes = GsonModule.class)
+@Module(includes = {GsonModule.class, ActionAutoValueModule.class})
 public class ActionModule {
     @MapKey
     public @interface ActionKey {
         Class<? extends Action> value();
-    }
-
-    @Provides
-    @IntoMap
-    @ActionKey(SkipToStepAction.class)
-    static String proivdeSkipToStepActionTypeKey() {
-        return SkipToStepActionBase.TYPE_KEY;
-    }
-
-    @Provides
-    @IntoMap
-    @ClassKey(Action.class)
-    static JsonDeserializer<?> provideActionDeserializer() {
-        return createPassThroughDeserializer(ActionBase.class);
     }
 
     @Provides
@@ -85,33 +65,5 @@ public class ActionModule {
 
         factory.registerDefaultType(Action.class);
         return factory;
-    }
-
-    @Provides
-    @IntoMap
-    @ActionKey(Action.class)
-    static String provideActionTypeKey() {
-        return ActionBase.TYPE_KEY;
-    }
-
-    @Provides
-    @IntoMap
-    @ClassKey(ReminderAction.class)
-    static JsonDeserializer<?> provideReminderActionDeserializer() {
-        return createPassThroughDeserializer(ReminderActionBase.class);
-    }
-
-    @Provides
-    @IntoMap
-    @ActionKey(ReminderAction.class)
-    static String provideReminderActionTypeKey() {
-        return ReminderActionBase.TYPE_KEY;
-    }
-
-    @Provides
-    @IntoMap
-    @ClassKey(SkipToStepAction.class)
-    static JsonDeserializer<?> provideSkipToStepActionDeserializer() {
-        return createPassThroughDeserializer(SkipToStepActionBase.class);
     }
 }

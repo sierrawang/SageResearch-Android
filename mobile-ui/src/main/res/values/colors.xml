@@ -32,14 +32,21 @@
 
 <resources>
     <!-- Mark Royal Purple -->
+    <color name="royal200">#D5CFE3</color>
+    <color name="royal300">#B2A5D1</color>
     <color name="royal400">#907FBA</color>
     <color name="royal500">#5A478F</color>
     <color name="royal600">#47337D</color>
     <color name="royal700">#332069</color>
+    <color name="royal800">#251454</color>
     <!-- Mark Butterscotch -->
+    <color name="butterscotch200">#FFE2AD</color>
+    <color name="butterscotch300">#FAD591</color>
+    <color name="butterscotch400">#FCCB6F</color>
     <color name="butterscotch500">#F5B33C</color>
     <color name="butterscotch600">#DE9A1F</color>
-    <!-- Mark end mPower -->
+    <color name="butterscotch700">#CF8C15</color>
+    <color name="butterscotch800">#BD7900</color>
 
     <color name="primaryTint">#506BCB</color>
     <color name="lightPrimaryTint">#6D7BAB</color>
@@ -61,7 +68,7 @@
     <color name="appAlertRed">#FC6275</color>
     <color name="appSuccessGreen">#63D49E</color>
 
-    <color name="progressBarBackground">#251454</color>
+    <color name="progressBarBackground">@color/royal800</color>
     <color name="progressBarForeground">#B2A5D1</color>
 
     <color name="rsdCompletionGradientLeft">#91EDC1</color>

@@ -37,31 +37,25 @@ import android.os.Parcelable;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 
+import com.google.common.collect.ImmutableList;
 import com.google.common.collect.Range;
 
-import org.sagebionetworks.research.domain.form.DataTypes.InputDataType;
+import org.sagebionetworks.research.domain.form.data_types.InputDataType;
 import org.sagebionetworks.research.domain.form.InputUIHint;
 import org.sagebionetworks.research.domain.form.TextField.TextFieldOptions;
+import org.sagebionetworks.research.domain.form.data_types.InputDataType;
+import org.sagebionetworks.research.domain.form.implementations.ChoiceInputField;
+import org.sagebionetworks.research.domain.form.interfaces.Choice;
 import org.sagebionetworks.research.domain.form.interfaces.InputField;
-import org.sagebionetworks.research.domain.form.interfaces.SurveyRule;
+import org.sagebionetworks.research.domain.survey.SurveyRule;
 import org.sagebionetworks.research.presentation.DisplayString;
+import org.sagebionetworks.research.presentation.mapper.DrawableMapper;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
-public class InputFieldViewBase implements InputFieldView, Parcelable {
-    public static final Creator<InputFieldViewBase> CREATOR = new Creator<InputFieldViewBase>() {
-        @Override
-        public InputFieldViewBase createFromParcel(Parcel source) {
-            return new InputFieldViewBase(source);
-        }
-
-        @Override
-        public InputFieldViewBase[] newArray(int size) {
-            return new InputFieldViewBase[size];
-        }
-    };
-
+public class InputFieldViewBase<E> implements InputFieldView, Serializable {
     @NonNull
     private final InputDataType formDataType;
 
@@ -84,7 +78,7 @@ public class InputFieldViewBase implements InputFieldView, Parcelable {
     private final Range range;
 
     @Nullable
-    private final List<SurveyRule> surveyRules;
+    private final ImmutableList<? extends SurveyRule> surveyRules;
 
     @Nullable
     private final TextFieldOptions textFieldOptions;
@@ -93,20 +87,28 @@ public class InputFieldViewBase implements InputFieldView, Parcelable {
     @InputUIHint
     private final String uiHint;
 
-    public static InputFieldViewBase fromInputField(InputField inputField) {
+    public static <E extends Comparable<E>> InputFieldViewBase<E> fromInputField(InputField<E> inputField,
+            DrawableMapper mapper) {
         String identifier = inputField.getIdentifier();
         boolean isOptional = inputField.isOptional();
         InputDataType formDataType = inputField.getFormDataType();
         @InputUIHint String uiHint = inputField.getFormUIHint();
         TextFieldOptions textFieldOptions = inputField.getTextFieldOptions();
         Range range = inputField.getRange();
-        List<SurveyRule> surveyRules = inputField.getSurveyRules();
+        ImmutableList<? extends SurveyRule> surveyRules = inputField.getSurveyRules();
         // TODO rkolmos 05/30/2018 do the correct thing with these strings
         DisplayString prompt = DisplayString.create(0, inputField.getPrompt());
         DisplayString promptDetail = DisplayString.create(0, inputField.getPromptDetail());
         DisplayString placeholderText = DisplayString.create(0, inputField.getPlaceholderText());
+        if (inputField instanceof ChoiceInputField) {
+            ChoiceInputField<E> choiceInputField = (ChoiceInputField<E>) inputField;
+            ImmutableList<ChoiceView<E>> choices =
+                    processChoices(choiceInputField.getChoices(), mapper);
+            return new ChoiceInputFieldViewBase<E>(identifier, prompt, promptDetail, placeholderText, isOptional,
+                    formDataType, uiHint, textFieldOptions, range, surveyRules, choices, choiceInputField.getDefaultAnswer());
+        }
 
-        return new InputFieldViewBase(identifier, prompt, promptDetail, placeholderText, isOptional, formDataType,
+        return new InputFieldViewBase<>(identifier, prompt, promptDetail, placeholderText, isOptional, formDataType,
                 uiHint, textFieldOptions, range, surveyRules);
     }
 
@@ -114,7 +116,7 @@ public class InputFieldViewBase implements InputFieldView, Parcelable {
             @Nullable final DisplayString promptDetail, @Nullable final DisplayString placeholderText,
             final boolean isOptional, @NonNull final InputDataType formDataType, @Nullable final String uiHint,
             @Nullable final TextFieldOptions textFieldOptions, @Nullable final Range range,
-            @Nullable final List<SurveyRule> surveyRules) {
+            @Nullable final ImmutableList<? extends SurveyRule> surveyRules) {
         this.identifier = identifier;
         this.prompt = prompt;
         this.promptDetail = promptDetail;
@@ -137,27 +139,8 @@ public class InputFieldViewBase implements InputFieldView, Parcelable {
         this.uiHint = in.readString();
         this.textFieldOptions = in.readParcelable(TextFieldOptions.class.getClassLoader());
         this.range = (Range) in.readSerializable();
-        this.surveyRules = new ArrayList<SurveyRule>();
+        this.surveyRules = ImmutableList.of();
         in.readList(this.surveyRules, SurveyRule.class.getClassLoader());
-    }
-
-    @Override
-    public int describeContents() {
-        return 0;
-    }
-
-    @Override
-    public void writeToParcel(Parcel dest, int flags) {
-        dest.writeString(this.identifier);
-        dest.writeParcelable(this.prompt, flags);
-        dest.writeParcelable(this.promptDetail, flags);
-        dest.writeParcelable(this.placeholderText, flags);
-        dest.writeByte(this.isOptional ? (byte) 1 : (byte) 0);
-        dest.writeParcelable(this.formDataType, flags);
-        dest.writeString(this.uiHint);
-        dest.writeParcelable(this.textFieldOptions, flags);
-        dest.writeSerializable(this.range);
-        dest.writeList(this.surveyRules);
     }
 
     @Override
@@ -204,7 +187,7 @@ public class InputFieldViewBase implements InputFieldView, Parcelable {
 
     @Override
     @Nullable
-    public List<SurveyRule> getSurveyRules() {
+    public ImmutableList<? extends SurveyRule> getSurveyRules() {
         return surveyRules;
     }
 
@@ -218,5 +201,15 @@ public class InputFieldViewBase implements InputFieldView, Parcelable {
     @Nullable
     public boolean isOptional() {
         return isOptional;
+    }
+
+    private static <T extends Comparable> ImmutableList<ChoiceView<T>> processChoices(List<Choice<T>> choices,
+            DrawableMapper mapper) {
+        ImmutableList.Builder<ChoiceView<T>> builder = ImmutableList.builder();
+        for (Choice<T> choice : choices) {
+            builder.add(ChoiceView.fromChoice(choice, mapper));
+        }
+
+        return builder.build();
     }
 }

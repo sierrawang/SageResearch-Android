@@ -34,7 +34,13 @@ package org.sagebionetworks.research.mobile_ui.show_step.view;
 
 import android.graphics.drawable.AnimationDrawable;
 import android.graphics.drawable.Drawable;
+import android.os.Bundle;
+import android.support.annotation.NonNull;
+import android.support.v4.view.OnApplyWindowInsetsListener;
+import android.support.v4.view.ViewCompat;
+import android.view.LayoutInflater;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
@@ -50,15 +56,15 @@ import org.sagebionetworks.research.presentation.model.AnimationImageThemeView;
 import org.sagebionetworks.research.presentation.model.ImageThemeView;
 import org.sagebionetworks.research.presentation.model.action.ActionView;
 import org.sagebionetworks.research.presentation.model.action.ActionViewBase;
-import org.sagebionetworks.research.presentation.model.interfaces.FetchableImageThemeView;
+import org.sagebionetworks.research.presentation.model.FetchableImageThemeView;
 import org.sagebionetworks.research.presentation.model.interfaces.UIStepView;
 import org.sagebionetworks.research.presentation.show_step.show_step_view_models.ShowUIStepViewModel;
 
 import java.util.List;
 
-public abstract class ShowUIStepFragmentBase<S extends UIStepView,
-        VM extends ShowUIStepViewModel<S>, SB extends UIStepViewBinding<S>> extends
-        ShowStepFragmentBase<S, VM, SB> {
+public abstract class ShowUIStepFragmentBase<UIStepViewT extends UIStepView,
+        VM extends ShowUIStepViewModel<UIStepViewT>, SB extends UIStepViewBinding<UIStepViewT>> extends
+        ShowStepFragmentBase<UIStepViewT, VM, SB> {
     protected ActionView getBackwardButtonActionView(UIStepView stepView) {
         ActionView result = this.getDefaultActionView(stepView, ActionType.BACKWARD);
         if (result != null) {
@@ -72,7 +78,30 @@ public abstract class ShowUIStepFragmentBase<S extends UIStepView,
         } else {
             return null;
         }
+    }
 
+    @Override
+    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+        View result = super.onCreateView(inflater, container, savedInstanceState);
+        ActionButton cancelButton = this.stepViewBinding.getCancelButton();
+        OnApplyWindowInsetsListener topInsetListener =
+                SystemWindowHelper.getOnApplyWindowInsetsListener(SystemWindowHelper.Direction.TOP);
+        if (cancelButton != null) {
+            ViewCompat.setOnApplyWindowInsetsListener(cancelButton, topInsetListener);
+        }
+
+        ActionButton infoButton = this.stepViewBinding.getInfoButton();
+        if (infoButton != null) {
+            ViewCompat.setOnApplyWindowInsetsListener(infoButton, topInsetListener);
+        }
+
+        return result;
+    }
+
+    @Override
+    public void onViewCreated(@NonNull View view, Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
+        ViewCompat.requestApplyInsets(view);
     }
 
     protected ActionView getCancelButtonActionView(UIStepView stepView) {
@@ -81,7 +110,6 @@ public abstract class ShowUIStepFragmentBase<S extends UIStepView,
             return result;
         }
 
-        // TODO rkolmos 06/10/2018
         Integer iconResId = R.drawable.rs2_cancel_icon;
         return ActionViewBase.builder().setButtonIcon(DisplayDrawable.create(null, iconResId)).build();
     }
@@ -141,7 +169,7 @@ public abstract class ShowUIStepFragmentBase<S extends UIStepView,
     }
 
     @Override
-    protected void update(S stepView) {
+    protected void update(UIStepViewT stepView) {
         super.update(stepView);
         this.updateNavigationButtons(stepView);
         TaskProgress progress = this.performTaskViewModel.getTaskProgress().getValue();
@@ -182,11 +210,13 @@ public abstract class ShowUIStepFragmentBase<S extends UIStepView,
                     animation.start();
                 } else if (imageTheme instanceof FetchableImageThemeView) {
                     DisplayDrawable drawable = ((FetchableImageThemeView) imageTheme).getImageResource();
-                    Integer imageResourceId = drawable.getDrawable();
-                    if (imageResourceId != null) {
-                        imageView.setImageResource(imageResourceId);
-                    } else {
-                        System.err.println("DisplayDrawable has null drawableRes and null defaultDrawableRes");
+                    if (drawable != null) {
+                        Integer imageResourceId = drawable.getDrawable();
+                        if (imageResourceId != null) {
+                            imageView.setImageResource(imageResourceId);
+                        } else {
+                            System.err.println("DisplayDrawable has null drawableRes and null defaultDrawableRes");
+                        }
                     }
                 }
             }
@@ -220,15 +250,21 @@ public abstract class ShowUIStepFragmentBase<S extends UIStepView,
 
     // region Navigation Buttons
     protected void updateNavigationButtons(UIStepView stepView) {
+        ActionButton forwardButton = this.stepViewBinding.getNextButton();
+        ActionView forwardActionView = this.getForwardButtonActionView(stepView);
+        this.updateButtonFromActionView(forwardButton, forwardActionView);
+        ActionButton backButton = this.stepViewBinding.getBackButton();
+        ActionView backActionView = this.getBackwardButtonActionView(stepView);
+        this.updateButtonFromActionView(backButton, backActionView);
+        ActionButton cancelButton = this.stepViewBinding.getCancelButton();
+        ActionView cancelActionView = this.getCancelButtonActionView(stepView);
+        this.updateButtonFromActionView(cancelButton, cancelActionView);
         ActionButton skipButton = this.stepViewBinding.getSkipButton();
-        this.updateButtonFromActionView(this.stepViewBinding.getNextButton(),
-                this.getForwardButtonActionView(stepView));
-        this.updateButtonFromActionView(this.stepViewBinding.getBackButton(),
-                this.getBackwardButtonActionView(stepView));
-        this.updateButtonFromActionView(this.stepViewBinding.getCancelButton(),
-                this.getCancelButtonActionView(stepView));
-        this.updateButtonFromActionView(skipButton, this.getSkipButtonActionView(stepView));
-        this.updateButtonFromActionView(this.stepViewBinding.getInfoButton(), this.getInfoButtonActionView(stepView));
+        ActionView skipActionView = this.getSkipButtonActionView(stepView);
+        this.updateButtonFromActionView(skipButton, skipActionView);
+        ActionButton infoButton = this.stepViewBinding.getInfoButton();
+        ActionView infoActionView = this.getInfoButtonActionView(stepView);
+        this.updateButtonFromActionView(infoButton, infoActionView);
     }
     // endregion
 }

@@ -38,19 +38,28 @@ import android.support.annotation.Nullable;
 import com.google.common.base.MoreObjects.ToStringHelper;
 import com.google.common.base.Objects;
 import com.google.common.collect.ImmutableMap;
+import com.google.common.collect.ImmutableSet;
 import com.google.gson.annotations.SerializedName;
 
 import org.sagebionetworks.research.domain.interfaces.HashCodeHelper;
+import org.sagebionetworks.research.domain.result.implementations.ResultBase;
+import org.sagebionetworks.research.domain.result.interfaces.Result;
 import org.sagebionetworks.research.domain.step.StepType;
 import org.sagebionetworks.research.domain.step.interfaces.ThemedUIStep;
-import org.sagebionetworks.research.domain.step.ui.action.interfaces.Action;
+import org.sagebionetworks.research.domain.step.ui.action.Action;
 import org.sagebionetworks.research.domain.step.ui.theme.ColorTheme;
 import org.sagebionetworks.research.domain.step.ui.theme.ImageTheme;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.threeten.bp.Instant;
 
 import java.util.Map;
+import java.util.Set;
 
 public class UIStepBase extends StepBase implements ThemedUIStep {
     public static final String TYPE_KEY = StepType.UI;
+
+    private static final Logger LOGGER = LoggerFactory.getLogger(UIStepBase.class);
 
     @NonNull
     private final ImmutableMap<String, Action> actions;
@@ -63,6 +72,9 @@ public class UIStepBase extends StepBase implements ThemedUIStep {
 
     @Nullable
     private final String footnote;
+
+    @NonNull
+    private final ImmutableSet<String> hiddenActions;
 
     @Nullable
     @SerializedName("image")
@@ -78,6 +90,7 @@ public class UIStepBase extends StepBase implements ThemedUIStep {
     UIStepBase() {
         super("");
         actions = ImmutableMap.of();
+        hiddenActions = ImmutableSet.of();
         detail = null;
         footnote = null;
         text = null;
@@ -87,11 +100,13 @@ public class UIStepBase extends StepBase implements ThemedUIStep {
     }
 
     public UIStepBase(@NonNull final String identifier, @Nullable final Map<String, Action> actions,
+            @Nullable final Set<String> hiddenActions,
             @Nullable final String title, @Nullable final String text,
             @Nullable final String detail, @Nullable final String footnote,
             @Nullable final ColorTheme colorTheme,
             @Nullable final ImageTheme imageTheme) {
         super(identifier);
+        this.hiddenActions = hiddenActions == null ? ImmutableSet.of() : ImmutableSet.copyOf(hiddenActions);
         this.colorTheme = colorTheme;
         this.imageTheme = imageTheme;
         if (actions == null) {
@@ -108,14 +123,46 @@ public class UIStepBase extends StepBase implements ThemedUIStep {
     @NonNull
     @Override
     public UIStepBase copyWithIdentifier(@NonNull final String identifier) {
-        return new UIStepBase(identifier, this.getActions(), this.getTitle(), this.getText(), this.getDetail(),
-                this.getFootnote(), this.getColorTheme(), this.getImageTheme());
+        UIStepBase result = copyWithIdentifierOperation(identifier);
+        // If the user forgets to override copy with identifier, the type of the step will change when it goes through
+        // the resource transformer. This is a really confusing bug so this code is present to make it clearer why
+        // this is happening.
+        if (result.getClass() != this.getClass()) {
+            LOGGER.warn("Result of copy with identifier has different type than original input, did you"
+                    + "forget to override CopyWithIdentifier");
+        }
+
+        return result;
+    }
+
+    @NonNull
+    protected UIStepBase copyWithIdentifierOperation(@NonNull final String identifier) {
+        return new UIStepBase(identifier, this.getActions(), this.getHiddenActions(), this.getTitle(), this.getText(),
+                this.getDetail(), this.getFootnote(), this.getColorTheme(), this.getImageTheme());
     }
 
     @NonNull
     @Override
     public ImmutableMap<String, Action> getActions() {
         return actions;
+    }
+
+    @NonNull
+    @Override
+    public ImmutableSet<String> getHiddenActions() {
+        return hiddenActions;
+    }
+
+    @Nullable
+    @Override
+    public ColorTheme getColorTheme() {
+        return this.colorTheme;
+    }
+
+    @Nullable
+    @Override
+    public ImageTheme getImageTheme() {
+        return this.imageTheme;
     }
 
     @Nullable
@@ -142,18 +189,6 @@ public class UIStepBase extends StepBase implements ThemedUIStep {
         return this.title;
     }
 
-    @Nullable
-    @Override
-    public ColorTheme getColorTheme() {
-        return this.colorTheme;
-    }
-
-    @Nullable
-    @Override
-    public ImageTheme getImageTheme() {
-        return this.imageTheme;
-    }
-
     @NonNull
     @Override
     public String getType() {
@@ -164,13 +199,13 @@ public class UIStepBase extends StepBase implements ThemedUIStep {
     protected boolean equalsHelper(Object o) {
         UIStepBase uiStep = (UIStepBase) o;
         return super.equalsHelper(o) &&
-                Objects.equal(this.getActions(), uiStep.getActions()) &&
-                Objects.equal(this.getTitle(), uiStep.getTitle()) &&
-                Objects.equal(this.getText(), uiStep.getText()) &&
-                Objects.equal(this.getDetail(), uiStep.getDetail()) &&
-                Objects.equal(this.getFootnote(), uiStep.getFootnote()) &&
-                Objects.equal(this.getColorTheme(), uiStep.getColorTheme()) &&
-                Objects.equal(this.getImageTheme(), uiStep.getImageTheme());
+                Objects.equal(this.getActions(), uiStep.getActions())
+                && Objects.equal(this.getTitle(), uiStep.getTitle())
+                && Objects.equal(this.getText(), uiStep.getText())
+                && Objects.equal(this.getDetail(), uiStep.getDetail())
+                && Objects.equal(this.getFootnote(), uiStep.getFootnote())
+                && Objects.equal(this.getColorTheme(), uiStep.getColorTheme())
+                && Objects.equal(this.getImageTheme(), uiStep.getImageTheme());
     }
 
     @Override
@@ -193,4 +228,4 @@ public class UIStepBase extends StepBase implements ThemedUIStep {
                 .add("colorTheme", this.getColorTheme())
                 .add("imageTheme", this.getImageTheme());
     }
-}
+                           }

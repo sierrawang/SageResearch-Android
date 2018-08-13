@@ -38,6 +38,7 @@ import android.support.annotation.Nullable;
 
 import com.google.common.collect.ImmutableMap;
 
+import org.sagebionetworks.research.domain.step.StepType;
 import org.sagebionetworks.research.domain.step.interfaces.ActiveUIStep;
 import org.sagebionetworks.research.domain.step.interfaces.Step;
 import org.sagebionetworks.research.presentation.DisplayString;
@@ -49,17 +50,7 @@ import org.sagebionetworks.research.presentation.model.interfaces.ActiveUIStepVi
 import org.threeten.bp.Duration;
 
 public class ActiveUIStepViewBase extends UIStepViewBase implements ActiveUIStepView {
-    public static final Creator<ActiveUIStepViewBase> CREATOR = new Creator<ActiveUIStepViewBase>() {
-        @Override
-        public ActiveUIStepViewBase createFromParcel(Parcel source) {
-            return new ActiveUIStepViewBase(source);
-        }
-
-        @Override
-        public ActiveUIStepViewBase[] newArray(int size) {
-            return new ActiveUIStepViewBase[size];
-        }
-    };
+    public static final String TYPE = StepType.ACTIVE;
 
     @NonNull
     private final Duration duration;
@@ -103,16 +94,10 @@ public class ActiveUIStepViewBase extends UIStepViewBase implements ActiveUIStep
         this.isBackgroundAudioRequired = in.readByte() != 0;
     }
 
+    @NonNull
     @Override
-    public int describeContents() {
-        return 0;
-    }
-
-    @Override
-    public void writeToParcel(Parcel dest, int flags) {
-        super.writeToParcel(dest, flags);
-        dest.writeSerializable(this.duration);
-        dest.writeByte(this.isBackgroundAudioRequired ? (byte) 1 : (byte) 0);
+    public String getType() {
+        return TYPE;
     }
 
     @Override

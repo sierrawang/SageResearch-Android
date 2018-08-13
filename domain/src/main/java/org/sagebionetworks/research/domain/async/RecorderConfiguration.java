@@ -42,6 +42,7 @@ public interface RecorderConfiguration extends AsyncActionConfiguration {
      *
      * @Return the type of recorder that this config is for.
      */
+    @Override
     @NonNull
     @RecorderType
     String getType();

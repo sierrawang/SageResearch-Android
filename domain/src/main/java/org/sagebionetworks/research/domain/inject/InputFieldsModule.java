@@ -32,15 +32,14 @@
 
 package org.sagebionetworks.research.domain.inject;
 
-import com.google.common.reflect.TypeParameter;
-import com.google.common.reflect.TypeToken;
 import com.google.gson.JsonDeserializer;
+import com.google.gson.reflect.TypeToken;
 
 import org.sagebionetworks.research.domain.RuntimeTypeAdapterFactory;
-import org.sagebionetworks.research.domain.form.DataTypes.BaseInputDataType.BaseType;
-import org.sagebionetworks.research.domain.form.DataTypes.CollectionInputDataType;
-import org.sagebionetworks.research.domain.form.DataTypes.CollectionInputDataType.CollectionType;
-import org.sagebionetworks.research.domain.form.DataTypes.InputDataType;
+import org.sagebionetworks.research.domain.form.data_types.BaseInputDataType.BaseType;
+import org.sagebionetworks.research.domain.form.data_types.CollectionInputDataType;
+import org.sagebionetworks.research.domain.form.data_types.CollectionInputDataType.CollectionType;
+import org.sagebionetworks.research.domain.form.data_types.InputDataType;
 import org.sagebionetworks.research.domain.form.implementations.ChoiceBase;
 import org.sagebionetworks.research.domain.form.implementations.ChoiceInputField;
 import org.sagebionetworks.research.domain.form.implementations.InputFieldBase;
@@ -63,13 +62,18 @@ public class InputFieldsModule {
     @Provides
     @IntoMap
     @ClassKey(BaseType.class)
-    static Map<String, Class<?>> provideBaseTypeClassMap() {
-        Map<String, Class<?>> classMap = new HashMap<>();
+    static Map<String, Class<? extends Comparable>> provideBaseTypeClassMap() {
+        Map<String, Class<? extends Comparable>> classMap = new HashMap<>();
         classMap.put(BaseType.BOOLEAN, Boolean.class);
         classMap.put(BaseType.STRING, String.class);
         classMap.put(BaseType.INTEGER, Integer.class);
         classMap.put(BaseType.DECIMAL, Double.class);
         classMap.put(BaseType.DURATION, Double.class);
+        return classMap;
+    }
+
+    static Map<String, Class<InputField<? extends Comparable>>> provideInputFieldMap() {
+        Map<String, Class<InputField<? extends Comparable>>> classMap = new HashMap<>();
         return classMap;
     }
 
@@ -92,10 +96,10 @@ public class InputFieldsModule {
      */
     @Provides
     @IntoSet
-    static RuntimeTypeAdapterFactory provideType(Map<Class<?>, Map<String, Class<?>>> classMap) {
+    static RuntimeTypeAdapterFactory provideType(Map<Class<?>, Map<String, Class<? extends Comparable>>> classMap) {
         RuntimeTypeAdapterFactory<InputField> typeAdapterFactory = RuntimeTypeAdapterFactory.of(InputField.class,
                 InputField.KEY_TYPE);
-        Map<String, Class<?>> baseClassMap = classMap.get(BaseType.class);
+        Map<String, Class<? extends Comparable>> baseClassMap = classMap.get(BaseType.class);
         Map<String, Type> choiceInputFieldTypes = new HashMap<>();
         for (String collectionType : CollectionType.ALL) {
             // A collection type with no base type corresponds to a raw ChoiceInputField.
@@ -104,7 +108,7 @@ public class InputFieldsModule {
                 // We either use the registered class for the base type, or just use a raw ChoiceInputField.
                 Type type = baseClassMap.get(baseType);
                 if (type != null) {
-                    type = createChoiceInputFieldTypeToken(TypeToken.of(type)).getType();
+                    type = TypeToken.getParameterized(ChoiceInputField.class, type).getType();
                 } else {
                     type = ChoiceInputField.class;
                 }
@@ -119,20 +123,5 @@ public class InputFieldsModule {
 
         typeAdapterFactory.registerDefaultType(InputFieldBase.class);
         return typeAdapterFactory;
-    }
-
-    /**
-     * Returns a TypeToken<ChoiceInputField<genericToken.getType()>>
-     *
-     * @param genericToken
-     *         The TypeToken for the class to be the generic type argument to ChoiceInputField.
-     * @param <T>
-     *         The Type of the generic type argument to ChoiceInputField.
-     * @return a TypeToken<ChoiceInputField<genericToken.getType()>>
-     */
-    private static <T> TypeToken<ChoiceInputField<T>> createChoiceInputFieldTypeToken(TypeToken<T> genericToken) {
-        return new TypeToken<ChoiceInputField<T>>() {
-        }.where(new TypeParameter<T>() {
-        }, genericToken);
     }
 }

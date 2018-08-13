@@ -32,6 +32,9 @@
 
 package org.sagebionetworks.research.domain.inject;
 
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
+
 import com.dampcake.gson.immutable.ImmutableAdapterFactory;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
@@ -46,7 +49,7 @@ import com.google.gson.TypeAdapterFactory;
 
 import org.aaronhe.threetengson.ThreeTenGsonAdapter;
 import org.sagebionetworks.research.domain.RuntimeTypeAdapterFactory;
-import org.sagebionetworks.research.domain.step.json.DomainAutoValueTypeAdapterFactory;
+import org.sagebionetworks.research.domain.impl.DomainAutoValueTypeAdapterFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -109,9 +112,6 @@ public abstract class GsonModule {
     abstract Map<Class<?>, JsonDeserializer<?>> provideJsonDeserializerMap();
 
     @Multibinds
-    abstract Set<TypeAdapter> provideJsonDeserializers();
-
-    @Multibinds
     abstract Map<Class<?>, JsonSerializer<?>> provideJsonSerializerMap();
 
     @Multibinds
@@ -130,19 +130,27 @@ public abstract class GsonModule {
             Set<TypeAdapterFactory> typeAdapterFactories,
             Set<RuntimeTypeAdapterFactory> runtimeTypeAdapterFactories) {
         GsonBuilder builder = new GsonBuilder();
+        // Register Deserializers
+        for (Entry<Class<?>, ? extends Object> entry : jsonDeserializerMap.entrySet()) {
+            // We only register the default if there isn't an override for this class.
+            LOGGER.debug("Registering Deserializer ({}) for: {}", entry.getValue(), entry.getKey());
+            builder.registerTypeAdapter(entry.getKey(), entry.getValue());
+        }
 
-        for (Entry<Class<?>, JsonDeserializer<?>> entry : jsonDeserializerMap.entrySet()) {
-            LOGGER.debug("Registering JsonDeserializer for: {}", entry.getKey());
+        // Register Serializers
+        for (Entry<Class<?>, ? extends Object> entry : jsonSerializerMap.entrySet()) {
+            // We only register the default if there isn't an override for this class.
+            LOGGER.debug("Registering Serializer ({}) for: {}", entry.getValue(), entry.getKey());
             builder.registerTypeAdapter(entry.getKey(), entry.getValue());
         }
-        for (Entry<Class<?>, JsonSerializer<?>> entry : jsonSerializerMap.entrySet()) {
-            LOGGER.debug("Registering JsonSerializer for: {}", entry.getKey());
-            builder.registerTypeAdapter(entry.getKey(), entry.getValue());
-        }
+
+        // Register TypeAdapterFactories
         for (TypeAdapterFactory typeAdapterFactory : typeAdapterFactories) {
             LOGGER.debug("Registering TypeAdapterFactory: {}", typeAdapterFactory.getClass());
             builder.registerTypeAdapterFactory(typeAdapterFactory);
         }
+
+        // Registers RuntimeTypeAdapterFactories
         for (RuntimeTypeAdapterFactory runtimeTypeAdapterFactory : runtimeTypeAdapterFactories) {
             LOGGER.debug("Registering RuntimeTypeAdapterFactory: {}", runtimeTypeAdapterFactory.getClass());
             builder.registerTypeAdapterFactory(runtimeTypeAdapterFactory);

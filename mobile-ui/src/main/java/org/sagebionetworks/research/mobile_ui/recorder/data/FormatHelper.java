@@ -46,16 +46,19 @@ public class FormatHelper {
 
     public static final int NONE = -1;
     public static final String DATE_FORMAT_ISO_8601 = "yyyy-MM-dd'T'HH:mm:ss.SSSZ";
-    public static final SimpleDateFormat DEFAULT_FORMAT = new SimpleDateFormat(FormatHelper.DATE_FORMAT_ISO_8601,
-            Locale.getDefault());
     public static final String DATE_FORMAT_SIMPLE_DATE = "yyyy-MM-dd";
-    public static final SimpleDateFormat SIMPLE_FORMAT_DATE = new SimpleDateFormat(
-            DATE_FORMAT_SIMPLE_DATE,
-            Locale.getDefault());
     public static final String TIME_FORMAT_SIMPLE_DATE = "HH:mm:ss.sss";
-    public static final SimpleDateFormat SIMPLE_FORMAT_TIME = new SimpleDateFormat(
-            TIME_FORMAT_SIMPLE_DATE,
-            Locale.getDefault());
+    public static final ThreadLocal<SimpleDateFormat> DEFAULT_FORMAT;
+    public static final ThreadLocal<SimpleDateFormat> SIMPLE_FORMAT_DATE;
+    public static final ThreadLocal<SimpleDateFormat> SIMPLE_FORMAT_TIME;
+    static {
+        DEFAULT_FORMAT = new ThreadLocal<>();
+        DEFAULT_FORMAT.set(new SimpleDateFormat(FormatHelper.DATE_FORMAT_ISO_8601, Locale.getDefault()));
+        SIMPLE_FORMAT_DATE = new ThreadLocal<>();
+        SIMPLE_FORMAT_DATE.set(new SimpleDateFormat(DATE_FORMAT_SIMPLE_DATE, Locale.getDefault()));
+        SIMPLE_FORMAT_TIME = new ThreadLocal<>();
+        SIMPLE_FORMAT_TIME.set(new SimpleDateFormat(TIME_FORMAT_SIMPLE_DATE, Locale.getDefault()));
+    }
 
     /**
      * Returns a DateFormat object based on the dateStyle and timeStyle params

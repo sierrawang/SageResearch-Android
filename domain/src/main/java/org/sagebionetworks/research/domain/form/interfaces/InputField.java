@@ -35,11 +35,13 @@ package org.sagebionetworks.research.domain.form.interfaces;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 
+import com.google.common.collect.ImmutableList;
 import com.google.common.collect.Range;
 
-import org.sagebionetworks.research.domain.form.DataTypes.InputDataType;
+import org.sagebionetworks.research.domain.form.data_types.InputDataType;
 import org.sagebionetworks.research.domain.form.InputUIHint;
 import org.sagebionetworks.research.domain.form.TextField.TextFieldOptions;
+import org.sagebionetworks.research.domain.survey.SurveyRule;
 
 import java.util.List;
 
@@ -47,8 +49,8 @@ import java.util.List;
  * Describes a form input within a step. Contains information about data type and hints on how the UI should be
  * displayed.
  */
-public interface InputField {
-    final String KEY_TYPE = "dataType";
+public interface InputField<E extends Comparable<E>> {
+    String KEY_TYPE = "dataType";
 
     /**
      * @return data type for this input field. The data type can have an associated ui hint
@@ -93,13 +95,14 @@ public interface InputField {
      * validation, or null if this is not applicable
      */
     @Nullable
-    Range getRange();
+    Range<E> getRange();
 
     /**
+     * TODO: Remove this, it belongs in SurveyInputField
      * @return the list of survey rules that are used by this input field or null if this is not applicable.
      */
-    @Nullable
-    List<SurveyRule> getSurveyRules();
+    @NonNull
+    ImmutableList<? extends SurveyRule> getSurveyRules();
 
     /**
      * @return The text field options for this InputField or null if there are none.

@@ -55,9 +55,10 @@ public abstract class RecorderRunner extends AsyncActionRunner {
     @CallSuper
     public final void onFinishStep(Step step) {
         super.onFinishStep(step);
-        if (recorder.getStopStepIdentifier().equals(step.getIdentifier())) {
-
+        if (step.getIdentifier().equals(recorder.getStopStepIdentifier())) {
+            // TODO: stop actions
         }
+        // TODO: stop async actions without stop step identifier after the last step
     }
 
 }

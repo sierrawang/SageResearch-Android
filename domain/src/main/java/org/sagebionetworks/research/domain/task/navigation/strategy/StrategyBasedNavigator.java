@@ -38,7 +38,9 @@ import android.support.annotation.Nullable;
 import org.jetbrains.annotations.NotNull;
 import org.sagebionetworks.research.domain.result.interfaces.Result;
 import org.sagebionetworks.research.domain.result.interfaces.TaskResult;
+import org.sagebionetworks.research.domain.step.interfaces.SectionStep;
 import org.sagebionetworks.research.domain.step.interfaces.Step;
+import org.sagebionetworks.research.domain.task.Task;
 import org.sagebionetworks.research.domain.task.navigation.StepNavigator;
 import org.sagebionetworks.research.domain.task.navigation.StepNavigatorFactory;
 import org.sagebionetworks.research.domain.task.navigation.TaskProgress;
@@ -52,8 +54,8 @@ import java.util.List;
 public class StrategyBasedNavigator implements StepNavigator {
     public static class Factory implements StepNavigatorFactory {
         @Override
-        public StepNavigator create(final List<Step> steps, final List<String> progressMarkers) {
-            return new StrategyBasedNavigator(steps, progressMarkers);
+        public StepNavigator create(final Task task, final List<String> progressMarkers) {
+            return new StrategyBasedNavigator(task, progressMarkers);
         }
     }
 
@@ -61,17 +63,20 @@ public class StrategyBasedNavigator implements StepNavigator {
     // applicable.
     @NonNull
     private final TreeNavigator treeNavigator;
+    @NonNull
+    private final Task task;
 
     /**
      * Constructs a new StrategyBasedNavigator from the given list of steps, and the given list of progress markers.
      *
-     * @param steps
-     *         The list of steps to create this StepBasedNavigator from.
+     * @param task
+     *         The task to create this StepBasedNavigator from.
      * @param progressMarkers
      *         The list of progress markers to create this StepBasedNavigator from.
      */
-    public StrategyBasedNavigator(@NonNull final List<Step> steps, @Nullable List<String> progressMarkers) {
-        this.treeNavigator = new TreeNavigator(steps, progressMarkers);
+    public StrategyBasedNavigator(@NonNull final Task task, @Nullable List<String> progressMarkers) {
+        this.task = task;
+        this.treeNavigator = new TreeNavigator(task.getSteps(), progressMarkers);
     }
 
     @Override
@@ -81,11 +86,12 @@ public class StrategyBasedNavigator implements StepNavigator {
     }
 
     @Override
+    @Nullable
     public Step getNextStep(final Step step, @NonNull TaskResult taskResult) {
         Step nextStep = null;
         // First we try to get the next step from the step by casting it to a NextStepStrategy.
         if (step instanceof NextStepStrategy) {
-            String nextStepId = ((NextStepStrategy) step).getNextStepIdentifier(taskResult);
+            String nextStepId = ((NextStepStrategy)step).getNextStepIdentifier(taskResult);
             if (nextStepId != null) {
                 nextStep = this.getStep(nextStepId);
             }
@@ -98,6 +104,8 @@ public class StrategyBasedNavigator implements StepNavigator {
         }
 
         if (nextStep != null) {
+            nextStep = StrategyBasedNavigator.resolveSection(nextStep);
+
             // As long as the next step we have found shouldn't be skipped we return it.
             if (!(nextStep instanceof SkipStepStrategy) ||
                     !((SkipStepStrategy) nextStep).shouldSkip(taskResult)) {
@@ -105,7 +113,7 @@ public class StrategyBasedNavigator implements StepNavigator {
             }
 
             // If we should skip the next step we found, we recurse on the next step to get the one after that.
-            return getNextStep(nextStep, taskResult);
+            return this.getNextStep(nextStep, taskResult);
         }
 
         // If the tree navigator returns null we also return null.
@@ -114,6 +122,13 @@ public class StrategyBasedNavigator implements StepNavigator {
 
     @Override
     public Step getPreviousStep(@NonNull final Step step, @NonNull TaskResult taskResult) {
+        Step result = this.getPreviousStepHelper(step, taskResult);
+        // In the event that the helper returns a SectionStep we traverse through the section's children to get a
+        // non-section step.
+        return StrategyBasedNavigator.resolveSection(result);
+    }
+
+    private Step getPreviousStepHelper(@NonNull final Step step, @NonNull TaskResult taskResult) {
         // First we make sure that the given step allows backward navigation.
         if (step instanceof BackStepStrategy && !((BackStepStrategy) step).isBackAllowed(taskResult)) {
             return null;
@@ -147,5 +162,13 @@ public class StrategyBasedNavigator implements StepNavigator {
     @Override
     public List<Step> getSteps() {
         return this.treeNavigator.getSteps();
+    }
+
+    protected static Step resolveSection(@Nullable Step step) {
+        while (step instanceof SectionStep) {
+            step = ((SectionStep) step).getSteps().get(0);
+        }
+
+        return step;
     }
 }

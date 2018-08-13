@@ -64,8 +64,10 @@ public abstract class AnimationImageThemeView extends ImageThemeView {
     public static AnimationImageThemeView fromAnimationImageTheme(AnimationImageTheme imageTheme,
             DrawableMapper mapper) {
         List<DisplayDrawable> imageResources = new ArrayList<>();
-        for (String id : imageTheme.getImageResourceNames()) {
-            imageResources.add(DisplayDrawable.create(null, mapper.getDrawableFromName(id)));
+        if (imageTheme.getImageResourceNames() != null) {
+            for (String id : imageTheme.getImageResourceNames()) {
+                imageResources.add(DisplayDrawable.create(null, mapper.getDrawableFromName(id)));
+            }
         }
 
         return AnimationImageThemeView.builder()

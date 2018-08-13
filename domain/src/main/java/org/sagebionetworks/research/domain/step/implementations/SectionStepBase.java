@@ -40,38 +40,48 @@ import com.google.common.collect.ImmutableList;
 
 import org.sagebionetworks.research.domain.async.AsyncActionConfiguration;
 import org.sagebionetworks.research.domain.interfaces.HashCodeHelper;
+import org.sagebionetworks.research.domain.result.implementations.ResultBase;
+import org.sagebionetworks.research.domain.result.interfaces.Result;
 import org.sagebionetworks.research.domain.step.StepType;
 import org.sagebionetworks.research.domain.step.interfaces.SectionStep;
 import org.sagebionetworks.research.domain.step.interfaces.Step;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.threeten.bp.Instant;
 
 import java.util.List;
 
 public class SectionStepBase extends StepBase implements SectionStep {
     public static final String TYPE_KEY = StepType.SECTION;
+    private static final Logger LOGGER = LoggerFactory.getLogger(SectionStepBase.class);
 
     @NonNull
     private final ImmutableList<Step> steps;
-    @NonNull
-    private final ImmutableList<AsyncActionConfiguration> asyncActions;
 
     // Default initializer for gson.
     public SectionStepBase() {
         super("");
         this.steps = ImmutableList.of();
-        this.asyncActions = ImmutableList.of();
     }
 
-    public SectionStepBase(@NonNull final String identifier, @NonNull final List<Step> steps,
-            @NonNull final List<AsyncActionConfiguration> asyncActions) {
+    public SectionStepBase(@NonNull final String identifier, @NonNull final List<Step> steps) {
         super(identifier);
         this.steps = ImmutableList.copyOf(steps);
-        this.asyncActions = ImmutableList.copyOf(asyncActions);
     }
 
     @NonNull
     @Override
-    public String getType() {
-        return TYPE_KEY;
+    public SectionStep copyWithIdentifier(String identifier) {
+        SectionStepBase result = new SectionStepBase(identifier, steps);
+        // If the user forgets to override copy with identifier, the type of the step will change when it goes through
+        // the resource transformer. This is a really confusing bug so this code is present to make it clearer why
+        // this is happening.
+        if (result.getClass() != this.getClass()) {
+            LOGGER.warn("Result of copy with identifier has different type than original input, did you"
+                    + "forget to override CopyWithIdentifier");
+        }
+
+        return result;
     }
 
     @NonNull
@@ -82,20 +92,8 @@ public class SectionStepBase extends StepBase implements SectionStep {
 
     @NonNull
     @Override
-    public SectionStepBase copyWithIdentifier(String identifier) {
-        return new SectionStepBase(identifier, steps, asyncActions);
-    }
-
-    @NonNull
-    @Override
-    public ImmutableList<AsyncActionConfiguration> getAsyncActions() {
-        return this.asyncActions;
-    }
-
-    @Override
-    protected HashCodeHelper hashCodeHelper() {
-        return super.hashCodeHelper()
-                .addFields(this.steps);
+    public String getType() {
+        return TYPE_KEY;
     }
 
     @Override
@@ -103,6 +101,12 @@ public class SectionStepBase extends StepBase implements SectionStep {
         SectionStepBase sectionStep = (SectionStepBase) o;
         return super.equalsHelper(o) &&
                 Objects.equal(this.getSteps(), sectionStep.getSteps());
+    }
+
+    @Override
+    protected HashCodeHelper hashCodeHelper() {
+        return super.hashCodeHelper()
+                .addFields(this.steps);
     }
 
     @Override

@@ -34,9 +34,13 @@ package org.sagebionetworks.research.domain.step.ui.action;
 
 import android.support.annotation.StringDef;
 
-@StringDef({ActionDeserializationType.BASE, ActionDeserializationType.REMINDER, ActionDeserializationType.SKIP})
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
+
+@Retention(RetentionPolicy.SOURCE)
+@StringDef({ActionDeserializationType.DEFAULT, ActionDeserializationType.REMINDER, ActionDeserializationType.SKIP})
 public @interface ActionDeserializationType {
-    String BASE = "Base";
+    String DEFAULT = "default";
     String REMINDER = "reminder";
-    String SKIP = "skip";
+    String SKIP = "navigation";
 }

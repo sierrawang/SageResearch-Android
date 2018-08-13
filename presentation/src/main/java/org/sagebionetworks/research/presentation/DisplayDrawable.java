@@ -38,13 +38,15 @@ import android.support.annotation.Nullable;
 
 import com.google.auto.value.AutoValue;
 
+import java.io.Serializable;
+
 /**
  * A DisplayDrawable has two Drawable resources, a default and an override. When deciding which to display the
  * override takes presedence over the default. This allows for default behavior while still allowing this to get
  * overriden.
  */
 @AutoValue
-public abstract class DisplayDrawable implements Parcelable {
+public abstract class DisplayDrawable implements Serializable {
     @AutoValue.Builder
     public abstract static class Builder {
         public abstract DisplayDrawable build();

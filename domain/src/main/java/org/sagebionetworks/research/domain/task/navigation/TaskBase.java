@@ -36,15 +36,20 @@ import android.support.annotation.NonNull;
 
 import com.google.auto.value.AutoValue;
 import com.google.common.collect.ImmutableList;
+import com.google.common.collect.ImmutableMap;
+import com.google.common.collect.ImmutableSet;
 import com.google.gson.Gson;
 import com.google.gson.TypeAdapter;
 
 import org.sagebionetworks.research.domain.async.AsyncActionConfiguration;
 import org.sagebionetworks.research.domain.step.interfaces.Step;
+import org.sagebionetworks.research.domain.step.ui.action.Action;
 import org.sagebionetworks.research.domain.task.Task;
 
 import java.util.Collections;
 import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
 @AutoValue
 public abstract class TaskBase implements Task {
@@ -53,7 +58,11 @@ public abstract class TaskBase implements Task {
     public abstract static class Builder {
         public abstract TaskBase build();
 
+        public abstract Builder setActions(@NonNull Map<String, Action> actions);
+
         public abstract Builder setAsyncActions(@NonNull List<AsyncActionConfiguration> asyncActions);
+
+        public abstract Builder setHiddenActions(@NonNull Set<String> hiddenActions);
 
         public abstract Builder setIdentifier(@NonNull String identifier);
 
@@ -64,24 +73,23 @@ public abstract class TaskBase implements Task {
 
     public static Builder builder() {
         return new AutoValue_TaskBase.Builder()
-                .setAsyncActions(Collections.<AsyncActionConfiguration>emptyList());
+                .setAsyncActions(Collections.emptyList());
     }
 
     public static TypeAdapter<TaskBase> typeAdapter(Gson gson) {
         return new AutoValue_TaskBase.GsonTypeAdapter(gson)
-                .setDefaultSteps(ImmutableList.<Step>of())
-                .setDefaultProgressMarkers(ImmutableList.<String>of())
-                .setDefaultAsyncActions(ImmutableList.<AsyncActionConfiguration>of());
+                .setDefaultSteps(ImmutableList.of())
+                .setDefaultProgressMarkers(ImmutableList.of())
+                .setDefaultAsyncActions(ImmutableList.of());
     }
 
     @NonNull
     @Override
     public Task copyWithSteps(final List<Step> steps) {
-        return this.builder()
-                .setIdentifier(this.getIdentifier())
-                .setAsyncActions(this.getAsyncActions())
+        return this.toBuilder()
                 .setSteps(steps)
-                .setProgressMarkers(this.getProgressMarkers())
                 .build();
     }
+
+    public abstract Builder toBuilder();
 }

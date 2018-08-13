@@ -38,12 +38,15 @@ import android.support.annotation.Nullable;
 
 import com.google.common.collect.ImmutableMap;
 
+import org.sagebionetworks.research.domain.result.implementations.ResultBase;
+import org.sagebionetworks.research.domain.result.interfaces.Result;
 import org.sagebionetworks.research.domain.result.interfaces.TaskResult;
+import org.sagebionetworks.research.domain.step.StepType;
 import org.sagebionetworks.research.domain.step.interfaces.Step;
 import org.sagebionetworks.research.domain.step.interfaces.ThemedUIStep;
-import org.sagebionetworks.research.domain.step.ui.action.interfaces.Action;
-import org.sagebionetworks.research.domain.step.ui.action.interfaces.ReminderAction;
-import org.sagebionetworks.research.domain.step.ui.action.interfaces.SkipToStepAction;
+import org.sagebionetworks.research.domain.step.ui.action.Action;
+import org.sagebionetworks.research.domain.step.ui.action.ReminderAction;
+import org.sagebionetworks.research.domain.step.ui.action.SkipToStepAction;
 import org.sagebionetworks.research.presentation.ActionType;
 import org.sagebionetworks.research.presentation.DisplayString;
 import org.sagebionetworks.research.presentation.mapper.DrawableMapper;
@@ -54,23 +57,14 @@ import org.sagebionetworks.research.presentation.model.action.ActionViewBase;
 import org.sagebionetworks.research.presentation.model.action.ReminderActionViewBase;
 import org.sagebionetworks.research.presentation.model.action.SkipToStepActionViewBase;
 import org.sagebionetworks.research.presentation.model.interfaces.UIStepView;
+import org.threeten.bp.Instant;
 
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Map.Entry;
 
 public class UIStepViewBase implements UIStepView {
-    public static final Creator<UIStepViewBase> CREATOR = new Creator<UIStepViewBase>() {
-        @Override
-        public UIStepViewBase createFromParcel(Parcel source) {
-            return new UIStepViewBase(source);
-        }
-
-        @Override
-        public UIStepViewBase[] newArray(int size) {
-            return new UIStepViewBase[size];
-        }
-    };
+    public static final String TYPE = StepType.UI;
 
     @NonNull
     private final ImmutableMap<String, ActionView> actions;
@@ -175,24 +169,6 @@ public class UIStepViewBase implements UIStepView {
         this.imageTheme = in.readParcelable(ImageThemeView.class.getClassLoader());
     }
 
-    @Override
-    public int describeContents() {
-        return 0;
-    }
-
-    @Override
-    public void writeToParcel(Parcel dest, int flags) {
-        dest.writeString(this.identifier);
-        dest.writeInt(this.navDirection);
-        dest.writeSerializable(this.actions);
-        dest.writeParcelable(this.title, flags);
-        dest.writeParcelable(this.text, flags);
-        dest.writeParcelable(this.detail, flags);
-        dest.writeParcelable(this.footnote, flags);
-        dest.writeParcelable(this.colorTheme, flags);
-        dest.writeParcelable(this.imageTheme, flags);
-    }
-
     @Nullable
     @Override
     public ActionView getActionFor(@ActionType final String actionType) {
@@ -248,14 +224,15 @@ public class UIStepViewBase implements UIStepView {
         return this.identifier;
     }
 
+    @NonNull
     @Override
-    public int getNavDirection() {
-        return navDirection;
+    public String getType() {
+        return TYPE;
     }
 
     @Override
-    public boolean shouldSkip(@Nullable final TaskResult taskResult) {
-        return false;
+    public int getNavDirection() {
+        return navDirection;
     }
 
     protected static Map<String, ActionView> getActionsFrom(Map<String, Action> actions) {

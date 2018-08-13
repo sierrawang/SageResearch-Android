@@ -46,9 +46,9 @@ public abstract class ResearchStackDemoApplicationComponent {
     public interface Builder {
 
         @BindsInstance
-        public Builder application(ResearchStackDemoApplication application);
+        Builder application(ResearchStackDemoApplication application);
 
-        public ResearchStackDemoApplicationComponent build();
+        ResearchStackDemoApplicationComponent build();
     }
 
     public abstract ResearchStackDemoApplication inject(ResearchStackDemoApplication app);

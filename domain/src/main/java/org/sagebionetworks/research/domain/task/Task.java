@@ -38,10 +38,11 @@ import com.google.common.collect.ImmutableList;
 
 import org.sagebionetworks.research.domain.async.AsyncActionConfiguration;
 import org.sagebionetworks.research.domain.step.interfaces.Step;
+import org.sagebionetworks.research.domain.step.ui.action.ActionHandler;
 
 import java.util.List;
 
-public interface Task {
+public interface Task extends ActionHandler {
     @NonNull
     Task copyWithSteps(List<Step> steps);
 

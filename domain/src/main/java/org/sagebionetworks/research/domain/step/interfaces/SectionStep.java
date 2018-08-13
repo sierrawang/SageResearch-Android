@@ -36,7 +36,9 @@ import android.support.annotation.NonNull;
 
 import com.google.common.collect.ImmutableList;
 
-import org.sagebionetworks.research.domain.async.AsyncActionConfiguration;
+/**
+ * Created by liujoshua on 10/4/2017.
+ */
 
 /**
  * Defines a logical subgrouping of steps. Examples would be a section in a longer survey or an active step that
@@ -44,26 +46,19 @@ import org.sagebionetworks.research.domain.async.AsyncActionConfiguration;
  */
 public interface SectionStep extends Step {
     /**
-     * @return list of the steps in the subgrouping
-     */
-    @NonNull
-    ImmutableList<Step> getSteps();
-
-    /**
      * Returns a copy of this section step, with the identifier changed to the given identifier
      *
      * @param identifier
      *         The identifier for the new step to create.
      * @return A copy of this section step, with the identifier changed to the given identifier.
      */
+    @Override
     @NonNull
-    SectionStep copyWithIdentifier(@NonNull String identifier);
+    SectionStep copyWithIdentifier(String identifier);
 
     /**
-     * Returns the list of AsyncActions for this section step.
-     *
-     * @return the list of AsyncActions for this section step.
+     * @return list of the steps in the subgrouping
      */
     @NonNull
-    ImmutableList<AsyncActionConfiguration> getAsyncActions();
+    ImmutableList<Step> getSteps();
 }

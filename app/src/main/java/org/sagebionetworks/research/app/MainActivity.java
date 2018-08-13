@@ -65,7 +65,7 @@ public class MainActivity extends AppCompatActivity {
         PerformTaskFragment performTaskFragment = (PerformTaskFragment) getSupportFragmentManager()
                 .findFragmentById(R.id.rs2_task_content_frame);
 
-        // TODO: show list of available tasks
+        // TODO: show list of available tasks @liujoshua 2018/08/06
         if (performTaskFragment == null) {
             compositeDisposable.add(
                     taskRepository.getTaskInfo("instructionStepTest")

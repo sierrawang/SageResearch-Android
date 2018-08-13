@@ -34,8 +34,12 @@ package org.sagebionetworks.research.domain.step.ui.theme;
 
 import android.support.annotation.StringDef;
 
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
+
+@Retention(RetentionPolicy.SOURCE)
 @StringDef({ImageThemeType.ANIMATION, ImageThemeType.FETCHABLE})
 public @interface ImageThemeType {
-    String ANIMATION = "animation";
+    String ANIMATION = "animated";
     String FETCHABLE = "fetchable";
 }

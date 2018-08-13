@@ -42,6 +42,7 @@ import dagger.android.AndroidInjector;
 public abstract class TaskActivityFragmentSubcomponent implements AndroidInjector<PerformTaskFragment> {
     @Subcomponent.Builder
     public abstract static class Builder extends AndroidInjector.Builder<PerformTaskFragment> {
+        @Override
         public abstract TaskActivityFragmentSubcomponent build();
     }
 

@@ -132,7 +132,7 @@ public class RecorderManager implements ServiceConnection {
                 if (startStepIdentifier.equals(nextStepIdentifier)) {
                     // The recorder should be started.
                     shouldStart.add(info);
-                } else if (stopStepIdentifier != null && stopStepIdentifier.equals(stopStepIdentifier)) {
+                } else if (stopStepIdentifier != null && stopStepIdentifier.equals(nextStepIdentifier)) {
                     // The recorder should be stopped.
                     shouldStop.add(info);
                 }

@@ -34,6 +34,8 @@ package org.sagebionetworks.research.domain.step.interfaces;
 
 import android.support.annotation.NonNull;
 
+import com.google.common.collect.ImmutableList;
+
 import org.sagebionetworks.research.domain.form.interfaces.InputField;
 
 import java.util.List;
@@ -47,5 +49,5 @@ public interface FormUIStep extends ThemedUIStep {
      * @return The list of InputFields for this form step.
      */
     @NonNull
-    List<InputField> getInputFields();
+    ImmutableList<InputField> getInputFields();
 }

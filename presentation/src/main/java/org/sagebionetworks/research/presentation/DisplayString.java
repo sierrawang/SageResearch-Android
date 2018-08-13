@@ -32,6 +32,7 @@
 
 package org.sagebionetworks.research.presentation;
 
+import android.content.Context;
 import android.content.res.Resources;
 import android.os.Parcelable;
 import android.support.annotation.Nullable;
@@ -39,13 +40,15 @@ import android.support.annotation.StringRes;
 
 import com.google.auto.value.AutoValue;
 
+import java.io.Serializable;
+
 /**
  * A DisplayString has a default string resource and an override string. When deciding which String to display the
  * override string takes precedence over the default resource. This allows for default behavior while still providing
  * the option to override this behavior.
  */
 @AutoValue
-public abstract class DisplayString implements Parcelable {
+public abstract class DisplayString implements Serializable {
     @AutoValue.Builder
     public abstract static class Builder {
         public abstract DisplayString build();

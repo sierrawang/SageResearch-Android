@@ -34,8 +34,10 @@ package org.sagebionetworks.research.mobile_ui.widget;
 
 import android.content.Context;
 import android.support.annotation.Keep;
+import android.support.v4.view.WindowInsetsCompat;
 import android.support.v7.widget.AppCompatTextView;
 import android.util.AttributeSet;
+import android.view.WindowInsets;
 
 @Keep
 public class ActionButton extends AppCompatTextView {
@@ -49,5 +51,10 @@ public class ActionButton extends AppCompatTextView {
 
     public ActionButton(final Context context, final AttributeSet attrs, final int defStyleAttr) {
         super(context, attrs, defStyleAttr);
+    }
+
+    @Override
+    public boolean performClick() {
+        return super.performClick();
     }
 }

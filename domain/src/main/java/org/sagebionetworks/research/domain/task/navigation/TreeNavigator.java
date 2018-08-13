@@ -128,13 +128,7 @@ public class TreeNavigator implements StepNavigator {
      */
     public TreeNavigator(@NotNull List<Step> steps, @Nullable List<String> progressMarkers) {
         this.root = new Node(steps);
-        if (progressMarkers == null) {
-            this.progressMarkers = null;
-        } else {
-            ImmutableList.Builder<String> builder = new ImmutableList.Builder<>();
-            builder.addAll(progressMarkers);
-            this.progressMarkers = builder.build();
-        }
+        this.progressMarkers = progressMarkers == null ? null : ImmutableList.copyOf(progressMarkers);
         this.stepsById = buildStepsByID(steps);
     }
 

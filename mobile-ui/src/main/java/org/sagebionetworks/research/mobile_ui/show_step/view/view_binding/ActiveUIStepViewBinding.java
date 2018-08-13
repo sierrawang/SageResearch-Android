@@ -32,6 +32,7 @@
 
 package org.sagebionetworks.research.mobile_ui.show_step.view.view_binding;
 
+import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.view.View;
 import android.widget.ProgressBar;
@@ -72,6 +73,7 @@ public class ActiveUIStepViewBinding<S extends ActiveUIStepView> extends UIStepV
          * The binding can optionally have a TextView which displays the unit that the countdown is occurring in.
          */
         @BindView(id.unitLabel)
+        @Nullable
         public TextView unitLabel;
     }
 
@@ -85,13 +87,24 @@ public class ActiveUIStepViewBinding<S extends ActiveUIStepView> extends UIStepV
         this.activeUIStepViewHolderUnbinder = ButterKnife.bind(this.activeUIStepViewHolder, view);
     }
 
-    // TODO rkolmos 06/10/2018 potentially override update();
-
     @Override
     public void unbind() {
         super.unbind();
         this.activeUIStepViewHolderUnbinder.unbind();
     }
 
-    // TODO rkolmos 05/25/2018 override update to do the correct thing once the corresponding subclass of StepView is created
+    @Nullable
+    public ProgressBar getCountdownDial() {
+        return this.activeUIStepViewHolder.countdownDial;
+    }
+
+    @Nullable
+    public TextView getCountLabel() {
+        return this.activeUIStepViewHolder.countdownLabel;
+    }
+
+    @Nullable
+    public TextView getUnitLabel() {
+        return this.activeUIStepViewHolder.unitLabel;
+    }
 }

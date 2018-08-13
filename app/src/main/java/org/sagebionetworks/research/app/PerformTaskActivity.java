@@ -32,8 +32,6 @@
 
 package org.sagebionetworks.research.app;
 
-import static com.google.common.base.Preconditions.checkNotNull;
-
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
@@ -48,6 +46,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.util.UUID;
+
+import static com.google.common.base.Preconditions.checkNotNull;
 
 public class PerformTaskActivity extends AppCompatActivity {
     private static final Logger LOGGER = LoggerFactory.getLogger(PerformTaskActivity.class);
@@ -102,7 +102,7 @@ public class PerformTaskActivity extends AppCompatActivity {
                 .findFragmentById(R.id.rs2_task_content_frame);
 
         if (performTaskFragment == null) {
-            //TODO: use factory to get type of TaskFragment, e.g. PerformActiveTaskFragment for an ActiveUITaskView
+            // TODO: use factory to get type of TaskFragment, e.g. PerformActiveTaskFragment for an ActiveUITaskView
             performTaskFragment = PerformTaskFragment.newInstance(taskView, taskRunUuid);
 
             getSupportFragmentManager()

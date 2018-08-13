@@ -30,4 +30,4 @@
   ~ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
   -->
 
-<manifest package="org.sagebionetworks.research.domain.presentation" />
+<manifest package="org.sagebionetworks.research.presentation" />

@@ -120,6 +120,7 @@ import java.util.Set;
  *       .registerSubtype(Diamond.class);
  * }</pre>
  */
+@SuppressWarnings({})
 public final class RuntimeTypeAdapterFactory<T> implements TypeAdapterFactory {
     private final Type baseType;
 
@@ -154,6 +155,7 @@ public final class RuntimeTypeAdapterFactory<T> implements TypeAdapterFactory {
         this.typeFieldName = typeFieldName;
     }
 
+    @Override
     public <R> TypeAdapter<R> create(Gson gson, com.google.gson.reflect.TypeToken<R> type) {
         if (type.getRawType() != baseType) {
             return null;
@@ -230,7 +232,12 @@ public final class RuntimeTypeAdapterFactory<T> implements TypeAdapterFactory {
                     throw new JsonParseException("cannot deserialize " + baseType + " subtype named "
                             + label + "; did you forget to register a subtype?");
                 }
-                return delegate.fromJsonTree(jsonElement);
+                R result = delegate.fromJsonTree(jsonElement);
+                if (result != null) {
+                    return result;
+                }
+
+                return (R)new Object();
             }
         }.nullSafe();
     }
