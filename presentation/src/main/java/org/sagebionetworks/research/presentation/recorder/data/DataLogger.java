@@ -82,6 +82,11 @@ public class DataLogger implements Subscriber<String>, SingleOnSubscribe<FileRes
             @Nullable String delimnator) throws IOException {
         this.identifier = identifier;
         this.outputDirectory = outputDirectory;
+        if (!this.outputDirectory.exists()) {
+            this.outputDirectory.getParentFile().mkdirs();
+            this.outputDirectory.createNewFile();
+        }
+
         this.outputStream = new PrintStream(this.outputDirectory);
         this.observers = new HashSet<>();
         this.isFirstJsonObject = true;

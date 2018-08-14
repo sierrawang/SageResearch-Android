@@ -337,7 +337,7 @@ public class PerformTaskViewModel extends AndroidViewModel {
     void handleTaskLoad(Task task) {
         LOGGER.debug("Loaded task: {}", task);
         this.task = task;
-        this.recorderManager = new RecorderManager(this.task, this.getApplication(), this.recorderFactory, this.recorderConfigPresentationFactory);
+        this.recorderManager = new RecorderManager(this.task, this.taskRunUuid, this.getApplication(), this.recorderFactory, this.recorderConfigPresentationFactory);
         stepNavigator = stepNavigatorFactory.create(task, task.getProgressMarkers());
         this.stepViewMapping = new HashMap<>();
         for (Step step : this.stepNavigator.getSteps()) {

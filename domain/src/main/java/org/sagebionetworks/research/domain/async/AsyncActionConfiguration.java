@@ -72,4 +72,12 @@ public interface AsyncActionConfiguration {
      */
     @NonNull
     AsyncActionConfiguration copyWithStartStepIdentifier(@Nullable String startStepIdentifier);
+
+    /**
+     * Returns an AsyncActionConfiguration identical to this one with the given identifier
+     * @param identifier The new identifier to copy with.
+     * @return an AsyncActionConfiguration identical to this one with the given start step identifier
+     */
+    @NonNull
+    AsyncActionConfiguration copyWithIdentifier(@NonNull String identifier);
 }

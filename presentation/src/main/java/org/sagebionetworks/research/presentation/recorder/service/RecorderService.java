@@ -114,8 +114,6 @@ public class RecorderService extends Service {
      *         The identifier of the task the recorder belongs to.
      * @param recorderIdentifier
      *         The identifier of the recorder to start.
-     * @throws IllegalArgumentException
-     *         if there is no recorder with the given identifier
      */
     public void startRecorder(@NonNull UUID taskIdentifier, @NonNull String recorderIdentifier) {
         if (LOGGER.isDebugEnabled()) {
@@ -124,7 +122,7 @@ public class RecorderService extends Service {
 
         Recorder recorder = this.getRecorder(taskIdentifier, recorderIdentifier);
         if (recorder == null) {
-            throw new IllegalArgumentException("Cannot start recorder that hasn't been created");
+            LOGGER.warn("Cannot start recorder that hasn't been created");
         }
 
         recorder.start();
@@ -137,8 +135,6 @@ public class RecorderService extends Service {
      *         The identifier of the task the recorder belongs to.
      * @param recorderIdentifier
      *         The identifier of the recorder to stop.
-     * @throws IllegalArgumentException
-     *         if there is no recorder with the given identifier
      */
     public void stopRecorder(@NonNull UUID taskIdentifier, @NonNull String recorderIdentifier) {
         if (LOGGER.isDebugEnabled()) {
@@ -147,7 +143,7 @@ public class RecorderService extends Service {
 
         Recorder recorder = this.getRecorder(taskIdentifier, recorderIdentifier);
         if (recorder == null) {
-            throw new IllegalArgumentException("Cannot stop recorder that isn't started.");
+            LOGGER.warn("Cannot stop recorder that isn't started.");
         }
 
         recorder.stop();
@@ -160,8 +156,6 @@ public class RecorderService extends Service {
      *         The identifier of the task the recorder belongs to.
      * @param recorderIdentifier
      *         The identifier of the recorder to cancel.
-     * @throws IllegalArgumentException
-     *         if there is no recorder with the given identifier
      */
     public void cancelRecorder(@NonNull UUID taskIdentifier, @NonNull String recorderIdentifier) {
         if (LOGGER.isDebugEnabled()) {
@@ -170,7 +164,7 @@ public class RecorderService extends Service {
 
         Recorder recorder = this.getRecorder(taskIdentifier, recorderIdentifier);
         if (recorder == null) {
-            throw new IllegalArgumentException("Cannot cancel recorder that isn't started.");
+            LOGGER.warn("Cannot cancel recorder that isn't started.");
         }
 
         recorder.cancel();
@@ -226,7 +220,8 @@ public class RecorderService extends Service {
      * @return an immutable map containing the active recorders keyed by their identifiers.
      */
     public ImmutableMap<String, Recorder> getActiveRecorders(@NonNull UUID taskIdentifier) {
-        return ImmutableMap.copyOf(this.recorderMapping.get(taskIdentifier));
+        Map<String, Recorder> map = this.recorderMapping.get(taskIdentifier);
+        return map != null ? ImmutableMap.copyOf(map) : null;
     }
 
     public Recorder createRecorder(@NonNull UUID taskIdentifier, @NonNull RecorderConfigPresentation recorderConfiguration)

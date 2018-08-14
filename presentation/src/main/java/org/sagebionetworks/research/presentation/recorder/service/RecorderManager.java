@@ -38,6 +38,7 @@ import android.content.Intent;
 import android.content.ServiceConnection;
 import android.os.IBinder;
 import android.support.annotation.Nullable;
+import android.util.Log;
 
 import com.google.common.collect.ImmutableMap;
 
@@ -51,6 +52,8 @@ import org.sagebionetworks.research.presentation.recorder.service.RecorderServic
 import org.sagebionetworks.research.presentation.inject.RecorderConfigPresentationModule.RecorderConfigPresentationFactory;
 import org.sagebionetworks.research.presentation.model.interfaces.StepView.NavDirection;
 import org.sagebionetworks.research.presentation.recorder.RecorderConfigPresentation;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
 import java.util.HashSet;
@@ -63,6 +66,8 @@ import java.util.UUID;
  * to start, stop, and cancel those recorders at the appropriate times.
  */
 public class RecorderManager implements ServiceConnection {
+    private static final Logger LOGGER = LoggerFactory.getLogger(RecorderManager.class);
+
     /**
      * Invariant:
      * bound == true exactly when binder != null && service != null.
@@ -79,9 +84,10 @@ public class RecorderManager implements ServiceConnection {
     private RecorderConfigPresentationFactory recorderConfigPresentationFactory;
     private Set<RecorderConfigPresentation> recorderConfigs;
 
-    public RecorderManager(Task task, Context context, RecorderFactory recorderFactory,
+    public RecorderManager(Task task, UUID taskRunUUID, Context context, RecorderFactory recorderFactory,
             RecorderConfigPresentationFactory recorderConfigPresentationFactory) {
         this.context = context;
+        this.taskRunUUID = taskRunUUID;
         this.recorderFactory = recorderFactory;
         this.recorderConfigPresentationFactory = recorderConfigPresentationFactory;
         this.task = task;
@@ -110,11 +116,13 @@ public class RecorderManager implements ServiceConnection {
         Map<String, Recorder> activeRecorders = this.getActiveRecorders();
         try {
             for (RecorderConfigPresentation config : this.recorderConfigs) {
-                if (!activeRecorders.containsKey(config.getIdentifier())) {
+                if (activeRecorders == null || !activeRecorders.containsKey(config.getIdentifier())) {
                     this.service.createRecorder(this.taskRunUUID, config);
                 }
             }
         } catch (IOException e) {
+            e.printStackTrace();
+            LOGGER.warn("Encountered IOException while initializing recorders");
             // TODO rkolmos 8/13/2018 handle the IOException.
         }
     }
@@ -135,6 +143,10 @@ public class RecorderManager implements ServiceConnection {
      * @param navDirection The direction in which the transition from previousStep to nextStep occurred in.
      */
     public void onStepTransition(@Nullable Step previousStep, @Nullable Step nextStep, @NavDirection int navDirection) {
+        if (LOGGER.isDebugEnabled()) {
+            LOGGER.debug("onStepTransition called from: " + previousStep + ", to: " + nextStep + " in direction: " + navDirection);
+        }
+
         Set<RecorderConfigPresentation> shouldStart = new HashSet<>();
         Set<RecorderConfigPresentation> shouldStop = new HashSet<>();
         Set<RecorderConfigPresentation> shouldCancel = new HashSet<>();
@@ -178,6 +190,7 @@ public class RecorderManager implements ServiceConnection {
                 this.service.cancelRecorder(this.taskRunUUID, config.getIdentifier());
             }
         } else {
+            LOGGER.warn("OnStepTransition was called but RecorderService was unbound.");
             // TODO: rkolmos 06/20/2018 handle the service being unbound
         }
     }

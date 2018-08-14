@@ -54,7 +54,7 @@ import io.reactivex.schedulers.Schedulers;
 public abstract class ReactiveRecorder<E> extends RecorderBase {
     @Nullable
     protected final DataLogger dataLogger;
-    @NonNull
+    @Nullable
     protected Flowable<E> eventFlowable;
 
     public ReactiveRecorder(@NonNull final String identifier,
@@ -63,13 +63,15 @@ public abstract class ReactiveRecorder<E> extends RecorderBase {
             @Nullable final DataLogger dataLogger) {
         super(identifier, startStepIdentifier, stopStepIdentifier);
         this.dataLogger = dataLogger;
-        this.eventFlowable = this.intializeEventFlowable();
-
     }
 
     @Override
     public void start() {
         super.start();
+        if (this.eventFlowable == null) {
+            this.eventFlowable = this.intializeEventFlowable();
+        }
+
         this.eventFlowable = this.eventFlowable.subscribeOn(Schedulers.computation());
         if (this.dataLogger != null) {
             this.eventFlowable.map(this::getDataString)

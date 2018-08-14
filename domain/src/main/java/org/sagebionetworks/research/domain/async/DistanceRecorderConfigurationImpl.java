@@ -66,6 +66,12 @@ public abstract class DistanceRecorderConfigurationImpl implements DistanceRecor
 
     @Override
     @NonNull
+    public DistanceRecorderConfigurationImpl copyWithIdentifier(@NonNull String identifier) {
+        return this.toBuilder().setIdentifier(identifier).build();
+    }
+
+    @Override
+    @NonNull
     public DistanceRecorderConfigurationImpl copyWithStartStepIdentifier(@Nullable String startStepIdentifier) {
         return this.toBuilder().setStartStepIdentifier(startStepIdentifier).build();
     }

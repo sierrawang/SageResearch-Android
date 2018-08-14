@@ -32,14 +32,19 @@
 
 package org.sagebionetworks.research.presentation.recorder;
 
+import android.content.Context;
 import android.support.annotation.NonNull;
 
 import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
 import java.util.UUID;
 
 public abstract class OutputDirectoryUtil {
-    public static File getRecorderOutputDirectoryFile(@NonNull UUID taskUUID, @NonNull String recorderID) {
-        String outputDirectoryPath = taskUUID.toString() + "/" + recorderID;
-        return new File(outputDirectoryPath);
+    public static File getRecorderOutputDirectoryFile(@NonNull UUID taskUUID, @NonNull String recorderID, Context context)
+            throws IOException{
+        File path = context.getFilesDir();
+        String outputDirectoryPath = taskUUID.toString() + "/" + recorderID + ".json";
+        return new File(path, outputDirectoryPath);
     }
 }

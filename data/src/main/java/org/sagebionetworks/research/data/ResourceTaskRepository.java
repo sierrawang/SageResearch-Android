@@ -143,7 +143,8 @@ public class ResourceTaskRepository implements TaskRepository {
             }
 
             task = task.copyWithSteps(steps);
-            return task.copyWithAsyncActions(getAsyncActions(task));
+            task = task.copyWithAsyncActions(getAsyncActions(task));
+            return task;
         });
     }
 
@@ -195,51 +196,60 @@ public class ResourceTaskRepository implements TaskRepository {
     }
 
     private static Set<AsyncActionConfiguration> getAsyncActions(Task task) {
-        return ResourceTaskRepository.getAsyncActionsHelper(task.getSteps(), null, new HashSet<>());
+        return ResourceTaskRepository.getAsyncActionsHelper(task.getSteps(), new HashSet<>(task.getAsyncActions()));
     }
 
-    private static Set<AsyncActionConfiguration> getAsyncActionsHelper(List<Step> steps, SectionStep parent, Set<AsyncActionConfiguration> accumlator) {
-        Step startStep = parent;
-        while (startStep instanceof SectionStep) {
-            // start step is the first step in the parent section.
-            startStep = ((SectionStep) startStep).getSteps().get(0);
-        }
-
-        String parentStartStepIdentifier = startStep != null ? startStep.getIdentifier() : null;
-        Step stopStep = parent;
-        while (stopStep instanceof SectionStep) {
-            // stop step is the last step in the parent section.
-            List<Step> substeps = ((SectionStep) stopStep).getSteps();
-            stopStep = substeps.get(substeps.size() - 1);
-        }
-
-        String parentStopStepIdentifier = stopStep != null ? stopStep.getIdentifier() : null;
+    private static Set<AsyncActionConfiguration> getAsyncActionsHelper(List<Step> steps, Set<AsyncActionConfiguration> accumlator) {
         for (Step step : steps) {
+            // A step's defaultStartIdentifier is it's identifier or in the case of a SectionStep the identifier of it's leftmost child.
+            String defaultStartIdentifier = step.getIdentifier();
+            // A step's defaultStopIdentifier is null, or in the case of a SectionStep the identifier of it's rightmost child.
+            String defaultStopIdentifier = null;
+            if (step instanceof SectionStep) {
+                defaultStartIdentifier = getLeftMostChild(step).getIdentifier();
+                defaultStopIdentifier = getRightMostChild(step).getIdentifier();
+                SectionStep sectionStep = (SectionStep)step;
+                // Recurse on the section step's substeps.
+                ResourceTaskRepository.getAsyncActionsHelper(sectionStep.getSteps(), accumlator);
+            }
+
             for (AsyncActionConfiguration asyncAction : step.getAsyncActions()) {
                 AsyncActionConfiguration copy = asyncAction;
                 if (asyncAction.getStartStepIdentifier() == null) {
-                    copy = copy.copyWithStartStepIdentifier(parentStartStepIdentifier);
+                    copy = copy.copyWithStartStepIdentifier(defaultStartIdentifier);
                 }
 
                 if (copy instanceof RecorderConfiguration) {
                     RecorderConfiguration recorderConfiguration = (RecorderConfiguration)copy;
                     if (recorderConfiguration.getStopStepIdentifier() == null) {
-                        recorderConfiguration = recorderConfiguration.copyWithStopStepIdentifier(parentStopStepIdentifier);
+                        recorderConfiguration = recorderConfiguration.copyWithStopStepIdentifier(defaultStopIdentifier);
                         copy = recorderConfiguration;
                     }
                 }
 
+                copy = copy.copyWithIdentifier(step.getIdentifier() + "_" + copy.getIdentifier());
                 accumlator.add(copy);
-            }
-
-            if (step instanceof SectionStep) {
-                SectionStep sectionStep = (SectionStep)step;
-                // Recurse on the section step with the parent set to the section
-                ResourceTaskRepository.getAsyncActionsHelper(sectionStep.getSteps(), sectionStep, accumlator);
             }
         }
 
         return accumlator;
+    }
+
+    private static Step getLeftMostChild(Step step) {
+        while (step instanceof SectionStep) {
+            step = ((SectionStep)step).getSteps().get(0);
+        }
+
+        return step;
+    }
+
+    private static Step getRightMostChild(Step step) {
+        while (step instanceof SectionStep) {
+            List<Step> steps = ((SectionStep)step).getSteps();
+            step = steps.get(steps.size() - 1);
+        }
+
+        return step;
     }
 
     /**

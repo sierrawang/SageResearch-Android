@@ -73,11 +73,17 @@ public abstract class TaskBase implements Task {
 
     public static Builder builder() {
         return new AutoValue_TaskBase.Builder()
+                .setActions(ImmutableMap.of())
+                .setSteps(ImmutableList.of())
+                .setProgressMarkers(ImmutableList.of())
+                .setHiddenActions(ImmutableSet.of())
                 .setAsyncActions(Collections.emptySet());
     }
 
     public static TypeAdapter<TaskBase> typeAdapter(Gson gson) {
         return new AutoValue_TaskBase.GsonTypeAdapter(gson)
+                .setDefaultActions(ImmutableMap.of())
+                .setDefaultHiddenActions(ImmutableSet.of())
                 .setDefaultSteps(ImmutableList.of())
                 .setDefaultProgressMarkers(ImmutableList.of())
                 .setDefaultAsyncActions(ImmutableSet.of());

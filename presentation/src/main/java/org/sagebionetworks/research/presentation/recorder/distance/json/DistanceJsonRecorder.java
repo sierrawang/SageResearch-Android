@@ -63,7 +63,7 @@ public class DistanceJsonRecorder extends DistanceRecorder {
             final Gson gson, final UUID taskUUID ) throws IOException {
         super(config, context,
                 new DataLogger(config.getIdentifier(), OutputDirectoryUtil
-                        .getRecorderOutputDirectoryFile(taskUUID, config.getIdentifier()),
+                        .getRecorderOutputDirectoryFile(taskUUID, config.getIdentifier(), context),
                 JSON_FILE_START, JSON_FILE_END, JSON_OBJECT_DELIMINATOR));
         this.usesRelativeCoordinates = config.getUsesRelativeCoordinates();
         this.gson = gson;

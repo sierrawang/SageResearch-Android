@@ -72,6 +72,12 @@ public abstract class DeviceMotionRecorderConfigurationImpl implements DeviceMot
 
     @Override
     @NonNull
+    public DeviceMotionRecorderConfigurationImpl copyWithIdentifier(@NonNull String identifier) {
+        return this.toBuilder().setIdentifier(identifier).build();
+    }
+
+    @Override
+    @NonNull
     public DeviceMotionRecorderConfigurationImpl copyWithStartStepIdentifier(@Nullable String startStepIdentifier) {
         return this.toBuilder().setStartStepIdentifier(startStepIdentifier).build();
     }

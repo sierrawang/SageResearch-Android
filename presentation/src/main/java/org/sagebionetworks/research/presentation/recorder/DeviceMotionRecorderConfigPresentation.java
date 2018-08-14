@@ -32,6 +32,8 @@
 
 package org.sagebionetworks.research.presentation.recorder;
 
+import android.support.annotation.NonNull;
+
 import org.sagebionetworks.research.presentation.perform_task.active.async.AsyncActionService.AsyncAction;
 
 import java.util.Set;
@@ -48,5 +50,6 @@ public interface DeviceMotionRecorderConfigPresentation extends RecorderConfigPr
      * Returns the set of recorder types that the motion recorder should measure.
      * @return the set of recorder types that the motion recorder should measure.
      */
+    @NonNull
     Set<Integer> getRecorderTypes();
 }
