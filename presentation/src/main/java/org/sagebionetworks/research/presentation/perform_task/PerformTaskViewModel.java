@@ -69,6 +69,7 @@ import org.sagebionetworks.research.presentation.model.TaskView;
 import org.sagebionetworks.research.presentation.model.action.ActionView;
 import org.sagebionetworks.research.presentation.model.interfaces.StepView;
 import org.sagebionetworks.research.presentation.model.interfaces.StepView.NavDirection;
+import org.sagebionetworks.research.presentation.recorder.Recorder;
 import org.sagebionetworks.research.presentation.recorder.service.RecorderManager;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -79,7 +80,9 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
 
+import io.reactivex.BackpressureStrategy;
 import io.reactivex.Completable;
+import io.reactivex.Flowable;
 import io.reactivex.disposables.CompositeDisposable;
 
 @MainThread
@@ -337,7 +340,10 @@ public class PerformTaskViewModel extends AndroidViewModel {
     void handleTaskLoad(Task task) {
         LOGGER.debug("Loaded task: {}", task);
         this.task = task;
-        this.recorderManager = new RecorderManager(this.task, this.taskRunUuid, this.getApplication(), this.recorderFactory, this.recorderConfigPresentationFactory);
+        this.recorderManager = new RecorderManager(this.task, this.taskRunUuid, this.getApplication(), this.recorderFactory,
+                this.recorderConfigPresentationFactory);
+        // Subscribe to the recorder results and put them in the async results.
+        this.compositeDisposable.add(Flowable.create(this.recorderManager, BackpressureStrategy.BUFFER).subscribe(this::addAsyncResult));
         stepNavigator = stepNavigatorFactory.create(task, task.getProgressMarkers());
         this.stepViewMapping = new HashMap<>();
         for (Step step : this.stepNavigator.getSteps()) {

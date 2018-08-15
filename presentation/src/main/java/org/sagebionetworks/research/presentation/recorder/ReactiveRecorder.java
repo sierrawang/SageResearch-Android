@@ -37,6 +37,8 @@ import android.support.annotation.Nullable;
 
 import org.sagebionetworks.research.domain.result.interfaces.FileResult;
 import org.sagebionetworks.research.presentation.recorder.data.DataLogger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import io.reactivex.Flowable;
 import io.reactivex.Single;
@@ -51,7 +53,9 @@ import io.reactivex.schedulers.Schedulers;
  *
  * @param <E> The type of event from the stream this recorder records based on.
  */
-public abstract class ReactiveRecorder<E> extends RecorderBase {
+public abstract class ReactiveRecorder<E> extends RecorderBase implements ResultRecorder<FileResult> {
+    private final Logger LOGGER = LoggerFactory.getLogger(ReactiveRecorder.class);
+
     @Nullable
     protected final DataLogger dataLogger;
     @Nullable
@@ -67,9 +71,13 @@ public abstract class ReactiveRecorder<E> extends RecorderBase {
 
     @Override
     public void start() {
+        if (LOGGER.isDebugEnabled()) {
+            LOGGER.debug("Starting recorder: " + this);
+        }
+
         super.start();
         if (this.eventFlowable == null) {
-            this.eventFlowable = this.intializeEventFlowable();
+            this.eventFlowable = this.initializeEventFlowable();
         }
 
         this.eventFlowable = this.eventFlowable.subscribeOn(Schedulers.computation());
@@ -78,6 +86,16 @@ public abstract class ReactiveRecorder<E> extends RecorderBase {
                     .observeOn(Schedulers.io())
                     .subscribe(this.dataLogger);
         }
+    }
+
+    @Override
+    public void stop() {
+        if (LOGGER.isDebugEnabled()) {
+            LOGGER.debug("Stopping recorder: " + this);
+        }
+
+        super.stop();
+        this.dataLogger.onComplete();
     }
 
     @NonNull
@@ -98,8 +116,9 @@ public abstract class ReactiveRecorder<E> extends RecorderBase {
      * there is no data recorder for this recorder this method will return null.
      * @return a single that when complete will contain the FileResult with the full data this recorder recorded.
      */
+    @Override
     @Nullable
-    public Single<FileResult> getFileResult() {
+    public Single<FileResult> getResult() {
         return this.dataLogger != null ? Single.create(this.dataLogger) : null;
     }
 
@@ -108,7 +127,7 @@ public abstract class ReactiveRecorder<E> extends RecorderBase {
      * @return the Flowable that the events will come from for this recorder.
      */
     @NonNull
-    protected abstract Flowable<E> intializeEventFlowable();
+    protected abstract Flowable<E> initializeEventFlowable();
 
     /**
      * Converts an event into a String that can be recorded by the DataLogger into a file.

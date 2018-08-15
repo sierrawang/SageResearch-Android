@@ -79,14 +79,14 @@ public abstract class DeviceMotionRecorder extends ReactiveRecorder<ReactiveSens
 
     @Override
     @NonNull
-    public Flowable<ReactiveSensorEvent> intializeEventFlowable() {
+    public Flowable<ReactiveSensorEvent> initializeEventFlowable() {
         return Flowable.create(this.deviceMotionSensors, BackpressureStrategy.BUFFER);
     }
 
     @Override
     public void stop() {
         super.stop();
-        this.deviceMotionSensors.complete();
+        this.deviceMotionSensors.onComplete();
     }
 
     /**

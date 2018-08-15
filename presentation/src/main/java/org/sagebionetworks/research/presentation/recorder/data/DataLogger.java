@@ -37,6 +37,8 @@ import org.reactivestreams.Subscriber;
 import org.reactivestreams.Subscription;
 import org.sagebionetworks.research.domain.result.implementations.FileResultBase;
 import org.sagebionetworks.research.domain.result.interfaces.FileResult;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.threeten.bp.Instant;
 
 import java.io.File;
@@ -57,6 +59,8 @@ import io.reactivex.SingleOnSubscribe;
  * that onComplete was called.
  */
 public class DataLogger implements Subscriber<String>, SingleOnSubscribe<FileResult> {
+    private static final Logger LOGGER = LoggerFactory.getLogger(DataLogger.class);
+
     protected String identifier;
     protected final Set<SingleEmitter<FileResult>> observers;
     protected final File outputDirectory;
@@ -75,11 +79,11 @@ public class DataLogger implements Subscriber<String>, SingleOnSubscribe<FileRes
      * @param outputDirectory The file to output data to.
      * @param start The string to start the output with, null will result in no prefix being added to the data.
      * @param end The string to end the output with, null will result in no suffix being added to the data.
-     * @param delimnator The string to separate each piece of data passed to OnNext with.
+     * @param deliminator The string to separate each piece of data passed to OnNext with.
      * @throws IOException If the given outputDirectory cannot be opened or written to.
      */
     public DataLogger(String identifier, File outputDirectory, @Nullable String start, @Nullable String end,
-            @Nullable String delimnator) throws IOException {
+            @Nullable String deliminator) throws IOException {
         this.identifier = identifier;
         this.outputDirectory = outputDirectory;
         if (!this.outputDirectory.exists()) {
@@ -92,28 +96,28 @@ public class DataLogger implements Subscriber<String>, SingleOnSubscribe<FileRes
         this.isFirstJsonObject = true;
         this.start = start == null ? "" : start;
         this.end = end == null ? "" : end;
-        this.deliminator = delimnator == null ? "" : end;
+        this.deliminator = deliminator == null ? "" : deliminator;
     }
 
     @Override
     public void onSubscribe(final Subscription s) {
         this.startTime = Instant.now();
-        // necessary to subscribe to as much data as can be provided.
         s.request(Long.MAX_VALUE);
     }
 
     @Override
     public void onNext(String next) {
-        // append optional comma for array separation
-        String outputString = (isFirstJsonObject ? this.start : this.deliminator)
-                + next;
-        this.outputStream.println(outputString);
+        // append either the start or deliminator for separation
+        String outputString = (isFirstJsonObject ? this.start : this.deliminator) + next;
+        this.outputStream.print(outputString);
         this.isFirstJsonObject = false;
     }
 
     @Override
     public void onError(final Throwable t) {
         this.outputStream.close();
+        t.printStackTrace();
+        LOGGER.warn("Error: " + t + " occurred while writing the data file for DataLogger: " + this);
         for (SingleEmitter<FileResult> observer : this.observers) {
             observer.onError(t);
         }

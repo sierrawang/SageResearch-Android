@@ -42,17 +42,25 @@ import android.support.annotation.Nullable;
 import com.google.common.collect.ImmutableMap;
 
 import org.sagebionetworks.research.domain.async.RecorderType;
+import org.sagebionetworks.research.domain.result.interfaces.FileResult;
 import org.sagebionetworks.research.presentation.inject.RecorderModule.RecorderFactory;
+import org.sagebionetworks.research.presentation.recorder.ReactiveRecorder;
 import org.sagebionetworks.research.presentation.recorder.Recorder;
 import org.sagebionetworks.research.presentation.recorder.RecorderActionType;
 import org.sagebionetworks.research.presentation.recorder.RecorderConfigPresentation;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.io.File;
+import java.io.FileInputStream;
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
+
+import io.reactivex.Single;
+import io.reactivex.disposables.Disposable;
+import io.reactivex.schedulers.Schedulers;
 
 /**
  * The RecorderService handles the recorders that are needed for the task. Recorders can do things such as record
@@ -109,7 +117,6 @@ public class RecorderService extends Service {
     /**
      * Starts the recorder with the given identifier, or throws an IllegalArgumentException if the recorder with this
      * identifier doesn't exist.
-     *
      * @param taskIdentifier
      *         The identifier of the task the recorder belongs to.
      * @param recorderIdentifier
@@ -147,6 +154,8 @@ public class RecorderService extends Service {
         }
 
         recorder.stop();
+        // Remove the recorder for the mapping of active recorders
+        this.recorderMapping.get(taskIdentifier).remove(recorderIdentifier);
     }
 
     /**
@@ -215,7 +224,7 @@ public class RecorderService extends Service {
     }
 
     /**
-     * Returns an immutable map containing the active recorders keyed by their identifiers.
+     * Returns an immutable map containing the active Recorders keyed by their identifiers.
      *
      * @return an immutable map containing the active recorders keyed by their identifiers.
      */

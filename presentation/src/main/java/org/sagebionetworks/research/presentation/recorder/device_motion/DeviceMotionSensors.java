@@ -38,6 +38,9 @@ import android.support.annotation.NonNull;
 import com.github.pwittchen.reactivesensors.library.ReactiveSensorEvent;
 import com.github.pwittchen.reactivesensors.library.ReactiveSensors;
 
+import org.reactivestreams.Subscriber;
+import org.reactivestreams.Subscription;
+
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
@@ -48,11 +51,12 @@ import io.reactivex.Flowable;
 import io.reactivex.FlowableEmitter;
 import io.reactivex.FlowableOnSubscribe;
 import io.reactivex.disposables.Disposable;
+import io.reactivex.schedulers.Schedulers;
 
 /**
  * This class is a Wrapper around ReactiveSensors that allows subscribing to a set of sensors with a single call.
  */
-public class DeviceMotionSensors implements FlowableOnSubscribe<ReactiveSensorEvent> {
+public class DeviceMotionSensors implements Subscriber<ReactiveSensorEvent>, FlowableOnSubscribe<ReactiveSensorEvent> {
     protected Disposable disposable;
 
     @NonNull
@@ -73,31 +77,18 @@ public class DeviceMotionSensors implements FlowableOnSubscribe<ReactiveSensorEv
             allFlowables.add(this.reactiveSensors.observeSensor(sensorType, sensorDelay));
         }
 
-        this.disposable = Flowable.merge(allFlowables)
-                .doOnNext(event -> {
-                    for (FlowableEmitter<ReactiveSensorEvent> emitter : observers) {
-                        emitter.onNext(event);
-                    }
-                }).subscribe();
         this.sensorTypes = sensorTypes;
         this.sensorDelay = sensorDelay;
         this.observers = new HashSet<>();
+        // Subscribe to all the flowables
+        Flowable<ReactiveSensorEvent> flowable = Flowable.merge(allFlowables);
+        flowable.subscribeOn(Schedulers.computation()).subscribe(this);
     }
 
     public void cancel() {
         for (FlowableEmitter<ReactiveSensorEvent> emitter : observers) {
             emitter.onError(new Throwable("Recording cancelled"));
         }
-
-        this.disposable.dispose();
-    }
-
-    public void complete() {
-        for (FlowableEmitter<ReactiveSensorEvent> emitter : observers) {
-            emitter.onComplete();
-        }
-
-        this.disposable.dispose();
     }
 
     @NonNull
@@ -106,7 +97,33 @@ public class DeviceMotionSensors implements FlowableOnSubscribe<ReactiveSensorEv
     }
 
     @Override
-    public void subscribe(final FlowableEmitter<ReactiveSensorEvent> emitter) throws Exception {
+    public void onSubscribe(final Subscription s) {
+        s.request(Long.MAX_VALUE);
+    }
+
+    @Override
+    public void onNext(final ReactiveSensorEvent reactiveSensorEvent) {
+        for (FlowableEmitter<ReactiveSensorEvent> emitter : observers) {
+            emitter.onNext(reactiveSensorEvent);
+        }
+    }
+
+    @Override
+    public void onError(final Throwable t) {
+        for (FlowableEmitter<ReactiveSensorEvent> emitter : observers) {
+            emitter.onError(t);
+        }
+    }
+
+    @Override
+    public void onComplete() {
+        for (FlowableEmitter<ReactiveSensorEvent> emitter : observers) {
+            emitter.onComplete();
+        }
+    }
+
+    @Override
+    public void subscribe(final FlowableEmitter<ReactiveSensorEvent> emitter) {
         this.observers.add(emitter);
     }
 }

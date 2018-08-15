@@ -43,7 +43,7 @@ import java.lang.annotation.RetentionPolicy;
         MotionRecorderType.USER_ACCELERATION})
 public @interface MotionRecorderType {
     String ACCELEROMETER = "accelerometer";
-    String GYROSCOPE = "gryo";
+    String GYROSCOPE = "gyro";
     String MAGNETOMETER = "magnetometer";
     String GRAVITY = "gravity";
     String MAGNETIC_FIELD = "magneticField";

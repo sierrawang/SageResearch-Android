@@ -68,7 +68,7 @@ public abstract class DistanceRecorder extends ReactiveRecorder<Location> {
 
     @Override
     @NonNull
-    public Flowable<Location> intializeEventFlowable() {
+    public Flowable<Location> initializeEventFlowable() {
         return LocationSensor.getLocation(this.context);
     }
 }

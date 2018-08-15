@@ -118,32 +118,35 @@ public class DeviceMotionJsonAdapter {
         SensorEvent sensorEvent = event.getSensorEvent();
         DeviceMotionJsonAdapter.recordCommonElements(sensorEvent, jsonObject);
         // Record the event as the correct type of sensor event.
-        switch (event.getSensor().getType()) {
-            case Sensor.TYPE_ACCELEROMETER:
-                recordAccelerometerEvent(sensorEvent, jsonObject);
-                break;
-            case Sensor.TYPE_LINEAR_ACCELERATION:
-                recordLinearAccelerometerEvent(sensorEvent, jsonObject);
-                break;
-            case Sensor.TYPE_GRAVITY:
-                recordGravityEvent(sensorEvent, jsonObject);
-                break;
-            case Sensor.TYPE_GYROSCOPE:
-                recordGyroscopeEvent(sensorEvent, jsonObject);
-                break;
-            case Sensor.TYPE_MAGNETIC_FIELD:
-                recordMagneticFieldEvent(sensorEvent, jsonObject);
-                break;
-            case Sensor.TYPE_ROTATION_VECTOR:
-            case Sensor.TYPE_GAME_ROTATION_VECTOR:
-            case Sensor.TYPE_GEOMAGNETIC_ROTATION_VECTOR:
-                recordRotationVectorEvent(sensorEvent, jsonObject);
-                break;
-            case Sensor.TYPE_ACCELEROMETER_UNCALIBRATED:
-            case Sensor.TYPE_GYROSCOPE_UNCALIBRATED:
-            case Sensor.TYPE_MAGNETIC_FIELD_UNCALIBRATED:
-                recordUncalibratedEvent(sensorEvent, jsonObject);
-                break;
+        Sensor sensor = sensorEvent.sensor;
+        if (sensor != null) {
+            switch (sensor.getType()) {
+                case Sensor.TYPE_ACCELEROMETER:
+                    recordAccelerometerEvent(sensorEvent, jsonObject);
+                    break;
+                case Sensor.TYPE_LINEAR_ACCELERATION:
+                    recordLinearAccelerometerEvent(sensorEvent, jsonObject);
+                    break;
+                case Sensor.TYPE_GRAVITY:
+                    recordGravityEvent(sensorEvent, jsonObject);
+                    break;
+                case Sensor.TYPE_GYROSCOPE:
+                    recordGyroscopeEvent(sensorEvent, jsonObject);
+                    break;
+                case Sensor.TYPE_MAGNETIC_FIELD:
+                    recordMagneticFieldEvent(sensorEvent, jsonObject);
+                    break;
+                case Sensor.TYPE_ROTATION_VECTOR:
+                case Sensor.TYPE_GAME_ROTATION_VECTOR:
+                case Sensor.TYPE_GEOMAGNETIC_ROTATION_VECTOR:
+                    recordRotationVectorEvent(sensorEvent, jsonObject);
+                    break;
+                case Sensor.TYPE_ACCELEROMETER_UNCALIBRATED:
+                case Sensor.TYPE_GYROSCOPE_UNCALIBRATED:
+                case Sensor.TYPE_MAGNETIC_FIELD_UNCALIBRATED:
+                    recordUncalibratedEvent(sensorEvent, jsonObject);
+                    break;
+            }
         }
 
         return jsonObject;
