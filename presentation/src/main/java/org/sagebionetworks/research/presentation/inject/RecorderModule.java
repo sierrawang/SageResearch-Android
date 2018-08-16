@@ -36,9 +36,10 @@ import android.content.Context;
 
 import com.google.gson.Gson;
 
+import org.sagebionetworks.research.domain.async.DeviceMotionRecorderConfiguration;
 import org.sagebionetworks.research.domain.async.RecorderType;
 import org.sagebionetworks.research.presentation.recorder.Recorder;
-import org.sagebionetworks.research.presentation.recorder.device_motion.DeviceMotionJsonRecorder;
+import org.sagebionetworks.research.presentation.recorder.device_motion.json.DeviceMotionJsonRecorder;
 import org.sagebionetworks.research.presentation.recorder.distance.json.DistanceJsonRecorder;
 import org.sagebionetworks.research.presentation.recorder.DeviceMotionRecorderConfigPresentation;
 import org.sagebionetworks.research.presentation.recorder.DistanceRecorderConfigPresentation;
@@ -62,14 +63,15 @@ public abstract class RecorderModule {
     @Provides
     @IntoMap
     @StringKey(RecorderType.MOTION)
-    static RecorderFactory provideMotionJsonRecorderFactory(Context context) {
+    static RecorderFactory provideMotionJsonRecorderFactory(Context context, Gson gson) {
         return (recorderConfiguration, taskUUID) -> {
             if (!(recorderConfiguration instanceof DeviceMotionRecorderConfigPresentation)) {
                 throw new IllegalArgumentException("RecorderConfigPresentation " + recorderConfiguration
                         + " is not a DeviceMotionRecorderConfigPresentation.");
             }
 
-            return new DeviceMotionJsonRecorder((DeviceMotionRecorderConfigPresentation)recorderConfiguration, context, taskUUID);
+            return new DeviceMotionJsonRecorder((DeviceMotionRecorderConfigPresentation)recorderConfiguration,
+                    context, gson, taskUUID);
         };
     }
 
@@ -83,7 +85,8 @@ public abstract class RecorderModule {
                         + " is not a DistanceRecorderConfigPresentation.");
             }
 
-            return new DistanceJsonRecorder((DistanceRecorderConfigPresentation)recorderConfiguration, context, gson, taskUUID);
+            return new DistanceJsonRecorder((DistanceRecorderConfigPresentation)recorderConfiguration,
+                    context, gson, taskUUID);
         };
     }
 

@@ -158,7 +158,7 @@ public abstract class GsonModule {
 
         ThreeTenGsonAdapter.registerAll(builder);
 
-        return builder.create();
+        return builder.setPrettyPrinting().create();
     }
 
     @Provides

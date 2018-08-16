@@ -108,9 +108,11 @@ public class DataLogger implements Subscriber<String>, SingleOnSubscribe<FileRes
     @Override
     public void onNext(String next) {
         // append either the start or deliminator for separation
-        String outputString = (isFirstJsonObject ? this.start : this.deliminator) + next;
-        this.outputStream.print(outputString);
-        this.isFirstJsonObject = false;
+        if (!next.isEmpty()) {
+            String outputString = (isFirstJsonObject ? this.start : this.deliminator) + next;
+            this.outputStream.print(outputString);
+            this.isFirstJsonObject = false;
+        }
     }
 
     @Override

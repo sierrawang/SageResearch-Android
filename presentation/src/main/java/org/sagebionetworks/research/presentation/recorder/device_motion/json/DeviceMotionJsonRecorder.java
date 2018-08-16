@@ -30,16 +30,20 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.sagebionetworks.research.presentation.recorder.device_motion;
+package org.sagebionetworks.research.presentation.recorder.device_motion.json;
 
 import android.content.Context;
 import android.support.annotation.NonNull;
 
 import com.github.pwittchen.reactivesensors.library.ReactiveSensorEvent;
+import com.google.gson.Gson;
 
 import org.sagebionetworks.research.presentation.recorder.OutputDirectoryUtil;
 import org.sagebionetworks.research.presentation.recorder.data.DataLogger;
 import org.sagebionetworks.research.presentation.recorder.DeviceMotionRecorderConfigPresentation;
+import org.sagebionetworks.research.presentation.recorder.device_motion.DeviceMotionRecorder;
+import org.sagebionetworks.research.presentation.recorder.device_motion.json.pojo.DeviceMotionPOJOAdapter;
+import org.sagebionetworks.research.presentation.recorder.device_motion.json.pojo.SensorEventPOJO;
 
 import java.io.IOException;
 import java.util.UUID;
@@ -54,17 +58,25 @@ public class DeviceMotionJsonRecorder extends DeviceMotionRecorder {
 
     public static final String JSON_OBJECT_DELIMINATOR = ",";
 
+    private Gson gson;
+
     public DeviceMotionJsonRecorder(
-            final DeviceMotionRecorderConfigPresentation config, final Context context, final UUID taskUUID) throws IOException {
+            final DeviceMotionRecorderConfigPresentation config, final Context context, final Gson gson,  final UUID taskUUID) throws IOException {
         super(config, context,
                 new DataLogger(config.getIdentifier(), OutputDirectoryUtil
                         .getRecorderOutputDirectoryFile(taskUUID, config.getIdentifier(), context),
                 JSON_FILE_START, JSON_FILE_END, JSON_OBJECT_DELIMINATOR));
+        this.gson = gson;
     }
 
     @NonNull
     @Override
     protected String getDataString(@NonNull final ReactiveSensorEvent event) {
-        return DeviceMotionJsonAdapter.createJsonObject(event).toString();
+        SensorEventPOJO sensorEventPOJO = DeviceMotionPOJOAdapter.createSensorEventPOJO(event.getSensorEvent());
+        if (sensorEventPOJO != null) {
+            return gson.toJson(sensorEventPOJO);
+        } else {
+            return "";
+        }
     }
 }
