@@ -32,12 +32,21 @@
 
 package org.sagebionetworks.research.presentation.recorder.distance;
 
+import android.Manifest;
+import android.Manifest.permission;
+import android.annotation.SuppressLint;
 import android.content.Context;
+import android.content.pm.PermissionInfo;
 import android.location.Criteria;
 import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
 import android.os.Bundle;
+import android.support.v4.app.ActivityCompat;
+import android.support.v4.content.PermissionChecker;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import io.reactivex.BackpressureStrategy;
 import io.reactivex.Flowable;
@@ -46,6 +55,8 @@ import io.reactivex.Flowable;
  * Tracks the user's location as a stream of Location objects.
  */
 public class LocationSensor {
+    private static final Logger LOGGER = LoggerFactory.getLogger(LocationSensor.class);
+
     public static final long MIN_TIME = 0L;
 
     public static final float MIN_DISTANCE = 0f;
@@ -55,7 +66,15 @@ public class LocationSensor {
      * @param context The context to use to get the location sensor.
      * @return a Flowable that represents the user's location as a stream of Location objects.
      */
+    // TODO rkolmos 08/15/2018 remove this missing permission suppression and fix the permissions.
+    @SuppressLint("MissingPermission")
     public static Flowable<Location> getLocation(final Context context) {
+        if (PermissionChecker.checkSelfPermission(context, permission.ACCESS_FINE_LOCATION) != PermissionChecker.PERMISSION_GRANTED ||
+                PermissionChecker.checkSelfPermission(context, permission.ACCESS_COARSE_LOCATION) != PermissionChecker.PERMISSION_GRANTED) {
+            LOGGER.warn("Location Sensor doesn't have necessary permissions");
+            return null;
+        }
+
         return Flowable.create(
                 emitter -> {
                     Criteria criteria = new Criteria();
