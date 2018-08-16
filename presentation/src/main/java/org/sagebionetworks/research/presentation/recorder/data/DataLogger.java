@@ -118,7 +118,6 @@ public class DataLogger implements Subscriber<String>, SingleOnSubscribe<FileRes
     @Override
     public void onError(final Throwable t) {
         this.outputStream.close();
-        t.printStackTrace();
         LOGGER.warn("Error: " + t + " occurred while writing the data file for DataLogger: " + this);
         for (SingleEmitter<FileResult> observer : this.observers) {
             observer.onError(t);
