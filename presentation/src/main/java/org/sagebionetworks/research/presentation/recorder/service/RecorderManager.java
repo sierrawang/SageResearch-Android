@@ -44,23 +44,19 @@ import com.google.common.collect.ImmutableMap;
 
 import org.sagebionetworks.research.domain.async.AsyncActionConfiguration;
 import org.sagebionetworks.research.domain.async.RecorderConfiguration;
-import org.sagebionetworks.research.domain.result.interfaces.FileResult;
 import org.sagebionetworks.research.domain.result.interfaces.Result;
 import org.sagebionetworks.research.domain.step.interfaces.Step;
 import org.sagebionetworks.research.domain.task.Task;
+import org.sagebionetworks.research.presentation.inject.RecorderConfigPresentationFactory;
 import org.sagebionetworks.research.presentation.inject.RecorderModule.RecorderFactory;
-import org.sagebionetworks.research.presentation.perform_task.PerformTaskViewModel;
-import org.sagebionetworks.research.presentation.recorder.ReactiveRecorder;
 import org.sagebionetworks.research.presentation.recorder.Recorder;
 import org.sagebionetworks.research.presentation.recorder.ResultRecorder;
 import org.sagebionetworks.research.presentation.recorder.service.RecorderService.RecorderBinder;
-import org.sagebionetworks.research.presentation.inject.RecorderConfigPresentationModule.RecorderConfigPresentationFactory;
 import org.sagebionetworks.research.presentation.model.interfaces.StepView.NavDirection;
 import org.sagebionetworks.research.presentation.recorder.RecorderConfigPresentation;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.io.File;
 import java.io.IOException;
 import java.util.HashSet;
 import java.util.Map;
@@ -70,9 +66,6 @@ import java.util.UUID;
 import io.reactivex.FlowableEmitter;
 import io.reactivex.FlowableOnSubscribe;
 import io.reactivex.disposables.CompositeDisposable;
-import io.reactivex.disposables.Disposable;
-import io.reactivex.functions.Consumer;
-import io.reactivex.schedulers.Schedulers;
 
 /**
  * A RecorderManager handles the work of creating recorders, and making the appropriate RecorderService calls

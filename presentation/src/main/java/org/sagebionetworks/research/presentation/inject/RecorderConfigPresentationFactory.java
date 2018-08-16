@@ -32,47 +32,9 @@
 
 package org.sagebionetworks.research.presentation.inject;
 
-import org.sagebionetworks.research.domain.async.DistanceRecorderConfigurationImpl;
 import org.sagebionetworks.research.domain.async.RecorderConfiguration;
-import org.sagebionetworks.research.domain.async.RecorderType;
-import org.sagebionetworks.research.presentation.recorder.DeviceMotionRecorderConfigPresentation;
-import org.sagebionetworks.research.presentation.recorder.DeviceMotionRecorderConfigPresentationBase;
-import org.sagebionetworks.research.presentation.recorder.DistanceRecorderConfigPresentationBase;
 import org.sagebionetworks.research.presentation.recorder.RecorderConfigPresentation;
 
-import java.util.Map;
-
-import dagger.MapKey;
-import dagger.Module;
-import dagger.Provides;
-import dagger.multibindings.IntoMap;
-import dagger.multibindings.StringKey;
-
-@Module
-public abstract class RecorderConfigPresentationModule {
-    @Provides
-    @IntoMap
-    @StringKey(RecorderType.MOTION)
-    static RecorderConfigPresentationFactory provideMotionRecorderConfigPresentationFactory() {
-        return DeviceMotionRecorderConfigPresentationBase::fromDeviceMotionRecorderConfiguration;
-    }
-
-    @Provides
-    @IntoMap
-    @StringKey(RecorderType.DISTANCE)
-    static RecorderConfigPresentationFactory provideDistanceRecorderConfigPresentationFacotry() {
-        return DistanceRecorderConfigPresentationBase::fromDistanceRecorderConfiguration;
-    }
-
-    @Provides
-    static RecorderConfigPresentationFactory provideRecorderConfigPresentationFactory(Map<String, RecorderConfigPresentationFactory> recorderFactories) {
-        return configuration -> {
-            String configType = configuration.getType();
-            if (!recorderFactories.containsKey(configType)) {
-                throw new IllegalArgumentException("No RecoderConfigPresentationFactory for type: " + configType);
-            }
-
-            return recorderFactories.get(configType).create(configuration);
-        };
-    }
+public interface RecorderConfigPresentationFactory {
+    RecorderConfigPresentation create(RecorderConfiguration configuration);
 }

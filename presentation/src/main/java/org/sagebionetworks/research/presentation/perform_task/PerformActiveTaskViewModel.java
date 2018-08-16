@@ -38,12 +38,11 @@ import android.support.annotation.Nullable;
 
 import org.sagebionetworks.research.domain.repository.TaskRepository;
 import org.sagebionetworks.research.domain.task.navigation.StepNavigatorFactory;
-import org.sagebionetworks.research.presentation.inject.RecorderConfigPresentationModule.RecorderConfigPresentationFactory;
+import org.sagebionetworks.research.presentation.inject.RecorderConfigPresentationFactory;
 import org.sagebionetworks.research.presentation.inject.RecorderModule.RecorderFactory;
 import org.sagebionetworks.research.presentation.inject.StepViewModule.StepViewFactory;
 import org.sagebionetworks.research.presentation.mapper.TaskMapper;
 import org.sagebionetworks.research.presentation.model.TaskView;
-import org.sagebionetworks.research.presentation.show_step.show_step_view_model_factories.ShowStepViewModelFactory;
 import org.threeten.bp.ZonedDateTime;
 
 import java.util.UUID;

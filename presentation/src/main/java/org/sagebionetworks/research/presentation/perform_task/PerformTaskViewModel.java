@@ -61,7 +61,7 @@ import org.sagebionetworks.research.domain.task.navigation.StepNavigatorFactory;
 import org.sagebionetworks.research.domain.task.navigation.TaskProgress;
 import org.sagebionetworks.research.presentation.ActionType;
 import org.sagebionetworks.research.presentation.contract.model.LoadableResource;
-import org.sagebionetworks.research.presentation.inject.RecorderConfigPresentationModule.RecorderConfigPresentationFactory;
+import org.sagebionetworks.research.presentation.inject.RecorderConfigPresentationFactory;
 import org.sagebionetworks.research.presentation.inject.RecorderModule.RecorderFactory;
 import org.sagebionetworks.research.presentation.inject.StepViewModule.StepViewFactory;
 import org.sagebionetworks.research.presentation.mapper.TaskMapper;
@@ -69,7 +69,6 @@ import org.sagebionetworks.research.presentation.model.TaskView;
 import org.sagebionetworks.research.presentation.model.action.ActionView;
 import org.sagebionetworks.research.presentation.model.interfaces.StepView;
 import org.sagebionetworks.research.presentation.model.interfaces.StepView.NavDirection;
-import org.sagebionetworks.research.presentation.recorder.Recorder;
 import org.sagebionetworks.research.presentation.recorder.service.RecorderManager;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -343,6 +342,7 @@ public class PerformTaskViewModel extends AndroidViewModel {
         this.recorderManager = new RecorderManager(this.task, this.taskRunUuid, this.getApplication(), this.recorderFactory,
                 this.recorderConfigPresentationFactory);
         // Subscribe to the recorder results and put them in the async results.
+        // TODO rkolmos 08/15/2018 If the UI disappears the recorder result may be lost, fix this.
         this.compositeDisposable.add(Flowable.create(this.recorderManager, BackpressureStrategy.BUFFER).subscribe(this::addAsyncResult));
         stepNavigator = stepNavigatorFactory.create(task, task.getProgressMarkers());
         this.stepViewMapping = new HashMap<>();
