@@ -133,7 +133,7 @@ public abstract class ShowActiveUIStepFragmentBase<S extends ActiveUIStepView, V
 
         Observer<Long> countdownObserver = this.getCountdownObserver();
         if (countdownObserver != null) {
-            this.countdown.observe(this, this.getCountdownObserver());
+            this.countdown.observe(this, countdownObserver);
         }
     }
 }
