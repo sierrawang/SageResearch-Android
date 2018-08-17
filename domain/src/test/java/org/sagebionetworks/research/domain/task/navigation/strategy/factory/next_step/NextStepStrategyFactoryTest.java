@@ -86,6 +86,7 @@ public class NextStepStrategyFactoryTest extends IndividualStepGsonTest {
     }
 
     @Before
+    @Override
     public void setup() {
         nextStepStrategyFactory = new NextStepStrategyFactory();
         super.setup();
