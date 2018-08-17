@@ -30,50 +30,42 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.sagebionetworks.research.presentation.perform_task.active.async.runner;
+package org.sagebionetworks.research.domain.async;
 
-import static com.google.common.base.Preconditions.checkNotNull;
-
-import android.support.annotation.CallSuper;
 import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 
-import org.sagebionetworks.research.domain.async.AsyncActionConfiguration;
-import org.sagebionetworks.research.domain.step.interfaces.Step;
-import org.sagebionetworks.research.presentation.perform_task.active.async.StepChangeListener;
+import com.google.auto.value.AutoValue;
+import com.google.gson.Gson;
+import com.google.gson.TypeAdapter;
 
-/**
- * Created by liujoshua on 10/11/2017.
- */
+@AutoValue
+public abstract class DistanceRecorderConfigurationImpl implements DistanceRecorderConfiguration {
+    public static final String TYPE_KEY = RecorderType.DISTANCE;
 
-public abstract class AsyncActionRunner implements StepChangeListener {
-    private final AsyncActionConfiguration asyncActionConfiguration;
+    @AutoValue.Builder
+    public abstract static class Builder {
+        public abstract DistanceRecorderConfigurationImpl build();
 
-    public AsyncActionRunner(@NonNull AsyncActionConfiguration asyncActionConfiguration) {
-        checkNotNull(asyncActionConfiguration);
-        this.asyncActionConfiguration = asyncActionConfiguration;
+        public abstract Builder setIdentifier(@NonNull String identifier);
+
+        public abstract Builder setStartStepIdentifier(@Nullable String startStepIdentifier);
+
+        public abstract Builder setStopStepIdentifier(@Nullable String stopStepIdentifier);
+    }
+
+    public static Builder builder() {
+        return new AutoValue_DistanceRecorderConfigurationImpl.Builder();
+    }
+
+    public static TypeAdapter<DistanceRecorderConfigurationImpl> typeAdapter(Gson gson) {
+        return new AutoValue_DistanceRecorderConfigurationImpl.GsonTypeAdapter(gson);
     }
 
     @Override
-    @CallSuper
-    public void onCancelStep(Step step) {
-        //no-op
+    @NonNull
+    @RecorderType
+    public String getType() {
+        return TYPE_KEY;
     }
-
-    @Override
-    @CallSuper
-    public void onFinishStep(Step step) {
-        //no-op
-    }
-
-    @Override
-    @CallSuper
-    public void onShowStep(Step step) {
-        if (step.getIdentifier().equals(this.asyncActionConfiguration.getStartStepIdentifier())) {
-            runAction();
-        }
-        // TODO: run async actions without a startStepIdentifier for first step, e.g. introduce a AsyncAction
-        // model for presentation layer that defaults in startStepIdentifier
-    }
-
-    protected abstract void runAction();
 }

@@ -30,66 +30,60 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.sagebionetworks.research.domain.task.navigation;
+package org.sagebionetworks.research.mobile_ui.recorder.distance;
 
+import android.location.Location;
 import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 
 import com.google.auto.value.AutoValue;
-import com.google.common.collect.ImmutableList;
-import com.google.common.collect.ImmutableMap;
-import com.google.common.collect.ImmutableSet;
-import com.google.gson.Gson;
-import com.google.gson.TypeAdapter;
 
-import org.sagebionetworks.research.domain.async.AsyncActionConfiguration;
-import org.sagebionetworks.research.domain.step.interfaces.Step;
-import org.sagebionetworks.research.domain.step.ui.action.Action;
-import org.sagebionetworks.research.domain.task.Task;
-
-import java.util.Collections;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-
+/**
+ * A Path is a lightweight representation of the data from a Distance recorder. It provides access to the the first
+ * and last locations the user was measured at. The total distance that was travelled, and the duration of the
+ * trip.
+ */
 @AutoValue
-public abstract class TaskBase implements Task {
+public abstract class Path {
+    public static final Path ZERO = builder().setDistance(0).setDuration(0).setFirstLocation(null).setLastLocation(null)
+            .build();
 
     @AutoValue.Builder
     public abstract static class Builder {
-        public abstract TaskBase build();
+        public abstract Path build();
 
-        public abstract Builder setActions(@NonNull Map<String, Action> actions);
+        public abstract Builder setDistance(float distance);
 
-        public abstract Builder setAsyncActions(@NonNull List<AsyncActionConfiguration> asyncActions);
+        public abstract Builder setFirstLocation(@Nullable Location firstLocation);
 
-        public abstract Builder setHiddenActions(@NonNull Set<String> hiddenActions);
+        public abstract Builder setLastLocation(@Nullable Location lastLocation);
 
-        public abstract Builder setIdentifier(@NonNull String identifier);
-
-        public abstract Builder setProgressMarkers(@NonNull List<String> progressMarkers);
-
-        public abstract Builder setSteps(@NonNull List<Step> steps);
+        public abstract Builder setDuration(long duration);
     }
 
     public static Builder builder() {
-        return new AutoValue_TaskBase.Builder()
-                .setAsyncActions(Collections.emptyList());
+        return new AutoValue_Path.Builder();
     }
 
-    public static TypeAdapter<TaskBase> typeAdapter(Gson gson) {
-        return new AutoValue_TaskBase.GsonTypeAdapter(gson)
-                .setDefaultSteps(ImmutableList.of())
-                .setDefaultProgressMarkers(ImmutableList.of())
-                .setDefaultAsyncActions(ImmutableList.of());
-    }
+    public abstract float getDistance();
 
-    @NonNull
-    @Override
-    public Task copyWithSteps(final List<Step> steps) {
-        return this.toBuilder()
-                .setSteps(steps)
-                .build();
-    }
+    @Nullable
+    public abstract Location getFirstLocation();
 
-    public abstract Builder toBuilder();
-}
+    @Nullable
+    public abstract Location getLastLocation();
+
+    public abstract long getDuration();
+
+    /**
+     * Returns a new Path that is the result of adding the given location to this Path.
+     * @param location The location tot add to this path.
+     * @return a new Path that is the result of adding the given location to this Path.
+     */
+    public Path addLocation(@NonNull Location location) {
+        long lastLocationTime = this.getLastLocation() != null ? this.getLastLocation().getTime() : 0;
+        long duration = this.getDuration() + (location.getTime() - lastLocationTime);
+        float distance = this.getDistance() + (this.getLastLocation().distanceTo(location));
+        return Path.builder().setDuration(duration).setDistance(distance).setFirstLocation(this.getFirstLocation())
+                .setLastLocation(location).build();
+    }}

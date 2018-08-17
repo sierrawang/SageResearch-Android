@@ -86,14 +86,8 @@ public class StrategyBasedNavigator implements StepNavigator {
     }
 
     @Override
+    @Nullable
     public Step getNextStep(final Step step, @NonNull TaskResult taskResult) {
-        Step result = this.getNextStepHelper(step, taskResult);
-        // In the event that the helper returns a SectionStep we traverse through the section's children to get a
-        // non-section step.
-        return StrategyBasedNavigator.resolveSection(result);
-    }
-
-    private Step getNextStepHelper(final Step step, @NonNull TaskResult taskResult) {
         Step nextStep = null;
         // First we try to get the next step from the step by casting it to a NextStepStrategy.
         if (step instanceof NextStepStrategy) {
@@ -110,6 +104,8 @@ public class StrategyBasedNavigator implements StepNavigator {
         }
 
         if (nextStep != null) {
+            nextStep = StrategyBasedNavigator.resolveSection(nextStep);
+
             // As long as the next step we have found shouldn't be skipped we return it.
             if (!(nextStep instanceof SkipStepStrategy) ||
                     !((SkipStepStrategy) nextStep).shouldSkip(taskResult)) {
@@ -117,7 +113,7 @@ public class StrategyBasedNavigator implements StepNavigator {
             }
 
             // If we should skip the next step we found, we recurse on the next step to get the one after that.
-            return getNextStep(nextStep, taskResult);
+            return this.getNextStep(nextStep, taskResult);
         }
 
         // If the tree navigator returns null we also return null.

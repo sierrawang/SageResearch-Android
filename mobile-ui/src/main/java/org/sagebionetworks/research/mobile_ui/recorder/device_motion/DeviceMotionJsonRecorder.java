@@ -30,50 +30,38 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.sagebionetworks.research.presentation.perform_task.active.async.runner;
+package org.sagebionetworks.research.mobile_ui.recorder.device_motion;
 
-import static com.google.common.base.Preconditions.checkNotNull;
-
-import android.support.annotation.CallSuper;
+import android.content.Context;
 import android.support.annotation.NonNull;
 
-import org.sagebionetworks.research.domain.async.AsyncActionConfiguration;
-import org.sagebionetworks.research.domain.step.interfaces.Step;
-import org.sagebionetworks.research.presentation.perform_task.active.async.StepChangeListener;
+import com.github.pwittchen.reactivesensors.library.ReactiveSensorEvent;
+
+import org.sagebionetworks.research.mobile_ui.recorder.data.DataLogger;
+import org.sagebionetworks.research.presentation.recorder.DeviceMotionRecorderConfigPresentation;
+
+import java.io.IOException;
 
 /**
- * Created by liujoshua on 10/11/2017.
+ * DeviceMotionJsonRecorder recorders the devices motion as Json into a file. It provides no summary result.
  */
+public class DeviceMotionJsonRecorder extends DeviceMotionRecorder {
+    public static final String JSON_FILE_START = "[";
 
-public abstract class AsyncActionRunner implements StepChangeListener {
-    private final AsyncActionConfiguration asyncActionConfiguration;
+    public static final String JSON_FILE_END = "]";
 
-    public AsyncActionRunner(@NonNull AsyncActionConfiguration asyncActionConfiguration) {
-        checkNotNull(asyncActionConfiguration);
-        this.asyncActionConfiguration = asyncActionConfiguration;
+    public static final String JSON_OBJECT_DELIMINATOR = ",";
+
+    public DeviceMotionJsonRecorder(
+            final DeviceMotionRecorderConfigPresentation config, final Context context) throws IOException {
+        // TODO rkolmos 06/26/2018 make this recorder output to the correct file.
+        super(config, context, new DataLogger(config.getIdentifier(), null, JSON_FILE_START,
+                JSON_FILE_END, JSON_OBJECT_DELIMINATOR));
     }
 
+    @NonNull
     @Override
-    @CallSuper
-    public void onCancelStep(Step step) {
-        //no-op
+    protected String getDataString(@NonNull final ReactiveSensorEvent event) {
+        return DeviceMotionJsonAdapter.createJsonObject(event).toString();
     }
-
-    @Override
-    @CallSuper
-    public void onFinishStep(Step step) {
-        //no-op
-    }
-
-    @Override
-    @CallSuper
-    public void onShowStep(Step step) {
-        if (step.getIdentifier().equals(this.asyncActionConfiguration.getStartStepIdentifier())) {
-            runAction();
-        }
-        // TODO: run async actions without a startStepIdentifier for first step, e.g. introduce a AsyncAction
-        // model for presentation layer that defaults in startStepIdentifier
-    }
-
-    protected abstract void runAction();
 }

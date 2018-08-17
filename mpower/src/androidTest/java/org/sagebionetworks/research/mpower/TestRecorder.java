@@ -30,50 +30,81 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.sagebionetworks.research.presentation.perform_task.active.async.runner;
+package org.sagebionetworks.research.mpower;
 
-import static com.google.common.base.Preconditions.checkNotNull;
+import android.support.annotation.Nullable;
 
-import android.support.annotation.CallSuper;
-import android.support.annotation.NonNull;
-
-import org.sagebionetworks.research.domain.async.AsyncActionConfiguration;
-import org.sagebionetworks.research.domain.step.interfaces.Step;
-import org.sagebionetworks.research.presentation.perform_task.active.async.StepChangeListener;
+import org.sagebionetworks.research.mobile_ui.recorder.Recorder;
 
 /**
- * Created by liujoshua on 10/11/2017.
+ * A generic implementation of Recorder to facilitate testing the recorder service.
  */
+public class TestRecorder implements Recorder {
+    private boolean cancelCalled;
 
-public abstract class AsyncActionRunner implements StepChangeListener {
-    private final AsyncActionConfiguration asyncActionConfiguration;
+    private boolean startCalled;
 
-    public AsyncActionRunner(@NonNull AsyncActionConfiguration asyncActionConfiguration) {
-        checkNotNull(asyncActionConfiguration);
-        this.asyncActionConfiguration = asyncActionConfiguration;
+    private final String startStepIdentifier;
+
+    private boolean stopCalled;
+
+    private final String stopStepIdentifier;
+
+    public TestRecorder(final String startStepIdentifier, final String stopStepIdentifier) {
+        this.startStepIdentifier = startStepIdentifier;
+        this.stopStepIdentifier = stopStepIdentifier;
+        this.startCalled = false;
+        this.stopCalled = false;
+        this.cancelCalled = false;
+    }
+
+    public boolean isCancelCalled() {
+        return cancelCalled;
     }
 
     @Override
-    @CallSuper
-    public void onCancelStep(Step step) {
-        //no-op
+    public boolean isRunning() {
+        return this.startCalled;
+    }
+
+    public boolean isStartCalled() {
+        return startCalled;
+    }
+
+    public boolean isStopCalled() {
+        return stopCalled;
     }
 
     @Override
-    @CallSuper
-    public void onFinishStep(Step step) {
-        //no-op
+    public void start() {
+        this.startCalled = true;
+        this.stopCalled = false;
+        this.cancelCalled = false;
     }
 
     @Override
-    @CallSuper
-    public void onShowStep(Step step) {
-        if (step.getIdentifier().equals(this.asyncActionConfiguration.getStartStepIdentifier())) {
-            runAction();
-        }
-        // TODO: run async actions without a startStepIdentifier for first step, e.g. introduce a AsyncAction
-        // model for presentation layer that defaults in startStepIdentifier
+    public void stop() {
+        this.startCalled = false;
+        this.stopCalled = true;
+        this.cancelCalled = false;
     }
 
-    protected abstract void runAction();
+    @Override
+    public void cancel() {
+        this.startCalled = false;
+        this.stopCalled = false;
+        this.cancelCalled = true;
+    }
+
+    @Nullable
+    @Override
+    public String getStartStepIdentifier() {
+        return this.startStepIdentifier;
+    }
+
+    @Nullable
+    @Override
+    public String getStopStepIdentifier() {
+        return this.stopStepIdentifier;
+    }
 }

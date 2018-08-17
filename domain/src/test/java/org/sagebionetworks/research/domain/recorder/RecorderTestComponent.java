@@ -30,50 +30,19 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.sagebionetworks.research.presentation.perform_task.active.async.runner;
+package org.sagebionetworks.research.domain.recorder;
 
-import static com.google.common.base.Preconditions.checkNotNull;
+import com.google.gson.Gson;
 
-import android.support.annotation.CallSuper;
-import android.support.annotation.NonNull;
+import org.sagebionetworks.research.domain.inject.AsyncActionModule;
+import org.sagebionetworks.research.domain.inject.GsonModule;
 
-import org.sagebionetworks.research.domain.async.AsyncActionConfiguration;
-import org.sagebionetworks.research.domain.step.interfaces.Step;
-import org.sagebionetworks.research.presentation.perform_task.active.async.StepChangeListener;
+import javax.inject.Singleton;
 
-/**
- * Created by liujoshua on 10/11/2017.
- */
+import dagger.Component;
 
-public abstract class AsyncActionRunner implements StepChangeListener {
-    private final AsyncActionConfiguration asyncActionConfiguration;
-
-    public AsyncActionRunner(@NonNull AsyncActionConfiguration asyncActionConfiguration) {
-        checkNotNull(asyncActionConfiguration);
-        this.asyncActionConfiguration = asyncActionConfiguration;
-    }
-
-    @Override
-    @CallSuper
-    public void onCancelStep(Step step) {
-        //no-op
-    }
-
-    @Override
-    @CallSuper
-    public void onFinishStep(Step step) {
-        //no-op
-    }
-
-    @Override
-    @CallSuper
-    public void onShowStep(Step step) {
-        if (step.getIdentifier().equals(this.asyncActionConfiguration.getStartStepIdentifier())) {
-            runAction();
-        }
-        // TODO: run async actions without a startStepIdentifier for first step, e.g. introduce a AsyncAction
-        // model for presentation layer that defaults in startStepIdentifier
-    }
-
-    protected abstract void runAction();
+@Component(modules = {GsonModule.class, AsyncActionModule.class})
+@Singleton
+public interface RecorderTestComponent {
+    Gson gson();
 }

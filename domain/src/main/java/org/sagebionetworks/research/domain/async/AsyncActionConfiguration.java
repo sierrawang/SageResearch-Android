@@ -30,50 +30,36 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.sagebionetworks.research.presentation.perform_task.active.async.runner;
+package org.sagebionetworks.research.domain.async;
 
-import static com.google.common.base.Preconditions.checkNotNull;
-
-import android.support.annotation.CallSuper;
 import android.support.annotation.NonNull;
-
-import org.sagebionetworks.research.domain.async.AsyncActionConfiguration;
-import org.sagebionetworks.research.domain.step.interfaces.Step;
-import org.sagebionetworks.research.presentation.perform_task.active.async.StepChangeListener;
+import android.support.annotation.Nullable;
 
 /**
- * Created by liujoshua on 10/11/2017.
+ * Defines general configuration for asynchronous asyncAction that should be run in the background. Depending upon the
+ * parameters and how the asyncAction is setup, this could be something that is run continuously or else is paused or
+ * reset based on a timeout interval.
  */
+public interface AsyncActionConfiguration {
+    /**
+     * A short string that uniquely identifies the asyncronous asyncAction within the task. The identifier is
+     * reproduced in the results of a async results.
+     *
+     * @return identifier
+     */
+    @NonNull
+    String getIdentifier();
 
-public abstract class AsyncActionRunner implements StepChangeListener {
-    private final AsyncActionConfiguration asyncActionConfiguration;
+    /**
+     * @return step identifier, or null
+     */
+    @Nullable
+    String getStartStepIdentifier();
 
-    public AsyncActionRunner(@NonNull AsyncActionConfiguration asyncActionConfiguration) {
-        checkNotNull(asyncActionConfiguration);
-        this.asyncActionConfiguration = asyncActionConfiguration;
-    }
-
-    @Override
-    @CallSuper
-    public void onCancelStep(Step step) {
-        //no-op
-    }
-
-    @Override
-    @CallSuper
-    public void onFinishStep(Step step) {
-        //no-op
-    }
-
-    @Override
-    @CallSuper
-    public void onShowStep(Step step) {
-        if (step.getIdentifier().equals(this.asyncActionConfiguration.getStartStepIdentifier())) {
-            runAction();
-        }
-        // TODO: run async actions without a startStepIdentifier for first step, e.g. introduce a AsyncAction
-        // model for presentation layer that defaults in startStepIdentifier
-    }
-
-    protected abstract void runAction();
+    /**
+     * An identifier marking the step to start the asyncAction. If `null`, then the asyncAction will be started when
+     * the task is started.
+     */
+    @NonNull
+    String getType();
 }

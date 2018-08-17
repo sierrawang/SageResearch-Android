@@ -30,50 +30,25 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.sagebionetworks.research.presentation.perform_task.active.async.runner;
+package org.sagebionetworks.research.mobile_ui.recorder.distance;
 
-import static com.google.common.base.Preconditions.checkNotNull;
+import android.location.Location;
 
-import android.support.annotation.CallSuper;
-import android.support.annotation.NonNull;
-
-import org.sagebionetworks.research.domain.async.AsyncActionConfiguration;
-import org.sagebionetworks.research.domain.step.interfaces.Step;
-import org.sagebionetworks.research.presentation.perform_task.active.async.StepChangeListener;
+import io.reactivex.functions.BiFunction;
 
 /**
- * Created by liujoshua on 10/11/2017.
+ * Provides the ability to use Observable.scan() on the LocationObservable from locationSensor in order to obtain
+ * an observable that provides information about the path that the Locations form.
  */
-
-public abstract class AsyncActionRunner implements StepChangeListener {
-    private final AsyncActionConfiguration asyncActionConfiguration;
-
-    public AsyncActionRunner(@NonNull AsyncActionConfiguration asyncActionConfiguration) {
-        checkNotNull(asyncActionConfiguration);
-        this.asyncActionConfiguration = asyncActionConfiguration;
-    }
-
+public class PathAccumulator implements BiFunction<Path, Location, Path> {
     @Override
-    @CallSuper
-    public void onCancelStep(Step step) {
-        //no-op
-    }
-
-    @Override
-    @CallSuper
-    public void onFinishStep(Step step) {
-        //no-op
-    }
-
-    @Override
-    @CallSuper
-    public void onShowStep(Step step) {
-        if (step.getIdentifier().equals(this.asyncActionConfiguration.getStartStepIdentifier())) {
-            runAction();
+    public Path apply(final Path path, final Location location) {
+        if (path.equals(Path.ZERO)) {
+            // If this is the initial value we initialize the locations.
+            return Path.builder().setDistance(0f).setFirstLocation(location).setLastLocation(location)
+                    .setDuration(0).build();
         }
-        // TODO: run async actions without a startStepIdentifier for first step, e.g. introduce a AsyncAction
-        // model for presentation layer that defaults in startStepIdentifier
-    }
 
-    protected abstract void runAction();
+        return path.addLocation(location);
+    }
 }

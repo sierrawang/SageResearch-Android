@@ -37,17 +37,28 @@ import android.support.annotation.NonNull;
 import com.google.common.collect.ImmutableList;
 
 /**
+ * Created by liujoshua on 10/4/2017.
+ */
+
+/**
  * Defines a logical subgrouping of steps. Examples would be a section in a longer survey or an active step that
  * includes an instruction step, countdown step, and activity step.
  */
 public interface SectionStep extends Step {
     /**
+     * Returns a copy of this section step, with the identifier changed to the given identifier
+     *
+     * @param identifier
+     *         The identifier for the new step to create.
+     * @return A copy of this section step, with the identifier changed to the given identifier.
+     */
+    @Override
+    @NonNull
+    SectionStep copyWithIdentifier(String identifier);
+
+    /**
      * @return list of the steps in the subgrouping
      */
     @NonNull
     ImmutableList<Step> getSteps();
-
-    @NonNull
-    @Override
-    SectionStep copyWithIdentifier(@NonNull String identifier);
 }

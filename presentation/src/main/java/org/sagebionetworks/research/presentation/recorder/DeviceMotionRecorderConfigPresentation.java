@@ -30,50 +30,23 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.sagebionetworks.research.presentation.perform_task.active.async.runner;
+package org.sagebionetworks.research.presentation.recorder;
 
-import static com.google.common.base.Preconditions.checkNotNull;
+import org.sagebionetworks.research.presentation.perform_task.active.async.AsyncActionService.AsyncAction;
 
-import android.support.annotation.CallSuper;
-import android.support.annotation.NonNull;
+import java.util.Set;
 
-import org.sagebionetworks.research.domain.async.AsyncActionConfiguration;
-import org.sagebionetworks.research.domain.step.interfaces.Step;
-import org.sagebionetworks.research.presentation.perform_task.active.async.StepChangeListener;
+public interface DeviceMotionRecorderConfigPresentation extends AsyncActionPresentation {
+    /**
+     * Returns the frequency with which this recorder should measure motion. A value of  represents measuring as
+     * frequently as possible.
+     * @return the frequency with which this recorder should measure motion.
+     */
+    double getFrequency();
 
-/**
- * Created by liujoshua on 10/11/2017.
- */
-
-public abstract class AsyncActionRunner implements StepChangeListener {
-    private final AsyncActionConfiguration asyncActionConfiguration;
-
-    public AsyncActionRunner(@NonNull AsyncActionConfiguration asyncActionConfiguration) {
-        checkNotNull(asyncActionConfiguration);
-        this.asyncActionConfiguration = asyncActionConfiguration;
-    }
-
-    @Override
-    @CallSuper
-    public void onCancelStep(Step step) {
-        //no-op
-    }
-
-    @Override
-    @CallSuper
-    public void onFinishStep(Step step) {
-        //no-op
-    }
-
-    @Override
-    @CallSuper
-    public void onShowStep(Step step) {
-        if (step.getIdentifier().equals(this.asyncActionConfiguration.getStartStepIdentifier())) {
-            runAction();
-        }
-        // TODO: run async actions without a startStepIdentifier for first step, e.g. introduce a AsyncAction
-        // model for presentation layer that defaults in startStepIdentifier
-    }
-
-    protected abstract void runAction();
+    /**
+     * Returns the set of recorder types that the motion recorder should measure.
+     * @return the set of recorder types that the motion recorder should measure.
+     */
+    Set<Integer> getRecorderTypes();
 }

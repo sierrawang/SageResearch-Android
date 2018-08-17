@@ -34,7 +34,7 @@ package org.sagebionetworks.research.presentation.perform_task.active.async.runn
 
 import android.support.annotation.CallSuper;
 
-import org.sagebionetworks.research.domain.async.Recorder;
+import org.sagebionetworks.research.domain.async.RecorderConfiguration;
 import org.sagebionetworks.research.domain.step.interfaces.Step;
 
 /**
@@ -42,9 +42,9 @@ import org.sagebionetworks.research.domain.step.interfaces.Step;
  */
 
 public abstract class RecorderRunner extends AsyncActionRunner {
-    private final Recorder recorder;
+    private final RecorderConfiguration recorder;
 
-    public RecorderRunner(Recorder recorder) {
+    public RecorderRunner(RecorderConfiguration recorder) {
         super(recorder);
         this.recorder = recorder;
     }

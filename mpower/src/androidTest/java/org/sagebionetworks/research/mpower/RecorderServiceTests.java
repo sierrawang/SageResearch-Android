@@ -30,32 +30,38 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.sagebionetworks.research.domain.async;
+package org.sagebionetworks.research.mpower;
 
-import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
 
-/**
- * Defines general configuration for asynchronous asyncAction that should be run in the background. Depending upon the
- * parameters and how the asyncAction is setup, this could be something that is run continuously or else is paused or
- * reset based on a timeout interval.
- */
-public interface AsyncAction {
-    /**
-     * A short string that uniquely identifies the asyncronous asyncAction within the task. The identifier is
-     * reproduced in the results of a async results.
-     *
-     * @return identifier
-     */
-    @NonNull
-    String getIdentifier();
+import android.content.Context;
+import android.content.Intent;
+import android.support.test.InstrumentationRegistry;
+import android.support.test.rule.ServiceTestRule;
+import android.support.test.runner.AndroidJUnit4;
 
-    /**
-     * An identifier marking the step to start the asyncAction. If `null`, then the asyncAction will be started when
-     * the task is started.
-     *
-     * @return step identifier, or null
-     */
-    @Nullable
-    String getStartStepIdentifier();
+import org.junit.Rule;
+import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.sagebionetworks.research.mobile_ui.recorder.service.RecorderService;
+import org.sagebionetworks.research.mobile_ui.recorder.service.RecorderService.RecorderBinder;
+
+import java.util.concurrent.TimeUnit;
+import java.util.concurrent.TimeoutException;
+
+@RunWith(AndroidJUnit4.class)
+public class RecorderServiceTests {
+    @Rule
+    public ServiceTestRule serviceRule = ServiceTestRule.withTimeout(60L, TimeUnit.SECONDS);
+
+    @Test
+    public void testBindService() throws TimeoutException {
+        Context context = InstrumentationRegistry.getContext();
+        Intent intent = new Intent(context, RecorderService.class);
+        RecorderBinder binder = (RecorderBinder)this.serviceRule.bindService(intent);
+        assertNotNull(binder);
+        RecorderService service = binder.getService();
+        assertNotNull(service);
+    }
 }

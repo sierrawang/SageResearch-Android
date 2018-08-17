@@ -30,50 +30,26 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.sagebionetworks.research.presentation.perform_task.active.async.runner;
+package org.sagebionetworks.research.domain;
 
-import static com.google.common.base.Preconditions.checkNotNull;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 
-import android.support.annotation.CallSuper;
-import android.support.annotation.NonNull;
+import java.util.Collection;
+import java.util.Set;
 
-import org.sagebionetworks.research.domain.async.AsyncActionConfiguration;
-import org.sagebionetworks.research.domain.step.interfaces.Step;
-import org.sagebionetworks.research.presentation.perform_task.active.async.StepChangeListener;
-
-/**
- * Created by liujoshua on 10/11/2017.
- */
-
-public abstract class AsyncActionRunner implements StepChangeListener {
-    private final AsyncActionConfiguration asyncActionConfiguration;
-
-    public AsyncActionRunner(@NonNull AsyncActionConfiguration asyncActionConfiguration) {
-        checkNotNull(asyncActionConfiguration);
-        this.asyncActionConfiguration = asyncActionConfiguration;
-    }
-
-    @Override
-    @CallSuper
-    public void onCancelStep(Step step) {
-        //no-op
-    }
-
-    @Override
-    @CallSuper
-    public void onFinishStep(Step step) {
-        //no-op
-    }
-
-    @Override
-    @CallSuper
-    public void onShowStep(Step step) {
-        if (step.getIdentifier().equals(this.asyncActionConfiguration.getStartStepIdentifier())) {
-            runAction();
+public class SetEqualityUtil {
+    /**
+     * Asserts that the given set contains only the items in the given collection.
+     * @param set The set to test.
+     * @param items The items to make sure the set contains.
+     * @param <E> The type of element in both the set and collection.
+     */
+    public static <E> void assertContainsOnly(Set<E> set, Collection<E> items) {
+        for (E item : items) {
+            assertTrue("Given set " + set + " doesn't contain " + item, set.contains(item));
         }
-        // TODO: run async actions without a startStepIdentifier for first step, e.g. introduce a AsyncAction
-        // model for presentation layer that defaults in startStepIdentifier
-    }
 
-    protected abstract void runAction();
+        assertEquals("Given set " + set + " has more elements than given items " + items, items.size(), set.size());
+    }
 }
