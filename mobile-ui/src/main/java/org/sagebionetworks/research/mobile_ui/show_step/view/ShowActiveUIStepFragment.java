@@ -28,7 +28,6 @@ public class ShowActiveUIStepFragment extends ShowActiveUIStepFragmentBase<Activ
     @Override
     public void onStart() {
         super.onStart();
-        this.startCountdown();
     }
 
     @Override

@@ -116,21 +116,6 @@ public abstract class ShowStepFragmentBase<StepT extends StepView, ViewModelT ex
 
     }
 
-    /**
-     * Returns the step result from the TaskResult with the same identifier as this fragment's stepView.
-     * @return the step result from the TaskResult with the same identifier as this fragment's stepView.
-     */
-    @Nullable
-    protected Result findStepResult() {
-        TaskResult taskResult = this.performTaskViewModel.getTaskResult().getValue();
-        if (taskResult != null) {
-            return taskResult.getResult(this.stepView.getIdentifier());
-        }
-
-        return null;
-    }
-
-
     @Override
     public void onAttach(Context context) {
         AndroidSupportInjection.inject(this);

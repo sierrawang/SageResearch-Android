@@ -99,9 +99,9 @@ public abstract class ShowUIStepFragmentBase<UIStepViewT extends UIStepView,
     }
 
     @Override
-    public void onViewCreated(@NonNull View view, Bundle savedInstanceState) {
-        super.onViewCreated(view, savedInstanceState);
-        ViewCompat.requestApplyInsets(view);
+    public void onStart() {
+        super.onStart();
+        ViewCompat.requestApplyInsets(this.getView());
     }
 
     protected ActionView getCancelButtonActionView(UIStepView stepView) {

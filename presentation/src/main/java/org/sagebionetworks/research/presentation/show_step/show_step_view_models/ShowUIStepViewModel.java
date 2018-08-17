@@ -34,8 +34,10 @@ package org.sagebionetworks.research.presentation.show_step.show_step_view_model
 
 import android.arch.lifecycle.LiveData;
 import android.arch.lifecycle.MutableLiveData;
+import android.support.annotation.Nullable;
 
 import org.sagebionetworks.research.domain.result.interfaces.Result;
+import org.sagebionetworks.research.domain.result.interfaces.TaskResult;
 import org.sagebionetworks.research.presentation.ActionType;
 import org.sagebionetworks.research.presentation.model.interfaces.UIStepView;
 import org.sagebionetworks.research.presentation.perform_task.PerformTaskViewModel;
@@ -62,6 +64,20 @@ public class ShowUIStepViewModel<S extends UIStepView> extends ShowStepViewModel
     @Override
     public LiveData<S> getStepView() {
         return showStepViewModelMutableLiveData;
+    }
+
+    /**
+     * Returns the step result from the TaskResult with the same identifier as this fragment's stepView.
+     * @return the step result from the TaskResult with the same identifier as this fragment's stepView.
+     */
+    @Nullable
+    protected Result findStepResult() {
+        TaskResult taskResult = this.performTaskViewModel.getTaskResult().getValue();
+        if (taskResult != null) {
+            return taskResult.getResult(this.stepView.getIdentifier());
+        }
+
+        return null;
     }
 
     @Override
