@@ -34,9 +34,11 @@ package org.sagebionetworks.research.presentation.show_step.show_step_view_model
 
 import android.arch.lifecycle.LiveData;
 import android.arch.lifecycle.LiveDataReactiveStreams;
+import android.arch.lifecycle.MutableLiveData;
 
 import org.sagebionetworks.research.presentation.model.interfaces.ActiveUIStepView;
 import org.sagebionetworks.research.presentation.perform_task.PerformTaskViewModel;
+import org.threeten.bp.Instant;
 
 import java.util.concurrent.TimeUnit;
 
@@ -44,17 +46,26 @@ import io.reactivex.Observable;
 import io.reactivex.internal.operators.flowable.FlowableFromObservable;
 
 public class ShowActiveUIStepViewModel<S extends ActiveUIStepView> extends ShowUIStepViewModel<S> {
+    protected LiveData<Long> tempLiveData;
+    protected MutableLiveData<Long> countdown;
+
     public ShowActiveUIStepViewModel(final PerformTaskViewModel performTaskViewModel, final S stepView) {
         super(performTaskViewModel, stepView);
+        this.countdown = new MutableLiveData<>();
+    }
+
+    public void startCountdown() {
+            long duration = this.stepView.getDuration().getSeconds();
+            this.tempLiveData = LiveDataReactiveStreams.fromPublisher(
+                    new FlowableFromObservable<>(
+                            Observable.<Long>intervalRange(0, duration + 1,
+                                    0, 1, TimeUnit.SECONDS)
+                                    .map(i -> duration - i)));
+            this.tempLiveData.observeForever(this.countdown::setValue);
     }
 
     public LiveData<Long> getCountdown() {
-        long duration = this.stepView.getDuration().getSeconds();
-        return LiveDataReactiveStreams.fromPublisher(
-                new FlowableFromObservable<>(
-                        Observable.<Long>intervalRange(0, duration + 1,
-                                0, 1, TimeUnit.SECONDS)
-                                .map(i -> duration - i)));
+        return this.countdown;
     }
 
     public LiveData<String> getSpokenInstructions() {

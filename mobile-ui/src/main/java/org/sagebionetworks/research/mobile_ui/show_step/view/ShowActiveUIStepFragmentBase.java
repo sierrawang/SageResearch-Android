@@ -52,9 +52,8 @@ import org.sagebionetworks.research.presentation.show_step.show_step_view_models
 public abstract class ShowActiveUIStepFragmentBase<S extends ActiveUIStepView, VM extends ShowActiveUIStepViewModel<S>,
         SB extends ActiveUIStepViewBinding<S>> extends
         ShowUIStepFragmentBase<S, VM, SB> {
-    public static final int PROGRESS_BAR_ANIMATION_MULTIPLIER = 1000;
-
-    protected LiveData<Long> countdown;
+    // Multiply integer animation values by a constant to smooth it out.
+    public static final int PROGRESS_BAR_ANIMATION_MULTIPLIER = 100;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup viewGroup, Bundle savedInstanceState) {
@@ -69,6 +68,11 @@ public abstract class ShowActiveUIStepFragmentBase<S extends ActiveUIStepView, V
         TextView countLabel = this.stepViewBinding.getCountLabel();
         if (countLabel != null) {
             countLabel.setText(duration.toString());
+        }
+
+        Observer<Long> countdownObserver = this.getCountdownObserver();
+        if (countdownObserver != null) {
+            this.showStepViewModel.getCountdown().observe(this, this.getCountdownObserver());
         }
 
         return result;
@@ -92,6 +96,11 @@ public abstract class ShowActiveUIStepFragmentBase<S extends ActiveUIStepView, V
                 return;
             }
 
+            Integer duration = ((Long)this.stepView.getDuration().getSeconds()).intValue();
+            int from = (int)(duration - count);
+            Animator animator = this.getCountdownAnimator(from, from + 1);
+            animator.start();
+
             TextView countLabel = this.stepViewBinding.getCountLabel();
             if (countLabel != null) {
                 countLabel.setText(count.toString());
@@ -101,39 +110,24 @@ public abstract class ShowActiveUIStepFragmentBase<S extends ActiveUIStepView, V
 
     /**
      * Returns the Animator to use to animate the countdown. By default the animate animates the
-     * Countdown dial to progress fom 0% to 100% over the duration of the countdown, or null if no
-     * animation should be used.
+     * Countdown dial to progress from from to to over the duration to - from where to and from are the provided
+     * integers. Can return null if no animation should be used.
+     * @param from The progress to animate from.
+     * @param to The progress to animate to.
      * @return the Animator to use to animate the countdown or null if no animation should be used.
      */
     @Nullable
-    protected Animator getCountdownAnimator() {
+    protected Animator getCountdownAnimator(int from, int to) {
         ProgressBar countdownDial = this.stepViewBinding.getCountdownDial();
         if (countdownDial != null) {
-            Integer duration = ((Long)this.stepView.getDuration().getSeconds()).intValue();
             ObjectAnimator animator = ObjectAnimator.ofInt(countdownDial, "progress",
-                   0, duration * PROGRESS_BAR_ANIMATION_MULTIPLIER);
-            animator.setDuration(duration * 1000);
+                   from * PROGRESS_BAR_ANIMATION_MULTIPLIER, to * PROGRESS_BAR_ANIMATION_MULTIPLIER);
+            animator.setDuration((to - from) * 1000);
             animator.setStartDelay(0);
             animator.setInterpolator(new LinearInterpolator());
             return animator;
         }
 
         return null;
-    }
-
-    /**
-     * Called when the countdown should be started.
-     */
-    protected void startCountdown() {
-        this.countdown = this.showStepViewModel.getCountdown();
-        Animator countdownAnimator = this.getCountdownAnimator();
-        if (countdownAnimator != null) {
-            countdownAnimator.start();
-        }
-
-        Observer<Long> countdownObserver = this.getCountdownObserver();
-        if (countdownObserver != null) {
-            this.countdown.observe(this, this.getCountdownObserver());
-        }
     }
 }
