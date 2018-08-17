@@ -34,16 +34,18 @@ package org.sagebionetworks.research.presentation.perform_task;
 
 import static com.google.common.base.Preconditions.checkNotNull;
 
+import android.app.Application;
 import android.arch.lifecycle.ViewModel;
 import android.arch.lifecycle.ViewModelProvider;
 import android.support.annotation.NonNull;
 
 import org.sagebionetworks.research.domain.repository.TaskRepository;
 import org.sagebionetworks.research.domain.task.navigation.StepNavigatorFactory;
+import org.sagebionetworks.research.presentation.inject.RecorderConfigPresentationFactory;
+import org.sagebionetworks.research.presentation.inject.RecorderModule.RecorderFactory;
 import org.sagebionetworks.research.presentation.inject.StepViewModule.StepViewFactory;
 import org.sagebionetworks.research.presentation.mapper.TaskMapper;
 import org.sagebionetworks.research.presentation.model.TaskView;
-import org.sagebionetworks.research.presentation.show_step.show_step_view_model_factories.ShowStepViewModelFactory;
 import org.threeten.bp.ZonedDateTime;
 
 import java.util.UUID;
@@ -59,19 +61,32 @@ public class PerformTaskViewModelFactory {
 
     private final TaskRepository taskRepository;
 
+    private final RecorderFactory recorderFactory;
+
+    private final RecorderConfigPresentationFactory recorderConfigPresentationFactory;
+
+    private final Application application;
+
 
     @Inject
-    public PerformTaskViewModelFactory(StepNavigatorFactory stepNavigatorFactory,
-                                       TaskMapper taskMapper,
-                                       final TaskRepository taskRepository, StepViewFactory stepViewFactory) {
+    public PerformTaskViewModelFactory(
+            Application application,
+            StepNavigatorFactory stepNavigatorFactory,
+            TaskMapper taskMapper,
+            final TaskRepository taskRepository, StepViewFactory stepViewFactory,
+            final RecorderFactory recorderFactory,
+            final RecorderConfigPresentationFactory recorderConfigPresentationFactory) {
+        this.application = application;
         this.stepNavigatorFactory = stepNavigatorFactory;
+        this.recorderFactory = recorderFactory;
+        this.recorderConfigPresentationFactory = recorderConfigPresentationFactory;
         this.taskMapper = taskMapper;
         this.taskRepository = taskRepository;
         this.stepViewFactory = stepViewFactory;
     }
 
     public ViewModelProvider.Factory create(@NonNull TaskView taskView, @NonNull UUID taskRunUUID,
-                                            ZonedDateTime lastRun) {
+            ZonedDateTime lastRun) {
         checkNotNull(taskView);
         checkNotNull(taskRunUUID);
 
@@ -82,8 +97,9 @@ public class PerformTaskViewModelFactory {
             public <T extends ViewModel> T create(@NonNull Class<T> modelClass) {
                 if (modelClass.isAssignableFrom(PerformTaskViewModel.class)) {
                     // noinspection unchecked
-                    return (T) new PerformTaskViewModel(taskView, taskRunUUID, stepNavigatorFactory,
-                            taskRepository, taskMapper, stepViewFactory, lastRun);
+                    return (T) new PerformTaskViewModel(application, taskView, taskRunUUID, stepNavigatorFactory,
+                            taskRepository, taskMapper, recorderFactory, recorderConfigPresentationFactory,
+                            stepViewFactory, lastRun);
                 }
                 throw new IllegalArgumentException("Unknown ViewModel class");
             }

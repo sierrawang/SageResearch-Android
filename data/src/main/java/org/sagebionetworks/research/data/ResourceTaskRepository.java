@@ -43,6 +43,8 @@ import android.support.annotation.NonNull;
 import com.google.common.collect.ImmutableList;
 import com.google.gson.Gson;
 
+import org.sagebionetworks.research.domain.async.AsyncActionConfiguration;
+import org.sagebionetworks.research.domain.async.RecorderConfiguration;
 import org.sagebionetworks.research.domain.repository.TaskRepository;
 import org.sagebionetworks.research.domain.result.interfaces.TaskResult;
 import org.sagebionetworks.research.domain.step.implementations.SectionStepBase;
@@ -57,7 +59,9 @@ import org.slf4j.LoggerFactory;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 import java.util.UUID;
 
 import javax.inject.Inject;
@@ -138,7 +142,9 @@ public class ResourceTaskRepository implements TaskRepository {
                 steps.add(resolveTransformers(step, ""));
             }
 
-            return task.copyWithSteps(steps);
+            task = task.copyWithSteps(steps);
+            task = task.copyWithAsyncActions(getAsyncActions(task));
+            return task;
         });
     }
 
@@ -189,6 +195,63 @@ public class ResourceTaskRepository implements TaskRepository {
         return new InputStreamReader(assetManager.open(assetPath), UTF_8);
     }
 
+    private static Set<AsyncActionConfiguration> getAsyncActions(Task task) {
+        return ResourceTaskRepository.getAsyncActionsHelper(task.getSteps(), new HashSet<>(task.getAsyncActions()));
+    }
+
+    private static Set<AsyncActionConfiguration> getAsyncActionsHelper(List<Step> steps, Set<AsyncActionConfiguration> accumlator) {
+        for (Step step : steps) {
+            // A step's defaultStartIdentifier is it's identifier or in the case of a SectionStep the identifier of it's leftmost child.
+            String defaultStartIdentifier = step.getIdentifier();
+            // A step's defaultStopIdentifier is null, or in the case of a SectionStep the identifier of it's rightmost child.
+            String defaultStopIdentifier = null;
+            if (step instanceof SectionStep) {
+                defaultStartIdentifier = getLeftMostChild(step).getIdentifier();
+                defaultStopIdentifier = getRightMostChild(step).getIdentifier();
+                SectionStep sectionStep = (SectionStep)step;
+                // Recurse on the section step's substeps.
+                ResourceTaskRepository.getAsyncActionsHelper(sectionStep.getSteps(), accumlator);
+            }
+
+            for (AsyncActionConfiguration asyncAction : step.getAsyncActions()) {
+                AsyncActionConfiguration copy = asyncAction;
+                if (asyncAction.getStartStepIdentifier() == null) {
+                    copy = copy.copyWithStartStepIdentifier(defaultStartIdentifier);
+                }
+
+                if (copy instanceof RecorderConfiguration) {
+                    RecorderConfiguration recorderConfiguration = (RecorderConfiguration)copy;
+                    if (recorderConfiguration.getStopStepIdentifier() == null) {
+                        recorderConfiguration = recorderConfiguration.copyWithStopStepIdentifier(defaultStopIdentifier);
+                        copy = recorderConfiguration;
+                    }
+                }
+
+                copy = copy.copyWithIdentifier(step.getIdentifier() + "_" + copy.getIdentifier());
+                accumlator.add(copy);
+            }
+        }
+
+        return accumlator;
+    }
+
+    private static Step getLeftMostChild(Step step) {
+        while (step instanceof SectionStep) {
+            step = ((SectionStep)step).getSteps().get(0);
+        }
+
+        return step;
+    }
+
+    private static Step getRightMostChild(Step step) {
+        while (step instanceof SectionStep) {
+            List<Step> steps = ((SectionStep)step).getSteps();
+            step = steps.get(steps.size() - 1);
+        }
+
+        return step;
+    }
+
     /**
      * Returns the given step with all of the transformers that are substeps of it, recursively replaced with the
      * result of getting their resource and creating a SectionStep from it.
@@ -216,7 +279,7 @@ public class ResourceTaskRepository implements TaskRepository {
                 builder.add(resolveTransformers(innerStep, prefix + section.getIdentifier() + "."));
             }
 
-            return new SectionStepBase(section.getIdentifier(), builder.build());
+            return section.copyWithSteps(builder.build());
         } else {
             Step copiedStep = step.copyWithIdentifier(prefix + step.getIdentifier());
             if (copiedStep.getClass() != step.getClass()) {

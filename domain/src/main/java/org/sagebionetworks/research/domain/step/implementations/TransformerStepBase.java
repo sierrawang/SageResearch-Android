@@ -50,6 +50,7 @@ import org.sagebionetworks.research.domain.step.StepType;
 import org.sagebionetworks.research.domain.step.interfaces.TransformerStep;
 
 import java.lang.reflect.Type;
+import java.util.HashSet;
 
 public class TransformerStepBase extends StepBase implements TransformerStep {
     public static final String TYPE_KEY = StepType.TRANSFORM;
@@ -84,7 +85,8 @@ public class TransformerStepBase extends StepBase implements TransformerStep {
     }
 
     public TransformerStepBase(@NonNull final String identifier, @NonNull final String resourceName) {
-        super(identifier);
+        // A transformer step has no async actions, however the step it transforms into still might.
+        super(identifier, new HashSet<>());
         this.resourceName = resourceName;
     }
 

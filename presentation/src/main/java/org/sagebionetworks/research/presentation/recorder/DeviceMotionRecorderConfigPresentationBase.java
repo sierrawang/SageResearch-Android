@@ -38,6 +38,8 @@ import android.support.annotation.Nullable;
 import com.google.auto.value.AutoValue;
 
 import org.sagebionetworks.research.domain.async.DeviceMotionRecorderConfiguration;
+import org.sagebionetworks.research.domain.async.RecorderConfiguration;
+import org.sagebionetworks.research.domain.async.RecorderType;
 import org.sagebionetworks.research.presentation.mapper.DaggerSensorComponent;
 import org.sagebionetworks.research.presentation.mapper.SensorComponent;
 
@@ -64,15 +66,25 @@ public abstract class DeviceMotionRecorderConfigPresentationBase implements Devi
         public abstract Builder setRecorderTypes(@NonNull Set<Integer> recorderTypes);
     }
 
+    @Override
+    @NonNull
+    public String getType() {
+        return RecorderType.MOTION;
+    }
+
     public static Builder builder() {
         return new AutoValue_DeviceMotionRecorderConfigPresentationBase.Builder();
     }
 
-    public static DeviceMotionRecorderConfigPresentationBase fromDeviceMotionRecorderConfig(DeviceMotionRecorderConfiguration
-            config) {
-        double frequency = config.getFrequency() != null ? config.getFrequency() : 0; // 0 is the default value.
+    public static DeviceMotionRecorderConfigPresentationBase fromDeviceMotionRecorderConfiguration(RecorderConfiguration config) {
+        if (!(config instanceof DeviceMotionRecorderConfiguration)) {
+            throw new IllegalArgumentException("Provided RecorderConfiguration " + config + " isn't a DeviceMotionRecorderConfiguration");
+        }
+
+        DeviceMotionRecorderConfiguration dmrConfiguration = (DeviceMotionRecorderConfiguration)config;
+        double frequency = dmrConfiguration.getFrequency() != null ? dmrConfiguration.getFrequency() : 0; // 0 is the default value.
         Set<Integer> recorderTypes = new HashSet<>();
-        for (String sensor : config.getRecorderTypes()) {
+        for (String sensor : dmrConfiguration.getRecorderTypes()) {
             Integer sensorType = SENSOR_COMPONENT.getSensorMap().get(sensor);
             if (sensorType != null) {
                 recorderTypes.add(sensorType);

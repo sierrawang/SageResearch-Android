@@ -49,7 +49,9 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.threeten.bp.Instant;
 
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 public class SectionStepBase extends StepBase implements SectionStep {
     public static final String TYPE_KEY = StepType.SECTION;
@@ -60,19 +62,21 @@ public class SectionStepBase extends StepBase implements SectionStep {
 
     // Default initializer for gson.
     public SectionStepBase() {
-        super("");
+        super("", new HashSet<>());
         this.steps = ImmutableList.of();
     }
 
-    public SectionStepBase(@NonNull final String identifier, @NonNull final List<Step> steps) {
-        super(identifier);
+    public SectionStepBase(@NonNull final String identifier,
+            @NonNull final Set<AsyncActionConfiguration> asyncActions,
+            @NonNull final List<Step> steps) {
+        super(identifier, asyncActions);
         this.steps = ImmutableList.copyOf(steps);
     }
 
     @NonNull
     @Override
     public SectionStep copyWithIdentifier(String identifier) {
-        SectionStepBase result = new SectionStepBase(identifier, steps);
+        SectionStepBase result = new SectionStepBase(identifier, this.getAsyncActions(), steps);
         // If the user forgets to override copy with identifier, the type of the step will change when it goes through
         // the resource transformer. This is a really confusing bug so this code is present to make it clearer why
         // this is happening.
@@ -82,6 +86,12 @@ public class SectionStepBase extends StepBase implements SectionStep {
         }
 
         return result;
+    }
+
+    @NonNull
+    @Override
+    public SectionStep copyWithSteps(final List<Step> steps) {
+        return new SectionStepBase(this.getIdentifier(), this.getAsyncActions(), steps);
     }
 
     @NonNull

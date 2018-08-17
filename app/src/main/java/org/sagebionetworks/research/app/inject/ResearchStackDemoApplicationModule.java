@@ -33,6 +33,7 @@
 package org.sagebionetworks.research.app.inject;
 
 import android.app.Activity;
+import android.app.Application;
 import android.content.Context;
 
 import com.google.gson.TypeAdapterFactory;
@@ -55,6 +56,9 @@ import dagger.multibindings.IntoSet;
 public abstract class ResearchStackDemoApplicationModule {
     @Binds
     public abstract Context provideApplicationContext(ResearchStackDemoApplication app);
+
+    @Binds
+    public abstract Application provideApplication(ResearchStackDemoApplication app);
 
     @Binds
     @IntoMap

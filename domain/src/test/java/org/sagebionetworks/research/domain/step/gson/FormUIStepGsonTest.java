@@ -38,6 +38,7 @@ import static org.sagebionetworks.research.domain.JsonAssetUtil.readJsonFile;
 
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableList.Builder;
+import com.google.common.collect.ImmutableSet;
 import com.google.gson.JsonParseException;
 
 import org.junit.Test;
@@ -71,7 +72,7 @@ public class FormUIStepGsonTest extends IndividualStepGsonTest {
         expectedInputFields.add(new ChoiceInputField<Integer>(null, null, null, null,
                 false, new CollectionInputDataType("singleChoice", "integer"), "picker",
                 null, null, ImmutableList.of(), choiceBuilder.build(), null));
-        FormUIStep expected = new FormUIStepBase("imageList", null, null, "Single Choice with Images",
+        FormUIStep expected = new FormUIStepBase("imageList", ImmutableSet.of(), null, null, "Single Choice with Images",
                 "Select a single option", null, null, null, null, expectedInputFields.build());
         testCommon(expected, "FormIcons.json");
     }
@@ -92,7 +93,7 @@ public class FormUIStepGsonTest extends IndividualStepGsonTest {
         expectedInputFields.add(new ChoiceInputField<>(null, null, null, null, false,
                 new CollectionInputDataType("multipleChoice", "integer"), "list",
                 null, null, ImmutableList.of(), expectedChoices.build(), null));
-        FormUIStep expected = new FormUIStepBase("selectMultiple", null, null, "Multiple Choice",
+        FormUIStep expected = new FormUIStepBase("selectMultiple", ImmutableSet.of(),null, null, "Multiple Choice",
                 "Select as many as you want", null, null, null, null, expectedInputFields.build());
         testCommon(expected, "FormStepInteger.json");
     }
@@ -111,7 +112,7 @@ public class FormUIStepGsonTest extends IndividualStepGsonTest {
                 null, false,
                 new CollectionInputDataType("singleChoice", "string"), "list",
                 null, null, ImmutableList.of(), expectedChoices.build(), null));
-        FormUIStep expected = new FormUIStepBase("handSelection", null, null,
+        FormUIStep expected = new FormUIStepBase("handSelection", ImmutableSet.of(),null, null,
                 "Which hands are you capable of doing this task with?",
                 null, null, null, null, null, expectedInputFields.build());
         testCommon(expected, "FormStepString.json");
@@ -128,7 +129,7 @@ public class FormUIStepGsonTest extends IndividualStepGsonTest {
         expectedInputFields.add(new ChoiceInputField<>(null, null, null, null,
                 false, new CollectionInputDataType("multipleChoice", null), null,
                 null, null, ImmutableList.of(), expectedChocies.build(), null));
-        FormUIStep expected = new FormUIStepBase("step3", null, null, "Step 3", null, null, null, null, null,
+        FormUIStep expected = new FormUIStepBase("step3", ImmutableSet.of(),null, null, "Step 3", null, null, null, null, null,
                 expectedInputFields.build());
         testCommon(expected, "FormStepStringShorthand.json");
     }

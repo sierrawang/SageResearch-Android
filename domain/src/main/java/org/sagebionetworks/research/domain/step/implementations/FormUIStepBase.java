@@ -39,6 +39,7 @@ import com.google.common.base.MoreObjects.ToStringHelper;
 import com.google.common.base.Objects;
 import com.google.common.collect.ImmutableList;
 
+import org.sagebionetworks.research.domain.async.AsyncActionConfiguration;
 import org.sagebionetworks.research.domain.form.interfaces.InputField;
 import org.sagebionetworks.research.domain.interfaces.HashCodeHelper;
 import org.sagebionetworks.research.domain.step.StepType;
@@ -64,20 +65,21 @@ public class FormUIStepBase extends UIStepBase implements FormUIStep {
         inputFields = ImmutableList.of();
     }
 
-    public FormUIStepBase(@NonNull final String identifier, @Nullable Map<String, Action> actions,
-            @Nullable Set<String> hiddenActions, @Nullable final String title, @Nullable final String text,
-            @Nullable final String detail, @Nullable final String footnote, @Nullable final ColorTheme colorTheme,
-            @Nullable final ImageTheme imageTheme, @NonNull final ImmutableList<InputField> inputFields) {
-        super(identifier, actions, hiddenActions, title, text, detail, footnote, colorTheme, imageTheme);
+    public FormUIStepBase(@NonNull final String identifier, @NonNull Set<AsyncActionConfiguration> asyncActions,
+            @Nullable Map<String, Action> actions, @Nullable Set<String> hiddenActions, @Nullable final String title,
+            @Nullable final String text, @Nullable final String detail, @Nullable final String footnote,
+            @Nullable final ColorTheme colorTheme, @Nullable final ImageTheme imageTheme,
+            @NonNull final ImmutableList<InputField> inputFields) {
+        super(identifier, asyncActions, actions, hiddenActions, title, text, detail, footnote, colorTheme, imageTheme);
         this.inputFields = inputFields;
     }
 
     @NonNull
     @Override
     public FormUIStepBase copyWithIdentifierOperation(@NonNull String identifier) {
-        return new FormUIStepBase(identifier, this.getActions(), this.getHiddenActions(), this.getTitle(),
-                this.getText(), this.getDetail(), this.getFootnote(), this.getColorTheme(), this.getImageTheme(),
-                this.inputFields);
+        return new FormUIStepBase(identifier, this.getAsyncActions(), this.getActions(), this.getHiddenActions(),
+                this.getTitle(), this.getText(), this.getDetail(), this.getFootnote(), this.getColorTheme(),
+                this.getImageTheme(), this.inputFields);
     }
 
     @NonNull

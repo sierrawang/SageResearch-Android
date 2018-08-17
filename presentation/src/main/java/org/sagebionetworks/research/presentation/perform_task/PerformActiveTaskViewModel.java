@@ -32,15 +32,17 @@
 
 package org.sagebionetworks.research.presentation.perform_task;
 
+import android.app.Application;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 
 import org.sagebionetworks.research.domain.repository.TaskRepository;
 import org.sagebionetworks.research.domain.task.navigation.StepNavigatorFactory;
+import org.sagebionetworks.research.presentation.inject.RecorderConfigPresentationFactory;
+import org.sagebionetworks.research.presentation.inject.RecorderModule.RecorderFactory;
 import org.sagebionetworks.research.presentation.inject.StepViewModule.StepViewFactory;
 import org.sagebionetworks.research.presentation.mapper.TaskMapper;
 import org.sagebionetworks.research.presentation.model.TaskView;
-import org.sagebionetworks.research.presentation.show_step.show_step_view_model_factories.ShowStepViewModelFactory;
 import org.threeten.bp.ZonedDateTime;
 
 import java.util.UUID;
@@ -50,15 +52,19 @@ import io.reactivex.Observable;
 
 public class PerformActiveTaskViewModel extends PerformTaskViewModel {
 
-    public PerformActiveTaskViewModel(@NonNull final TaskView taskView,
-                                      @NonNull final UUID taskRunUUID,
-                                      @NonNull final StepNavigatorFactory stepNavigatorFactory,
-                                      @NonNull final TaskRepository taskRepository,
-                                      @NonNull final TaskMapper taskMapper,
-                                      @NonNull final StepViewFactory stepViewFactory,
-                                      @Nullable final ZonedDateTime lastRunDate) {
-        super(taskView, taskRunUUID, stepNavigatorFactory, taskRepository,
-                taskMapper, stepViewFactory, lastRunDate);
+    public PerformActiveTaskViewModel(
+            @NonNull final Application application,
+            @NonNull final TaskView taskView,
+            @NonNull final UUID taskRunUUID,
+            @NonNull final StepNavigatorFactory stepNavigatorFactory,
+            @NonNull final TaskRepository taskRepository,
+            @NonNull final TaskMapper taskMapper,
+            @NonNull final RecorderFactory recorderFactory,
+            @NonNull final RecorderConfigPresentationFactory recorderConfigPresentationFactory,
+            @NonNull final StepViewFactory stepViewFactory,
+            @Nullable final ZonedDateTime lastRunDate) {
+        super(application, taskView, taskRunUUID, stepNavigatorFactory, taskRepository,
+                taskMapper, recorderFactory, recorderConfigPresentationFactory, stepViewFactory, lastRunDate);
     }
 
     public Observable<Long> getCountdown() {

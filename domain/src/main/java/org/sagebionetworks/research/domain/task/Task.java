@@ -35,19 +35,24 @@ package org.sagebionetworks.research.domain.task;
 import android.support.annotation.NonNull;
 
 import com.google.common.collect.ImmutableList;
+import com.google.common.collect.ImmutableSet;
 
 import org.sagebionetworks.research.domain.async.AsyncActionConfiguration;
 import org.sagebionetworks.research.domain.step.interfaces.Step;
 import org.sagebionetworks.research.domain.step.ui.action.ActionHandler;
 
 import java.util.List;
+import java.util.Set;
 
 public interface Task extends ActionHandler {
     @NonNull
     Task copyWithSteps(List<Step> steps);
 
     @NonNull
-    ImmutableList<AsyncActionConfiguration> getAsyncActions();
+    Task copyWithAsyncActions(Set<AsyncActionConfiguration> asyncActions);
+
+    @NonNull
+    ImmutableSet<AsyncActionConfiguration> getAsyncActions();
 
     @NonNull
     String getIdentifier();

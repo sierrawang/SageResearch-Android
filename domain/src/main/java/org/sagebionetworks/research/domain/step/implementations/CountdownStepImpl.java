@@ -11,6 +11,7 @@ import com.google.common.collect.ImmutableSet;
 import com.google.gson.Gson;
 import com.google.gson.TypeAdapter;
 
+import org.sagebionetworks.research.domain.async.AsyncActionConfiguration;
 import org.sagebionetworks.research.domain.result.implementations.ResultBase;
 import org.sagebionetworks.research.domain.result.interfaces.Result;
 import org.sagebionetworks.research.domain.step.StepType;
@@ -33,6 +34,9 @@ public abstract class CountdownStepImpl implements CountdownStep {
 
         @NonNull
         public abstract Builder setActions(@NonNull Map<String, Action> actions);
+
+        @NonNull
+        public abstract Builder setAsyncActions(@NonNull Set<AsyncActionConfiguration> asyncActions);
 
         @NonNull
         public abstract Builder setBackgroundAudioRequired(boolean isBackgroundAudioRequired);
@@ -74,6 +78,7 @@ public abstract class CountdownStepImpl implements CountdownStep {
     public static TypeAdapter<CountdownStepImpl> typeAdapter(Gson gson) {
         return new AutoValue_CountdownStepImpl.GsonTypeAdapter(gson)
                 .setDefaultActions(ImmutableMap.of())
+                .setDefaultAsyncActions(ImmutableSet.of())
                 .setDefaultCommands(ImmutableSet.of())
                 .setDefaultHiddenActions(ImmutableSet.of())
                 .setDefaultSpokenInstructions(ImmutableMap.of());

@@ -11,7 +11,10 @@ import org.sagebionetworks.research.domain.mobile_ui.R;
  * Provides OnApplyInsetsListener's that can be used to make views shift position by the system window insets to
  * ensure that view's like buttons do not end up behind the status bar or navigation bar.
  */
-public abstract class SystemWindowHelper {
+public class SystemWindowHelper {
+    // private constructor to prevent instantiation
+    private SystemWindowHelper() {}
+
     /**
      * Represents one of the four sides of the screen.
      */

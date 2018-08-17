@@ -34,15 +34,23 @@ package org.sagebionetworks.research.domain.step.implementations;
 
 import static com.google.common.base.Preconditions.checkNotNull;
 
+import static java.util.Optional.of;
+
 import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 
 import com.google.common.base.MoreObjects.ToStringHelper;
 import com.google.common.base.Objects;
+import com.google.common.collect.ImmutableSet;
 
+import org.sagebionetworks.research.domain.async.AsyncActionConfiguration;
 import org.sagebionetworks.research.domain.interfaces.HashCodeHelper;
 import org.sagebionetworks.research.domain.interfaces.ObjectHelper;
 import org.sagebionetworks.research.domain.step.StepType;
 import org.sagebionetworks.research.domain.step.interfaces.Step;
+
+import java.util.Collections;
+import java.util.Set;
 
 
 public abstract class StepBase extends ObjectHelper implements Step {
@@ -51,9 +59,20 @@ public abstract class StepBase extends ObjectHelper implements Step {
     @NonNull
     private final String identifier;
 
-    public StepBase(@NonNull String identifier) {
+    @NonNull
+    private final ImmutableSet<AsyncActionConfiguration> asyncActions;
+
+    public StepBase(@NonNull String identifier, @Nullable Set<AsyncActionConfiguration> asyncActions) {
         super();
+        asyncActions = asyncActions != null ? asyncActions : Collections.emptySet();
+        this.asyncActions = ImmutableSet.copyOf(asyncActions);
         this.identifier = checkNotNull(identifier);
+    }
+
+    @Override
+    @NonNull
+    public ImmutableSet<AsyncActionConfiguration> getAsyncActions() {
+        return this.asyncActions;
     }
 
     @Override

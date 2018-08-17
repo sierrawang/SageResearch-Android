@@ -49,10 +49,19 @@ public interface RecorderConfiguration extends AsyncActionConfiguration {
 
     /**
      * An identifier marking the step at which to stop the asyncAction. If `nil`, then the asyncAction will be stopped
-     * when the task is stopped.
+     * when the task is stopped. Note: this bound is inclusive so the step with the stopStepIdentifier will have the recorder
+     * running while it is executed.
      *
      * @return step identifier, or null
      */
     @Nullable
     String getStopStepIdentifier();
+
+    /**
+     * Returns a RecorderConfiguration identical to this except with the given stop step identifier.
+     * @param stopStepIdentifier The new stopStepIdentifier to copy with.
+     * @return a RecorderConfiguration identical to this except with the given step stop identifier.
+     */
+    @NonNull
+    RecorderConfiguration copyWithStopStepIdentifier(@Nullable String stopStepIdentifier);
 }

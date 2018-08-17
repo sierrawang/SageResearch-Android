@@ -51,6 +51,8 @@ public interface AsyncActionConfiguration {
     String getIdentifier();
 
     /**
+     * Returns the start step identifier for this AsyncActionConfiguration. Note: The identifier is inclusive so
+     * the step with the given identifier will have the recorder running while it is active.
      * @return step identifier, or null
      */
     @Nullable
@@ -62,4 +64,20 @@ public interface AsyncActionConfiguration {
      */
     @NonNull
     String getType();
+
+    /**
+     * Returns an AsyncActionConfiguration identical to this one with the given start step identifier
+     * @param startStepIdentifier The new startStepIdentifier to copy with.
+     * @return an AsyncActionConfiguration identical to this one with the given start step identifier
+     */
+    @NonNull
+    AsyncActionConfiguration copyWithStartStepIdentifier(@Nullable String startStepIdentifier);
+
+    /**
+     * Returns an AsyncActionConfiguration identical to this one with the given identifier
+     * @param identifier The new identifier to copy with.
+     * @return an AsyncActionConfiguration identical to this one with the given start step identifier
+     */
+    @NonNull
+    AsyncActionConfiguration copyWithIdentifier(@NonNull String identifier);
 }

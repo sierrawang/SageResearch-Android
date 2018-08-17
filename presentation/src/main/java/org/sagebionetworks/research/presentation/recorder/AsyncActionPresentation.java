@@ -32,10 +32,16 @@
 
 package org.sagebionetworks.research.presentation.recorder;
 
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
+
 public interface AsyncActionPresentation {
+    @NonNull
     String getIdentifier();
 
-    String getStartStepIdentifier();
+    @NonNull
+    String getType();
 
-    String getStopStepIdentifier();
+    @Nullable
+    String getStartStepIdentifier();
 }
