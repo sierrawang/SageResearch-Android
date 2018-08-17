@@ -46,23 +46,25 @@ import io.reactivex.Observable;
 import io.reactivex.internal.operators.flowable.FlowableFromObservable;
 
 public class ShowActiveUIStepViewModel<S extends ActiveUIStepView> extends ShowUIStepViewModel<S> {
-    protected LiveData<Long> countdown;
+    protected LiveData<Long> tempLiveData;
+    protected MutableLiveData<Long> countdown;
 
     public ShowActiveUIStepViewModel(final PerformTaskViewModel performTaskViewModel, final S stepView) {
         super(performTaskViewModel, stepView);
         this.countdown = new MutableLiveData<>();
     }
 
-    public LiveData<Long> getCountdown() {
-        if (this.countdown == null || this.countdown.getValue() == null) {
+    public void startCountdown() {
             long duration = this.stepView.getDuration().getSeconds();
-            this.countdown = LiveDataReactiveStreams.fromPublisher(
+            this.tempLiveData = LiveDataReactiveStreams.fromPublisher(
                     new FlowableFromObservable<>(
                             Observable.<Long>intervalRange(0, duration + 1,
                                     0, 1, TimeUnit.SECONDS)
                                     .map(i -> duration - i)));
-        }
+            this.tempLiveData.observeForever(this.countdown::setValue);
+    }
 
+    public LiveData<Long> getCountdown() {
         return this.countdown;
     }
 
