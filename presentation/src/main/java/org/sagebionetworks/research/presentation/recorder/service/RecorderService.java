@@ -32,7 +32,6 @@
 
 package org.sagebionetworks.research.presentation.recorder.service;
 
-import android.app.Service;
 import android.content.Intent;
 import android.os.Binder;
 import android.os.IBinder;
@@ -42,25 +41,21 @@ import android.support.annotation.Nullable;
 import com.google.common.collect.ImmutableMap;
 
 import org.sagebionetworks.research.domain.async.RecorderType;
-import org.sagebionetworks.research.domain.result.interfaces.FileResult;
 import org.sagebionetworks.research.presentation.inject.RecorderModule.RecorderFactory;
-import org.sagebionetworks.research.presentation.recorder.ReactiveRecorder;
 import org.sagebionetworks.research.presentation.recorder.Recorder;
 import org.sagebionetworks.research.presentation.recorder.RecorderActionType;
 import org.sagebionetworks.research.presentation.recorder.RecorderConfigPresentation;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.io.File;
-import java.io.FileInputStream;
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
 
-import io.reactivex.Single;
-import io.reactivex.disposables.Disposable;
-import io.reactivex.schedulers.Schedulers;
+import javax.inject.Inject;
+
+import dagger.android.DaggerService;
 
 /**
  * The RecorderService handles the recorders that are needed for the task. Recorders can do things such as record
@@ -75,7 +70,7 @@ import io.reactivex.schedulers.Schedulers;
  * RECORDER_ID_KEY -> the identifier of the recorder to perform the action on.
  * <p>
  */
-public class RecorderService extends Service {
+public class RecorderService extends DaggerService {
     private static final Logger LOGGER = LoggerFactory.getLogger(RecorderService.class);
 
     public static final String RECORDER_TYPE_KEY = "RECORDER_TYPE";
@@ -91,14 +86,11 @@ public class RecorderService extends Service {
     // Maps Task Id to a Map of Recorder Id to Recorder.
     protected Map<UUID, Map<String, Recorder>> recorderMapping;
 
-    protected RecorderFactory recorderFactory;
+    @Inject
+    RecorderFactory recorderFactory;
 
     public RecorderService() {
         super();
-    }
-
-    public void setRecorderFactory(@NonNull RecorderFactory recorderFactory) {
-        this.recorderFactory = recorderFactory;
     }
 
     @Override
@@ -224,12 +216,14 @@ public class RecorderService extends Service {
     }
 
     /**
-     * Returns an immutable map containing the active Recorders keyed by their identifiers.
+     * Get the active recorders for a task run.
      *
-     * @return an immutable map containing the active recorders keyed by their identifiers.
+     * @param taskRunUUID
+     *         identifier for a task run
+     * @return an immutable map containing the active recorders keyed by their identifiers
      */
-    public ImmutableMap<String, Recorder> getActiveRecorders(@NonNull UUID taskIdentifier) {
-        Map<String, Recorder> map = this.recorderMapping.get(taskIdentifier);
+    public ImmutableMap<String, Recorder> getActiveRecorders(@NonNull UUID taskRunUUID) {
+        Map<String, Recorder> map = this.recorderMapping.get(taskRunUUID);
         return map != null ? ImmutableMap.copyOf(map) : null;
     }
 

@@ -36,7 +36,7 @@ import android.arch.lifecycle.LiveData;
 import android.arch.lifecycle.MutableLiveData;
 
 import org.sagebionetworks.research.domain.result.interfaces.Result;
-import org.sagebionetworks.research.presentation.ActionType;
+import org.sagebionetworks.research.presentation.model.action.ActionType;
 import org.sagebionetworks.research.presentation.model.interfaces.StepView;
 import org.sagebionetworks.research.presentation.perform_task.PerformTaskViewModel;
 import org.sagebionetworks.research.presentation.show_step.show_step_view_models.ShowStepViewModel;

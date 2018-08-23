@@ -30,34 +30,22 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.sagebionetworks.research.presentation.model;
+package org.sagebionetworks.research.presentation.model.action;
 
-import android.support.annotation.DrawableRes;
-import android.support.annotation.NonNull;
+import android.support.annotation.StringDef;
 
-import org.sagebionetworks.research.presentation.model.action.ActionType;
-import org.sagebionetworks.research.presentation.DisplayString;
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
 
-public class StepActionView {
-    @NonNull
-    public final String actionType;
-
-    public final int iconRes;
-
-    public final boolean isEnabled;
-
-    public final boolean isHidden;
-
-    @NonNull
-    public final DisplayString title;
-
-    public StepActionView(@NonNull @ActionType String actionType, @NonNull DisplayString title,
-            @DrawableRes int iconRes,
-            boolean isHidden, boolean isEnabled) {
-        this.actionType = actionType;
-        this.title = title;
-        this.iconRes = iconRes;
-        this.isHidden = isHidden;
-        this.isEnabled = isEnabled;
-    }
+/**
+ * This interface defines the various types of actions that are possible to have.
+ */
+@Retention(RetentionPolicy.SOURCE)
+@StringDef({ActionType.BACKWARD, ActionType.CANCEL, ActionType.FORWARD, ActionType.INFO, ActionType.SKIP})
+public @interface ActionType {
+    String BACKWARD = "goBackward";
+    String CANCEL = "cancel";
+    String FORWARD = "goForward";
+    String INFO = "learnMore";
+    String SKIP = "skip";
 }

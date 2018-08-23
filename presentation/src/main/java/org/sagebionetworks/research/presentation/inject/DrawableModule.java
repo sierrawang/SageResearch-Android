@@ -32,13 +32,19 @@
 
 package org.sagebionetworks.research.presentation.inject;
 
+import static java.lang.annotation.RetentionPolicy.RUNTIME;
+
 import android.support.annotation.DrawableRes;
 
 import org.sagebionetworks.research.domain.repository.TaskRepository;
 import org.sagebionetworks.research.presentation.R;
 import org.sagebionetworks.research.presentation.mapper.DrawableMapper;
 
+import java.lang.annotation.Documented;
+import java.lang.annotation.Retention;
 import java.util.Map;
+
+import javax.inject.Qualifier;
 
 import dagger.MapKey;
 import dagger.Module;
@@ -52,15 +58,23 @@ public class DrawableModule {
         String value();
     }
 
+    @Qualifier
+    @Documented
+    @Retention(RUNTIME)
+    public @interface Drawables {
+        String value() default "";
+    }
+
     @Provides
     DrawableMapper provideDrawableMapper(TaskRepository taskRepository,
-            Map<String, Integer> drawableMap) {
+            @Drawables Map<String, Integer> drawableMap) {
         return new DrawableMapper(taskRepository, drawableMap);
     }
 
     @Provides
     @IntoMap
     @DrawableRes
+    @Drawables
     @ResourceNameKey(DrawableName.CANCEL)
     static Integer provideCancelResource() {
         return R.drawable.rs2_cancel_icon;
@@ -69,6 +83,7 @@ public class DrawableModule {
     @Provides
     @IntoMap
     @DrawableRes
+    @Drawables
     @ResourceNameKey(DrawableName.INFO)
     static Integer provideInfoResource() {
         return R.drawable.rs2_info_icon;

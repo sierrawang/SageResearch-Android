@@ -39,7 +39,6 @@ import android.app.Application;
 import android.arch.lifecycle.AndroidViewModel;
 import android.arch.lifecycle.LiveData;
 import android.arch.lifecycle.MutableLiveData;
-import android.arch.lifecycle.ViewModel;
 import android.support.annotation.MainThread;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -59,13 +58,13 @@ import org.sagebionetworks.research.domain.task.TaskInfo;
 import org.sagebionetworks.research.domain.task.navigation.StepNavigator;
 import org.sagebionetworks.research.domain.task.navigation.StepNavigatorFactory;
 import org.sagebionetworks.research.domain.task.navigation.TaskProgress;
-import org.sagebionetworks.research.presentation.ActionType;
 import org.sagebionetworks.research.presentation.contract.model.LoadableResource;
 import org.sagebionetworks.research.presentation.inject.RecorderConfigPresentationFactory;
 import org.sagebionetworks.research.presentation.inject.RecorderModule.RecorderFactory;
 import org.sagebionetworks.research.presentation.inject.StepViewModule.StepViewFactory;
 import org.sagebionetworks.research.presentation.mapper.TaskMapper;
 import org.sagebionetworks.research.presentation.model.TaskView;
+import org.sagebionetworks.research.presentation.model.action.ActionType;
 import org.sagebionetworks.research.presentation.model.action.ActionView;
 import org.sagebionetworks.research.presentation.model.interfaces.StepView;
 import org.sagebionetworks.research.presentation.model.interfaces.StepView.NavDirection;
@@ -79,9 +78,8 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
 
-import io.reactivex.BackpressureStrategy;
 import io.reactivex.Completable;
-import io.reactivex.Flowable;
+import io.reactivex.Observable;
 import io.reactivex.disposables.CompositeDisposable;
 
 @MainThread
@@ -134,7 +132,7 @@ public class PerformTaskViewModel extends AndroidViewModel {
             @NonNull StepNavigatorFactory stepNavigatorFactory, @NonNull TaskRepository taskRepository,
             @NonNull TaskMapper taskMapper, @NonNull RecorderFactory recorderFactory,
             @NonNull RecorderConfigPresentationFactory recorderConfigPresentationFactory,
-            StepViewFactory stepViewFactory,
+            @NonNull StepViewFactory stepViewFactory,
             @Nullable ZonedDateTime lastRun) {
         super(application);
         this.recorderFactory = checkNotNull(recorderFactory);
@@ -144,7 +142,7 @@ public class PerformTaskViewModel extends AndroidViewModel {
         this.stepNavigatorFactory = checkNotNull(stepNavigatorFactory);
         this.taskRepository = checkNotNull(taskRepository);
         this.taskMapper = checkNotNull(taskMapper);
-        this.stepViewFactory = stepViewFactory;
+        this.stepViewFactory = checkNotNull(stepViewFactory);
         this.lastRun = lastRun;
 
         // TODO migrate these LiveData to StepNavigationViewModel @liujoshua 2018/08/07
@@ -174,6 +172,12 @@ public class PerformTaskViewModel extends AndroidViewModel {
         }
 
         taskResultLiveData.setValue(taskResultLiveData.getValue().addAsyncResult(result));
+    }
+
+    public void onAsyncError(Throwable t) {
+        LOGGER.warn("received async error", t);
+
+        // TODO: add error result
     }
 
     public void addStepResult(Result result) {
@@ -339,11 +343,12 @@ public class PerformTaskViewModel extends AndroidViewModel {
     void handleTaskLoad(Task task) {
         LOGGER.debug("Loaded task: {}", task);
         this.task = task;
-        this.recorderManager = new RecorderManager(this.task, this.taskRunUuid, this.getApplication(), this.recorderFactory,
+        this.recorderManager = new RecorderManager(this.task, this.taskRunUuid, this.getApplication(),
                 this.recorderConfigPresentationFactory);
         // Subscribe to the recorder results and put them in the async results.
         // TODO rkolmos 08/15/2018 If the UI disappears the recorder result may be lost, fix this.
-        this.compositeDisposable.add(Flowable.create(this.recorderManager, BackpressureStrategy.BUFFER).subscribe(this::addAsyncResult));
+        this.compositeDisposable.add(Observable.create(this.recorderManager)
+                .subscribe(this::addAsyncResult));
         stepNavigator = stepNavigatorFactory.create(task, task.getProgressMarkers());
         this.stepViewMapping = new HashMap<>();
         for (Step step : this.stepNavigator.getSteps()) {

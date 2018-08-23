@@ -35,32 +35,27 @@ package org.sagebionetworks.research.presentation.recorder;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 
+import org.sagebionetworks.research.domain.result.interfaces.Result;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import java.util.concurrent.atomic.AtomicBoolean;
+
 /**
  * RecorderBase contains some of the common code amongst recorder implementations.
  */
-public abstract class RecorderBase implements Recorder {
+public abstract class RecorderBase<R extends Result> implements Recorder<R> {
+    private static final Logger LOGGER = LoggerFactory.getLogger(RecorderBase.class);
+
     @NonNull
     protected final String identifier;
 
-    protected boolean isRecording;
+    protected AtomicBoolean isRecording;
 
-    @Nullable
-    protected final String startStepIdentifier;
-
-    @Nullable
-    protected final String stopStepIdentifier;
-
-    public RecorderBase(@NonNull String identifier, @Nullable String startStepIdentifier,
-            @Nullable String stopStepIdentifier) {
+    public RecorderBase(@NonNull String identifier) {
         this.identifier = identifier;
-        this.startStepIdentifier = startStepIdentifier;
-        this.stopStepIdentifier = stopStepIdentifier;
-        this.isRecording = false;
-    }
 
-    @Override
-    public void cancel() {
-        this.isRecording = false;
+        this.isRecording = new AtomicBoolean(false);
     }
 
     @Override
@@ -70,29 +65,62 @@ public abstract class RecorderBase implements Recorder {
     }
 
     @Override
-    @Nullable
-    public String getStartStepIdentifier() {
-        return this.startStepIdentifier;
-    }
-
-    @Override
-    @Nullable
-    public String getStopStepIdentifier() {
-        return this.stopStepIdentifier;
-    }
-
-    @Override
     public boolean isRecording() {
-        return this.isRecording;
+        return this.isRecording.get();
     }
 
     @Override
-    public void start() {
-        this.isRecording = true;
+    public final void start() {
+        LOGGER.debug("Start called on recorder with id: {}", identifier);
+
+        if (isRecording.compareAndSet(false, true)) {
+            startRecorder();
+        } else {
+            LOGGER.warn("Cannot start. Recorder with id: {} already started", identifier);
+        }
+    }
+
+    public abstract void startRecorder();
+
+    @Override
+    public void pause() {
+        LOGGER.debug("Pause called on recorder with id: {}", identifier);
+        // no-op
     }
 
     @Override
-    public void stop() {
-        this.isRecording = false;
+    public boolean isPaused() {
+        return false;
+    }
+
+    @Override
+    public void resume() {
+        LOGGER.debug("Resume called on recorder with id: {}", identifier);
+        // no-op
+    }
+
+    @Override
+    public final void stop() {
+        LOGGER.debug("Stop called on recorder with id: {}", identifier);
+
+        if (isRecording.compareAndSet(true, false)) {
+            stopRecorder();
+        } else {
+            LOGGER.info("Recorder with id: {} already stopped.", identifier);
+        }
+    }
+
+    public abstract void stopRecorder();
+
+    @Override
+    public final void cancel() {
+        LOGGER.debug("Cancel called on recorder with id: {}", identifier);
+
+        cancelRecorder();
+        stop();
+    }
+
+    public void cancelRecorder() {
+        // no-op
     }
 }
