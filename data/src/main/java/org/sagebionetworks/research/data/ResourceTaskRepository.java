@@ -41,6 +41,7 @@ import android.support.annotation.DrawableRes;
 import android.support.annotation.NonNull;
 
 import com.google.common.collect.ImmutableList;
+import com.google.common.collect.ImmutableSet;
 import com.google.gson.Gson;
 
 import org.sagebionetworks.research.domain.async.AsyncActionConfiguration;
@@ -75,9 +76,9 @@ import io.reactivex.Single;
 public class ResourceTaskRepository implements TaskRepository {
     private static final Logger LOGGER = LoggerFactory.getLogger(ResourceTaskRepository.class);
 
-    private final Context context;
+    protected final Context context;
 
-    private final Gson gson;
+    protected final Gson gson;
 
     @Inject
     public ResourceTaskRepository(Context context, Gson gson) {
