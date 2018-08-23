@@ -40,6 +40,7 @@ import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.v4.content.PermissionChecker;
 
 import org.slf4j.Logger;
@@ -76,13 +77,14 @@ public class ReactiveLocationFactory {
      */
     // TODO rkolmos 08/15/2018 remove this missing permission suppression and fix the permissions.
     @SuppressLint("MissingPermission")
+    @NonNull
     public Flowable<Location> getLocation() {
         if (PermissionChecker.checkSelfPermission(context, permission.ACCESS_FINE_LOCATION)
                 != PermissionChecker.PERMISSION_GRANTED ||
                 PermissionChecker.checkSelfPermission(context, permission.ACCESS_COARSE_LOCATION)
                         != PermissionChecker.PERMISSION_GRANTED) {
             LOGGER.warn("Location Sensor doesn't have necessary permissions");
-            return null;
+            return Flowable.error(new SecurityException("Missing permission"));
         }
         final LocationManager manager = (LocationManager) context.getSystemService(Context.LOCATION_SERVICE);
 

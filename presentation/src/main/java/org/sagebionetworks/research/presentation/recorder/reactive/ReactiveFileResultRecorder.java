@@ -1,7 +1,11 @@
 package org.sagebionetworks.research.presentation.recorder.reactive;
 
+import static com.google.common.base.Preconditions.checkArgument;
+import static com.google.common.base.Preconditions.checkNotNull;
+
 import android.support.annotation.NonNull;
 
+import com.google.common.base.Strings;
 import com.google.gson.Gson;
 
 import org.reactivestreams.Subscription;
@@ -11,7 +15,6 @@ import org.sagebionetworks.research.presentation.recorder.RecorderBase;
 import org.threeten.bp.Instant;
 
 import java.io.File;
-import java.io.IOException;
 import java.io.PrintStream;
 import java.util.concurrent.atomic.AtomicBoolean;
 
@@ -48,8 +51,7 @@ public class ReactiveFileResultRecorder extends RecorderBase<FileResult> {
     private final AtomicBoolean isFirstJsonObject = new AtomicBoolean(true);
 
     public static ReactiveFileResultRecorder createJsonArrayLogger(@NonNull String identifier,
-            @NonNull Flowable flowableData, @NonNull Gson gson, @NonNull File outputFile)
-            throws IOException {
+            @NonNull Flowable flowableData, @NonNull Gson gson, @NonNull File outputFile) {
         return new ReactiveFileResultRecorder(identifier, flowableData, gson,
                 outputFile, JSON_MIME_CONTENT_TYPE, JSON_FILE_START, JSON_FILE_END, JSON_OBJECT_DELIMINATOR);
     }
@@ -66,14 +68,15 @@ public class ReactiveFileResultRecorder extends RecorderBase<FileResult> {
 
     protected PrintStream outputStream;
 
-    protected ReactiveFileResultRecorder(@NonNull String identifier, @NonNull Flowable flowableData, @NonNull Gson gson,
-            @NonNull File outputFile, @NonNull String fileMimeType, @NonNull String start, @NonNull String end,
-            @NonNull String deliminator) {
+    protected ReactiveFileResultRecorder(@NonNull String identifier, @NonNull Flowable flowableData,
+            @NonNull Gson gson, @NonNull File outputFile, @NonNull String fileMimeType, @NonNull String start,
+            @NonNull String end, @NonNull String deliminator) {
         super(identifier);
 
-        this.connectableFlowableData = flowableData.onBackpressureBuffer().publish();
-        this.gson = gson;
-        this.outputFile = outputFile;
+        this.connectableFlowableData = checkNotNull(flowableData.onBackpressureBuffer().publish());
+        this.gson = checkNotNull(gson);
+        this.outputFile = checkNotNull(outputFile);
+        checkArgument(!Strings.isNullOrEmpty(fileMimeType), "fileMimeType cannot be null or empty");
         this.fileMimeType = fileMimeType;
         this.start = start;
         this.end = end;
