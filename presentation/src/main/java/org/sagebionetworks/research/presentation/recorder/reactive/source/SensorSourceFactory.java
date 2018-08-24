@@ -57,14 +57,12 @@ import io.reactivex.schedulers.Schedulers;
 /**
  * This class is a Wrapper around ReactiveSensors that allows subscribing to a set of sensors with a single call.
  */
-public class SensorRecorderSourceFactory {
-
+public class SensorSourceFactory {
     @NonNull
     protected Set<FlowableEmitter<ReactiveSensorEvent>> observers;
 
     @NonNull
     protected ReactiveSensors reactiveSensors;
-
 
     @NonNull
     protected Set<Integer> sensorTypes;
@@ -131,7 +129,7 @@ public class SensorRecorderSourceFactory {
     }
 
     @Inject
-    public SensorRecorderSourceFactory(@NonNull ReactiveSensors reactiveSensors) {
+    public SensorSourceFactory(@NonNull ReactiveSensors reactiveSensors) {
         this.reactiveSensors = checkNotNull(reactiveSensors);
     }
 

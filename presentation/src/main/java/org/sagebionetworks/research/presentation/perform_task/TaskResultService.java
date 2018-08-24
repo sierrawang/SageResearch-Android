@@ -253,6 +253,7 @@ public class TaskResultService extends DaggerService {
 
         Observable<Result> asyncResults = taskToAsyncResultsObservable.get(taskRunUUID).flatMap(Maybe::toObservable);
 
+        // noinspection RxSubscribeOnError
         taskToDisposables.get(taskRunUUID)
                 .add(asyncResults
                         .flatMapCompletable(c -> Completable.complete())

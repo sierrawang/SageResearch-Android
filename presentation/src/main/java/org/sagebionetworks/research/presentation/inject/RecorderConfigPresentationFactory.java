@@ -32,9 +32,12 @@
 
 package org.sagebionetworks.research.presentation.inject;
 
+import android.support.annotation.NonNull;
+
 import org.sagebionetworks.research.domain.async.RecorderConfiguration;
 import org.sagebionetworks.research.presentation.recorder.RecorderConfigPresentation;
 
 public interface RecorderConfigPresentationFactory {
-    RecorderConfigPresentation create(RecorderConfiguration configuration);
+    @NonNull
+    RecorderConfigPresentation create(@NonNull RecorderConfiguration configuration);
 }

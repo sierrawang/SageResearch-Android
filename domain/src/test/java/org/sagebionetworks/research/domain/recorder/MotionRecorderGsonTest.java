@@ -36,15 +36,13 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 
+import com.google.common.collect.ImmutableSet;
 import com.google.gson.Gson;
 
 import org.junit.Test;
 import org.sagebionetworks.research.domain.JsonAssetUtil;
-import org.sagebionetworks.research.domain.SetEqualityUtil;
 import org.sagebionetworks.research.domain.async.AsyncActionConfiguration;
 import org.sagebionetworks.research.domain.async.DeviceMotionRecorderConfiguration;
-
-import java.util.Arrays;
 
 public class MotionRecorderGsonTest {
     private static Gson GSON = DaggerRecorderTestComponent.builder().build().gson();
@@ -55,14 +53,15 @@ public class MotionRecorderGsonTest {
                 = JsonAssetUtil.readJsonFile(GSON, "recorder/MotionRecorder_1.json", AsyncActionConfiguration.class);
         assertTrue("Didn't deserialize as a DeviceMotionRecorderConfiguration",
                 recorderConfiguration instanceof DeviceMotionRecorderConfiguration);
-        DeviceMotionRecorderConfiguration dmrConfiguration = (DeviceMotionRecorderConfiguration)recorderConfiguration;
+        DeviceMotionRecorderConfiguration dmrConfiguration
+                = (DeviceMotionRecorderConfiguration) recorderConfiguration;
         assertEquals("Identifier " + dmrConfiguration.getIdentifier() + " doesn't equal expected motionRecorder1",
                 "motionRecorder1", dmrConfiguration.getIdentifier());
         assertEquals("StartStepIdentifier " + dmrConfiguration.getStartStepIdentifier() + " doesn't equal expected "
                 + "startStepIdentifier", "startStepIdentifier", dmrConfiguration.getStartStepIdentifier());
         assertEquals("StopStepIdentifier " + dmrConfiguration.getStopStepIdentifier() + " doesn't equal expected "
                 + "stopStepIdentifier", "stopStepIdentifier", dmrConfiguration.getStopStepIdentifier());
-        SetEqualityUtil.assertContainsOnly(dmrConfiguration.getRecorderTypes(), Arrays.asList("gravity", "gyro"));
+        assertEquals(ImmutableSet.of("gravity", "gyro"), dmrConfiguration.getRecorderTypes());
         assertNull("Frequency " + dmrConfiguration.getFrequency() + "is non null", dmrConfiguration.getFrequency());
     }
 
@@ -72,14 +71,15 @@ public class MotionRecorderGsonTest {
                 = JsonAssetUtil.readJsonFile(GSON, "recorder/MotionRecorder_2.json", AsyncActionConfiguration.class);
         assertTrue("Didn't deserialize as a DeviceMotionRecorderConfiguration",
                 recorderConfiguration instanceof DeviceMotionRecorderConfiguration);
-        DeviceMotionRecorderConfiguration dmrConfiguration = (DeviceMotionRecorderConfiguration)recorderConfiguration;
+        DeviceMotionRecorderConfiguration dmrConfiguration
+                = (DeviceMotionRecorderConfiguration) recorderConfiguration;
         assertEquals("Identifier " + dmrConfiguration.getIdentifier() + " doesn't equal expected motionRecorderw",
                 "motionRecorder2", dmrConfiguration.getIdentifier());
         assertNull("StartStepIdentifier " + dmrConfiguration.getStartStepIdentifier() + " is non null",
                 dmrConfiguration.getStartStepIdentifier());
         assertNull("StopStepIdentifier " + dmrConfiguration.getStopStepIdentifier() + " is non null",
                 dmrConfiguration.getStopStepIdentifier());
-        SetEqualityUtil.assertContainsOnly(dmrConfiguration.getRecorderTypes(), Arrays.asList("gravity", "gyro"));
+        assertEquals(ImmutableSet.of("gravity", "gyro"), dmrConfiguration.getRecorderTypes());
         assertEquals("Frequency " + dmrConfiguration.getFrequency() + "is not equal to expect frequency 3.0",
                 Double.valueOf(3.0), dmrConfiguration.getFrequency());
     }

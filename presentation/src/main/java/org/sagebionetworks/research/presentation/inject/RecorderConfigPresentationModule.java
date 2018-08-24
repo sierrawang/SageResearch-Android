@@ -33,7 +33,7 @@
 package org.sagebionetworks.research.presentation.inject;
 
 import org.sagebionetworks.research.domain.async.RecorderType;
-import org.sagebionetworks.research.presentation.recorder.location.DistanceRecorderConfigPresentationImpl;
+import org.sagebionetworks.research.presentation.recorder.location.DistanceRecorderConfigPresentationImpl.Factory;
 import org.sagebionetworks.research.presentation.recorder.sensor.SensorRecorderConfigPresentationFactory;
 import org.sagebionetworks.research.presentation.recorder.service.RecorderService;
 
@@ -47,6 +47,16 @@ import dagger.multibindings.StringKey;
 
 @Module(includes = SensorModule.class)
 public abstract class RecorderConfigPresentationModule {
+    @ContributesAndroidInjector
+    abstract RecorderService contributeRecorderService();
+
+    @Provides
+    @IntoMap
+    @StringKey(RecorderType.DISTANCE)
+    static RecorderConfigPresentationFactory provideDistanceRecorderConfigPresentationFactory() {
+        return new Factory();
+    }
+
     @Provides
     @IntoMap
     @StringKey(RecorderType.MOTION)
@@ -56,16 +66,9 @@ public abstract class RecorderConfigPresentationModule {
     }
 
     @Provides
-    @IntoMap
-    @StringKey(RecorderType.DISTANCE)
-    static RecorderConfigPresentationFactory provideDistanceRecorderConfigPresentationFacotry() {
-        return DistanceRecorderConfigPresentationImpl::fromDistanceRecorderConfiguration;
-    }
-
-    @Provides
     static RecorderConfigPresentationFactory provideRecorderConfigPresentationFactory(
             Map<String, RecorderConfigPresentationFactory> recorderFactories) {
-        return configuration -> {
+        return (configuration) -> {
             String configType = configuration.getType();
             if (!recorderFactories.containsKey(configType)) {
                 throw new IllegalArgumentException("No RecoderConfigPresentationFactory for type: " + configType);
@@ -74,7 +77,4 @@ public abstract class RecorderConfigPresentationModule {
             return recorderFactories.get(configType).create(configuration);
         };
     }
-
-    @ContributesAndroidInjector
-    abstract RecorderService contributeRecorderService();
 }

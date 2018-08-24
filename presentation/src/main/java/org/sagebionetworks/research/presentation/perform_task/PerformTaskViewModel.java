@@ -352,9 +352,7 @@ public class PerformTaskViewModel extends AndroidViewModel {
         this.recorderManager = new RecorderManager(this.task, this.taskRunUuid, this.getApplication(),
                 this.recorderConfigPresentationFactory);
         // Subscribe to the recorder results and put them in the async results.
-        // TODO rkolmos 08/15/2018 If the UI disappears the recorder result may be lost, fix this.
-        this.compositeDisposable.add(Observable.create(this.recorderManager)
-                .subscribe(this::addAsyncResult));
+
         stepNavigator = stepNavigatorFactory.create(task, task.getProgressMarkers());
         this.stepViewMapping = new HashMap<>();
         for (Step step : this.stepNavigator.getSteps()) {

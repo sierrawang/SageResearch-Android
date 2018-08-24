@@ -38,37 +38,32 @@ import android.support.annotation.Nullable;
 import com.google.auto.value.AutoValue;
 
 import org.sagebionetworks.research.domain.async.RecorderType;
-import org.sagebionetworks.research.presentation.recorder.reactive.source.SensorRecorderSourceFactory.SensorConfig;
+import org.sagebionetworks.research.presentation.recorder.reactive.source.SensorSourceFactory.SensorConfig;
 
 import java.util.Set;
 
 @AutoValue
 public abstract class SensorRecorderConfigPresentationImpl implements SensorRecorderConfigPresentation {
-
     @AutoValue.Builder
     public abstract static class Builder {
         public abstract SensorRecorderConfigPresentationImpl build();
 
         public abstract Builder setIdentifier(@NonNull String identifier);
 
+        public abstract Builder setSensorConfigs(@NonNull Set<SensorConfig> sensorConfigs);
+
         public abstract Builder setStartStepIdentifier(@Nullable String startStepIdentifier);
 
         public abstract Builder setStopStepIdentifier(@Nullable String stopStepIdentifier);
 
-        public abstract Builder setSensorConfigs(@NonNull Set<SensorConfig> sensorConfigs);
+        public abstract Builder setType(@NonNull String type);
     }
 
-    @Override
-    @NonNull
-    public String getType() {
-        return RecorderType.MOTION;
+    public static Builder builder() {
+        return new AutoValue_SensorRecorderConfigPresentationImpl.Builder();
     }
 
     @Override
     @NonNull
     public abstract Set<SensorConfig> getSensorConfigs();
-
-    public static Builder builder() {
-        return new AutoValue_SensorRecorderConfigPresentationImpl.Builder();
-    }
 }

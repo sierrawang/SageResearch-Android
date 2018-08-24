@@ -35,7 +35,7 @@ package org.sagebionetworks.research.presentation.recorder.sensor;
 import android.support.annotation.NonNull;
 
 import org.sagebionetworks.research.presentation.recorder.RecorderConfigPresentation;
-import org.sagebionetworks.research.presentation.recorder.reactive.source.SensorRecorderSourceFactory.SensorConfig;
+import org.sagebionetworks.research.presentation.recorder.reactive.source.SensorSourceFactory.SensorConfig;
 
 import java.util.Set;
 

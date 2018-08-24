@@ -3,7 +3,9 @@ package org.sagebionetworks.research.presentation.recorder.reactive;
 import static com.google.common.base.Preconditions.checkArgument;
 import static com.google.common.base.Preconditions.checkNotNull;
 
+import android.support.annotation.CallSuper;
 import android.support.annotation.NonNull;
+import android.support.annotation.VisibleForTesting;
 
 import com.google.common.base.Strings;
 import com.google.gson.Gson;
@@ -11,20 +13,22 @@ import com.google.gson.Gson;
 import org.reactivestreams.Subscription;
 import org.sagebionetworks.research.domain.result.implementations.FileResultBase;
 import org.sagebionetworks.research.domain.result.interfaces.FileResult;
-import org.sagebionetworks.research.presentation.recorder.RecorderBase;
-import org.threeten.bp.Instant;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.io.File;
 import java.io.PrintStream;
 import java.util.concurrent.atomic.AtomicBoolean;
 
-import io.reactivex.Flowable;
 import io.reactivex.Maybe;
 import io.reactivex.disposables.CompositeDisposable;
 import io.reactivex.flowables.ConnectableFlowable;
 import io.reactivex.subjects.MaybeSubject;
 
-public class ReactiveFileResultRecorder extends RecorderBase<FileResult> {
+public class ReactiveFileResultRecorder<E> extends ReactiveRecorder<E, FileResult> {
+
+    private static final Logger LOGGER = LoggerFactory.getLogger(ReactiveFileResultRecorder.class);
+
     public static final String JSON_MIME_CONTENT_TYPE = "application/json";
 
     private static final String JSON_FILE_START = "[";
@@ -33,47 +37,44 @@ public class ReactiveFileResultRecorder extends RecorderBase<FileResult> {
 
     private static final String JSON_OBJECT_DELIMINATOR = ",";
 
+    protected final String deliminator;
+
+    protected final String end;
+
+    protected final File outputFile;
+
+    protected PrintStream outputStream;
+
+    protected final String start;
+
+    private final CompositeDisposable compositeDisposable;
+
+    private final ConnectableFlowable<E> connectableFlowableData;
+
+    private final String fileMimeType;
+
     private final MaybeSubject<FileResult> fileResultMaybeSubject;
 
     private final Gson gson;
 
-    protected final File outputFile;
-
-
-    private final String fileMimeType;
-
-    protected final String start;
-
-    protected final String end;
-
-    protected final String deliminator;
-
     private final AtomicBoolean isFirstJsonObject = new AtomicBoolean(true);
 
-    public static ReactiveFileResultRecorder createJsonArrayLogger(@NonNull String identifier,
-            @NonNull Flowable flowableData, @NonNull Gson gson, @NonNull File outputFile) {
-        return new ReactiveFileResultRecorder(identifier, flowableData, gson,
+    // allows us to cancel our subscription
+    private Subscription reactiveDataSubscription;
+
+    public static <E> ReactiveFileResultRecorder<E> createJsonArrayLogger(@NonNull String identifier,
+            @NonNull ConnectableFlowable<E> flowableData, @NonNull Gson gson, @NonNull File outputFile) {
+        return new ReactiveFileResultRecorder<>(identifier, flowableData, gson,
                 outputFile, JSON_MIME_CONTENT_TYPE, JSON_FILE_START, JSON_FILE_END, JSON_OBJECT_DELIMINATOR);
     }
 
-    private final ConnectableFlowable<?> connectableFlowableData;
-
-    private final CompositeDisposable compositeDisposable;
-
-    private Instant startTime;
-
-    private Instant stopTime;
-
-    private Subscription reactiveDataSubscription;
-
-    protected PrintStream outputStream;
-
-    protected ReactiveFileResultRecorder(@NonNull String identifier, @NonNull Flowable flowableData,
+    protected ReactiveFileResultRecorder(@NonNull String identifier,
+            @NonNull ConnectableFlowable<E> connectableFlowable,
             @NonNull Gson gson, @NonNull File outputFile, @NonNull String fileMimeType, @NonNull String start,
             @NonNull String end, @NonNull String deliminator) {
-        super(identifier);
+        super(identifier, connectableFlowable);
 
-        this.connectableFlowableData = checkNotNull(flowableData.onBackpressureBuffer().publish());
+        this.connectableFlowableData = checkNotNull(connectableFlowable);
         this.gson = checkNotNull(gson);
         this.outputFile = checkNotNull(outputFile);
         checkArgument(!Strings.isNullOrEmpty(fileMimeType), "fileMimeType cannot be null or empty");
@@ -89,11 +90,27 @@ public class ReactiveFileResultRecorder extends RecorderBase<FileResult> {
         compositeDisposable.add(
                 connectableFlowableData
                         .doOnCancel(this::onReactiveDataCancel)
+                        .doFinally(this::doReactiveDataFinally)
                         .subscribe(this::onReactiveDataNext, this::onReactiveDataError, this::onReactiveDataComplete,
                                 this::onReactiveDataSubscribe));
     }
 
+    @Override
+    @CallSuper
+    public void cancelRecorder() {
+        super.cancelRecorder();
+        reactiveDataSubscription.cancel();
+    }
+
+    @Override
+    public Maybe<FileResult> getResult() {
+        return fileResultMaybeSubject;
+    }
+
+    @VisibleForTesting
     public void onReactiveDataSubscribe(Subscription subscription) {
+        LOGGER.debug("reactive data subscribed for {}", identifier);
+
         try {
             reactiveDataSubscription = subscription;
             outputStream = new PrintStream(this.outputFile);
@@ -103,7 +120,41 @@ public class ReactiveFileResultRecorder extends RecorderBase<FileResult> {
         }
     }
 
-    public void onReactiveDataNext(Object data) {
+    @VisibleForTesting
+    void doReactiveDataFinally() {
+        outputStream.close();
+        if (!fileResultMaybeSubject.hasValue()) {
+            outputFile.delete();
+        }
+        compositeDisposable.dispose();
+    }
+
+    @VisibleForTesting
+    void onReactiveDataCancel() {
+        LOGGER.debug("reactive data canceled for {}", identifier);
+
+        fileResultMaybeSubject.onComplete();
+    }
+
+    @VisibleForTesting
+    void onReactiveDataComplete() {
+        LOGGER.debug("reactive data completed for {}", identifier);
+
+        outputStream.append(this.end);
+
+        fileResultMaybeSubject.onSuccess(
+                new FileResultBase(identifier, startTime, stopTime, fileMimeType, outputFile.getPath()));
+    }
+
+    @VisibleForTesting
+    void onReactiveDataError(Throwable t) {
+        LOGGER.debug("reactive data errored for {}", identifier, t);
+
+        fileResultMaybeSubject.onError(t);
+    }
+
+    @VisibleForTesting
+    void onReactiveDataNext(E data) {
         if (data != null) {
             try {
                 String outputString = "";
@@ -116,45 +167,5 @@ public class ReactiveFileResultRecorder extends RecorderBase<FileResult> {
                 onReactiveDataError(t);
             }
         }
-    }
-
-    public void onReactiveDataError(Throwable t) {
-        this.outputStream.close();
-        fileResultMaybeSubject.onError(t);
-    }
-
-    public void onReactiveDataComplete() {
-        outputStream.append(this.end);
-        outputStream.close();
-        fileResultMaybeSubject.onSuccess(
-                new FileResultBase(identifier, startTime, stopTime, fileMimeType, outputFile.getPath()));
-    }
-
-    public void onReactiveDataCancel() {
-        outputStream.close();
-        fileResultMaybeSubject.onComplete();
-        outputFile.delete();
-    }
-
-    @Override
-    public Maybe<FileResult> getResult() {
-        return fileResultMaybeSubject;
-    }
-
-    @Override
-    public void startRecorder() {
-        startTime = Instant.now();
-        connectableFlowableData.connect();
-    }
-
-    @Override
-    public void stopRecorder() {
-        stopTime = Instant.now();
-        compositeDisposable.dispose();
-    }
-
-    @Override
-    public void cancelRecorder() {
-        reactiveDataSubscription.cancel();
     }
 }

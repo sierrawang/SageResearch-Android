@@ -39,43 +39,49 @@ import com.google.auto.value.AutoValue;
 
 import org.sagebionetworks.research.domain.async.DistanceRecorderConfiguration;
 import org.sagebionetworks.research.domain.async.RecorderConfiguration;
-import org.sagebionetworks.research.domain.async.RecorderType;
+import org.sagebionetworks.research.presentation.inject.RecorderConfigPresentationFactory;
+import org.sagebionetworks.research.presentation.recorder.RecorderConfigPresentation;
 
 @AutoValue
-public abstract class DistanceRecorderConfigPresentationImpl implements DistanceRecorderConfigPresentation{
+public abstract class DistanceRecorderConfigPresentationImpl implements DistanceRecorderConfigPresentation {
     // TODO rkolmos 06/27/2018 change this name
     @AutoValue.Builder
     public abstract static class Builder {
         public abstract DistanceRecorderConfigPresentationImpl build();
-
-        public abstract Builder setUsesRelativeCoordinates(boolean usesRelativeCoordinates);
 
         public abstract Builder setIdentifier(@NonNull String identifier);
 
         public abstract Builder setStartStepIdentifier(@Nullable String startStepIdentifier);
 
         public abstract Builder setStopStepIdentifier(@Nullable String stopStepIdentifier);
+
+        public abstract Builder setType(@NonNull String type);
+
+        public abstract Builder setUsesRelativeCoordinates(boolean usesRelativeCoordinates);
     }
 
-    @Override
-    @NonNull
-    public String getType() {
-        return RecorderType.DISTANCE;
+    public static class Factory implements RecorderConfigPresentationFactory {
+        @NonNull
+        @Override
+        public RecorderConfigPresentation create(@NonNull final RecorderConfiguration configuration) {
+            if (!(configuration instanceof DistanceRecorderConfiguration)) {
+                throw new IllegalArgumentException(
+                        "Provided RecorderConfiguration " + configuration
+                                + " is not a DistanceRecorderConfiguration");
+            }
+
+            return DistanceRecorderConfigPresentationImpl.builder()
+                    .setIdentifier(configuration.getIdentifier())
+                    .setType(configuration.getType())
+                    .setStartStepIdentifier(
+                            configuration.getStartStepIdentifier())
+                    .setStopStepIdentifier(
+                            configuration.getStopStepIdentifier())
+                    .build();
+        }
     }
 
     public static Builder builder() {
         return new AutoValue_DistanceRecorderConfigPresentationImpl.Builder();
-    }
-
-    public static DistanceRecorderConfigPresentationImpl fromDistanceRecorderConfiguration(RecorderConfiguration config) {
-        if (!(config instanceof DistanceRecorderConfiguration)) {
-            throw new IllegalArgumentException("Provided RecorderConfiguration " + config + " is not a DistanceRecorderConfiguration");
-        }
-
-        return DistanceRecorderConfigPresentationImpl.builder()
-                .setIdentifier(config.getIdentifier())
-                .setStartStepIdentifier(config.getStartStepIdentifier())
-                .setStopStepIdentifier(config.getStopStepIdentifier())
-                .build();
     }
 }

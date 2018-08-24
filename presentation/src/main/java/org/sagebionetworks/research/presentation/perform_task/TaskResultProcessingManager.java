@@ -66,6 +66,7 @@ public class TaskResultProcessingManager {
 
             binder = (TaskResultServiceBinder) service;
 
+            // noinspection RxSubscribeOnError
             compositeDisposable.add(
                     binder.getTaskResultObservable()
                             .lastOrError()
