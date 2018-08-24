@@ -41,7 +41,7 @@ import org.sagebionetworks.research.mobile_ui.inject.subcomponents.ShowUIStepFra
 import org.sagebionetworks.research.mobile_ui.show_step.view.ShowActiveUIStepFragment;
 import org.sagebionetworks.research.mobile_ui.show_step.view.ShowCompletionStepFragment;
 import org.sagebionetworks.research.mobile_ui.show_step.view.ShowCountdownStepFragment;
-import org.sagebionetworks.research.mobile_ui.show_step.view.ShowStepFragment;
+import org.sagebionetworks.research.mobile_ui.show_step.view.ShowGenericStepFragment;
 import org.sagebionetworks.research.mobile_ui.show_step.view.ShowUIStepFragment;
 import org.sagebionetworks.research.mobile_ui.show_step.view.ShowFormUIStepFragment;
 
@@ -63,7 +63,7 @@ public abstract class ShowStepModule {
 
     @Binds
     @IntoMap
-    @FragmentKey(ShowStepFragment.class)
+    @FragmentKey(ShowGenericStepFragment.class)
     abstract AndroidInjector.Factory<? extends android.support.v4.app.Fragment>
     bindShowStepFragmentInjectorFactory(ShowStepFragmentSubcomponent.Builder builder);
 

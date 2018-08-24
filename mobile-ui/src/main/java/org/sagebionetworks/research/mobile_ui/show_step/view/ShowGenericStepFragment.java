@@ -37,7 +37,6 @@ import android.support.annotation.NonNull;
 import android.view.View;
 
 import org.sagebionetworks.research.domain.mobile_ui.R;
-import org.sagebionetworks.research.mobile_ui.perform_task.PerformTaskFragment;
 import org.sagebionetworks.research.mobile_ui.show_step.view.view_binding.StepViewBinding;
 import org.sagebionetworks.research.mobile_ui.show_step.view.view_binding.UIStepViewBinding;
 import org.sagebionetworks.research.mobile_ui.widget.ActionButton;
@@ -48,19 +47,19 @@ import org.sagebionetworks.research.presentation.show_step.ShowGenericStepViewMo
 /**
  * Shows a simple step.
  */
-public class ShowStepFragment extends ShowStepFragmentBase<StepView, ShowGenericStepViewModel,
+public class ShowGenericStepFragment extends ShowStepFragmentBase<StepView, ShowGenericStepViewModel,
         StepViewBinding<StepView>> {
     private static final String ARGUMENT_STEP_VIEW = "STEP_VIEW";
 
     @NonNull
-    public static ShowStepFragment newInstance(@NonNull StepView stepView) {
-        ShowStepFragment fragment = new ShowStepFragment();
+    public static ShowGenericStepFragment newInstance(@NonNull StepView stepView) {
+        ShowGenericStepFragment fragment = new ShowGenericStepFragment();
         Bundle arguments = ShowStepFragmentBase.createArguments(stepView);
         fragment.setArguments(arguments);
         return fragment;
     }
 
-    public ShowStepFragment() {
+    public ShowGenericStepFragment() {
         // Required empty public constructor
     }
 
