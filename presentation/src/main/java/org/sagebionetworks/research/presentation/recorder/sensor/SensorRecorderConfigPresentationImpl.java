@@ -30,34 +30,45 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.sagebionetworks.research.presentation.model;
+package org.sagebionetworks.research.presentation.recorder.sensor;
 
-import android.support.annotation.DrawableRes;
 import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 
-import org.sagebionetworks.research.presentation.model.action.ActionType;
-import org.sagebionetworks.research.presentation.DisplayString;
+import com.google.auto.value.AutoValue;
 
-public class StepActionView {
+import org.sagebionetworks.research.domain.async.RecorderType;
+import org.sagebionetworks.research.presentation.recorder.reactive.source.SensorRecorderSourceFactory.SensorConfig;
+
+import java.util.Set;
+
+@AutoValue
+public abstract class SensorRecorderConfigPresentationImpl implements SensorRecorderConfigPresentation {
+
+    @AutoValue.Builder
+    public abstract static class Builder {
+        public abstract SensorRecorderConfigPresentationImpl build();
+
+        public abstract Builder setIdentifier(@NonNull String identifier);
+
+        public abstract Builder setStartStepIdentifier(@Nullable String startStepIdentifier);
+
+        public abstract Builder setStopStepIdentifier(@Nullable String stopStepIdentifier);
+
+        public abstract Builder setSensorConfigs(@NonNull Set<SensorConfig> sensorConfigs);
+    }
+
+    @Override
     @NonNull
-    public final String actionType;
+    public String getType() {
+        return RecorderType.MOTION;
+    }
 
-    public final int iconRes;
-
-    public final boolean isEnabled;
-
-    public final boolean isHidden;
-
+    @Override
     @NonNull
-    public final DisplayString title;
+    public abstract Set<SensorConfig> getSensorConfigs();
 
-    public StepActionView(@NonNull @ActionType String actionType, @NonNull DisplayString title,
-            @DrawableRes int iconRes,
-            boolean isHidden, boolean isEnabled) {
-        this.actionType = actionType;
-        this.title = title;
-        this.iconRes = iconRes;
-        this.isHidden = isHidden;
-        this.isEnabled = isEnabled;
+    public static Builder builder() {
+        return new AutoValue_SensorRecorderConfigPresentationImpl.Builder();
     }
 }

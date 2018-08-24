@@ -1,0 +1,58 @@
+package org.sagebionetworks.research.presentation.recorder.sensor;
+
+import org.sagebionetworks.research.domain.async.DeviceMotionRecorderConfiguration;
+import org.sagebionetworks.research.domain.async.RecorderConfiguration;
+import org.sagebionetworks.research.presentation.inject.RecorderConfigPresentationFactory;
+import org.sagebionetworks.research.presentation.inject.SensorModule.Sensors;
+import org.sagebionetworks.research.presentation.recorder.RecorderConfigPresentation;
+import org.sagebionetworks.research.presentation.recorder.reactive.source.SensorRecorderSourceFactory.SensorConfig;
+import org.sagebionetworks.research.presentation.recorder.reactive.source.SensorRecorderSourceFactory.SensorConfig.SensorConfigBuilder;
+
+import java.util.HashSet;
+import java.util.Map;
+import java.util.Set;
+
+import javax.inject.Inject;
+
+public class SensorRecorderConfigPresentationFactory implements RecorderConfigPresentationFactory {
+    private static final int SECONDS_TO_MICROSECONDS = 1_000_000;
+
+    private final Map<String, Integer> sensorsMap;
+
+    @Inject
+    public SensorRecorderConfigPresentationFactory(@Sensors Map<String, Integer> sensorsMap) {
+        this.sensorsMap = sensorsMap;
+    }
+
+    @Override
+    public RecorderConfigPresentation create(final RecorderConfiguration config) {
+        if (!(config instanceof DeviceMotionRecorderConfiguration)) {
+            throw new IllegalArgumentException(
+                    "Provided RecorderConfiguration " + config + " isn't a DeviceMotionRecorderConfiguration");
+        }
+
+        DeviceMotionRecorderConfiguration dmrConfiguration = (DeviceMotionRecorderConfiguration) config;
+
+        Set<SensorConfig> sensorConfigs = new HashSet<>();
+        for (String sensor : dmrConfiguration.getRecorderTypes()) {
+            Integer sensorType = sensorsMap.get(sensor);
+            if (sensorType != null) {
+                SensorConfigBuilder sensorConfigBuilder = new SensorConfigBuilder(sensorType);
+                if (dmrConfiguration.getFrequency() != null) {
+                    int samplingPeriodInUs = (int) Math
+                            .round(1 / dmrConfiguration.getFrequency()
+                                    * SECONDS_TO_MICROSECONDS);
+                    sensorConfigBuilder.setSamplingPeriodInUs(samplingPeriodInUs);
+                }
+                sensorConfigs.add(sensorConfigBuilder.build());
+            }
+        }
+
+        return SensorRecorderConfigPresentationImpl.builder()
+                .setIdentifier(config.getIdentifier())
+                .setStartStepIdentifier(config.getStartStepIdentifier())
+                .setStopStepIdentifier(config.getStopStepIdentifier())
+                .setSensorConfigs(sensorConfigs)
+                .build();
+    }
+}

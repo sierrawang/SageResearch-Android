@@ -49,8 +49,9 @@ import dagger.android.AndroidInjector;
 import dagger.android.support.FragmentKey;
 import dagger.multibindings.IntoMap;
 
-@Module(includes = {GsonModule.class, TaskModule.class, StepModule.class, RecorderModule.class, RecorderConfigPresentationModule.class,
-        StepViewModule.class, ShowStepViewModelModule.class, ShowStepFragmentModule.class, ActionModule.class},
+@Module(includes = {GsonModule.class, TaskModule.class, StepModule.class, RecorderModule.class,
+        RecorderConfigPresentationModule.class, StepViewModule.class, ShowStepViewModelModule.class,
+        ShowStepFragmentModule.class, ActionModule.class},
         subcomponents = TaskActivityFragmentSubcomponent.class)
 public abstract class PerformTaskModule {
     @Binds
