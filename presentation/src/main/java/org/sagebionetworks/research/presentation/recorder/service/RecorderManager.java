@@ -136,18 +136,21 @@ public class RecorderManager implements ServiceConnection, FlowableOnSubscribe<R
                 }
             }
 
-            for (Recorder recorder : this.getActiveRecorders().values()) {
-                if (recorder instanceof ResultRecorder<?>) {
-                    this.compositeDisposable.add(((ResultRecorder<?>)recorder).getResult()
-                            .subscribe((result) -> {
-                                for (FlowableEmitter<Result> emitter : this.observers) {
-                                    emitter.onNext(result);
-                                }
-                            }, (throwable -> {
-                                for (FlowableEmitter<Result> emitter : this.observers) {
-                                    emitter.onError(throwable);
-                                }
-                            })));
+            activeRecorders = this.getActiveRecorders();
+            if (activeRecorders != null) {
+                for (Recorder recorder : activeRecorders.values()) {
+                    if (recorder instanceof ResultRecorder<?>) {
+                        this.compositeDisposable.add(((ResultRecorder<?>) recorder).getResult()
+                                .subscribe((result) -> {
+                                    for (FlowableEmitter<Result> emitter : this.observers) {
+                                        emitter.onNext(result);
+                                    }
+                                }, (throwable -> {
+                                    for (FlowableEmitter<Result> emitter : this.observers) {
+                                        emitter.onError(throwable);
+                                    }
+                                })));
+                    }
                 }
             }
         } catch (IOException e) {
