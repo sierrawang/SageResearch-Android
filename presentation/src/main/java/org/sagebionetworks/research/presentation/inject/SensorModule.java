@@ -32,19 +32,34 @@
 
 package org.sagebionetworks.research.presentation.inject;
 
+import static java.lang.annotation.RetentionPolicy.RUNTIME;
+
 import android.hardware.Sensor;
 
 import org.sagebionetworks.research.domain.async.MotionRecorderType;
+
+import java.lang.annotation.Documented;
+import java.lang.annotation.Retention;
+
+import javax.inject.Qualifier;
 
 import dagger.Module;
 import dagger.Provides;
 import dagger.multibindings.IntoMap;
 import dagger.multibindings.StringKey;
 
-@Module()
+@Module
 public class SensorModule {
+    @Qualifier
+    @Documented
+    @Retention(RUNTIME)
+    public @interface Sensors {
+        String value() default "";
+    }
+
     @Provides
     @IntoMap
+    @Sensors
     @StringKey(MotionRecorderType.ACCELEROMETER)
     static Integer provideAccelerometerRecorderType() {
         return Sensor.TYPE_ACCELEROMETER;
@@ -52,6 +67,7 @@ public class SensorModule {
 
     @Provides
     @IntoMap
+    @Sensors
     @StringKey(MotionRecorderType.GRAVITY)
     static Integer provideGravityRateType() {
         return Sensor.TYPE_GRAVITY;
@@ -59,6 +75,7 @@ public class SensorModule {
 
     @Provides
     @IntoMap
+    @Sensors
     @StringKey(MotionRecorderType.GYROSCOPE)
     static Integer provideGyroscopeRecorderType() {
         return Sensor.TYPE_GYROSCOPE;
@@ -66,6 +83,7 @@ public class SensorModule {
 
     @Provides
     @IntoMap
+    @Sensors
     @StringKey(MotionRecorderType.MAGNETIC_FIELD)
     static Integer provideMageneticFieldType() {
         return Sensor.TYPE_MAGNETIC_FIELD;
@@ -73,6 +91,7 @@ public class SensorModule {
 
     @Provides
     @IntoMap
+    @Sensors
     @StringKey(MotionRecorderType.MAGNETOMETER)
     static Integer provideMagnetometerFieldType() {
         // This key is inlcuded to mirror iOS however there isn't an android magnetometer so it maps to the
@@ -82,6 +101,7 @@ public class SensorModule {
 
     @Provides
     @IntoMap
+    @Sensors
     @StringKey(MotionRecorderType.ROTATION_RATE)
     static Integer provideRotationRateType() {
         return Sensor.TYPE_ROTATION_VECTOR;
@@ -89,6 +109,7 @@ public class SensorModule {
 
     @Provides
     @IntoMap
+    @Sensors
     @StringKey(MotionRecorderType.USER_ACCELERATION)
     static Integer provideUserAccelerometerRecorderType() {
         // This key is included to mirror iOS however there isn't an android user acceleration sensor so it maps

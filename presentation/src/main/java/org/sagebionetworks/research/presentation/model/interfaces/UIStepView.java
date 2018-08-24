@@ -37,7 +37,7 @@ import android.support.annotation.Nullable;
 
 import com.google.common.collect.ImmutableMap;
 
-import org.sagebionetworks.research.presentation.ActionType;
+import org.sagebionetworks.research.presentation.model.action.ActionType;
 import org.sagebionetworks.research.presentation.DisplayString;
 import org.sagebionetworks.research.presentation.model.ColorThemeView;
 import org.sagebionetworks.research.presentation.model.ImageThemeView;

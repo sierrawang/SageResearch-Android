@@ -30,54 +30,24 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.sagebionetworks.research.presentation.recorder;
+package org.sagebionetworks.research.presentation.recorder.sensor;
 
-import android.support.annotation.AnyThread;
 import android.support.annotation.NonNull;
 
-import org.sagebionetworks.research.domain.result.interfaces.Result;
-import org.sagebionetworks.research.presentation.async.AsyncActionController;
+import org.sagebionetworks.research.presentation.recorder.RecorderConfigPresentation;
+import org.sagebionetworks.research.presentation.recorder.reactive.source.SensorRecorderSourceFactory.SensorConfig;
+
+import java.util.Set;
 
 /**
- * A Recorder records some sort of data about the user (e.g. phone's motion, audio, etc). Recorders are typically run
- * on a different thread than ui so implementations should be thread safe to ensure there are no concurrency issues.
+ * Recorder configuration for sensors available through android.hardware.SensorManager.
  */
-@AnyThread
-public interface Recorder<R extends Result> extends AsyncActionController<R> {
+public interface SensorRecorderConfigPresentation extends RecorderConfigPresentation {
     /**
-     * Returns an identifier for this recorder that is unique among the recorders in it's task.
+     * Returns the set of recorder types that the motion recorder should measure.
      *
-     * @return an identifier for this recorder that is unique among the recorders in it's task.
+     * @return the set of recorder types that the motion recorder should measure.
      */
     @NonNull
-    String getIdentifier();
-
-    /**
-     * Starts this recorder. This method should notify the recorder to start and then return immediately without
-     * blocking or performing the recording on the UI thread. In most cases this means the recorder will need to
-     * manage it's own threading.
-     */
-    @Override
-    void start();
-
-    /**
-     * Indicates that this recorder is done recording and should save it's results. This method should notify the
-     * recorder to stop and then return immediately without blocking.
-     */
-    @Override
-    void stop();
-
-    /**
-     * Indicates that this recorder should stop recording and should discard it's results. This method should notify
-     * the recorder to cancel and then return immediately without blocking.
-     */
-    @Override
-    void cancel();
-
-    /**
-     * Returns `true` if this recorder is currently recording, and `false` otherwise.
-     *
-     * @return `true` if this recorder is currently recording, and `false` otherwise.
-     */
-    boolean isRecording();
+    Set<SensorConfig> getSensorConfigs();
 }

@@ -30,34 +30,18 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.sagebionetworks.research.presentation.model;
+package org.sagebionetworks.research.presentation.async;
 
-import android.support.annotation.DrawableRes;
 import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 
-import org.sagebionetworks.research.presentation.model.action.ActionType;
-import org.sagebionetworks.research.presentation.DisplayString;
-
-public class StepActionView {
+public interface AsyncActionPresentation {
     @NonNull
-    public final String actionType;
-
-    public final int iconRes;
-
-    public final boolean isEnabled;
-
-    public final boolean isHidden;
+    String getIdentifier();
 
     @NonNull
-    public final DisplayString title;
+    String getType();
 
-    public StepActionView(@NonNull @ActionType String actionType, @NonNull DisplayString title,
-            @DrawableRes int iconRes,
-            boolean isHidden, boolean isEnabled) {
-        this.actionType = actionType;
-        this.title = title;
-        this.iconRes = iconRes;
-        this.isHidden = isHidden;
-        this.isEnabled = isEnabled;
-    }
+    @Nullable
+    String getStartStepIdentifier();
 }

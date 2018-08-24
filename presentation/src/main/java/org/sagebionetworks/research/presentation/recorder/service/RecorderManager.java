@@ -38,7 +38,6 @@ import android.content.Intent;
 import android.content.ServiceConnection;
 import android.os.IBinder;
 import android.support.annotation.Nullable;
-import android.util.Log;
 
 import com.google.common.collect.ImmutableMap;
 
@@ -48,12 +47,10 @@ import org.sagebionetworks.research.domain.result.interfaces.Result;
 import org.sagebionetworks.research.domain.step.interfaces.Step;
 import org.sagebionetworks.research.domain.task.Task;
 import org.sagebionetworks.research.presentation.inject.RecorderConfigPresentationFactory;
-import org.sagebionetworks.research.presentation.inject.RecorderModule.RecorderFactory;
-import org.sagebionetworks.research.presentation.recorder.Recorder;
-import org.sagebionetworks.research.presentation.recorder.ResultRecorder;
-import org.sagebionetworks.research.presentation.recorder.service.RecorderService.RecorderBinder;
 import org.sagebionetworks.research.presentation.model.interfaces.StepView.NavDirection;
+import org.sagebionetworks.research.presentation.recorder.Recorder;
 import org.sagebionetworks.research.presentation.recorder.RecorderConfigPresentation;
+import org.sagebionetworks.research.presentation.recorder.service.RecorderService.RecorderBinder;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -63,42 +60,47 @@ import java.util.Map;
 import java.util.Set;
 import java.util.UUID;
 
-import io.reactivex.FlowableEmitter;
-import io.reactivex.FlowableOnSubscribe;
+import io.reactivex.ObservableEmitter;
+import io.reactivex.ObservableOnSubscribe;
 import io.reactivex.disposables.CompositeDisposable;
 
 /**
- * A RecorderManager handles the work of creating recorders, and making the appropriate RecorderService calls
- * to start, stop, and cancel those recorders at the appropriate times.
+ * A RecorderManager handles the work of creating recorders, and making the appropriate RecorderService calls to
+ * start, stop, and cancel those recorders at the appropriate times.
  */
-public class RecorderManager implements ServiceConnection, FlowableOnSubscribe<Result> {
+public class RecorderManager implements ServiceConnection, ObservableOnSubscribe<Result> {
     private static final Logger LOGGER = LoggerFactory.getLogger(RecorderManager.class);
 
     /**
-     * Invariant:
-     * bound == true exactly when binder != null && service != null.
-     * binder == null exactly when service == null.
+     * Invariant: bound == true exactly when binder != null && service != null. binder == null exactly when service ==
+     * null.
      */
     private boolean bound;
+
     private RecorderBinder binder;
+
     private RecorderService service;
 
     private Context context;
-    private Task task;
-    private UUID taskRunUUID;
-    private RecorderFactory recorderFactory;
-    private RecorderConfigPresentationFactory recorderConfigPresentationFactory;
-    private Set<RecorderConfigPresentation> recorderConfigs;
-    private CompositeDisposable compositeDisposable;
-    private Set<FlowableEmitter<Result>> observers;
 
-    public RecorderManager(Task task, UUID taskRunUUID, Context context, RecorderFactory recorderFactory,
+    private Task task;
+
+    private UUID taskRunUUID;
+
+    private RecorderConfigPresentationFactory recorderConfigPresentationFactory;
+
+    private Set<RecorderConfigPresentation> recorderConfigs;
+
+    private CompositeDisposable compositeDisposable;
+
+    private Set<ObservableEmitter<Result>> observers;
+
+    public RecorderManager(Task task, UUID taskRunUUID, Context context,
             RecorderConfigPresentationFactory recorderConfigPresentationFactory) {
         this.context = context;
         this.taskRunUUID = taskRunUUID;
         this.compositeDisposable = new CompositeDisposable();
         this.observers = new HashSet<>();
-        this.recorderFactory = recorderFactory;
         this.recorderConfigPresentationFactory = recorderConfigPresentationFactory;
         this.task = task;
         Intent bindIntent = new Intent(context, RecorderService.class);
@@ -107,7 +109,7 @@ public class RecorderManager implements ServiceConnection, FlowableOnSubscribe<R
     }
 
     @Override
-    public void subscribe(final FlowableEmitter<Result> emitter) {
+    public void subscribe(final ObservableEmitter<Result> emitter) {
         this.observers.add(emitter);
     }
 
@@ -115,7 +117,7 @@ public class RecorderManager implements ServiceConnection, FlowableOnSubscribe<R
         Set<RecorderConfigPresentation> recorderConfigs = new HashSet<>();
         for (AsyncActionConfiguration asyncAction : this.task.getAsyncActions()) {
             if (asyncAction instanceof RecorderConfiguration) {
-                recorderConfigs.add(recorderConfigPresentationFactory.create((RecorderConfiguration)asyncAction));
+                recorderConfigs.add(recorderConfigPresentationFactory.create((RecorderConfiguration) asyncAction));
             }
         }
 
@@ -124,10 +126,9 @@ public class RecorderManager implements ServiceConnection, FlowableOnSubscribe<R
 
     @Override
     public void onServiceConnected(final ComponentName componentName, final IBinder iBinder) {
-        this.binder = (RecorderBinder)iBinder;
+        this.binder = (RecorderBinder) iBinder;
         this.service = this.binder.getService();
         this.bound = true;
-        this.service.setRecorderFactory(this.recorderFactory);
         Map<String, Recorder> activeRecorders = this.getActiveRecorders();
         try {
             for (RecorderConfigPresentation config : this.recorderConfigs) {
@@ -137,18 +138,18 @@ public class RecorderManager implements ServiceConnection, FlowableOnSubscribe<R
             }
 
             for (Recorder recorder : this.getActiveRecorders().values()) {
-                if (recorder instanceof ResultRecorder<?>) {
-                    this.compositeDisposable.add(((ResultRecorder<?>)recorder).getResult()
-                            .subscribe((result) -> {
-                                for (FlowableEmitter<Result> emitter : this.observers) {
-                                    emitter.onNext(result);
-                                }
-                            }, (throwable -> {
-                                for (FlowableEmitter<Result> emitter : this.observers) {
-                                    emitter.onError(throwable);
-                                }
-                            })));
-                }
+                this.compositeDisposable.add(
+                        ((Recorder<? extends Result>) recorder).getResult()
+                                .subscribe((result) -> {
+                                    for (ObservableEmitter<Result> emitter : this.observers) {
+                                        emitter.onNext(result);
+                                        emitter.onComplete();
+                                    }
+                                }, (throwable -> {
+                                    for (ObservableEmitter<Result> emitter : this.observers) {
+                                        emitter.onError(throwable);
+                                    }
+                                })));
             }
         } catch (IOException e) {
             e.printStackTrace();
@@ -166,16 +167,21 @@ public class RecorderManager implements ServiceConnection, FlowableOnSubscribe<R
     }
 
     /**
-     * Starts, stops, and cancels the appropriate recorders in response to the step transition from previousStep
-     * to nextStep in navDirection.
-     * @param previousStep The step that has just been transitioned away from, null indicates that nextStep is the first
-     *                     step.
-     * @param nextStep The step that has just been transition to, null indicates that previousStep is the last step.
-     * @param navDirection The direction in which the transition from previousStep to nextStep occurred in.
+     * Starts, stops, and cancels the appropriate recorders in response to the step transition from previousStep to
+     * nextStep in navDirection.
+     *
+     * @param previousStep
+     *         The step that has just been transitioned away from, null indicates that nextStep is the first step.
+     * @param nextStep
+     *         The step that has just been transition to, null indicates that previousStep is the last step.
+     * @param navDirection
+     *         The direction in which the transition from previousStep to nextStep occurred in.
      */
-    public void onStepTransition(@Nullable Step previousStep, @Nullable Step nextStep, @NavDirection int navDirection) {
+    public void onStepTransition(@Nullable Step previousStep, @Nullable Step nextStep,
+            @NavDirection int navDirection) {
         if (LOGGER.isDebugEnabled()) {
-            LOGGER.debug("onStepTransition called from: " + previousStep + ", to: " + nextStep + " in direction: " + navDirection);
+            LOGGER.debug("onStepTransition called from: " + previousStep + ", to: " + nextStep + " in direction: "
+                    + navDirection);
         }
 
         Set<RecorderConfigPresentation> shouldStart = new HashSet<>();
@@ -240,6 +246,7 @@ public class RecorderManager implements ServiceConnection, FlowableOnSubscribe<R
     /**
      * Returns a map of Recorder Id to Recorder containing all of the recorders that are currently active. An active
      * recorder is any recorder that has been created and has not had stop() called on it.
+     *
      * @return A map of Recorder Id to Recorder containing all of the active recorders.
      */
     public ImmutableMap<String, Recorder> getActiveRecorders() {

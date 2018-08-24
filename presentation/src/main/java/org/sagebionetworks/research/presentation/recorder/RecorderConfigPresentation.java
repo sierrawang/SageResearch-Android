@@ -34,6 +34,8 @@ package org.sagebionetworks.research.presentation.recorder;
 
 import android.support.annotation.Nullable;
 
+import org.sagebionetworks.research.presentation.async.AsyncActionPresentation;
+
 public interface RecorderConfigPresentation extends AsyncActionPresentation {
     @Nullable
     String getStopStepIdentifier();

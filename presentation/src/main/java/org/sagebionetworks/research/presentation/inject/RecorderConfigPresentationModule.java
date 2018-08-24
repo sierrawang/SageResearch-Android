@@ -32,40 +32,39 @@
 
 package org.sagebionetworks.research.presentation.inject;
 
-import org.sagebionetworks.research.domain.async.DistanceRecorderConfigurationImpl;
-import org.sagebionetworks.research.domain.async.RecorderConfiguration;
 import org.sagebionetworks.research.domain.async.RecorderType;
-import org.sagebionetworks.research.presentation.recorder.DeviceMotionRecorderConfigPresentation;
-import org.sagebionetworks.research.presentation.recorder.DeviceMotionRecorderConfigPresentationBase;
-import org.sagebionetworks.research.presentation.recorder.DistanceRecorderConfigPresentationBase;
-import org.sagebionetworks.research.presentation.recorder.RecorderConfigPresentation;
+import org.sagebionetworks.research.presentation.recorder.location.DistanceRecorderConfigPresentationImpl;
+import org.sagebionetworks.research.presentation.recorder.sensor.SensorRecorderConfigPresentationFactory;
+import org.sagebionetworks.research.presentation.recorder.service.RecorderService;
 
 import java.util.Map;
 
-import dagger.MapKey;
 import dagger.Module;
 import dagger.Provides;
+import dagger.android.ContributesAndroidInjector;
 import dagger.multibindings.IntoMap;
 import dagger.multibindings.StringKey;
 
-@Module
+@Module(includes = SensorModule.class)
 public abstract class RecorderConfigPresentationModule {
     @Provides
     @IntoMap
     @StringKey(RecorderType.MOTION)
-    static RecorderConfigPresentationFactory provideMotionRecorderConfigPresentationFactory() {
-        return DeviceMotionRecorderConfigPresentationBase::fromDeviceMotionRecorderConfiguration;
+    static RecorderConfigPresentationFactory provideMotionRecorderConfigPresentationFactory(
+            SensorRecorderConfigPresentationFactory sensorRecorderConfigPresentationFactory) {
+        return sensorRecorderConfigPresentationFactory;
     }
 
     @Provides
     @IntoMap
     @StringKey(RecorderType.DISTANCE)
     static RecorderConfigPresentationFactory provideDistanceRecorderConfigPresentationFacotry() {
-        return DistanceRecorderConfigPresentationBase::fromDistanceRecorderConfiguration;
+        return DistanceRecorderConfigPresentationImpl::fromDistanceRecorderConfiguration;
     }
 
     @Provides
-    static RecorderConfigPresentationFactory provideRecorderConfigPresentationFactory(Map<String, RecorderConfigPresentationFactory> recorderFactories) {
+    static RecorderConfigPresentationFactory provideRecorderConfigPresentationFactory(
+            Map<String, RecorderConfigPresentationFactory> recorderFactories) {
         return configuration -> {
             String configType = configuration.getType();
             if (!recorderFactories.containsKey(configType)) {
@@ -75,4 +74,7 @@ public abstract class RecorderConfigPresentationModule {
             return recorderFactories.get(configType).create(configuration);
         };
     }
+
+    @ContributesAndroidInjector
+    abstract RecorderService contributeRecorderService();
 }

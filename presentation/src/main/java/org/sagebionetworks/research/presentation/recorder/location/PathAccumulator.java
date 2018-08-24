@@ -30,34 +30,25 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.sagebionetworks.research.presentation.model;
+package org.sagebionetworks.research.presentation.recorder.location;
 
-import android.support.annotation.DrawableRes;
-import android.support.annotation.NonNull;
+import android.location.Location;
 
-import org.sagebionetworks.research.presentation.model.action.ActionType;
-import org.sagebionetworks.research.presentation.DisplayString;
+import io.reactivex.functions.BiFunction;
 
-public class StepActionView {
-    @NonNull
-    public final String actionType;
+/**
+ * Provides the ability to use Observable.scan() on the LocationObservable from locationSensor in order to obtain
+ * an observable that provides information about the path that the Locations form.
+ */
+public class PathAccumulator implements BiFunction<Path, Location, Path> {
+    @Override
+    public Path apply(final Path path, final Location location) {
+        if (path.equals(Path.ZERO)) {
+            // If this is the initial value we initialize the locations.
+            return Path.builder().setDistance(0f).setFirstLocation(location).setLastLocation(location)
+                    .setDuration(0).build();
+        }
 
-    public final int iconRes;
-
-    public final boolean isEnabled;
-
-    public final boolean isHidden;
-
-    @NonNull
-    public final DisplayString title;
-
-    public StepActionView(@NonNull @ActionType String actionType, @NonNull DisplayString title,
-            @DrawableRes int iconRes,
-            boolean isHidden, boolean isEnabled) {
-        this.actionType = actionType;
-        this.title = title;
-        this.iconRes = iconRes;
-        this.isHidden = isHidden;
-        this.isEnabled = isEnabled;
+        return path.addLocation(location);
     }
 }

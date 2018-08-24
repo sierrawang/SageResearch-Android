@@ -36,7 +36,7 @@ package org.sagebionetworks.research.presentation.mapper;
 import org.sagebionetworks.research.domain.step.StepAction;
 import org.sagebionetworks.research.domain.step.StepAction.StepCustomAction;
 import org.sagebionetworks.research.domain.step.StepAction.StepNavigationAction;
-import org.sagebionetworks.research.presentation.ActionType;
+import org.sagebionetworks.research.presentation.model.action.ActionType;
 import org.sagebionetworks.research.presentation.DisplayString;
 import org.sagebionetworks.research.presentation.R;
 import org.sagebionetworks.research.presentation.model.StepActionView;

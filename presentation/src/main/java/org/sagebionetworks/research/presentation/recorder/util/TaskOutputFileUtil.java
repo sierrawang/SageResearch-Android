@@ -30,34 +30,39 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.sagebionetworks.research.presentation.model;
+package org.sagebionetworks.research.presentation.recorder.util;
 
-import android.support.annotation.DrawableRes;
+import static com.google.common.base.Preconditions.checkArgument;
+import static com.google.common.base.Preconditions.checkNotNull;
+
+import android.content.Context;
 import android.support.annotation.NonNull;
 
-import org.sagebionetworks.research.presentation.model.action.ActionType;
-import org.sagebionetworks.research.presentation.DisplayString;
+import com.google.common.base.Strings;
 
-public class StepActionView {
-    @NonNull
-    public final String actionType;
+import java.io.File;
+import java.io.IOException;
+import java.util.UUID;
 
-    public final int iconRes;
+public final class TaskOutputFileUtil {
+    public static File getTaskOutputFile(@NonNull UUID taskRunUUID, @NonNull String filename,
+            @NonNull Context context) throws IOException {
+        checkNotNull(taskRunUUID);
+        checkArgument(!Strings.isNullOrEmpty(filename));
+        checkNotNull(context);
 
-    public final boolean isEnabled;
+        File path = context.getFilesDir();
+        String outputFilename = taskRunUUID.toString() + "/" + filename;
 
-    public final boolean isHidden;
+        File outputFile = new File(path, outputFilename);
+        if (!outputFile.isFile()) {
+            outputFile.getParentFile().mkdirs();
+            outputFile.createNewFile();
+        }
 
-    @NonNull
-    public final DisplayString title;
+        return outputFile;
+    }
 
-    public StepActionView(@NonNull @ActionType String actionType, @NonNull DisplayString title,
-            @DrawableRes int iconRes,
-            boolean isHidden, boolean isEnabled) {
-        this.actionType = actionType;
-        this.title = title;
-        this.iconRes = iconRes;
-        this.isHidden = isHidden;
-        this.isEnabled = isEnabled;
+    private TaskOutputFileUtil() {
     }
 }
