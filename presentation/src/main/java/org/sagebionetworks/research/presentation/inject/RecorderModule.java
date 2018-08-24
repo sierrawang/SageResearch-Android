@@ -32,18 +32,24 @@
 
 package org.sagebionetworks.research.presentation.inject;
 
+import static org.sagebionetworks.research.presentation.recorder.reactive.ReactiveFileResultRecorder.createJsonArrayLogger;
+
 import android.content.Context;
 
+import com.github.pwittchen.reactivesensors.library.ReactiveSensors;
 import com.google.gson.Gson;
 
-import org.sagebionetworks.research.domain.async.DeviceMotionRecorderConfiguration;
 import org.sagebionetworks.research.domain.async.RecorderType;
 import org.sagebionetworks.research.presentation.recorder.Recorder;
-import org.sagebionetworks.research.presentation.recorder.device_motion.json.DeviceMotionJsonRecorder;
-import org.sagebionetworks.research.presentation.recorder.distance.json.DistanceJsonRecorder;
-import org.sagebionetworks.research.presentation.recorder.DeviceMotionRecorderConfigPresentation;
-import org.sagebionetworks.research.presentation.recorder.DistanceRecorderConfigPresentation;
 import org.sagebionetworks.research.presentation.recorder.RecorderConfigPresentation;
+import org.sagebionetworks.research.presentation.recorder.location.DistanceRecorderConfigPresentation;
+import org.sagebionetworks.research.presentation.recorder.location.Path;
+import org.sagebionetworks.research.presentation.recorder.location.PathAccumulator;
+import org.sagebionetworks.research.presentation.recorder.reactive.source.ReactiveLocationFactory;
+import org.sagebionetworks.research.presentation.recorder.reactive.source.SensorRecorderSourceFactory;
+import org.sagebionetworks.research.presentation.recorder.sensor.SensorRecorderConfigPresentation;
+import org.sagebionetworks.research.presentation.recorder.sensor.json.DeviceMotionJsonRecorder;
+import org.sagebionetworks.research.presentation.recorder.util.TaskOutputFileUtil;
 
 import java.io.IOException;
 import java.util.Map;
@@ -65,28 +71,36 @@ public abstract class RecorderModule {
     @StringKey(RecorderType.MOTION)
     static RecorderFactory provideMotionJsonRecorderFactory(Context context, Gson gson) {
         return (recorderConfiguration, taskUUID) -> {
-            if (!(recorderConfiguration instanceof DeviceMotionRecorderConfigPresentation)) {
+            if (!(recorderConfiguration instanceof SensorRecorderConfigPresentation)) {
                 throw new IllegalArgumentException("RecorderConfigPresentation " + recorderConfiguration
-                        + " is not a DeviceMotionRecorderConfigPresentation.");
+                        + " is not a SensorRecorderConfigPresentation.");
             }
 
-            return new DeviceMotionJsonRecorder((DeviceMotionRecorderConfigPresentation)recorderConfiguration,
-                    context, gson, taskUUID);
+            return new DeviceMotionJsonRecorder((SensorRecorderConfigPresentation) recorderConfiguration,
+                    context, gson, taskUUID, new SensorRecorderSourceFactory(
+                    new ReactiveSensors(context)));
         };
     }
 
     @Provides
     @IntoMap
     @StringKey(RecorderType.DISTANCE)
-    static RecorderFactory provideDistanceJsonRecorderFactory(Context context, Gson gson) {
+    static RecorderFactory provideDistanceJsonRecorderFactory(ReactiveLocationFactory reactiveLocationFactory,
+            Context context, Gson gson) {
         return (recorderConfiguration, taskUUID) -> {
             if (!(recorderConfiguration instanceof DistanceRecorderConfigPresentation)) {
                 throw new IllegalArgumentException("RecorderConfigPresentation " + recorderConfiguration
                         + " is not a DistanceRecorderConfigPresentation.");
             }
 
-            return new DistanceJsonRecorder((DistanceRecorderConfigPresentation)recorderConfiguration,
-                    context, gson, taskUUID);
+            return createJsonArrayLogger(
+                    recorderConfiguration.getIdentifier(),
+                    reactiveLocationFactory.getLocation().scan(Path.ZERO, new PathAccumulator()),
+                    gson,
+                    TaskOutputFileUtil.getTaskOutputFile(
+                            taskUUID,
+                            recorderConfiguration.getIdentifier() + ".json",
+                            context));
         };
     }
 

@@ -30,34 +30,48 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.sagebionetworks.research.presentation.model;
+package org.sagebionetworks.research.presentation.recorder.sensor;
 
-import android.support.annotation.DrawableRes;
+import static com.google.common.base.Preconditions.checkNotNull;
+
+import android.hardware.SensorEvent;
 import android.support.annotation.NonNull;
 
-import org.sagebionetworks.research.presentation.model.action.ActionType;
-import org.sagebionetworks.research.presentation.DisplayString;
+import org.sagebionetworks.research.domain.result.interfaces.FileResult;
+import org.sagebionetworks.research.presentation.recorder.reactive.ReactiveRecorder;
+import org.sagebionetworks.research.presentation.recorder.reactive.source.SensorRecorderSourceFactory;
+import org.sagebionetworks.research.presentation.recorder.reactive.source.SensorRecorderSourceFactory.SensorConfig;
 
-public class StepActionView {
+import java.util.Collection;
+import java.util.HashSet;
+
+import io.reactivex.Flowable;
+
+/**
+ * A DeviceMotionRecorder recorders a set of the device's motion sensors and produces a FileResult.
+ */
+public abstract class DeviceMotionRecorder extends ReactiveRecorder<SensorEvent, FileResult> {
     @NonNull
-    public final String actionType;
-
-    public final int iconRes;
-
-    public final boolean isEnabled;
-
-    public final boolean isHidden;
+    private final SensorRecorderSourceFactory sensorRecorderSourceFactory;
 
     @NonNull
-    public final DisplayString title;
+    private final SensorRecorderConfigPresentation config;
 
-    public StepActionView(@NonNull @ActionType String actionType, @NonNull DisplayString title,
-            @DrawableRes int iconRes,
-            boolean isHidden, boolean isEnabled) {
-        this.actionType = actionType;
-        this.title = title;
-        this.iconRes = iconRes;
-        this.isHidden = isHidden;
-        this.isEnabled = isEnabled;
+    public DeviceMotionRecorder(@NonNull final SensorRecorderConfigPresentation config,
+            @NonNull final SensorRecorderSourceFactory sensorRecorderSourceFactory) {
+        super(config.getIdentifier());
+
+        this.config = checkNotNull(config);
+        this.sensorRecorderSourceFactory = checkNotNull(sensorRecorderSourceFactory);
+    }
+
+    @Override
+    @NonNull
+    public Flowable<SensorEvent> initializeEventFlowable() {
+        Collection<Flowable<SensorEvent>> sensorEventFlowables = new HashSet<>();
+        for (SensorConfig sensorConfig : config.getSensorConfigs()) {
+            sensorEventFlowables.add(sensorRecorderSourceFactory.getSensorEvents(sensorConfig));
+        }
+        return Flowable.merge(sensorEventFlowables);
     }
 }

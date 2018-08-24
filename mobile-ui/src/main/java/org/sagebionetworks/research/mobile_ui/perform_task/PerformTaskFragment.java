@@ -201,25 +201,36 @@ public class PerformTaskFragment extends Fragment implements HasSupportFragmentI
         return fragmentDispatchingAndroidInjector;
     }
 
+    void afterLastStep() {
+        if (currentStepFragment != null) {
+            getChildFragmentManager().beginTransaction().remove(currentStepFragment).commit();
+            currentStepFragment = null;
+        }
+
+        // Write this date as the new last run.
+        String sharedPreferencesKey = this.taskView.getIdentifier();
+        SharedPreferences sharedPreferences = getContext().getSharedPreferences(sharedPreferencesKey,
+                Context.MODE_PRIVATE);
+        sharedPreferences.edit().putLong(LAST_RUN_KEY, Instant.now().toEpochMilli()).apply();
+
+        OnPerformTaskExitListener onPerformTaskExitListener = null;
+        if (getParentFragment() instanceof OnPerformTaskExitListener) {
+            onPerformTaskExitListener = (OnPerformTaskExitListener) getParentFragment();
+        }
+        if (onPerformTaskExitListener == null && getActivity() instanceof OnPerformTaskExitListener) {
+            onPerformTaskExitListener = (OnPerformTaskExitListener) getActivity();
+        }
+        if (onPerformTaskExitListener != null) {
+            onPerformTaskExitListener.onTaskExit(Status.FINISHED,
+                    performTaskViewModel.getTaskResult().getValue());
+        }
+    }
+
     @VisibleForTesting
     void showStep(StepView stepView) {
         // No next step, task has ended
         if (stepView == null) {
-            if (currentStepFragment != null) {
-                getChildFragmentManager().beginTransaction().remove(currentStepFragment).commit();
-                currentStepFragment = null;
-            }
-
-            // Write this date as the new last run.
-            String sharedPreferencesKey = this.taskView.getIdentifier();
-            SharedPreferences sharedPreferences = getContext().getSharedPreferences(sharedPreferencesKey,
-                    Context.MODE_PRIVATE);
-            sharedPreferences.edit().putLong(LAST_RUN_KEY, Instant.now().toEpochMilli()).apply();
-            // TODO handle end of perform task.
-            if (getActivity() instanceof OnPerformTaskExitListener) {
-                ((OnPerformTaskExitListener) getActivity()).onTaskExit(Status.FINISHED,
-                        performTaskViewModel.getTaskResult().getValue());
-            }
+            afterLastStep();
             return;
         }
 

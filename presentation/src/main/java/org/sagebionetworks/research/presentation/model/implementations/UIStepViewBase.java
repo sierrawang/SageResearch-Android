@@ -38,16 +38,13 @@ import android.support.annotation.Nullable;
 
 import com.google.common.collect.ImmutableMap;
 
-import org.sagebionetworks.research.domain.result.implementations.ResultBase;
-import org.sagebionetworks.research.domain.result.interfaces.Result;
-import org.sagebionetworks.research.domain.result.interfaces.TaskResult;
 import org.sagebionetworks.research.domain.step.StepType;
 import org.sagebionetworks.research.domain.step.interfaces.Step;
 import org.sagebionetworks.research.domain.step.interfaces.ThemedUIStep;
 import org.sagebionetworks.research.domain.step.ui.action.Action;
 import org.sagebionetworks.research.domain.step.ui.action.ReminderAction;
 import org.sagebionetworks.research.domain.step.ui.action.SkipToStepAction;
-import org.sagebionetworks.research.presentation.ActionType;
+import org.sagebionetworks.research.presentation.model.action.ActionType;
 import org.sagebionetworks.research.presentation.DisplayString;
 import org.sagebionetworks.research.presentation.mapper.DrawableMapper;
 import org.sagebionetworks.research.presentation.model.ColorThemeView;
@@ -57,7 +54,6 @@ import org.sagebionetworks.research.presentation.model.action.ActionViewBase;
 import org.sagebionetworks.research.presentation.model.action.ReminderActionViewBase;
 import org.sagebionetworks.research.presentation.model.action.SkipToStepActionViewBase;
 import org.sagebionetworks.research.presentation.model.interfaces.UIStepView;
-import org.threeten.bp.Instant;
 
 import java.util.HashMap;
 import java.util.Map;
