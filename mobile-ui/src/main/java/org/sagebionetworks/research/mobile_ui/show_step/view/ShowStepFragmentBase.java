@@ -50,6 +50,7 @@ import org.sagebionetworks.research.domain.mobile_ui.R;
 import org.sagebionetworks.research.domain.result.interfaces.Result;
 import org.sagebionetworks.research.domain.result.interfaces.TaskResult;
 import org.sagebionetworks.research.mobile_ui.perform_task.PerformTaskFragment;
+import org.sagebionetworks.research.mobile_ui.show_step.ShowStepFragment;
 import org.sagebionetworks.research.mobile_ui.show_step.view.view_binding.StepViewBinding;
 import org.sagebionetworks.research.mobile_ui.widget.ActionButton;
 import org.sagebionetworks.research.presentation.ActionType;
@@ -63,6 +64,7 @@ import org.slf4j.LoggerFactory;
 import javax.inject.Inject;
 
 import butterknife.Unbinder;
+import dagger.Provides;
 import dagger.android.support.AndroidSupportInjection;
 
 /**
@@ -75,7 +77,7 @@ import dagger.android.support.AndroidSupportInjection;
  *         The type of StepViewModel that this fragment uses.
  */
 public abstract class ShowStepFragmentBase<StepT extends StepView, ViewModelT extends ShowStepViewModel<StepT>,
-        StepViewBindingT extends StepViewBinding<StepT>> extends Fragment {
+        StepViewBindingT extends StepViewBinding<StepT>> extends ShowStepFragment {
     private static final Logger LOGGER = LoggerFactory.getLogger(ShowStepFragmentBase.class);
 
     private static final String ARGUMENT_STEP_VIEW = "STEP_VIEW";
@@ -170,7 +172,8 @@ public abstract class ShowStepFragmentBase<StepT extends StepView, ViewModelT ex
         this.stepViewBinding.unbind();
     }
 
-    public void setPerformTaskFragment(PerformTaskFragment performTaskFragment) {
+    @Override
+    public void setPerformTaskFragment(@NonNull PerformTaskFragment performTaskFragment) {
         this.performTaskFragment = performTaskFragment;
     }
 
