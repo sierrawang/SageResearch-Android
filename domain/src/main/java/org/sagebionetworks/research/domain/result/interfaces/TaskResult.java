@@ -63,7 +63,7 @@ public interface TaskResult extends Result {
      *         The result to append to the step history.
      * @return a new TaskResult with the given result appended to the step history.
      */
-    @Nullable
+    @NonNull
     TaskResult addStepHistory(Result result);
 
     /**

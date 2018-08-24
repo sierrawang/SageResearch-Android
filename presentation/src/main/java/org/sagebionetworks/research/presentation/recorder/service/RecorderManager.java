@@ -65,8 +65,10 @@ import io.reactivex.ObservableOnSubscribe;
 import io.reactivex.disposables.CompositeDisposable;
 
 /**
- * A RecorderManager handles the work of creating recorders, and making the appropriate RecorderService calls to
- * start, stop, and cancel those recorders at the appropriate times.
+ * A RecorderManager managers a Task's recorders.
+ * <p>
+ * RecorderManager creates a Task's recorders and makes the appropriate RecorderService calls to start, stop, and
+ * cancel those recorders at the appropriate times.
  */
 public class RecorderManager implements ServiceConnection, ObservableOnSubscribe<Result> {
     private static final Logger LOGGER = LoggerFactory.getLogger(RecorderManager.class);

@@ -94,6 +94,12 @@ public class PerformTaskViewModel extends AndroidViewModel {
 
     private final ZonedDateTime lastRun;
 
+    private final RecorderConfigPresentationFactory recorderConfigPresentationFactory;
+
+    private final RecorderFactory recorderFactory;
+
+    private RecorderManager recorderManager;
+
     private StepNavigator stepNavigator;
 
     private final StepNavigatorFactory stepNavigatorFactory;
@@ -116,23 +122,21 @@ public class PerformTaskViewModel extends AndroidViewModel {
 
     private final MutableLiveData<TaskResult> taskResultLiveData;
 
+    private final TaskResultProcessingManager taskResultProcessingManager;
+
     private final UUID taskRunUuid;
 
     private final TaskView taskView;
 
     private final MutableLiveData<LoadableResource<TaskView>> taskViewLiveData;
 
-    private final RecorderFactory recorderFactory;
-
-    private final RecorderConfigPresentationFactory recorderConfigPresentationFactory;
-
-    private RecorderManager recorderManager;
-
-    public PerformTaskViewModel(Application application, @NonNull TaskView taskView, @NonNull UUID taskRunUUID,
-            @NonNull StepNavigatorFactory stepNavigatorFactory, @NonNull TaskRepository taskRepository,
-            @NonNull TaskMapper taskMapper, @NonNull RecorderFactory recorderFactory,
+    public PerformTaskViewModel(@NonNull Application application, @NonNull TaskView taskView,
+            @NonNull UUID taskRunUUID, @NonNull StepNavigatorFactory stepNavigatorFactory,
+            @NonNull TaskRepository taskRepository, @NonNull TaskMapper taskMapper,
+            @NonNull RecorderFactory recorderFactory,
             @NonNull RecorderConfigPresentationFactory recorderConfigPresentationFactory,
             @NonNull StepViewFactory stepViewFactory,
+            @NonNull TaskResultProcessingManager taskResultProcessingManager,
             @Nullable ZonedDateTime lastRun) {
         super(application);
         this.recorderFactory = checkNotNull(recorderFactory);
@@ -143,6 +147,7 @@ public class PerformTaskViewModel extends AndroidViewModel {
         this.taskRepository = checkNotNull(taskRepository);
         this.taskMapper = checkNotNull(taskMapper);
         this.stepViewFactory = checkNotNull(stepViewFactory);
+        this.taskResultProcessingManager = checkNotNull(taskResultProcessingManager);
         this.lastRun = lastRun;
 
         // TODO migrate these LiveData to StepNavigationViewModel @liujoshua 2018/08/07
@@ -160,6 +165,7 @@ public class PerformTaskViewModel extends AndroidViewModel {
         compositeDisposable = new CompositeDisposable();
         taskViewLiveData = new MutableLiveData<>();
 
+        taskResultProcessingManager.registerTaskResultProcessors(taskRunUUID);
         initTaskSteps(taskView, taskRunUuid);
     }
 
@@ -172,12 +178,6 @@ public class PerformTaskViewModel extends AndroidViewModel {
         }
 
         taskResultLiveData.setValue(taskResultLiveData.getValue().addAsyncResult(result));
-    }
-
-    public void onAsyncError(Throwable t) {
-        LOGGER.warn("received async error", t);
-
-        // TODO: add error result
     }
 
     public void addStepResult(Result result) {
@@ -309,6 +309,12 @@ public class PerformTaskViewModel extends AndroidViewModel {
         TaskResult taskResult = taskResultLiveData.getValue();
         checkState(taskResult != null);
         return this.stepNavigator.getPreviousStep(currentStep, taskResult) != null;
+    }
+
+    public void onAsyncError(Throwable t) {
+        LOGGER.warn("received async error", t);
+
+        // TODO: add error result
     }
 
     protected void onCleared() {

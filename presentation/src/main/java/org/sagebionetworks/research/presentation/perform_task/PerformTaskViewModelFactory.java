@@ -53,6 +53,12 @@ import java.util.UUID;
 import javax.inject.Inject;
 
 public class PerformTaskViewModelFactory {
+    private final Application application;
+
+    private final RecorderConfigPresentationFactory recorderConfigPresentationFactory;
+
+    private final RecorderFactory recorderFactory;
+
     private final StepNavigatorFactory stepNavigatorFactory;
 
     private final StepViewFactory stepViewFactory;
@@ -61,28 +67,24 @@ public class PerformTaskViewModelFactory {
 
     private final TaskRepository taskRepository;
 
-    private final RecorderFactory recorderFactory;
-
-    private final RecorderConfigPresentationFactory recorderConfigPresentationFactory;
-
-    private final Application application;
-
+    private final TaskResultProcessingManager taskResultProcessingManager;
 
     @Inject
-    public PerformTaskViewModelFactory(
-            Application application,
-            StepNavigatorFactory stepNavigatorFactory,
-            TaskMapper taskMapper,
-            final TaskRepository taskRepository, StepViewFactory stepViewFactory,
-            final RecorderFactory recorderFactory,
-            final RecorderConfigPresentationFactory recorderConfigPresentationFactory) {
-        this.application = application;
-        this.stepNavigatorFactory = stepNavigatorFactory;
-        this.recorderFactory = recorderFactory;
-        this.recorderConfigPresentationFactory = recorderConfigPresentationFactory;
-        this.taskMapper = taskMapper;
-        this.taskRepository = taskRepository;
-        this.stepViewFactory = stepViewFactory;
+    public PerformTaskViewModelFactory(@NonNull Application application,
+            @NonNull StepNavigatorFactory stepNavigatorFactory,
+            @NonNull TaskMapper taskMapper, @NonNull TaskRepository taskRepository,
+            @NonNull StepViewFactory stepViewFactory,
+            @NonNull RecorderFactory recorderFactory,
+            @NonNull RecorderConfigPresentationFactory recorderConfigPresentationFactory,
+            @NonNull TaskResultProcessingManager taskResultProcessingManager) {
+        this.application = checkNotNull(application);
+        this.stepNavigatorFactory = checkNotNull(stepNavigatorFactory);
+        this.recorderFactory = checkNotNull(recorderFactory);
+        this.recorderConfigPresentationFactory = checkNotNull(recorderConfigPresentationFactory);
+        this.taskMapper = checkNotNull(taskMapper);
+        this.taskRepository = checkNotNull(taskRepository);
+        this.stepViewFactory = checkNotNull(stepViewFactory);
+        this.taskResultProcessingManager = checkNotNull(taskResultProcessingManager);
     }
 
     public ViewModelProvider.Factory create(@NonNull TaskView taskView, @NonNull UUID taskRunUUID,
@@ -99,7 +101,7 @@ public class PerformTaskViewModelFactory {
                     // noinspection unchecked
                     return (T) new PerformTaskViewModel(application, taskView, taskRunUUID, stepNavigatorFactory,
                             taskRepository, taskMapper, recorderFactory, recorderConfigPresentationFactory,
-                            stepViewFactory, lastRun);
+                            stepViewFactory, taskResultProcessingManager, lastRun);
                 }
                 throw new IllegalArgumentException("Unknown ViewModel class");
             }
