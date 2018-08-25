@@ -44,7 +44,6 @@ import org.sagebionetworks.research.presentation.model.StepActionView;
 import javax.inject.Inject;
 import javax.inject.Singleton;
 
-@Singleton
 public class StepActionMapper {
     @Inject
     public StepActionMapper() {

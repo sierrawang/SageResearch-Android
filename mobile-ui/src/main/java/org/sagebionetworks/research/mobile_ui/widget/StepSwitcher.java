@@ -40,7 +40,7 @@ import android.view.View;
 import android.view.animation.DecelerateInterpolator;
 import android.widget.FrameLayout;
 
-import org.sagebionetworks.research.domain.mobile_ui.R;
+import org.sagebionetworks.research.mobile_ui.R;
 import org.sagebionetworks.research.presentation.model.interfaces.StepView.NavDirection;
 
 /**

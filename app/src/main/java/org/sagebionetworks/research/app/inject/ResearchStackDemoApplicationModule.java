@@ -42,6 +42,7 @@ import org.sagebionetworks.research.app.MainActivity;
 import org.sagebionetworks.research.app.ResearchStackDemoApplication;
 import org.sagebionetworks.research.data.inject.DataModule;
 import org.sagebionetworks.research.domain.result.interfaces.TaskResult;
+import org.sagebionetworks.research.mobile_ui.inject.PerformTaskModule;
 import org.sagebionetworks.research.presentation.perform_task.TaskResultProcessingManager.TaskResultProcessor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -59,7 +60,7 @@ import dagger.multibindings.IntoMap;
 import dagger.multibindings.IntoSet;
 import io.reactivex.Completable;
 
-@Module(includes = {AndroidInjectionModule.class, AppTaskModule.class, DataModule.class},
+@Module(includes = {AppTaskModule.class, DataModule.class},
         subcomponents = {MainActivitySubcomponent.class})
 public abstract class ResearchStackDemoApplicationModule {
     @Binds

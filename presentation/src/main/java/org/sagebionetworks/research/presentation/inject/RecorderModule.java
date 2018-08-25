@@ -85,7 +85,7 @@ public abstract class RecorderModule {
 
             return createJsonArrayLogger(
                     recorderConfiguration.getIdentifier(),
-                    reactiveLocationFactory.getLocation().scan(Path.ZERO, new PathAccumulator()).publish(),
+                    reactiveLocationFactory.getLocation().scan(Path.ZERO, new PathAccumulator()),
                     gson,
                     TaskOutputFileUtil.getTaskOutputFile(
                             taskUUID,
@@ -119,7 +119,7 @@ public abstract class RecorderModule {
 
             return ReactiveFileResultRecorder.createJsonArrayLogger(
                     recorderConfiguration.getIdentifier(),
-                    Flowable.merge(sensorEventFlowables).publish(),
+                    Flowable.merge(sensorEventFlowables),
                     gson,
                     TaskOutputFileUtil.getTaskOutputFile(
                             taskUUID,

@@ -42,9 +42,9 @@ import android.view.View;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
-import org.sagebionetworks.research.domain.mobile_ui.R;
-import org.sagebionetworks.research.domain.mobile_ui.R2;
-import org.sagebionetworks.research.domain.mobile_ui.R2.id;
+import org.sagebionetworks.research.mobile_ui.R;
+import org.sagebionetworks.research.mobile_ui.R2;
+import org.sagebionetworks.research.mobile_ui.R2.id;
 import org.sagebionetworks.research.mobile_ui.widget.NavigationActionBar.ActionButtonClickListener;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

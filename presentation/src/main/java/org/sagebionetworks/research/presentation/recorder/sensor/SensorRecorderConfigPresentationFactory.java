@@ -28,8 +28,7 @@ public class SensorRecorderConfigPresentationFactory implements RecorderConfigPr
 
     @NonNull
     @Override
-    public RecorderConfigPresentation create(@NonNull final RecorderConfiguration config,
-            @NonNull final String defaultStartStepIdentifier, @NonNull final String defaultStopStepIdentifier) {
+    public RecorderConfigPresentation create(@NonNull final RecorderConfiguration config) {
         if (!(config instanceof DeviceMotionRecorderConfiguration)) {
             throw new IllegalArgumentException(
                     "Provided RecorderConfiguration " + config + " isn't a DeviceMotionRecorderConfiguration");
@@ -55,10 +54,8 @@ public class SensorRecorderConfigPresentationFactory implements RecorderConfigPr
         return SensorRecorderConfigPresentationImpl.builder()
                 .setIdentifier(config.getIdentifier())
                 .setType(config.getType())
-                .setStartStepIdentifier(
-                        getStepIdOrDefault(config.getStartStepIdentifier(), defaultStartStepIdentifier))
-                .setStopStepIdentifier(
-                        getStepIdOrDefault(config.getStartStepIdentifier(), defaultStartStepIdentifier))
+                .setStartStepIdentifier(config.getStartStepIdentifier())
+                .setStopStepIdentifier(config.getStartStepIdentifier())
                 .setSensorConfigs(sensorConfigs)
                 .build();
     }

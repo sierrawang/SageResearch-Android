@@ -32,93 +32,33 @@
 
 package org.sagebionetworks.research.mobile_ui.inject;
 
-import android.support.annotation.NonNull;
-
-import dagger.multibindings.Multibinds;
-
 import org.sagebionetworks.research.mobile_ui.show_step.view.ShowActiveUIStepFragment;
 import org.sagebionetworks.research.mobile_ui.show_step.view.ShowCompletionStepFragment;
 import org.sagebionetworks.research.mobile_ui.show_step.view.ShowCountdownStepFragment;
-import org.sagebionetworks.research.mobile_ui.show_step.view.ShowStepFragmentBase;
-import org.sagebionetworks.research.mobile_ui.show_step.view.ShowUIStepFragment;
 import org.sagebionetworks.research.mobile_ui.show_step.view.ShowFormUIStepFragment;
-import org.sagebionetworks.research.presentation.inject.DrawableModule;
-import org.sagebionetworks.research.presentation.model.implementations.ActiveUIStepViewBase;
-import org.sagebionetworks.research.presentation.model.implementations.CompletionStepViewBase;
-import org.sagebionetworks.research.presentation.model.implementations.CountdownStepViewBase;
-import org.sagebionetworks.research.presentation.model.implementations.FormUIStepViewBase;
-import org.sagebionetworks.research.presentation.model.implementations.UIStepViewBase;
-import org.sagebionetworks.research.presentation.model.interfaces.StepView;
+import org.sagebionetworks.research.mobile_ui.show_step.view.ShowStepFragment;
+import org.sagebionetworks.research.mobile_ui.show_step.view.ShowUIStepFragment;
 
-import java.util.Map;
-
-import dagger.MapKey;
 import dagger.Module;
-import dagger.Provides;
-import dagger.multibindings.IntoMap;
+import dagger.android.ContributesAndroidInjector;
 
-// The ShowUIStepViewFragment needs the drawable module so it doesn't make sense to use one of these modules without
-// the other.
-@Module(includes = DrawableModule.class)
+@Module
 public abstract class ShowStepFragmentModule {
-    @MapKey
-    public @interface StepViewKey {
-        String value();
-    }
+    @ContributesAndroidInjector
+    abstract ShowActiveUIStepFragment contributeShowActiveUIStepFragmentInjector();
 
-    @Multibinds
-    abstract Map<String, ShowStepFragmentFactory> fragmentFactoryMap();
+    @ContributesAndroidInjector
+    abstract ShowCompletionStepFragment contributeShowCompletionStepFragmentInjector();
 
-    public interface ShowStepFragmentFactory {
-        @NonNull
-        ShowStepFragmentBase create(@NonNull StepView stepView);
-    }
+    @ContributesAndroidInjector
+    abstract ShowCountdownStepFragment contributeShowCountdownStepFragmentInjector();
 
-    @Provides
-    public static ShowStepFragmentFactory provideShowStepFragmentFactory(
-            Map<String, ShowStepFragmentFactory> showStepFragmentFactoryMap) {
-        return (@NonNull StepView stepView) -> {
-            if (showStepFragmentFactoryMap.containsKey(stepView.getType())) {
-                return showStepFragmentFactoryMap.get(stepView.getType()).create(stepView);
-            }
+    @ContributesAndroidInjector
+    abstract ShowFormUIStepFragment contributeShowFormUIStepFragmentInjector();
 
-            // If we don't have a factory we default to the most general ShowStepFragment.
-            return ShowUIStepFragment.newInstance(stepView);
-        };
-    }
+    @ContributesAndroidInjector
+    abstract ShowStepFragment contributeShowStepFragmentInjector();
 
-    @Provides
-    @IntoMap
-    @StepViewKey(ActiveUIStepViewBase.TYPE)
-    static ShowStepFragmentFactory provideShowActiveUIStepFragmentFactory() {
-        return ShowActiveUIStepFragment::newInstance;
-    }
-
-    @Provides
-    @IntoMap
-    @StepViewKey(UIStepViewBase.TYPE)
-    static ShowStepFragmentFactory provideShowUIStepFragmentFactory() {
-        return ShowUIStepFragment::newInstance;
-    }
-
-    @Provides
-    @IntoMap
-    @StepViewKey(CompletionStepViewBase.TYPE)
-    static ShowStepFragmentFactory provideShowCompletionStepFragmentFactory() {
-        return ShowCompletionStepFragment::newInstance;
-    }
-
-    @Provides
-    @IntoMap
-    @StepViewKey(FormUIStepViewBase.TYPE)
-    static ShowStepFragmentFactory provideShowFormUIStepFragmentFactory() {
-        return ShowFormUIStepFragment::newInstance;
-    }
-
-    @Provides
-    @IntoMap
-    @StepViewKey(CountdownStepViewBase.TYPE)
-    static ShowStepFragmentFactory provideShowCountdownStepFragmentFactory() {
-        return ShowCountdownStepFragment::newInstance;
-    }
+    @ContributesAndroidInjector
+    abstract ShowUIStepFragment contributeShowUIStepFragmentInjector();
 }

@@ -20,9 +20,9 @@ import java.io.File;
 import java.io.PrintStream;
 import java.util.concurrent.atomic.AtomicBoolean;
 
+import io.reactivex.Flowable;
 import io.reactivex.Maybe;
 import io.reactivex.disposables.CompositeDisposable;
-import io.reactivex.flowables.ConnectableFlowable;
 import io.reactivex.subjects.MaybeSubject;
 
 public class ReactiveFileResultRecorder<E> extends ReactiveRecorder<E, FileResult> {
@@ -49,8 +49,6 @@ public class ReactiveFileResultRecorder<E> extends ReactiveRecorder<E, FileResul
 
     private final CompositeDisposable compositeDisposable;
 
-    private final ConnectableFlowable<E> connectableFlowableData;
-
     private final String fileMimeType;
 
     private final MaybeSubject<FileResult> fileResultMaybeSubject;
@@ -63,18 +61,17 @@ public class ReactiveFileResultRecorder<E> extends ReactiveRecorder<E, FileResul
     private Subscription reactiveDataSubscription;
 
     public static <E> ReactiveFileResultRecorder<E> createJsonArrayLogger(@NonNull String identifier,
-            @NonNull ConnectableFlowable<E> flowableData, @NonNull Gson gson, @NonNull File outputFile) {
+            @NonNull Flowable<E> flowableData, @NonNull Gson gson, @NonNull File outputFile) {
         return new ReactiveFileResultRecorder<>(identifier, flowableData, gson,
                 outputFile, JSON_MIME_CONTENT_TYPE, JSON_FILE_START, JSON_FILE_END, JSON_OBJECT_DELIMINATOR);
     }
 
     protected ReactiveFileResultRecorder(@NonNull String identifier,
-            @NonNull ConnectableFlowable<E> connectableFlowable,
+            @NonNull Flowable<E> eventFlowable,
             @NonNull Gson gson, @NonNull File outputFile, @NonNull String fileMimeType, @NonNull String start,
             @NonNull String end, @NonNull String deliminator) {
-        super(identifier, connectableFlowable);
+        super(identifier, eventFlowable);
 
-        this.connectableFlowableData = checkNotNull(connectableFlowable);
         this.gson = checkNotNull(gson);
         this.outputFile = checkNotNull(outputFile);
         checkArgument(!Strings.isNullOrEmpty(fileMimeType), "fileMimeType cannot be null or empty");
@@ -88,11 +85,12 @@ public class ReactiveFileResultRecorder<E> extends ReactiveRecorder<E, FileResul
         this.compositeDisposable = new CompositeDisposable();
 
         compositeDisposable.add(
-                connectableFlowableData
+                getEventFlowable()
                         .doOnCancel(this::onReactiveDataCancel)
                         .doFinally(this::doReactiveDataFinally)
-                        .subscribe(this::onReactiveDataNext, this::onReactiveDataError, this::onReactiveDataComplete,
-                                this::onReactiveDataSubscribe));
+                        .doOnSubscribe(this::onReactiveDataSubscribe)
+                        .subscribe(this::onReactiveDataNext, this::onReactiveDataError,
+                                this::onReactiveDataComplete));
     }
 
     @Override
@@ -155,6 +153,7 @@ public class ReactiveFileResultRecorder<E> extends ReactiveRecorder<E, FileResul
 
     @VisibleForTesting
     void onReactiveDataNext(E data) {
+        LOGGER.trace("reactive data received: {}", data);
         if (data != null) {
             try {
                 String outputString = "";

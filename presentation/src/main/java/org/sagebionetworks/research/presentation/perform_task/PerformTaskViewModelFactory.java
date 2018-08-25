@@ -67,6 +67,8 @@ public class PerformTaskViewModelFactory {
 
     private final TaskRepository taskRepository;
 
+    private TaskResultManager taskResultManager;
+
     private final TaskResultProcessingManager taskResultProcessingManager;
 
     @Inject
@@ -76,7 +78,8 @@ public class PerformTaskViewModelFactory {
             @NonNull StepViewFactory stepViewFactory,
             @NonNull RecorderFactory recorderFactory,
             @NonNull RecorderConfigPresentationFactory recorderConfigPresentationFactory,
-            @NonNull TaskResultProcessingManager taskResultProcessingManager) {
+            @NonNull TaskResultProcessingManager taskResultProcessingManager,
+            @NonNull TaskResultManager taskResultManager) {
         this.application = checkNotNull(application);
         this.stepNavigatorFactory = checkNotNull(stepNavigatorFactory);
         this.recorderFactory = checkNotNull(recorderFactory);
@@ -85,6 +88,7 @@ public class PerformTaskViewModelFactory {
         this.taskRepository = checkNotNull(taskRepository);
         this.stepViewFactory = checkNotNull(stepViewFactory);
         this.taskResultProcessingManager = checkNotNull(taskResultProcessingManager);
+        this.taskResultManager = taskResultManager;
     }
 
     public ViewModelProvider.Factory create(@NonNull TaskView taskView, @NonNull UUID taskRunUUID,
@@ -101,7 +105,7 @@ public class PerformTaskViewModelFactory {
                     // noinspection unchecked
                     return (T) new PerformTaskViewModel(application, taskView, taskRunUUID, stepNavigatorFactory,
                             taskRepository, taskMapper, recorderFactory, recorderConfigPresentationFactory,
-                            stepViewFactory, taskResultProcessingManager, lastRun);
+                            stepViewFactory, taskResultProcessingManager, taskResultManager, lastRun);
                 }
                 throw new IllegalArgumentException("Unknown ViewModel class");
             }

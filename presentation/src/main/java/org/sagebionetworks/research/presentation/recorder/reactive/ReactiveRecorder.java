@@ -36,20 +36,16 @@ import android.support.annotation.CallSuper;
 import android.support.annotation.NonNull;
 import android.support.annotation.VisibleForTesting;
 
-import com.google.common.base.Function;
-import com.google.common.base.Functions;
-
 import org.sagebionetworks.research.domain.result.interfaces.Result;
 import org.sagebionetworks.research.presentation.recorder.RecorderBase;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import io.reactivex.Flowable;
-import io.reactivex.FlowableTransformer;
-import io.reactivex.Maybe;
 import io.reactivex.disposables.CompositeDisposable;
 import io.reactivex.disposables.Disposable;
 import io.reactivex.flowables.ConnectableFlowable;
+import io.reactivex.schedulers.Schedulers;
 
 /**
  * A ReactiveRecorder is a recorder which records based on a stream of events, and supports maintaining a FileResult
@@ -71,52 +67,24 @@ public abstract class ReactiveRecorder<E, R extends Result> extends RecorderBase
 
     private ConnectableFlowable<E> eventConnectableFlowable;
 
-    public static <T, V, R extends Result, S extends Result> ReactiveRecorder<V, S> transform(
-            ReactiveRecorder<T, R> originalRecorder,
-            FlowableTransformer<T, V> flowableTransformer,
-            Function<Maybe<R>, Maybe<S>> resultTransform) {
-        return new ReactiveRecorder<V, S>(originalRecorder.identifier,
-                originalRecorder.eventConnectableFlowable.compose(flowableTransformer).publish()) {
-
-            @NonNull
-            @Override
-            public Maybe<S> getResult() {
-                return resultTransform.apply(originalRecorder.getResult());
-            }
-        };
-    }
-
-    public static <T, V, R extends Result> ReactiveRecorder<V, R> transform(
-            ReactiveRecorder<T, R> originalRecorder,
-            FlowableTransformer<T, V> flowableTransformer) {
-        return transform(originalRecorder, flowableTransformer, Functions.identity());
-    }
-
-    public static <T, R extends Result, S extends Result> ReactiveRecorder<T, S> transform(
-            ReactiveRecorder<T, R> originalRecorder,
-            Function<Maybe<R>, Maybe<S>> resultTransform) {
-        return transform(originalRecorder, upstream -> upstream, resultTransform);
-    }
-
-    public ReactiveRecorder(@NonNull final String identifier, ConnectableFlowable<E> eventConnectableFlowable) {
+    public ReactiveRecorder(@NonNull final String identifier, Flowable<E> eventFlowable) {
         super(identifier);
-        this.eventConnectableFlowable = eventConnectableFlowable
+        this.eventConnectableFlowable = eventFlowable
+                .observeOn(Schedulers.computation())
                 .doFinally(this::doFinally)
                 .publish();
         this.compositeDisposable = new CompositeDisposable();
     }
 
     @NonNull
-    public Flowable<E> getEventConnectableFlowable() {
+    public Flowable<E> getEventFlowable() {
         return this.eventConnectableFlowable;
     }
 
     @Override
     @CallSuper
     public void startRecorder() {
-        if (LOGGER.isDebugEnabled()) {
-            LOGGER.debug("Starting recorder {}" + identifier);
-        }
+        LOGGER.debug("Starting recorder {}" + identifier);
         eventConnectableFlowable.connect(d -> {
             compositeDisposable.add(d);
             connectableFlowableConnectionDisposable = d;
@@ -126,17 +94,13 @@ public abstract class ReactiveRecorder<E, R extends Result> extends RecorderBase
     @Override
     @CallSuper
     public void stopRecorder() {
-        if (LOGGER.isDebugEnabled()) {
-            LOGGER.debug("Stopping recorder {}" + identifier);
-        }
+        LOGGER.debug("Stopping recorder {}" + identifier);
         connectableFlowableConnectionDisposable.dispose();
     }
 
     @VisibleForTesting
     void doFinally() {
-        if (LOGGER.isDebugEnabled()) {
-            LOGGER.debug("Do finally recorder {}" + identifier);
-        }
+        LOGGER.debug("Do finally recorder {}" + identifier);
         compositeDisposable.dispose();
     }
 }

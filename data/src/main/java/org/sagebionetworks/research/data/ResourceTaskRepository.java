@@ -47,12 +47,11 @@ import org.sagebionetworks.research.domain.async.AsyncActionConfiguration;
 import org.sagebionetworks.research.domain.async.RecorderConfiguration;
 import org.sagebionetworks.research.domain.repository.TaskRepository;
 import org.sagebionetworks.research.domain.result.interfaces.TaskResult;
-import org.sagebionetworks.research.domain.step.implementations.SectionStepBase;
 import org.sagebionetworks.research.domain.step.interfaces.SectionStep;
 import org.sagebionetworks.research.domain.step.interfaces.Step;
 import org.sagebionetworks.research.domain.step.interfaces.TransformerStep;
 import org.sagebionetworks.research.domain.task.Task;
-import org.sagebionetworks.research.domain.task.TaskInfo;
+import org.sagebionetworks.research.domain.task.TaskInfoView;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -71,7 +70,6 @@ import io.reactivex.Completable;
 import io.reactivex.Maybe;
 import io.reactivex.Single;
 
-@Singleton
 public class ResourceTaskRepository implements TaskRepository {
     private static final Logger LOGGER = LoggerFactory.getLogger(ResourceTaskRepository.class);
 
@@ -145,14 +143,21 @@ public class ResourceTaskRepository implements TaskRepository {
             task = task.copyWithSteps(steps);
             task = task.copyWithAsyncActions(getAsyncActions(task));
             return task;
-        });
+        })
+                .doOnSuccess(t -> {
+                    LOGGER.debug("Successfully loaded task: {}", t);
+                })
+                .doOnError(
+                        throwable -> {
+                            LOGGER.warn("Error loading task with id: {}", taskIdentifier, throwable);
+                        });
     }
 
     @NonNull
     @Override
-    public Single<TaskInfo> getTaskInfo(final String taskIdentifier) {
+    public Single<TaskInfoView> getTaskInfo(final String taskIdentifier) {
         return Single.fromCallable(() ->
-                gson.fromJson(this.getJsonTaskInfoAsset(taskIdentifier), TaskInfo.class));
+                gson.fromJson(this.getJsonTaskInfoAsset(taskIdentifier), TaskInfoView.class));
     }
 
     @NonNull
@@ -195,63 +200,6 @@ public class ResourceTaskRepository implements TaskRepository {
         return new InputStreamReader(assetManager.open(assetPath), UTF_8);
     }
 
-    private static Set<AsyncActionConfiguration> getAsyncActions(Task task) {
-        return ResourceTaskRepository.getAsyncActionsHelper(task.getSteps(), new HashSet<>(task.getAsyncActions()));
-    }
-
-    private static Set<AsyncActionConfiguration> getAsyncActionsHelper(List<Step> steps, Set<AsyncActionConfiguration> accumlator) {
-        for (Step step : steps) {
-            // A step's defaultStartIdentifier is it's identifier or in the case of a SectionStep the identifier of it's leftmost child.
-            String defaultStartIdentifier = step.getIdentifier();
-            // A step's defaultStopIdentifier is null, or in the case of a SectionStep the identifier of it's rightmost child.
-            String defaultStopIdentifier = null;
-            if (step instanceof SectionStep) {
-                defaultStartIdentifier = getLeftMostChild(step).getIdentifier();
-                defaultStopIdentifier = getRightMostChild(step).getIdentifier();
-                SectionStep sectionStep = (SectionStep)step;
-                // Recurse on the section step's substeps.
-                ResourceTaskRepository.getAsyncActionsHelper(sectionStep.getSteps(), accumlator);
-            }
-
-            for (AsyncActionConfiguration asyncAction : step.getAsyncActions()) {
-                AsyncActionConfiguration copy = asyncAction;
-                if (asyncAction.getStartStepIdentifier() == null) {
-                    copy = copy.copyWithStartStepIdentifier(defaultStartIdentifier);
-                }
-
-                if (copy instanceof RecorderConfiguration) {
-                    RecorderConfiguration recorderConfiguration = (RecorderConfiguration)copy;
-                    if (recorderConfiguration.getStopStepIdentifier() == null) {
-                        recorderConfiguration = recorderConfiguration.copyWithStopStepIdentifier(defaultStopIdentifier);
-                        copy = recorderConfiguration;
-                    }
-                }
-
-                copy = copy.copyWithIdentifier(step.getIdentifier() + "_" + copy.getIdentifier());
-                accumlator.add(copy);
-            }
-        }
-
-        return accumlator;
-    }
-
-    private static Step getLeftMostChild(Step step) {
-        while (step instanceof SectionStep) {
-            step = ((SectionStep)step).getSteps().get(0);
-        }
-
-        return step;
-    }
-
-    private static Step getRightMostChild(Step step) {
-        while (step instanceof SectionStep) {
-            List<Step> steps = ((SectionStep)step).getSteps();
-            step = steps.get(steps.size() - 1);
-        }
-
-        return step;
-    }
-
     /**
      * Returns the given step with all of the transformers that are substeps of it, recursively replaced with the
      * result of getting their resource and creating a SectionStep from it.
@@ -289,5 +237,64 @@ public class ResourceTaskRepository implements TaskRepository {
 
             return step.copyWithIdentifier(prefix + step.getIdentifier());
         }
+    }
+
+    private static Set<AsyncActionConfiguration> getAsyncActions(Task task) {
+        return ResourceTaskRepository.getAsyncActionsHelper(task.getSteps(), new HashSet<>(task.getAsyncActions()));
+    }
+
+    private static Set<AsyncActionConfiguration> getAsyncActionsHelper(List<Step> steps,
+            Set<AsyncActionConfiguration> accumlator) {
+        for (Step step : steps) {
+            // A step's defaultStartIdentifier is it's identifier or in the case of a SectionStep the identifier of it's leftmost child.
+            String defaultStartIdentifier = step.getIdentifier();
+            // A step's defaultStopIdentifier is null, or in the case of a SectionStep the identifier of it's rightmost child.
+            String defaultStopIdentifier = null;
+            if (step instanceof SectionStep) {
+                defaultStartIdentifier = getLeftMostChild(step).getIdentifier();
+                defaultStopIdentifier = getRightMostChild(step).getIdentifier();
+                SectionStep sectionStep = (SectionStep) step;
+                // Recurse on the section step's substeps.
+                ResourceTaskRepository.getAsyncActionsHelper(sectionStep.getSteps(), accumlator);
+            }
+
+            for (AsyncActionConfiguration asyncAction : step.getAsyncActions()) {
+                AsyncActionConfiguration copy = asyncAction;
+                if (asyncAction.getStartStepIdentifier() == null) {
+                    copy = copy.copyWithStartStepIdentifier(defaultStartIdentifier);
+                }
+
+                if (copy instanceof RecorderConfiguration) {
+                    RecorderConfiguration recorderConfiguration = (RecorderConfiguration) copy;
+                    if (recorderConfiguration.getStopStepIdentifier() == null) {
+                        recorderConfiguration = recorderConfiguration
+                                .copyWithStopStepIdentifier(defaultStopIdentifier);
+                        copy = recorderConfiguration;
+                    }
+                }
+
+                copy = copy.copyWithIdentifier(step.getIdentifier() + "_" + copy.getIdentifier());
+                accumlator.add(copy);
+            }
+        }
+
+        return accumlator;
+    }
+
+    private static Step getLeftMostChild(Step step) {
+        while (step instanceof SectionStep) {
+            step = ((SectionStep) step).getSteps().get(0);
+        }
+
+        return step;
+    }
+
+    private static Step getRightMostChild(Step step) {
+        while (step instanceof SectionStep) {
+            List<Step> steps = ((SectionStep) step).getSteps();
+            step = steps.get(steps.size() - 1);
+        }
+
+        return step;
     }
 }

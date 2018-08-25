@@ -32,11 +32,14 @@
 
 package org.sagebionetworks.research.presentation.recorder.service;
 
+import static com.google.common.base.Preconditions.checkNotNull;
+
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 import android.content.ServiceConnection;
 import android.os.IBinder;
+import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 
 import com.google.common.collect.ImmutableMap;
@@ -49,6 +52,8 @@ import org.sagebionetworks.research.domain.step.interfaces.Step;
 import org.sagebionetworks.research.domain.task.Task;
 import org.sagebionetworks.research.presentation.inject.RecorderConfigPresentationFactory;
 import org.sagebionetworks.research.presentation.model.interfaces.StepView.NavDirection;
+import org.sagebionetworks.research.presentation.perform_task.TaskResultManager;
+import org.sagebionetworks.research.presentation.perform_task.TaskResultManager.TaskResultManagerConnection;
 import org.sagebionetworks.research.presentation.recorder.Recorder;
 import org.sagebionetworks.research.presentation.recorder.RecorderConfigPresentation;
 import org.sagebionetworks.research.presentation.recorder.service.RecorderService.RecorderBinder;
@@ -63,6 +68,7 @@ import java.util.UUID;
 
 import io.reactivex.ObservableEmitter;
 import io.reactivex.ObservableOnSubscribe;
+import io.reactivex.Single;
 import io.reactivex.disposables.CompositeDisposable;
 
 /**
@@ -71,7 +77,7 @@ import io.reactivex.disposables.CompositeDisposable;
  * RecorderManager creates a Task's recorders and makes the appropriate RecorderService calls to start, stop, and
  * cancel those recorders at the appropriate times.
  */
-public class RecorderManager implements ServiceConnection, ObservableOnSubscribe<Result> {
+public class RecorderManager implements ServiceConnection {
     private static final Logger LOGGER = LoggerFactory.getLogger(RecorderManager.class);
 
     private RecorderBinder binder;
@@ -82,30 +88,39 @@ public class RecorderManager implements ServiceConnection, ObservableOnSubscribe
      */
     private boolean bound;
 
-    private CompositeDisposable compositeDisposable;
+    private final CompositeDisposable compositeDisposable;
 
-    private Context context;
+    private final Context context;
 
-    private Set<ObservableEmitter<Result>> observers;
+    private final Set<ObservableEmitter<Result>> observers;
 
-    private RecorderConfigPresentationFactory recorderConfigPresentationFactory;
+    private final RecorderConfigPresentationFactory recorderConfigPresentationFactory;
 
-    private Set<RecorderConfigPresentation> recorderConfigs;
+    private final Set<RecorderConfigPresentation> recorderConfigs;
 
     private RecorderService service;
 
-    private Task task;
+    private final Task task;
 
-    private UUID taskRunUUID;
+    private final Single<TaskResultManagerConnection> taskResultManagerConnectionSingle;
 
-    public RecorderManager(Task task, UUID taskRunUUID, Context context,
+    private final UUID taskRunUUID;
+
+    // TODO: a way to wait until service is bound
+    public RecorderManager(@NonNull Task task, @NonNull String taskIdentifier, @NonNull UUID taskRunUUID,
+            Context context,
+            @NonNull TaskResultManager taskResultManager,
             RecorderConfigPresentationFactory recorderConfigPresentationFactory) {
-        this.context = context;
-        this.taskRunUUID = taskRunUUID;
+        this.task = checkNotNull(task);
+        this.taskRunUUID = checkNotNull(taskRunUUID);
+        this.context = checkNotNull(context);
+
+        taskResultManagerConnectionSingle = taskResultManager
+                .getTaskResultManagerConnection(taskIdentifier, taskRunUUID);
+        this.recorderConfigPresentationFactory = checkNotNull(recorderConfigPresentationFactory);
+
         this.compositeDisposable = new CompositeDisposable();
         this.observers = new HashSet<>();
-        this.recorderConfigPresentationFactory = recorderConfigPresentationFactory;
-        this.task = task;
         Intent bindIntent = new Intent(context, RecorderService.class);
         this.context.bindService(bindIntent, this, Context.BIND_AUTO_CREATE);
         this.recorderConfigs = this.getRecorderConfigs();
@@ -135,7 +150,8 @@ public class RecorderManager implements ServiceConnection, ObservableOnSubscribe
         try {
             for (RecorderConfigPresentation config : this.recorderConfigs) {
                 if (activeRecorders == null || !activeRecorders.containsKey(config.getIdentifier())) {
-                    this.service.createRecorder(this.taskRunUUID, config);
+                    taskResultManagerConnectionSingle.blockingGet()
+                            .addAsyncActionResult(this.service.createRecorder(this.taskRunUUID, config).getResult());
                 }
             }
 
@@ -154,8 +170,7 @@ public class RecorderManager implements ServiceConnection, ObservableOnSubscribe
                                 })));
             }
         } catch (IOException e) {
-            e.printStackTrace();
-            LOGGER.warn("Encountered IOException while initializing recorders");
+            LOGGER.warn("Encountered IOException while initializing recorders", e);
             // TODO rkolmos 8/13/2018 handle the IOException.
         }
     }
@@ -217,7 +232,7 @@ public class RecorderManager implements ServiceConnection, ObservableOnSubscribe
                 this.service.startRecorder(this.taskRunUUID, config.getIdentifier());
             }
 
-            for (RecorderConfigPresentation config : Sets.difference(shouldStart, startAndStopOrCancel)) {
+            for (RecorderConfigPresentation config : Sets.difference(shouldStop, startAndStopOrCancel)) {
                 String identifier = config.getIdentifier();
                 if (activeRecorders != null && activeRecorders.containsKey(identifier)) {
                     if (activeRecorders.get(identifier).isRecording()) {
@@ -240,20 +255,12 @@ public class RecorderManager implements ServiceConnection, ObservableOnSubscribe
         }
     }
 
-    @Override
-    public void subscribe(final ObservableEmitter<Result> emitter) {
-        this.observers.add(emitter);
-    }
-
     private Set<RecorderConfigPresentation> getRecorderConfigs() {
         Set<RecorderConfigPresentation> recorderConfigs = new HashSet<>();
-        String defaultStartStep = task.getSteps().get(0).getIdentifier();
-        String defaultStopStep = task.getSteps().get(task.getSteps().size() - 1).getIdentifier();
         for (AsyncActionConfiguration asyncAction : this.task.getAsyncActions()) {
             if (asyncAction instanceof RecorderConfiguration) {
                 recorderConfigs.add(
-                        recorderConfigPresentationFactory.create((RecorderConfiguration) asyncAction,
-                                defaultStartStep, defaultStopStep));
+                        recorderConfigPresentationFactory.create((RecorderConfiguration) asyncAction));
             }
         }
 

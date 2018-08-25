@@ -99,11 +99,13 @@ public abstract class ShowActiveUIStepFragmentBase<S extends ActiveUIStepView, V
             Integer duration = ((Long)this.stepView.getDuration().getSeconds()).intValue();
             int from = (int)(duration - count);
             Animator animator = this.getCountdownAnimator(from, from + 1);
-            animator.start();
+            if (animator !=null) {
+                animator.start();
+            }
 
             TextView countLabel = this.stepViewBinding.getCountLabel();
             if (countLabel != null) {
-                countLabel.setText(count.toString());
+                countLabel.setText(String.format(getResources().getConfiguration().locale,"%d",count));
             }
         };
     }

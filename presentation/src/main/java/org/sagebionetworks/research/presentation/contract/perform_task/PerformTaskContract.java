@@ -35,7 +35,7 @@ package org.sagebionetworks.research.presentation.contract.perform_task;
 import android.arch.lifecycle.LiveData;
 import android.support.annotation.NonNull;
 
-import org.sagebionetworks.research.domain.task.TaskInfo;
+import org.sagebionetworks.research.domain.task.TaskInfoView;
 import org.sagebionetworks.research.presentation.contract.model.LoadableResource;
 
 public interface PerformTaskContract {
@@ -43,7 +43,7 @@ public interface PerformTaskContract {
 //    TaskView getTaskView();
 
     @NonNull
-    LiveData<LoadableResource<TaskInfo>> getTask();
+    LiveData<LoadableResource<TaskInfoView>> getTask();
 
     void goBack();
 

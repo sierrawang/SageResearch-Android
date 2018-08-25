@@ -56,7 +56,7 @@ interface StepNavigator {
      * step. By default, the UI defined in ResearchStack2UI will hide the "BackStepStrategy" button if there is no step before
      * the given step.
      *
-     * @param step current step, or null if retrieving first step for TaskInfo
+     * @param step current step, or null if retrieving first step for TaskInfoView
      * @param taskResult current step result
      * @return next step, or null if there is no next step
      */

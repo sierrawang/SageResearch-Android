@@ -41,6 +41,7 @@ import android.support.annotation.Nullable;
 import com.google.common.collect.ImmutableMap;
 
 import org.sagebionetworks.research.domain.async.RecorderType;
+import org.sagebionetworks.research.domain.result.interfaces.Result;
 import org.sagebionetworks.research.presentation.inject.RecorderModule.RecorderFactory;
 import org.sagebionetworks.research.presentation.recorder.Recorder;
 import org.sagebionetworks.research.presentation.recorder.RecorderActionType;
@@ -179,7 +180,7 @@ public class RecorderService extends DaggerService {
         recorder.cancel();
     }
 
-    public Recorder createRecorder(@NonNull UUID taskIdentifier,
+    public Recorder<Result> createRecorder(@NonNull UUID taskIdentifier,
             @NonNull RecorderConfigPresentation recorderConfiguration)
             throws IOException {
         Recorder recorder = this.recorderFactory.create(recorderConfiguration, taskIdentifier);
@@ -262,6 +263,7 @@ public class RecorderService extends DaggerService {
         Recorder recorder = this.getRecorder(taskIdentifier, recorderIdentifier);
         if (recorder == null) {
             LOGGER.warn("Cannot start recorder that hasn't been created");
+            return;
         }
 
         recorder.start();
@@ -283,6 +285,7 @@ public class RecorderService extends DaggerService {
         Recorder recorder = this.getRecorder(taskIdentifier, recorderIdentifier);
         if (recorder == null) {
             LOGGER.warn("Cannot stop recorder that isn't started.");
+            return;
         }
 
         recorder.stop();

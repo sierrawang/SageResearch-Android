@@ -36,6 +36,8 @@ import android.os.Parcel;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 
+import com.google.common.base.MoreObjects;
+import com.google.common.base.Objects;
 import com.google.common.collect.ImmutableMap;
 
 import org.sagebionetworks.research.domain.step.StepType;
@@ -229,6 +231,47 @@ public class UIStepViewBase implements UIStepView {
     @Override
     public int getNavDirection() {
         return navDirection;
+    }
+
+    @Override
+    public String toString() {
+        return MoreObjects.toStringHelper(this)
+                .add("actions", actions)
+                .add("colorTheme", colorTheme)
+                .add("detail", detail)
+                .add("footnote", footnote)
+                .add("identifier", identifier)
+                .add("imageTheme", imageTheme)
+                .add("navDirection", navDirection)
+                .add("text", text)
+                .add("title", title)
+                .toString();
+    }
+
+    @Override
+    public boolean equals(final Object o) {
+        if (this == o) {
+            return true;
+        }
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
+        final UIStepViewBase that = (UIStepViewBase) o;
+        return navDirection == that.navDirection &&
+                Objects.equal(actions, that.actions) &&
+                Objects.equal(colorTheme, that.colorTheme) &&
+                Objects.equal(detail, that.detail) &&
+                Objects.equal(footnote, that.footnote) &&
+                Objects.equal(identifier, that.identifier) &&
+                Objects.equal(imageTheme, that.imageTheme) &&
+                Objects.equal(text, that.text) &&
+                Objects.equal(title, that.title);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects
+                .hashCode(actions, colorTheme, detail, footnote, identifier, imageTheme, navDirection, text, title);
     }
 
     protected static Map<String, ActionView> getActionsFrom(Map<String, Action> actions) {

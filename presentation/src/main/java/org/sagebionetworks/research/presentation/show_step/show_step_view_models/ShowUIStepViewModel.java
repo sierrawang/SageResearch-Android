@@ -36,13 +36,16 @@ import android.arch.lifecycle.LiveData;
 import android.arch.lifecycle.MutableLiveData;
 import android.support.annotation.Nullable;
 
+import org.sagebionetworks.research.domain.result.implementations.ResultBase;
 import org.sagebionetworks.research.domain.result.interfaces.Result;
 import org.sagebionetworks.research.domain.result.interfaces.TaskResult;
+import org.sagebionetworks.research.domain.step.interfaces.Step;
 import org.sagebionetworks.research.presentation.model.action.ActionType;
 import org.sagebionetworks.research.presentation.model.interfaces.UIStepView;
 import org.sagebionetworks.research.presentation.perform_task.PerformTaskViewModel;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.threeten.bp.Instant;
 
 public class ShowUIStepViewModel<S extends UIStepView> extends ShowStepViewModel<S> {
     private static final Logger LOGGER = LoggerFactory.getLogger(ShowUIStepViewModel.class);
@@ -53,12 +56,15 @@ public class ShowUIStepViewModel<S extends UIStepView> extends ShowStepViewModel
 
     protected final S stepView;
 
+    private final Instant startTime;
+
     public ShowUIStepViewModel(PerformTaskViewModel performTaskViewModel, S stepView) {
         this.performTaskViewModel = performTaskViewModel;
         this.stepView = stepView;
 
         showStepViewModelMutableLiveData = new MutableLiveData<>();
         showStepViewModelMutableLiveData.setValue(stepView);
+        this.startTime = Instant.now();
     }
 
     @Override
@@ -66,25 +72,20 @@ public class ShowUIStepViewModel<S extends UIStepView> extends ShowStepViewModel
         return showStepViewModelMutableLiveData;
     }
 
-    /**
-     * Returns the step result from the TaskResult with the same identifier as this fragment's stepView.
-     * @return the step result from the TaskResult with the same identifier as this fragment's stepView.
-     */
-    @Nullable
-    protected Result findStepResult() {
-        TaskResult taskResult = this.performTaskViewModel.getTaskResult().getValue();
-        if (taskResult != null) {
-            return taskResult.getResult(this.stepView.getIdentifier());
-        }
-
-        return null;
-    }
-
     @Override
     public void handleAction(final String actionType) {
         LOGGER.debug("handleAction called with actionType: {}", actionType);
         switch (actionType) {
             case ActionType.FORWARD:
+                Step step = performTaskViewModel.getStep().getValue();
+                if (step != null) {
+                    if (performTaskViewModel.getTaskResult()
+                            .getResult(performTaskViewModel.getStep().getValue()) == null) {
+                        // If for whatever reason the step didn't create a result matching it's identifier we create a
+                        // ResultBase to mark that the step completed.
+                        addStepResult(new ResultBase(stepView.getIdentifier(), startTime, Instant.now()));
+                    }
+                }
                 performTaskViewModel.goForward();
                 break;
             case ActionType.BACKWARD:
@@ -97,6 +98,21 @@ public class ShowUIStepViewModel<S extends UIStepView> extends ShowStepViewModel
 
     protected void addStepResult(Result result) {
         performTaskViewModel.addStepResult(result);
+    }
+
+    /**
+     * Returns the step result from the TaskResult with the same identifier as this fragment's stepView.
+     *
+     * @return the step result from the TaskResult with the same identifier as this fragment's stepView.
+     */
+    @Nullable
+    protected Result findStepResult() {
+        TaskResult taskResult = this.performTaskViewModel.getTaskResult();
+        if (taskResult != null) {
+            return taskResult.getResult(this.stepView.getIdentifier());
+        }
+
+        return null;
     }
 
     @Override

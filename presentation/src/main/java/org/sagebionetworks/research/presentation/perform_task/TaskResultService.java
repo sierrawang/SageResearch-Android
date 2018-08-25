@@ -7,29 +7,39 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.Binder;
 import android.os.IBinder;
-import android.os.ParcelUuid;
+import android.support.annotation.CheckResult;
 import android.support.annotation.MainThread;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.annotation.VisibleForTesting;
 
+import com.google.common.collect.ImmutableSet;
+
+import org.sagebionetworks.research.domain.repository.TaskRepository;
+import org.sagebionetworks.research.domain.result.implementations.TaskResultBase;
 import org.sagebionetworks.research.domain.result.interfaces.Result;
 import org.sagebionetworks.research.domain.result.interfaces.TaskResult;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Set;
 import java.util.UUID;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.atomic.AtomicInteger;
+
+import javax.inject.Inject;
 
 import dagger.android.DaggerService;
 import io.reactivex.Completable;
 import io.reactivex.Maybe;
 import io.reactivex.Observable;
+import io.reactivex.Single;
 import io.reactivex.disposables.CompositeDisposable;
+import io.reactivex.schedulers.Schedulers;
 import io.reactivex.subjects.BehaviorSubject;
 import io.reactivex.subjects.CompletableSubject;
-import io.reactivex.subjects.ReplaySubject;
 
 /**
  * A service which manages the state of a TaskResult.
@@ -49,20 +59,20 @@ public class TaskResultService extends DaggerService {
 
         private final TaskResultService taskResultService;
 
-        private final UUID taskRunUUID;
-
-        TaskResultServiceBinder(@NonNull UUID taskRunUUID, @NonNull TaskResultService taskResultService) {
-            this.taskRunUUID = checkNotNull(taskRunUUID);
+        TaskResultServiceBinder(@NonNull TaskResultService taskResultService) {
             this.taskResultService = checkNotNull(taskResultService);
         }
 
         /**
+         * @param taskRunUUID
          * @param asyncResult
-         *         async result to add
          */
-        public void addAsyncActionResult(Maybe<Result> asyncResult) {
+        public void addAsyncActionResult(@NonNull final UUID taskRunUUID, @NonNull Maybe<Result> asyncResult) {
+            checkNotNull(taskRunUUID);
+            checkNotNull(asyncResult);
+
             LOGGER.debug("addAsyncActionResult called for {}", asyncResult);
-            if (isTaskFinished()) {
+            if (isTaskFinished(null)) {
                 LOGGER.warn("addAsyncActionResult called for finished task");
                 return;
             }
@@ -70,17 +80,20 @@ public class TaskResultService extends DaggerService {
         }
 
         /**
+         * @param taskRunUUID
          * @param stepResult
-         *         step result to add
          */
-        public void addStepResult(Result stepResult) {
+        public void addStepResult(@NonNull final UUID taskRunUUID, @NonNull Result stepResult) {
+            checkNotNull(taskRunUUID);
+            checkNotNull(stepResult);
+
             LOGGER.debug("addStepResult called for {}", stepResult);
-            if (isTaskFinished()) {
+            if (isTaskFinished(null)) {
                 LOGGER.warn("addStepResult called for finished task");
                 return;
             }
 
-            if (isTaskFinished()) {
+            if (isTaskFinished(null)) {
                 return;
             }
 
@@ -90,9 +103,11 @@ public class TaskResultService extends DaggerService {
         /**
          * Mark a task as finished. After this, results cannot be added.
          */
-        public void finishTask() {
+        public void finishTask(@NonNull final UUID taskRunUUID) {
+            checkNotNull(taskRunUUID);
+
             LOGGER.debug("finishTask called");
-            if (isTaskFinished()) {
+            if (isTaskFinished(null)) {
                 LOGGER.warn("finishTask called for finished task");
                 return;
             }
@@ -106,17 +121,32 @@ public class TaskResultService extends DaggerService {
          * @return observable which will produce each of the async results added to this task run, each async result
          *         is cached so multiple subscriptions will not cause the async result to run again
          */
-        public Observable<Maybe<Result>> getAsyncResultsObservable() {
+        public Observable<ImmutableSet<Maybe<Result>>> getAsyncResultsObservable(@NonNull final UUID taskRunUUID) {
+            checkNotNull(taskRunUUID);
+
             LOGGER.debug("getAsyncResultsObservable called");
 
             return taskResultService.getAsyncResults(taskRunUUID);
         }
 
         /**
+         * @return final task result after task and async results have completed
+         */
+        public Single<TaskResult> getFinalTaskResult(@NonNull final UUID taskRunUUID) {
+            return taskResultService.getFinalTaskResult(taskRunUUID);
+        }
+
+        public TaskResult getLatestTaskResult(final UUID taskRunUUID) {
+            return taskResultService.getLatestTaskResult(taskRunUUID);
+        }
+
+        /**
          * @return observable of the latest task result, which will terminate once the task is finished and all
          *         asynchronous results added to the final task result
          */
-        public Observable<TaskResult> getTaskResultObservable() {
+        public Observable<TaskResult> getTaskResultObservable(@NonNull final UUID taskRunUUID) {
+            checkNotNull(taskRunUUID);
+
             LOGGER.debug("getTaskResultObservable called");
 
             return taskResultService.getTaskResultObservable(taskRunUUID);
@@ -129,28 +159,53 @@ public class TaskResultService extends DaggerService {
          *
          * @return whether the task is finished
          */
-        public boolean isTaskFinished() {
+        public boolean isTaskFinished(final UUID taskRunUUID) {
             return taskResultService.isTaskFinished(taskRunUUID);
+        }
+
+        /**
+         * @param taskIdentifier
+         * @param taskRunUUID
+         */
+        @CheckResult
+        public Completable onConnect(@NonNull String taskIdentifier, @NonNull UUID taskRunUUID) {
+            checkNotNull(taskIdentifier);
+            checkNotNull(taskRunUUID);
+
+            return taskResultService.registerTaskRun(taskIdentifier, taskRunUUID);
+        }
+
+        public void onDisconnect(@NonNull UUID taskRunUUID) {
+            checkNotNull(taskRunUUID);
+
+            taskResultService.deregisterTaskRun(taskRunUUID);
         }
     }
 
     private static final Logger LOGGER = LoggerFactory.getLogger(TaskResultService.class);
 
-    private static final String TAG_TASK_RUN_UUID = "taskRunUUID";
+    @Inject
+    TaskRepository taskRepository;
 
-    private final HashMap<UUID, ReplaySubject<Maybe<Result>>> taskToAsyncResultsObservable = new HashMap<>();
+    private final HashMap<UUID, Set<Maybe<Result>>> taskToAsyncResultSet = new HashMap<>();
+
+    private final HashMap<UUID, BehaviorSubject<ImmutableSet<Maybe<Result>>>> taskToAsyncResultSetObservable
+            = new HashMap<>();
 
     private final HashMap<UUID, AtomicInteger> taskToBinderCount = new HashMap<>();
 
-    private final HashMap<UUID, CompletableSubject> taskToCompletable = new HashMap<>();
-
     private final HashMap<UUID, CompositeDisposable> taskToDisposables = new HashMap<>();
+
+    private final HashMap<UUID, CompletableSubject> taskToPerformTaskCompletable = new HashMap<>();
+
+    private final ConcurrentHashMap<UUID, TaskResult> taskToTaskResult = new ConcurrentHashMap<>();
 
     private final HashMap<UUID, BehaviorSubject<TaskResult>> taskToTaskResultObservable = new HashMap<>();
 
-    public static Intent createIntent(@NonNull Context context, @NonNull UUID taskRunUUID) {
-        return new Intent(context, TaskResultService.class)
-                .putExtra(TAG_TASK_RUN_UUID, new ParcelUuid(taskRunUUID));
+    private final HashMap<UUID, Single<TaskResult>> taskToTaskResultSingle = new HashMap<>();
+
+    public static Intent createIntent(@NonNull Context context) {
+        return new Intent(context, TaskResultService.class);
     }
 
     @Override
@@ -160,54 +215,155 @@ public class TaskResultService extends DaggerService {
         for (CompositeDisposable compositeDisposable : taskToDisposables.values()) {
             compositeDisposable.dispose();
         }
-        taskToAsyncResultsObservable.clear();
+        taskToAsyncResultSet.clear();
+        taskToAsyncResultSetObservable.clear();
+        taskToTaskResultObservable.clear();
         taskToBinderCount.clear();
-        taskToCompletable.clear();
+        taskToPerformTaskCompletable.clear();
+        taskToTaskResult.clear();
         taskToDisposables.clear();
         taskToTaskResultObservable.clear();
+        taskToTaskResultSingle.clear();
     }
 
     @Nullable
     @Override
     public IBinder onBind(final Intent intent) {
-        UUID taskRunUUID = getTaskRunUUID(intent);
-        LOGGER.debug("onBind called for taskRunUUID {}", taskRunUUID);
-        init(taskRunUUID);
-        return new TaskResultServiceBinder(taskRunUUID, this);
+        return new TaskResultServiceBinder(this);
     }
 
     @Override
     public boolean onUnbind(final Intent intent) {
-        UUID taskRunUUID = getTaskRunUUID(intent);
-        LOGGER.debug("onUnbind called for taskRunUUID {}", taskRunUUID);
-
-        if (taskToBinderCount.get(taskRunUUID).decrementAndGet() < 1) {
-            taskToAsyncResultsObservable.remove(taskRunUUID);
-            taskToBinderCount.remove(taskRunUUID);
-            taskToCompletable.remove(taskRunUUID);
-            taskToDisposables.remove(taskRunUUID).dispose();
-            taskToTaskResultObservable.remove(taskRunUUID);
-        }
         return false;
+    }
+
+    public void deregisterTaskRun(final UUID taskRunUUID) {
+        AtomicInteger bindCount = taskToBinderCount.get(taskRunUUID);
+        if (bindCount == null) {
+            LOGGER.warn("deregister called for unknown taskRunUUID: {}", taskRunUUID);
+            return;
+        }
+
+        if (bindCount.decrementAndGet() < 1) {
+            taskToAsyncResultSet.remove(taskRunUUID);
+            taskToAsyncResultSetObservable.remove(taskRunUUID);
+            taskToTaskResultObservable.remove(taskRunUUID);
+            taskToBinderCount.remove(taskRunUUID);
+            taskToPerformTaskCompletable.remove(taskRunUUID);
+            taskToTaskResult.remove(taskRunUUID);
+            taskToDisposables.remove(taskRunUUID).dispose();
+            taskToTaskResultSingle.remove(taskRunUUID);
+        }
+    }
+
+    /**
+     * @return completes when task result is ready
+     */
+    @CheckResult
+    public Completable registerTaskRun(@NonNull String taskIdentifier, @NonNull UUID taskRunUUID) {
+        AtomicInteger bindCount = taskToBinderCount.get(taskRunUUID);
+        if (bindCount == null) {
+            bindCount = new AtomicInteger(1);
+            taskToBinderCount.put(taskRunUUID, bindCount);
+        } else {
+            bindCount.incrementAndGet();
+            return Completable.complete();
+        }
+
+        taskToAsyncResultSet.put(taskRunUUID, new HashSet<>());
+        taskToAsyncResultSetObservable.put(taskRunUUID, BehaviorSubject.create());
+        taskToPerformTaskCompletable.put(taskRunUUID, CompletableSubject.create());
+        taskToDisposables.put(taskRunUUID, new CompositeDisposable());
+        taskToTaskResultObservable.put(taskRunUUID, BehaviorSubject.create());
+        taskToTaskResultSingle.put(taskRunUUID, taskToTaskResultObservable.get(taskRunUUID).lastOrError());
+
+        CompositeDisposable taskRunDisposables = taskToDisposables.get(taskRunUUID);
+
+        // let's log the task completion
+        taskRunDisposables.add(
+                taskToPerformTaskCompletable.get(taskRunUUID)
+                        .subscribeOn(Schedulers.io())
+                        .doOnComplete(() ->
+                                LOGGER.debug("task completion received for taskRunUUID {}", taskRunUUID))
+                        .subscribe()
+        );
+
+        // wait for all async results to come back, then mark the task result observable as finished
+        taskRunDisposables.add(
+                taskToAsyncResultSetObservable.get(taskRunUUID)
+                        .observeOn(Schedulers.io())
+                        .flatMap(Observable::fromIterable)
+                        .distinct()
+                        .doOnNext(result -> {
+                            addAsyncResult(taskRunUUID, result);
+                        })
+                        .flatMapMaybe(maybe -> maybe)
+                        .subscribe(result -> addAsyncResult(taskRunUUID, result), t -> {
+                            LOGGER.warn("Error getting async result", t);
+                        }, () -> {
+                            LOGGER.debug("completed work for taskRunUUID {}", taskRunUUID);
+                            // async results complete and task complete, no more updates to TaskResult observable
+                            taskToTaskResultObservable.get(taskRunUUID).onComplete();
+                        }));
+
+        // load the initial task result
+        Single<TaskResult> taskResultSingle = taskRepository
+                .getTaskResult(taskRunUUID)
+                .toSingle(new TaskResultBase(taskIdentifier, taskRunUUID));
+
+        taskRunDisposables.add(
+                taskResultSingle
+                        .subscribe(
+                                tr -> {
+                                    taskToTaskResultObservable.get(taskRunUUID).onNext(tr);
+                                    taskToTaskResult.put(taskRunUUID, tr);
+                                },
+                                t -> taskToTaskResultObservable.get(taskRunUUID).onError(t)
+                        ));
+
+        return taskResultSingle.ignoreElement().subscribeOn(Schedulers.io());
+    }
+
+    @VisibleForTesting
+    void addAsyncResult(UUID taskRunUUID, Result asyncResult) {
+        updateTaskResult(taskRunUUID, taskToTaskResult.get(taskRunUUID).addAsyncResult(asyncResult));
     }
 
     @VisibleForTesting
     void addAsyncResult(UUID taskRunUUID, Maybe<Result> resultMaybe) {
-        checkState(!isTaskFinished(taskRunUUID));
+        // this can be called when task is marked finished since it is used internally by the service
+        taskToAsyncResultSet.get(taskRunUUID)
+                .add(
+                        resultMaybe
+                                .doOnSuccess(
+                                        asyncResult ->
+                                        {
+                                            LOGGER.debug(
+                                                    "received async result: {}, updating task result for uuid: {}",
+                                                    asyncResult,
+                                                    taskRunUUID);
 
-        taskToAsyncResultsObservable
-                .get(taskRunUUID)
-                .onNext(resultMaybe.doOnSuccess(
-                        asyncResult ->
-                        {
-                            BehaviorSubject<TaskResult> taskResultBehaviorSubject = taskToTaskResultObservable
-                                    .get(taskRunUUID);
-                            TaskResult taskResult = taskResultBehaviorSubject.getValue();
-                            LOGGER.debug("received async result: {}, updating task result for uuid: {}", asyncResult,
-                                    taskRunUUID);
-                            taskResultBehaviorSubject.onNext(taskResult.addAsyncResult(asyncResult));
-                        }
-                ).cache());
+                                            TaskResult newTaskResult = taskToTaskResult.get(taskRunUUID)
+                                                    .addAsyncResult(asyncResult);
+                                            taskToTaskResult.put(taskRunUUID, newTaskResult);
+
+                                            BehaviorSubject<TaskResult> taskResultBehaviorSubject
+                                                    = taskToTaskResultObservable
+                                                    .get(taskRunUUID);
+
+                                            taskResultBehaviorSubject.onNext(newTaskResult);
+                                        }
+                                )
+                                .doOnError(t -> {
+                                    LOGGER.warn("Error processing async result", t);
+                                })
+                                .doOnComplete(() -> {
+                                    LOGGER.debug("Async action complete");
+                                })
+                                .cache());
+
+        taskToAsyncResultSetObservable.get(taskRunUUID)
+                .onNext(ImmutableSet.copyOf(taskToAsyncResultSet.get(taskRunUUID)));
     }
 
     @VisibleForTesting
@@ -215,64 +371,49 @@ public class TaskResultService extends DaggerService {
         checkState(!isTaskFinished(taskRunUUID));
         LOGGER.debug("received step result: {}, updating task result for uuid: {}", stepResult, taskRunUUID);
 
-        BehaviorSubject<TaskResult> taskResultBehaviorSubject = taskToTaskResultObservable.get(taskRunUUID);
-        taskResultBehaviorSubject.onNext(
-                taskResultBehaviorSubject.getValue().addStepHistory(stepResult));
+        updateTaskResult(taskRunUUID, taskToTaskResult.get(taskRunUUID).addStepHistory(stepResult));
     }
 
     @VisibleForTesting
     void finish(UUID taskRunUUID) {
         checkState(!isTaskFinished(taskRunUUID));
+        LOGGER.debug("finished called for task run: {]", taskRunUUID);
 
         // task is complete
-        taskToCompletable.get(taskRunUUID).onComplete();
+        taskToPerformTaskCompletable.get(taskRunUUID).onComplete();
         // source of async results complete, no more will be added
-        taskToAsyncResultsObservable.get(taskRunUUID).onComplete();
+        taskToAsyncResultSetObservable.get(taskRunUUID).onComplete();
     }
 
     @SuppressWarnings("unchecked")
-    Observable<Maybe<Result>> getAsyncResults(UUID taskRunUUID) {
-        return taskToAsyncResultsObservable.get(taskRunUUID);
+    Observable<ImmutableSet<Maybe<Result>>> getAsyncResults(UUID taskRunUUID) {
+        return taskToAsyncResultSetObservable.get(taskRunUUID);
+    }
+
+    Single<TaskResult> getFinalTaskResult(UUID taskRunUUID) {
+        return taskToTaskResultSingle.get(taskRunUUID);
+    }
+
+    @VisibleForTesting
+    TaskResult getLatestTaskResult(UUID taskRunUUID) {
+        return taskToTaskResult.get(taskRunUUID);
     }
 
     Observable<TaskResult> getTaskResultObservable(UUID taskRunUUID) {
         return taskToTaskResultObservable.get(taskRunUUID);
     }
 
-    void init(UUID taskRunUUID) {
-        Observable<TaskResult> taskResultObservable = taskToTaskResultObservable.get(taskRunUUID);
-        if (taskResultObservable != null) {
-            // task run already initialized
-            return;
-        }
-        taskToBinderCount.put(taskRunUUID, new AtomicInteger(1));
-        taskToAsyncResultsObservable.put(taskRunUUID, ReplaySubject.create());
-        taskToCompletable.put(taskRunUUID, CompletableSubject.create());
-        taskToDisposables.put(taskRunUUID, new CompositeDisposable());
-        taskToTaskResultObservable.put(taskRunUUID, BehaviorSubject.create());
-
-        Observable<Result> asyncResults = taskToAsyncResultsObservable.get(taskRunUUID).flatMap(Maybe::toObservable);
-
-        // noinspection RxSubscribeOnError
-        taskToDisposables.get(taskRunUUID)
-                .add(asyncResults
-                        .flatMapCompletable(c -> Completable.complete())
-                        .mergeWith(taskToCompletable.get(taskRunUUID)
-                                .doOnComplete(() ->
-                                        LOGGER.debug("task completion received for taskRunUUID {}", taskRunUUID)))
-                        .doOnComplete(() -> {
-                            LOGGER.debug("completed work for taskRunUUID {}", taskRunUUID);
-                            // async results complete and task complete, no more updates to TaskResult observable
-                            taskToTaskResultObservable.get(taskRunUUID).onComplete();
-                        }).subscribe());
-    }
-
     @VisibleForTesting
     boolean isTaskFinished(UUID taskRunUUID) {
-        return taskToCompletable.get(taskRunUUID).hasComplete();
+        CompletableSubject taskRunCompletable = taskToPerformTaskCompletable.get(taskRunUUID);
+
+        return taskRunCompletable != null && taskRunCompletable.hasComplete();
     }
 
-    private static UUID getTaskRunUUID(Intent intent) {
-        return ((ParcelUuid) intent.getParcelableExtra(TAG_TASK_RUN_UUID)).getUuid();
+    void updateTaskResult(UUID taskRunUUID, TaskResult newTaskResult) {
+        taskToTaskResult.put(taskRunUUID, newTaskResult);
+
+        BehaviorSubject<TaskResult> taskResultBehaviorSubject = taskToTaskResultObservable.get(taskRunUUID);
+        taskResultBehaviorSubject.onNext(newTaskResult);
     }
 }

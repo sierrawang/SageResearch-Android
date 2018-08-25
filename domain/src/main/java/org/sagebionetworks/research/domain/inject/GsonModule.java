@@ -124,7 +124,6 @@ public abstract class GsonModule {
     }
 
     @Provides
-    @Singleton
     static Gson provideGson(Map<Class<?>, JsonDeserializer<?>> jsonDeserializerMap,
             Map<Class<?>, JsonSerializer<?>> jsonSerializerMap,
             Set<TypeAdapterFactory> typeAdapterFactories,

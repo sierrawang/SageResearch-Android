@@ -32,21 +32,18 @@
 
 package org.sagebionetworks.research.presentation.inject;
 
-import org.sagebionetworks.research.domain.inject.StepModule.StepClassKey;
 import org.sagebionetworks.research.presentation.model.BaseStepView;
 import org.sagebionetworks.research.presentation.model.implementations.ActiveUIStepViewBase;
 import org.sagebionetworks.research.presentation.model.implementations.CompletionStepViewBase;
 import org.sagebionetworks.research.presentation.model.implementations.CountdownStepViewBase;
 import org.sagebionetworks.research.presentation.model.implementations.FormUIStepViewBase;
 import org.sagebionetworks.research.presentation.model.implementations.UIStepViewBase;
-import org.sagebionetworks.research.presentation.model.interfaces.ActiveUIStepView;
 import org.sagebionetworks.research.presentation.model.interfaces.FormUIStepView;
 import org.sagebionetworks.research.presentation.model.interfaces.StepView;
-import org.sagebionetworks.research.presentation.model.interfaces.UIStepView;
 import org.sagebionetworks.research.presentation.show_step.ShowGenericStepViewModelFactory;
-import org.sagebionetworks.research.presentation.show_step.show_step_view_model_factories.AbstractShowStepViewModelFactory;
-import org.sagebionetworks.research.presentation.show_step.show_step_view_model_factories.ShowActiveUIStepViewModelFactory;
 import org.sagebionetworks.research.presentation.show_step.show_step_view_model_factories.ShowStepViewModelFactory;
+import org.sagebionetworks.research.presentation.show_step.show_step_view_model_factories.ShowActiveUIStepViewModelFactory;
+import org.sagebionetworks.research.presentation.show_step.show_step_view_model_factories.AbstractShowStepViewModelFactory;
 import org.sagebionetworks.research.presentation.show_step.show_step_view_model_factories.ShowUIStepViewModelFactory;
 
 import java.util.Map;
@@ -66,7 +63,7 @@ public abstract class ShowStepViewModelModule {
     @Provides
     @IntoMap
     @StepViewClassKey(ActiveUIStepViewBase.TYPE)
-    static AbstractShowStepViewModelFactory<?, ? extends StepView> provideActiveUIStepVMF() {
+    static ShowStepViewModelFactory<?, ? extends StepView> provideActiveUIStepVMF() {
         return new ShowActiveUIStepViewModelFactory<>();
     }
 
@@ -74,41 +71,41 @@ public abstract class ShowStepViewModelModule {
     @Provides
     @IntoMap
     @StepViewClassKey(FormUIStepViewBase.TYPE)
-    static AbstractShowStepViewModelFactory<?, ? extends StepView> provideFormUIStepVMF() {
+    static ShowStepViewModelFactory<?, ? extends StepView> provideFormUIStepVMF() {
         return new ShowUIStepViewModelFactory<FormUIStepView>();
     }
 
     @Provides
     @IntoMap
     @StepViewClassKey(BaseStepView.TYPE)
-    static AbstractShowStepViewModelFactory<?, ? extends StepView> provideGenericStepVMF() {
+    static ShowStepViewModelFactory<?, ? extends StepView> provideGenericStepVMF() {
         return new ShowGenericStepViewModelFactory();
     }
 
     @Provides
-    static ShowStepViewModelFactory provideShowStepViewModelFactory(
-            Map<String, AbstractShowStepViewModelFactory<?, ? extends StepView>> t) {
-        return new ShowStepViewModelFactory(t);
+    static AbstractShowStepViewModelFactory provideShowStepViewModelFactory(
+            Map<String, ShowStepViewModelFactory<?, ? extends StepView>> t) {
+        return new AbstractShowStepViewModelFactory(t);
     }
 
     @Provides
     @IntoMap
     @StepViewClassKey(UIStepViewBase.TYPE)
-    static AbstractShowStepViewModelFactory<?, ? extends StepView> provideUIStepVMF() {
+    static ShowStepViewModelFactory<?, ? extends StepView> provideUIStepVMF() {
         return new ShowUIStepViewModelFactory<>();
     }
 
     @Provides
     @IntoMap
     @StepViewClassKey(CompletionStepViewBase.TYPE)
-    static AbstractShowStepViewModelFactory<?, ? extends StepView> provideCompletionStepVMF() {
+    static ShowStepViewModelFactory<?, ? extends StepView> provideCompletionStepVMF() {
         return new ShowUIStepViewModelFactory<>();
     }
 
     @Provides
     @IntoMap
     @StepViewClassKey(CountdownStepViewBase.TYPE)
-    static AbstractShowStepViewModelFactory<?, ? extends StepView> provideCountdownStepVMF() {
+    static ShowStepViewModelFactory<?, ? extends StepView> provideCountdownStepVMF() {
         return new ShowActiveUIStepViewModelFactory<>();
     }
 }

@@ -35,6 +35,7 @@ package org.sagebionetworks.research.presentation.show_step;
 import android.arch.lifecycle.LiveData;
 import android.arch.lifecycle.MutableLiveData;
 
+import org.sagebionetworks.research.domain.result.implementations.ResultBase;
 import org.sagebionetworks.research.domain.result.interfaces.Result;
 import org.sagebionetworks.research.presentation.model.action.ActionType;
 import org.sagebionetworks.research.presentation.model.interfaces.StepView;
@@ -42,6 +43,9 @@ import org.sagebionetworks.research.presentation.perform_task.PerformTaskViewMod
 import org.sagebionetworks.research.presentation.show_step.show_step_view_models.ShowStepViewModel;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.threeten.bp.Instant;
+
+import java.util.concurrent.atomic.AtomicBoolean;
 
 public class ShowGenericStepViewModel extends ShowStepViewModel<StepView> {
     private static final Logger LOGGER = LoggerFactory.getLogger(ShowGenericStepViewModel.class);
@@ -52,12 +56,18 @@ public class ShowGenericStepViewModel extends ShowStepViewModel<StepView> {
 
     protected final StepView stepView;
 
+    private final AtomicBoolean addedResult;
+
+    private final Instant startTime;
+
     public ShowGenericStepViewModel(PerformTaskViewModel performTaskViewModel, StepView stepView) {
         this.performTaskViewModel = performTaskViewModel;
         this.stepView = stepView;
 
         showStepViewModelMutableLiveData = new MutableLiveData<>();
         showStepViewModelMutableLiveData.setValue(stepView);
+        this.addedResult = new AtomicBoolean();
+        this.startTime = Instant.now();
     }
 
     @Override
@@ -70,6 +80,11 @@ public class ShowGenericStepViewModel extends ShowStepViewModel<StepView> {
         LOGGER.debug("handleAction called with actionType: {}", actionType);
         switch (actionType) {
             case ActionType.FORWARD:
+                if (!addedResult.get()) {
+                    // If for whatever reason the step didn't create a result matching it's identifier we create a
+                    // ResultBase to mark that the step completed.
+                    addStepResult(new ResultBase(stepView.getIdentifier(), startTime, Instant.now()));
+                }
                 performTaskViewModel.goForward();
                 break;
             case ActionType.BACKWARD:
@@ -81,6 +96,7 @@ public class ShowGenericStepViewModel extends ShowStepViewModel<StepView> {
     }
 
     protected void addStepResult(Result result) {
+        addedResult.set(true);
         performTaskViewModel.addStepResult(result);
     }
 

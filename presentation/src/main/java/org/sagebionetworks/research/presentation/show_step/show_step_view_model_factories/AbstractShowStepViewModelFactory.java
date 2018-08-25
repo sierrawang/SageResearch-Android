@@ -32,12 +32,56 @@
 
 package org.sagebionetworks.research.presentation.show_step.show_step_view_model_factories;
 
+import android.arch.lifecycle.ViewModel;
+import android.arch.lifecycle.ViewModelProvider;
+import android.support.annotation.NonNull;
+
+import org.sagebionetworks.research.presentation.model.BaseStepView;
 import org.sagebionetworks.research.presentation.model.interfaces.StepView;
 import org.sagebionetworks.research.presentation.perform_task.PerformTaskViewModel;
 import org.sagebionetworks.research.presentation.show_step.show_step_view_models.ShowStepViewModel;
 
-public interface AbstractShowStepViewModelFactory<VM extends ShowStepViewModel<S>, S extends StepView> {
-    VM create(PerformTaskViewModel performTaskViewModel, S stepView);
+import java.util.Map;
 
-    Class<? extends ShowStepViewModel> getViewModelClass();
+import javax.inject.Inject;
+
+public class AbstractShowStepViewModelFactory {
+    private final Map<String, ShowStepViewModelFactory<?, ? extends StepView>> t;
+
+    @Inject
+    public AbstractShowStepViewModelFactory(
+            Map<String, ShowStepViewModelFactory<?, ? extends StepView>> t) {
+        this.t = t;
+    }
+
+    public ViewModelProvider.Factory create(PerformTaskViewModel performTaskViewModel, final StepView stepView) {
+        return new ViewModelProvider.Factory() {
+
+            @NonNull
+            @Override
+            @SuppressWarnings(value = "unchecked")
+            public <T extends ViewModel> T create(@NonNull Class<T> modelClass) {
+                ShowStepViewModelFactory af = getFactory(stepView);
+
+                if (modelClass.isAssignableFrom(af.getViewModelClass())) {
+                    // noinspection unchecked
+                    return (T) af.create(performTaskViewModel, stepView);
+                }
+                throw new IllegalArgumentException("Unknown ViewModel class");
+            }
+        };
+    }
+
+    public Class<? extends ShowStepViewModel> getViewModelClass(final StepView stepView) {
+        return getFactory(stepView).getViewModelClass();
+    }
+
+    private ShowStepViewModelFactory<?, ? extends StepView> getFactory(final StepView stepView) {
+        ShowStepViewModelFactory<?, ? extends StepView> factory = t.get(stepView.getType());
+        if (factory == null) {
+            factory = t.get(BaseStepView.TYPE);
+        }
+
+        return factory;
+    }
 }

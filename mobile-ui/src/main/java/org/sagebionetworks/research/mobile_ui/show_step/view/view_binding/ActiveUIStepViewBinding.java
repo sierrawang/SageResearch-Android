@@ -38,7 +38,7 @@ import android.view.View;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
-import org.sagebionetworks.research.domain.mobile_ui.R2.id;
+import org.sagebionetworks.research.mobile_ui.R2.id;
 import org.sagebionetworks.research.presentation.model.interfaces.ActiveUIStepView;
 
 import butterknife.BindView;

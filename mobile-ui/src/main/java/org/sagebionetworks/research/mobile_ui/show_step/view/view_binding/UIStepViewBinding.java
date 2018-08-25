@@ -39,7 +39,9 @@ import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
-import org.sagebionetworks.research.domain.mobile_ui.R2.id;
+import com.jakewharton.rxbinding2.view.RxView;
+
+import org.sagebionetworks.research.mobile_ui.R2.id;
 import org.sagebionetworks.research.mobile_ui.widget.ActionButton;
 import org.sagebionetworks.research.mobile_ui.widget.NavigationActionBar;
 import org.sagebionetworks.research.mobile_ui.widget.NavigationActionBar.ActionButtonClickListener;
@@ -47,9 +49,13 @@ import org.sagebionetworks.research.mobile_ui.widget.StepHeader;
 import org.sagebionetworks.research.presentation.DisplayString;
 import org.sagebionetworks.research.presentation.model.interfaces.UIStepView;
 
+import java.util.concurrent.TimeUnit;
+
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.Unbinder;
+import io.reactivex.android.schedulers.AndroidSchedulers;
+import io.reactivex.disposables.Disposable;
 
 /**
  * A UIStepViewBinding stores the various views that a step view may contain. Supported Views are: NOTE: the format
@@ -68,13 +74,6 @@ import butterknife.Unbinder;
  */
 public class UIStepViewBinding<S extends UIStepView> implements StepViewBinding<S> {
     protected static class UIStepViewHolder {
-        /**
-         * All views should have a root view with id rs2_root_view
-         */
-        @NonNull
-        @BindView(id.rs2_root_view)
-        public View rootView;
-
         /**
          * Views can optionally have a button with the id `rs2_step_navigation_action_backward`. This button generally
          * causes the task to navigate to the previous step when pressed.
@@ -156,6 +155,13 @@ public class UIStepViewBinding<S extends UIStepView> implements StepViewBinding<
         public TextView progressLabel;
 
         /**
+         * All views should have a root view with id rs2_step_fragment_root_view
+         */
+        @NonNull
+        @BindView(id.rs2_step_fragment_root_view)
+        public View rootView;
+
+        /**
          * Views can optionally have a button with the id `rs2_step_navigation_action_skip`. This button generally
          * causes the current step to be skipped when pressed.
          */
@@ -203,11 +209,6 @@ public class UIStepViewBinding<S extends UIStepView> implements StepViewBinding<
     public UIStepViewBinding(View view) {
         this.uiStepViewHolder = new UIStepViewHolder();
         this.uiStepViewHolderUnbinder = ButterKnife.bind(this.uiStepViewHolder, view);
-    }
-
-    @NonNull
-    public View getRootView() {
-        return this.uiStepViewHolder.rootView;
     }
 
     @Nullable
@@ -260,6 +261,11 @@ public class UIStepViewBinding<S extends UIStepView> implements StepViewBinding<
         return this.uiStepViewHolder.progressLabel;
     }
 
+    @NonNull
+    public View getRootView() {
+        return this.uiStepViewHolder.rootView;
+    }
+
     @Nullable
     public ActionButton getSkipButton() {
         return this.uiStepViewHolder.skipButton;
@@ -292,6 +298,13 @@ public class UIStepViewBinding<S extends UIStepView> implements StepViewBinding<
         NavigationActionBar actionBar = this.getNavigationActionBar();
         if (actionBar != null) {
             actionBar.setActionButtonClickListener(actionButtonClickListener);
+//            Disposable d = RxView.clicks(actionBar)
+//                    .doOnNext(o -> {
+//                        System.out.println(o);
+//                    })
+//                    .debounce(300, TimeUnit.MILLISECONDS)
+//                    .observeOn(AndroidSchedulers.mainThread())
+//                    .subscribe(o -> actionButtonClickListener.onClick((ActionButton) o));
         }
 
         StepHeader stepHeader = this.getStepHeader();

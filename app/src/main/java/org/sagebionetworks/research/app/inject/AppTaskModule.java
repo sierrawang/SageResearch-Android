@@ -33,10 +33,14 @@
 package org.sagebionetworks.research.app.inject;
 
 import org.sagebionetworks.research.mobile_ui.inject.PerformTaskModule;
+import org.sagebionetworks.research.mobile_ui.inject.ShowStepFragmentModule;
+import org.sagebionetworks.research.mobile_ui.perform_task.PerformTaskFragment;
 
 import dagger.Module;
+import dagger.android.ContributesAndroidInjector;
 
 @Module(includes = {PerformTaskModule.class, AppStepModule.class})
-public class AppTaskModule {
-
+public abstract class AppTaskModule {
+    @ContributesAndroidInjector(modules = {ShowStepFragmentModule.class})
+    abstract PerformTaskFragment contributesPerformTaskFragmentInjector();
 }

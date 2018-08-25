@@ -36,27 +36,17 @@ import org.sagebionetworks.research.domain.inject.ActionModule;
 import org.sagebionetworks.research.domain.inject.GsonModule;
 import org.sagebionetworks.research.domain.inject.StepModule;
 import org.sagebionetworks.research.domain.inject.TaskModule;
-import org.sagebionetworks.research.mobile_ui.perform_task.PerformTaskFragment;
 import org.sagebionetworks.research.presentation.inject.RecorderConfigPresentationModule;
 import org.sagebionetworks.research.presentation.inject.RecorderModule;
 import org.sagebionetworks.research.presentation.inject.ShowStepViewModelModule;
 import org.sagebionetworks.research.presentation.inject.StepViewModule;
-import org.sagebionetworks.research.presentation.recorder.service.RecorderManager;
 
-import dagger.Binds;
 import dagger.Module;
-import dagger.android.AndroidInjector;
-import dagger.android.support.FragmentKey;
-import dagger.multibindings.IntoMap;
+import dagger.android.AndroidInjectionModule;
 
 @Module(includes = {GsonModule.class, TaskModule.class, StepModule.class, RecorderModule.class,
         RecorderConfigPresentationModule.class, StepViewModule.class, ShowStepViewModelModule.class,
-        ShowStepFragmentModule.class, ActionModule.class},
-        subcomponents = TaskActivityFragmentSubcomponent.class)
+        ShowStepModule.class, ActionModule.class, TaskResultModule.class, AndroidInjectionModule.class})
 public abstract class PerformTaskModule {
-    @Binds
-    @IntoMap
-    @FragmentKey(PerformTaskFragment.class)
-    abstract AndroidInjector.Factory<? extends android.support.v4.app.Fragment>
-    bindTaskActivityFragmentInjectorFactory(TaskActivityFragmentSubcomponent.Builder builder);
+
 }
