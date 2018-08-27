@@ -70,6 +70,8 @@ import dagger.android.DaggerService;
  * <p>
  * RECORDER_ID_KEY -> the identifier of the recorder to perform the action on.
  * <p>
+ * TODO: create a reactive binding to the service, like for TaskResultService. Currently, step transitions and adding
+ * of recorders can be missed when the service is not yet bound @liujoshua 08/26/2018
  */
 public class RecorderService extends DaggerService {
     public class RecorderInstantiationException extends Exception {
