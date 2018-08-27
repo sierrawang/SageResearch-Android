@@ -46,6 +46,7 @@ import io.reactivex.disposables.CompositeDisposable;
 import io.reactivex.disposables.Disposable;
 import io.reactivex.flowables.ConnectableFlowable;
 import io.reactivex.schedulers.Schedulers;
+import io.reactivex.subjects.SingleSubject;
 
 /**
  * A ReactiveRecorder is a recorder which records based on a stream of events, and supports maintaining a FileResult
@@ -67,10 +68,15 @@ public abstract class ReactiveRecorder<E, R extends Result> extends RecorderBase
 
     private ConnectableFlowable<E> eventConnectableFlowable;
 
+    private final SingleSubject<Object> stopSignal;
+
     public ReactiveRecorder(@NonNull final String identifier, Flowable<E> eventFlowable) {
         super(identifier);
+        this.stopSignal = SingleSubject.create();
+
         this.eventConnectableFlowable = eventFlowable
                 .observeOn(Schedulers.computation())
+                .takeUntil(stopSignal.toFlowable())
                 .doFinally(this::doFinally)
                 .publish();
         this.compositeDisposable = new CompositeDisposable();
@@ -95,7 +101,7 @@ public abstract class ReactiveRecorder<E, R extends Result> extends RecorderBase
     @CallSuper
     public void stopRecorder() {
         LOGGER.debug("Stopping recorder {}" + identifier);
-        connectableFlowableConnectionDisposable.dispose();
+        stopSignal.onSuccess(new Object());
     }
 
     @VisibleForTesting

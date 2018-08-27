@@ -57,10 +57,11 @@ public class ReactiveFileResultRecorder<E> extends ReactiveRecorder<E, FileResul
     private final Gson gson;
 
     private final AtomicBoolean isFirstJsonObject = new AtomicBoolean(true);
-    private final AtomicBoolean cancelled = new AtomicBoolean(false);
 
     // allows us to cancel our subscription
     private Subscription reactiveDataSubscription;
+
+    private final AtomicBoolean success = new AtomicBoolean(false);
 
     public static <E> ReactiveFileResultRecorder<E> createJsonArrayLogger(@NonNull String identifier,
             @NonNull Flowable<E> flowableData, @NonNull Gson gson, @NonNull File outputFile) {
@@ -89,16 +90,17 @@ public class ReactiveFileResultRecorder<E> extends ReactiveRecorder<E, FileResul
         compositeDisposable.add(
                 getEventFlowable()
                         .observeOn(Schedulers.io())
-                        .doFinally(this::doReactiveDataFinally)
                         .doOnSubscribe(this::onReactiveDataSubscribe)
-                        .subscribe(this::onReactiveDataNext, this::onReactiveDataError));
+                        .doOnCancel(this::onReactiveDataCancel)
+                        .doFinally(this::doReactiveDataFinally)
+                        .subscribe(this::onReactiveDataNext, this::onReactiveDataError,
+                                this::onReactiveDataComplete));
     }
 
     @Override
     @CallSuper
     public void cancelRecorder() {
         super.cancelRecorder();
-        cancelled.set(true);
         fileResultMaybeSubject.onComplete();
         reactiveDataSubscription.cancel();
     }
@@ -121,34 +123,32 @@ public class ReactiveFileResultRecorder<E> extends ReactiveRecorder<E, FileResul
         }
     }
 
-    @Override
-    @CallSuper
-    public void stopRecorder() {
-        super.stopRecorder();
-        reactiveDataSubscription.cancel();
-    }
-
     @VisibleForTesting
     void doReactiveDataFinally() {
-        outputStream.append(this.end);
         outputStream.close();
-        if (cancelled.get()) {
-            fileResultMaybeSubject.onComplete();
+        if (!success.get()) {
+            LOGGER.debug("Deleting output file");
             outputFile.delete();
-            return;
         }
-
-        fileResultMaybeSubject.onSuccess(
-                new FileResultBase(identifier, startTime, stopTime, fileMimeType, outputFile.getPath()));
 
         compositeDisposable.dispose();
     }
 
     @VisibleForTesting
+    void onReactiveDataCancel() {
+        LOGGER.debug("reactive data canceled for {}", identifier);
+
+        fileResultMaybeSubject.onComplete();
+    }
+
+    @VisibleForTesting
     void onReactiveDataComplete() {
         LOGGER.debug("reactive data completed for {}", identifier);
+        success.set(true);
+        outputStream.append(this.end);
 
-
+        fileResultMaybeSubject.onSuccess(
+                new FileResultBase(identifier, startTime, stopTime, fileMimeType, outputFile.getPath()));
     }
 
     @VisibleForTesting

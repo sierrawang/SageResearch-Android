@@ -77,14 +77,11 @@ public class ShowUIStepViewModel<S extends UIStepView> extends ShowStepViewModel
         LOGGER.debug("handleAction called with actionType: {}", actionType);
         switch (actionType) {
             case ActionType.FORWARD:
-                Step step = performTaskViewModel.getStep().getValue();
-                if (step != null) {
-                    if (performTaskViewModel.getTaskResult()
-                            .getResult(performTaskViewModel.getStep().getValue()) == null) {
-                        // If for whatever reason the step didn't create a result matching it's identifier we create a
-                        // ResultBase to mark that the step completed.
-                        addStepResult(new ResultBase(stepView.getIdentifier(), startTime, Instant.now()));
-                    }
+                if (performTaskViewModel.getTaskResult()
+                        .getResult(stepView.getIdentifier()) == null) {
+                    // If for whatever reason the step didn't create a result matching it's identifier we create a
+                    // ResultBase to mark that the step completed.
+                    addStepResult(new ResultBase(stepView.getIdentifier(), startTime, Instant.now()));
                 }
                 performTaskViewModel.goForward();
                 break;
