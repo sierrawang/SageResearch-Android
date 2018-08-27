@@ -187,6 +187,7 @@ public class TaskResultService extends DaggerService {
     @Inject
     TaskRepository taskRepository;
 
+    // TODO: maintain mapping of an identifier for the result so a result can be retrieved
     private final HashMap<UUID, Set<Maybe<Result>>> taskToAsyncResultSet = new HashMap<>();
 
     private final HashMap<UUID, BehaviorSubject<ImmutableSet<Maybe<Result>>>> taskToAsyncResultSetObservable

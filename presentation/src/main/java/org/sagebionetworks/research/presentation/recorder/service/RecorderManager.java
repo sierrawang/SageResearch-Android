@@ -107,6 +107,7 @@ public class RecorderManager implements ServiceConnection {
     private final UUID taskRunUUID;
 
     // TODO: a way to wait until service is bound
+    // TODO: unbind service
     public RecorderManager(@NonNull Task task, @NonNull String taskIdentifier, @NonNull UUID taskRunUUID,
             Context context,
             @NonNull TaskResultManager taskResultManager,
