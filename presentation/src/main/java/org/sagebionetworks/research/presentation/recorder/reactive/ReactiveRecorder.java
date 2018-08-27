@@ -41,6 +41,8 @@ import org.sagebionetworks.research.presentation.recorder.RecorderBase;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.util.concurrent.atomic.AtomicBoolean;
+
 import io.reactivex.Flowable;
 import io.reactivex.disposables.CompositeDisposable;
 import io.reactivex.disposables.Disposable;
@@ -68,15 +70,19 @@ public abstract class ReactiveRecorder<E, R extends Result> extends RecorderBase
 
     private ConnectableFlowable<E> eventConnectableFlowable;
 
+    private final AtomicBoolean paused;
+
     private final SingleSubject<Object> stopSignal;
 
     public ReactiveRecorder(@NonNull final String identifier, Flowable<E> eventFlowable) {
         super(identifier);
         this.stopSignal = SingleSubject.create();
+        paused = new AtomicBoolean();
 
         this.eventConnectableFlowable = eventFlowable
                 .observeOn(Schedulers.computation())
                 .takeUntil(stopSignal.toFlowable())
+                .filter((e) -> !paused.get())
                 .doFinally(this::doFinally)
                 .publish();
         this.compositeDisposable = new CompositeDisposable();
@@ -85,6 +91,20 @@ public abstract class ReactiveRecorder<E, R extends Result> extends RecorderBase
     @NonNull
     public Flowable<E> getEventFlowable() {
         return this.eventConnectableFlowable;
+    }
+
+    @Override
+    @CallSuper
+    public void pause() {
+        LOGGER.debug("Pause called on recorder with id: {}", identifier);
+        paused.set(true);
+    }
+
+    @Override
+    @CallSuper
+    public void resume() {
+        LOGGER.debug("Resume called on recorder with id: {}", identifier);
+        paused.set(false);
     }
 
     @Override
