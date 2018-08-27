@@ -306,6 +306,7 @@ public class TaskResultService extends DaggerService {
         // load the initial task result
         Single<TaskResult> taskResultSingle = taskRepository
                 .getTaskResult(taskRunUUID)
+                .subscribeOn(Schedulers.io())
                 .toSingle(new TaskResultBase(taskIdentifier, taskRunUUID));
 
         taskRunDisposables.add(
@@ -318,7 +319,7 @@ public class TaskResultService extends DaggerService {
                                 t -> taskToTaskResultObservable.get(taskRunUUID).onError(t)
                         ));
 
-        return taskResultSingle.ignoreElement().subscribeOn(Schedulers.io());
+        return taskResultSingle.ignoreElement();
     }
 
     @VisibleForTesting

@@ -23,6 +23,7 @@ import java.util.concurrent.atomic.AtomicBoolean;
 import io.reactivex.Flowable;
 import io.reactivex.Maybe;
 import io.reactivex.disposables.CompositeDisposable;
+import io.reactivex.schedulers.Schedulers;
 import io.reactivex.subjects.MaybeSubject;
 
 public class ReactiveFileResultRecorder<E> extends ReactiveRecorder<E, FileResult> {
@@ -87,6 +88,7 @@ public class ReactiveFileResultRecorder<E> extends ReactiveRecorder<E, FileResul
 
         compositeDisposable.add(
                 getEventFlowable()
+                        .observeOn(Schedulers.io())
                         .doFinally(this::doReactiveDataFinally)
                         .doOnSubscribe(this::onReactiveDataSubscribe)
                         .subscribe(this::onReactiveDataNext, this::onReactiveDataError));
