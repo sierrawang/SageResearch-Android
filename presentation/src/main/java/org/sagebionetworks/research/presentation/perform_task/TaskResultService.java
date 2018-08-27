@@ -294,9 +294,6 @@ public class TaskResultService extends DaggerService {
                         .observeOn(Schedulers.io())
                         .flatMap(Observable::fromIterable)
                         .distinct()
-                        .doOnNext(result -> {
-                            addAsyncResult(taskRunUUID, result);
-                        })
                         .flatMapMaybe(maybe -> maybe)
                         .subscribe(result -> addAsyncResult(taskRunUUID, result), t -> {
                             LOGGER.warn("Error getting async result", t);
@@ -332,35 +329,7 @@ public class TaskResultService extends DaggerService {
     @VisibleForTesting
     void addAsyncResult(UUID taskRunUUID, Maybe<Result> resultMaybe) {
         // this can be called when task is marked finished since it is used internally by the service
-        taskToAsyncResultSet.get(taskRunUUID)
-                .add(
-                        resultMaybe
-                                .doOnSuccess(
-                                        asyncResult ->
-                                        {
-                                            LOGGER.debug(
-                                                    "received async result: {}, updating task result for uuid: {}",
-                                                    asyncResult,
-                                                    taskRunUUID);
-
-                                            TaskResult newTaskResult = taskToTaskResult.get(taskRunUUID)
-                                                    .addAsyncResult(asyncResult);
-                                            taskToTaskResult.put(taskRunUUID, newTaskResult);
-
-                                            BehaviorSubject<TaskResult> taskResultBehaviorSubject
-                                                    = taskToTaskResultObservable
-                                                    .get(taskRunUUID);
-
-                                            taskResultBehaviorSubject.onNext(newTaskResult);
-                                        }
-                                )
-                                .doOnError(t -> {
-                                    LOGGER.warn("Error processing async result", t);
-                                })
-                                .doOnComplete(() -> {
-                                    LOGGER.debug("Async action complete");
-                                })
-                                .cache());
+        taskToAsyncResultSet.get(taskRunUUID).add(resultMaybe.cache());
 
         taskToAsyncResultSetObservable.get(taskRunUUID)
                 .onNext(ImmutableSet.copyOf(taskToAsyncResultSet.get(taskRunUUID)));

@@ -298,14 +298,7 @@ public class UIStepViewBinding<S extends UIStepView> implements StepViewBinding<
         NavigationActionBar actionBar = this.getNavigationActionBar();
         if (actionBar != null) {
             actionBar.setActionButtonClickListener(actionButtonClickListener);
-//            Disposable d = RxView.clicks(actionBar)
-//                    .doOnNext(o -> {
-//                        System.out.println(o);
-//                    })
-//                    .debounce(300, TimeUnit.MILLISECONDS)
-//                    .observeOn(AndroidSchedulers.mainThread())
-//                    .subscribe(o -> actionButtonClickListener.onClick((ActionButton) o));
-        }
+         }
 
         StepHeader stepHeader = this.getStepHeader();
         if (stepHeader != null) {
