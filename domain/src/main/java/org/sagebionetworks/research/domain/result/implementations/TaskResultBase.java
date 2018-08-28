@@ -73,7 +73,7 @@ public class TaskResultBase extends ResultBase implements TaskResult {
     public TaskResultBase(@NonNull String identifier, @NonNull Instant startDate,
             @Nullable Instant endDate, @NonNull UUID taskUUID, @Nullable Schema schema,
             @NonNull List<Result> stepHistory, @NonNull List<Result> asyncResults) {
-        super(identifier, startDate, endDate);
+        super(identifier, startDate, endDate == null ? Instant.now() : endDate);
         this.taskResultData = TaskResultData.create(taskUUID, schema, stepHistory, asyncResults);
     }
 

@@ -51,7 +51,7 @@ public class BoundServiceTaskResultManager implements TaskResultManager {
         }
 
         @Override
-        public void addAsyncActionResult(@NonNull final Maybe<Result> actionActionResult) {
+        public void addAsyncActionResult(@NonNull final Maybe<? extends Result> actionActionResult) {
             binder.addAsyncActionResult(taskRunUUID, actionActionResult);
         }
 
@@ -73,7 +73,7 @@ public class BoundServiceTaskResultManager implements TaskResultManager {
 
         @NonNull
         @Override
-        public Observable<ImmutableSet<Maybe<Result>>> getAsyncResultsObservable() {
+        public Observable<ImmutableSet<Maybe<? extends Result>>> getAsyncResultsObservable() {
             return binder.getAsyncResultsObservable(taskRunUUID);
         }
 

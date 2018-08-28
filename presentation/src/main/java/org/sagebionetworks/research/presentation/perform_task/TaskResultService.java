@@ -67,7 +67,7 @@ public class TaskResultService extends DaggerService {
          * @param taskRunUUID
          * @param asyncResult
          */
-        public void addAsyncActionResult(@NonNull final UUID taskRunUUID, @NonNull Maybe<Result> asyncResult) {
+        public void addAsyncActionResult(@NonNull final UUID taskRunUUID, @NonNull Maybe<? extends Result> asyncResult) {
             checkNotNull(taskRunUUID);
             checkNotNull(asyncResult);
 
@@ -121,7 +121,7 @@ public class TaskResultService extends DaggerService {
          * @return observable which will produce each of the async results added to this task run, each async result
          *         is cached so multiple subscriptions will not cause the async result to run again
          */
-        public Observable<ImmutableSet<Maybe<Result>>> getAsyncResultsObservable(@NonNull final UUID taskRunUUID) {
+        public Observable<ImmutableSet<Maybe<? extends Result>>> getAsyncResultsObservable(@NonNull final UUID taskRunUUID) {
             checkNotNull(taskRunUUID);
 
             LOGGER.debug("getAsyncResultsObservable called");
@@ -188,9 +188,9 @@ public class TaskResultService extends DaggerService {
     TaskRepository taskRepository;
 
     // TODO: maintain mapping of an identifier for the result so a result can be retrieved
-    private final HashMap<UUID, Set<Maybe<Result>>> taskToAsyncResultSet = new HashMap<>();
+    private final HashMap<UUID, Set<Maybe<? extends Result>>> taskToAsyncResultSet = new HashMap<>();
 
-    private final HashMap<UUID, BehaviorSubject<ImmutableSet<Maybe<Result>>>> taskToAsyncResultSetObservable
+    private final HashMap<UUID, BehaviorSubject<ImmutableSet<Maybe<? extends Result>>>> taskToAsyncResultSetObservable
             = new HashMap<>();
 
     private final HashMap<UUID, AtomicInteger> taskToBinderCount = new HashMap<>();
@@ -329,7 +329,7 @@ public class TaskResultService extends DaggerService {
     }
 
     @VisibleForTesting
-    void addAsyncResult(UUID taskRunUUID, Maybe<Result> resultMaybe) {
+    void addAsyncResult(UUID taskRunUUID, Maybe<? extends Result> resultMaybe) {
         // this can be called when task is marked finished since it is used internally by the service
         taskToAsyncResultSet.get(taskRunUUID).add(resultMaybe.cache());
 
@@ -357,7 +357,7 @@ public class TaskResultService extends DaggerService {
     }
 
     @SuppressWarnings("unchecked")
-    Observable<ImmutableSet<Maybe<Result>>> getAsyncResults(UUID taskRunUUID) {
+    Observable<ImmutableSet<Maybe<? extends Result>>> getAsyncResults(UUID taskRunUUID) {
         return taskToAsyncResultSetObservable.get(taskRunUUID);
     }
 

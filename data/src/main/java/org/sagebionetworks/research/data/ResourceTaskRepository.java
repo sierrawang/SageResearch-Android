@@ -224,7 +224,7 @@ public class ResourceTaskRepository implements TaskRepository {
             ImmutableList<Step> steps = section.getSteps();
             ImmutableList.Builder<Step> builder = new ImmutableList.Builder<>();
             for (Step innerStep : steps) {
-                builder.add(resolveTransformers(innerStep, prefix + section.getIdentifier() + "."));
+                builder.add(resolveTransformers(innerStep, prefix + section.getIdentifier() + "_"));
             }
 
             return section.copyWithSteps(builder.build());

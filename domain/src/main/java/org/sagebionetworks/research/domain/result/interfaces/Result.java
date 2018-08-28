@@ -33,9 +33,7 @@
 package org.sagebionetworks.research.domain.result.interfaces;
 
 import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
 
-import org.sagebionetworks.research.domain.result.ResultType;
 import org.threeten.bp.Instant;
 
 /**
@@ -45,7 +43,7 @@ public interface Result {
     /**
      * @return The time this result ended.
      */
-    @Nullable
+    @NonNull
     Instant getEndTime();
 
     /**

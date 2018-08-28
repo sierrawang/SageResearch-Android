@@ -41,6 +41,7 @@ import com.github.pwittchen.reactivesensors.library.ReactiveSensors;
 import com.google.gson.Gson;
 
 import org.sagebionetworks.research.domain.async.RecorderType;
+import org.sagebionetworks.research.domain.result.interfaces.Result;
 import org.sagebionetworks.research.presentation.recorder.Recorder;
 import org.sagebionetworks.research.presentation.recorder.RecorderConfigPresentation;
 import org.sagebionetworks.research.presentation.recorder.location.DistanceRecorderConfigPresentation;
@@ -69,7 +70,7 @@ import io.reactivex.Flowable;
 @Module
 public abstract class RecorderModule {
     public interface RecorderFactory {
-        Recorder create(RecorderConfigPresentation recorderConfiguration, UUID taskUUID) throws IOException;
+        Recorder<? extends Result> create(RecorderConfigPresentation recorderConfiguration, UUID taskUUID) throws IOException;
     }
 
     @Provides
