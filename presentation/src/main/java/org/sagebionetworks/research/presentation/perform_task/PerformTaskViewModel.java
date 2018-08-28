@@ -51,6 +51,7 @@ import org.sagebionetworks.research.domain.result.implementations.ResultBase;
 import org.sagebionetworks.research.domain.result.implementations.TaskResultBase;
 import org.sagebionetworks.research.domain.result.interfaces.Result;
 import org.sagebionetworks.research.domain.result.interfaces.TaskResult;
+import org.sagebionetworks.research.domain.step.interfaces.SectionStep;
 import org.sagebionetworks.research.domain.step.interfaces.Step;
 import org.sagebionetworks.research.domain.step.interfaces.ThemedUIStep;
 import org.sagebionetworks.research.domain.task.Task;
@@ -353,7 +354,7 @@ public class PerformTaskViewModel extends AndroidViewModel {
         this.stepViewMapping = new HashMap<>();
         for (Step step : this.stepNavigator.getSteps()) {
             // This if statement is necessary to ensure we can call stepViewFactory.apply on the step.
-            if (step instanceof ThemedUIStep) {
+            if (!(step instanceof SectionStep)) {
                 this.stepViewMapping.put(step, stepViewFactory.apply(step));
             }
         }

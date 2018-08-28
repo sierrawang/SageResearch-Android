@@ -54,6 +54,7 @@ import org.sagebionetworks.research.domain.result.implementations.TaskResultBase
 import org.sagebionetworks.research.domain.result.interfaces.TaskResult;
 import org.sagebionetworks.research.mobile_ui.inject.ShowStepFragmentModule.ShowStepFragmentFactory;
 import org.sagebionetworks.research.mobile_ui.perform_task.PerformTaskFragment.OnPerformTaskExitListener.Status;
+import org.sagebionetworks.research.mobile_ui.show_step.ShowStepFragment;
 import org.sagebionetworks.research.mobile_ui.show_step.view.ShowStepFragmentBase;
 import org.sagebionetworks.research.presentation.model.TaskView;
 import org.sagebionetworks.research.presentation.model.interfaces.StepView;
@@ -108,7 +109,7 @@ public class PerformTaskFragment extends Fragment implements HasSupportFragmentI
     @Inject
     PerformTaskViewModelFactory taskViewModelFactory;
 
-    private ShowStepFragmentBase currentStepFragment;
+    private Fragment currentStepFragment;
 
     private PerformTaskViewModel performTaskViewModel;
 
@@ -233,7 +234,7 @@ public class PerformTaskFragment extends Fragment implements HasSupportFragmentI
             return;
         }
 
-        ShowStepFragmentBase step = showStepFragmentFactory.create(stepView);
+        ShowStepFragment step = showStepFragmentFactory.create(stepView);
         step.setPerformTaskFragment(this);
         currentStepFragment = step;
         FragmentTransaction transaction = getChildFragmentManager().beginTransaction();

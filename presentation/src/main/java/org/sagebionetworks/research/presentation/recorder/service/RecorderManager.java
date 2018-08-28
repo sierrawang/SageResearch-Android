@@ -137,19 +137,22 @@ public class RecorderManager implements ServiceConnection, ObservableOnSubscribe
                 }
             }
 
-            for (Recorder recorder : this.getActiveRecorders().values()) {
-                this.compositeDisposable.add(
-                        ((Recorder<? extends Result>) recorder).getResult()
-                                .subscribe((result) -> {
-                                    for (ObservableEmitter<Result> emitter : this.observers) {
-                                        emitter.onNext(result);
-                                        emitter.onComplete();
-                                    }
-                                }, (throwable -> {
-                                    for (ObservableEmitter<Result> emitter : this.observers) {
-                                        emitter.onError(throwable);
-                                    }
-                                })));
+            activeRecorders = this.getActiveRecorders();
+            if (activeRecorders != null) {
+                for (Recorder recorder : this.getActiveRecorders().values()) {
+                    this.compositeDisposable.add(
+                            ((Recorder<? extends Result>) recorder).getResult()
+                                    .subscribe((result) -> {
+                                        for (ObservableEmitter<Result> emitter : this.observers) {
+                                            emitter.onNext(result);
+                                            emitter.onComplete();
+                                        }
+                                    }, (throwable -> {
+                                        for (ObservableEmitter<Result> emitter : this.observers) {
+                                            emitter.onError(throwable);
+                                        }
+                                    })));
+                }
             }
         } catch (IOException e) {
             e.printStackTrace();

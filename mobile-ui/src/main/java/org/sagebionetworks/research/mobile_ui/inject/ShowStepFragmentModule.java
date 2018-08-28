@@ -33,9 +33,11 @@
 package org.sagebionetworks.research.mobile_ui.inject;
 
 import android.support.annotation.NonNull;
+import android.support.v4.app.Fragment;
 
 import dagger.multibindings.Multibinds;
 
+import org.sagebionetworks.research.mobile_ui.show_step.ShowStepFragment;
 import org.sagebionetworks.research.mobile_ui.show_step.view.ShowActiveUIStepFragment;
 import org.sagebionetworks.research.mobile_ui.show_step.view.ShowCompletionStepFragment;
 import org.sagebionetworks.research.mobile_ui.show_step.view.ShowCountdownStepFragment;
@@ -71,7 +73,7 @@ public abstract class ShowStepFragmentModule {
 
     public interface ShowStepFragmentFactory {
         @NonNull
-        ShowStepFragmentBase create(@NonNull StepView stepView);
+        ShowStepFragment create(@NonNull StepView stepView);
     }
 
     @Provides
