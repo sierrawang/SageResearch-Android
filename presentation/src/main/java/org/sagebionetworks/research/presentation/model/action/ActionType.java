@@ -41,8 +41,9 @@ import java.lang.annotation.RetentionPolicy;
  * This interface defines the various types of actions that are possible to have.
  */
 @Retention(RetentionPolicy.SOURCE)
-@StringDef({ActionType.BACKWARD, ActionType.CANCEL, ActionType.FORWARD, ActionType.INFO, ActionType.SKIP})
+@StringDef({ActionType.ADD_MORE, ActionType.BACKWARD, ActionType.CANCEL, ActionType.FORWARD, ActionType.INFO, ActionType.SKIP})
 public @interface ActionType {
+    String ADD_MORE = "addMore";
     String BACKWARD = "goBackward";
     String CANCEL = "cancel";
     String FORWARD = "goForward";
