@@ -33,6 +33,7 @@
 package org.sagebionetworks.research.app;
 
 import android.app.Activity;
+import android.app.Service;
 import android.support.multidex.MultiDexApplication;
 import android.support.v4.app.Fragment;
 
@@ -43,15 +44,18 @@ import javax.inject.Inject;
 import dagger.android.AndroidInjector;
 import dagger.android.DispatchingAndroidInjector;
 import dagger.android.HasActivityInjector;
+import dagger.android.HasServiceInjector;
 import dagger.android.support.HasSupportFragmentInjector;
 
 public class ResearchStackDemoApplication extends MultiDexApplication implements HasSupportFragmentInjector,
-        HasActivityInjector {
+        HasActivityInjector, HasServiceInjector {
     @Inject
     DispatchingAndroidInjector<Activity> dispatchingActivityInjector;
 
     @Inject
     DispatchingAndroidInjector<Fragment> dispatchingSupportFragmentInjector;
+    @Inject
+    DispatchingAndroidInjector<Service> dispatchingServiceInjector;
 
     @Override
     public void onCreate() {
@@ -71,5 +75,10 @@ public class ResearchStackDemoApplication extends MultiDexApplication implements
     @Override
     public AndroidInjector<Fragment> supportFragmentInjector() {
         return dispatchingSupportFragmentInjector;
+    }
+
+    @Override
+    public AndroidInjector<Service> serviceInjector() {
+        return dispatchingServiceInjector;
     }
 }
