@@ -79,6 +79,12 @@ public class AnswerResultBase<T> extends ResultBase implements AnswerResult<T> {
         return this.answerResultData.getAnswerResultType();
     }
 
+    @Override
+    @NonNull
+    public Instant getEndTime() {
+        return super.getEndTime();
+    }
+
     @NonNull
     @ResultType
     @Override

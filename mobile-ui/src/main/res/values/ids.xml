@@ -81,10 +81,6 @@
     <id name="countLabel" />
     <id name="unitLabel" />
 
-    <!-- Id's for TappingStepViewBinding -->
-    <id name="leftTapButton" />
-    <id name="rightTapButton" />
-
     <!-- TODO Remove these when possible -->
     <id name="title" />
     <id name="description" />

@@ -16,7 +16,7 @@ public abstract class TaskResultModule {
     abstract TaskResultService contributeRecorderService();
 
     @Binds
-    abstract TaskResultManager procideTaskResultManager(BoundServiceTaskResultManager boundServiceTaskResultManager);
+    abstract TaskResultManager provideTaskResultManager(BoundServiceTaskResultManager boundServiceTaskResultManager);
 
     @Binds
     abstract TaskResultProcessingManager provideTaskResultProcessingManager(

@@ -32,12 +32,22 @@
 
 package org.sagebionetworks.research.domain.result.interfaces;
 
+import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+
+import org.threeten.bp.Instant;
 
 /**
  * A FileResult is a result that stores the location and type of a file.
  */
 public interface FileResult extends Result {
+    /**
+     * @return The time this result ended.
+     */
+    @Override
+    @NonNull
+    Instant getEndTime();
+
     /**
      * @return A String representing the type of content in the file.
      */

@@ -62,16 +62,10 @@ public class ErrorResultBase extends ResultBase implements ErrorResult {
         this.errorResultData = ErrorResultData.create(errorDescription, throwable);
     }
 
+    @Override
     @NonNull
-    @Override
-    public String getErrorDescription() {
-        return this.errorResultData.getErrorDescription();
-    }
-
-    @Nullable
-    @Override
-    public ErrorResultThrowable getThrowable() {
-        return this.errorResultData.getThrowable();
+    public Instant getEndTime() {
+        return super.getEndTime();
     }
 
     @NonNull
@@ -98,5 +92,17 @@ public class ErrorResultBase extends ResultBase implements ErrorResult {
     protected ToStringHelper toStringHelper() {
         return super.toStringHelper()
                 .add("TaskResultData", this.errorResultData);
+    }
+
+    @NonNull
+    @Override
+    public String getErrorDescription() {
+        return this.errorResultData.getErrorDescription();
+    }
+
+    @Nullable
+    @Override
+    public ErrorResultThrowable getThrowable() {
+        return this.errorResultData.getThrowable();
     }
 }

@@ -37,6 +37,8 @@ import android.support.annotation.Nullable;
 
 import com.google.common.base.Objects;
 
+import org.threeten.bp.Instant;
+
 import java.util.Arrays;
 
 /**
@@ -77,6 +79,13 @@ public interface ErrorResult extends Result {
                     && Arrays.equals(getSuppressed(), t.getSuppressed());
         }
     }
+
+    /**
+     * @return The time this result ended.
+     */
+    @Override
+    @NonNull
+    Instant getEndTime();
 
     /**
      * @return A description of the Error that this result represents.
