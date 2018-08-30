@@ -38,7 +38,7 @@ import static org.junit.Assert.assertNotNull;
 import org.junit.Before;
 import org.junit.Test;
 
-public class TaskInfoDeserializationTest {
+public class TaskInfoViewDeserializationTest {
 
     private TaskTestComponent taskTestComponent;
 
@@ -50,8 +50,8 @@ public class TaskInfoDeserializationTest {
     @Test
     public void testTaskInfoDeserialization() {
         String json = "{\"identifier\":\"id\"}";
-        TaskInfo taskInfo = taskTestComponent.gson().fromJson(json, TaskInfo.class);
-        assertNotNull(taskInfo);
-        assertEquals("id", taskInfo.getIdentifier());
+        TaskInfoView taskInfoView = taskTestComponent.gson().fromJson(json, TaskInfoView.class);
+        assertNotNull(taskInfoView);
+        assertEquals("id", taskInfoView.getIdentifier());
     }
 }

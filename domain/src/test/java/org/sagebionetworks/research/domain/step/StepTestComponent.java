@@ -44,7 +44,6 @@ import javax.inject.Singleton;
 import dagger.Component;
 
 @Component(modules = {StepModule.class, InputFieldsModule.class, ActionModule.class, GsonModule.class})
-@Singleton
 public interface StepTestComponent {
     Gson gson();
 }

@@ -38,7 +38,7 @@ import org.sagebionetworks.research.presentation.show_step.show_step_view_models
 import org.sagebionetworks.research.presentation.show_step.show_step_view_models.ShowUIStepViewModel;
 
 public class ShowUIStepViewModelFactory<S extends UIStepView> implements
-        AbstractShowStepViewModelFactory<ShowUIStepViewModel<S>, S> {
+        ShowStepViewModelFactory<ShowUIStepViewModel<S>, S> {
     @Override
     public ShowUIStepViewModel<S> create(final PerformTaskViewModel performTaskViewModel,
             final S stepView) {

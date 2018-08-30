@@ -45,7 +45,7 @@ import org.threeten.bp.Duration;
  * Created by liujoshua on 10/2/2017.
  */
 @AutoValue
-public abstract class TaskInfoBase implements TaskInfo {
+public abstract class TaskInfoBase implements TaskInfoView {
     @AutoValue.Builder
     public abstract static class Builder {
         public abstract TaskInfoBase build();

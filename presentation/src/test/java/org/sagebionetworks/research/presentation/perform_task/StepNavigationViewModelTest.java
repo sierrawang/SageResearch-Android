@@ -80,8 +80,8 @@ public class StepNavigationViewModelTest {
         when(stepNavigator.getNextStep(isNull(), eq(taskResult))).thenReturn(nextStep);
 
         stepNavigationViewModel.getCurrentStepLiveData().observeForever(currentStepObs);
-        stepNavigationViewModel.getNextStepLiveData().observeForever(nextStepObs);
-        stepNavigationViewModel.getPreviousStepLiveData().observeForever(previousStepObs);
+        stepNavigationViewModel.getForwardStepLiveData().observeForever(nextStepObs);
+        stepNavigationViewModel.getBackwardStepLiveData().observeForever(previousStepObs);
 
         taskResultMutableLiveData.setValue(taskResult);
 

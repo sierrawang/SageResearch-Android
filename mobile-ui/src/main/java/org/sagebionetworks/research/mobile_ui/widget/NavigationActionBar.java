@@ -42,8 +42,8 @@ import android.support.constraint.ConstraintLayout;
 import android.util.AttributeSet;
 import android.view.View;
 
-import org.sagebionetworks.research.domain.mobile_ui.R;
-import org.sagebionetworks.research.domain.mobile_ui.R2;
+import org.sagebionetworks.research.mobile_ui.R;
+import org.sagebionetworks.research.mobile_ui.R2;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

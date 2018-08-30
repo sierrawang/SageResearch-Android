@@ -42,5 +42,5 @@ import org.sagebionetworks.research.domain.step.gson.StepGsonTestSuite;
 
 @RunWith(Suite.class)
 @SuiteClasses({NavigatorTestSuite.class, StepGsonTestSuite.class, ResultGsonTestSuite.class, ActionGsonTestSuite.class})
-public class DimainTestSuite {
+public class DomainTestSuite {
 }

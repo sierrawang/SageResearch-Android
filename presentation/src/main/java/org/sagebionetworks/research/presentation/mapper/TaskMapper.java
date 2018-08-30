@@ -37,15 +37,15 @@ import android.support.annotation.NonNull;
 
 import com.google.common.base.Function;
 
-import org.sagebionetworks.research.domain.task.TaskInfo;
+import org.sagebionetworks.research.domain.task.TaskInfoView;
 import org.sagebionetworks.research.presentation.model.TaskView;
 
 import javax.inject.Inject;
 
 /**
- * Map a {@link TaskInfo} to a {@link TaskView} when data is moving between the Domain layer and this layer.
+ * Map a {@link TaskInfoView} to a {@link TaskView} when data is moving between the Domain layer and this layer.
  */
-public class TaskMapper implements Function<TaskInfo, TaskView> {
+public class TaskMapper implements Function<TaskInfoView, TaskView> {
     @Inject
     public TaskMapper() {
 
@@ -53,7 +53,7 @@ public class TaskMapper implements Function<TaskInfo, TaskView> {
 
     @Override
     @NonNull
-    public TaskView apply(@NonNull TaskInfo input) {
+    public TaskView apply(@NonNull TaskInfoView input) {
         return TaskView.builder()
                 .setIdentifier(input.getIdentifier())
                 .build();

@@ -38,16 +38,13 @@ import dagger.Subcomponent;
 import dagger.android.AndroidInjector;
 
 @PerformTaskFragmentScope
-@Subcomponent(modules = ShowStepModule.class)
+@Subcomponent(modules = ShowStepFragmentModule.class)
 public abstract class TaskActivityFragmentSubcomponent implements AndroidInjector<PerformTaskFragment> {
+
     @Subcomponent.Builder
     public abstract static class Builder extends AndroidInjector.Builder<PerformTaskFragment> {
         @Override
         public abstract TaskActivityFragmentSubcomponent build();
-    }
 
-//    static PerformTaskViewModelFactory providePerformTaskViewModelFactory(
-//            StepNavigatorFactory stepNavigatorFactory) {
-//        return new PerformTaskViewModelFactory(stepNavigatorFactory);
-//    }
+    }
 }

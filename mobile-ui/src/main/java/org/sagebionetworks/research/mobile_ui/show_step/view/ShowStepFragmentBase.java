@@ -46,23 +46,20 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-import org.sagebionetworks.research.domain.mobile_ui.R;
+import org.sagebionetworks.research.mobile_ui.R;
 import org.sagebionetworks.research.mobile_ui.perform_task.PerformTaskFragment;
-import org.sagebionetworks.research.mobile_ui.show_step.ShowStepFragment;
 import org.sagebionetworks.research.mobile_ui.show_step.view.view_binding.StepViewBinding;
 import org.sagebionetworks.research.mobile_ui.widget.ActionButton;
 import org.sagebionetworks.research.presentation.model.action.ActionType;
 import org.sagebionetworks.research.presentation.model.interfaces.StepView;
 import org.sagebionetworks.research.presentation.perform_task.PerformTaskViewModel;
-import org.sagebionetworks.research.presentation.show_step.show_step_view_model_factories.ShowStepViewModelFactory;
+import org.sagebionetworks.research.presentation.show_step.show_step_view_model_factories.AbstractShowStepViewModelFactory;
 import org.sagebionetworks.research.presentation.show_step.show_step_view_models.ShowStepViewModel;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import javax.inject.Inject;
 
-import butterknife.Unbinder;
-import dagger.Provides;
 import dagger.android.support.AndroidSupportInjection;
 
 /**
@@ -75,27 +72,24 @@ import dagger.android.support.AndroidSupportInjection;
  *         The type of StepViewModel that this fragment uses.
  */
 public abstract class ShowStepFragmentBase<StepT extends StepView, ViewModelT extends ShowStepViewModel<StepT>,
-        StepViewBindingT extends StepViewBinding<StepT>> extends ShowStepFragment {
+        StepViewBindingT extends StepViewBinding<StepT>> extends Fragment {
     private static final Logger LOGGER = LoggerFactory.getLogger(ShowStepFragmentBase.class);
 
     private static final String ARGUMENT_STEP_VIEW = "STEP_VIEW";
 
-    private static final String ARGUMENT_TASK_FRAGMENT = "TASK_FRAGMENT";
+    @Inject
+    protected AbstractShowStepViewModelFactory abstractShowStepViewModelFactory;
 
+    @Inject
     protected PerformTaskFragment performTaskFragment;
 
     protected PerformTaskViewModel performTaskViewModel;
 
     protected ViewModelT showStepViewModel;
 
-    @Inject
-    protected ShowStepViewModelFactory showStepViewModelFactory;
-
     protected StepT stepView;
 
     protected StepViewBindingT stepViewBinding;
-
-    private Unbinder stepViewUnbinder;
 
     /**
      * Creates a Bundle containing the given StepView.
@@ -113,7 +107,6 @@ public abstract class ShowStepFragmentBase<StepT extends StepView, ViewModelT ex
     }
 
     public ShowStepFragmentBase() {
-
     }
 
     @Override
@@ -123,7 +116,7 @@ public abstract class ShowStepFragmentBase<StepT extends StepView, ViewModelT ex
         super.onAttach(context);
 
         // gets the PerformTaskViewModel instance of performTaskFragment
-        this.performTaskViewModel = ViewModelProviders.of(this.performTaskFragment).get(PerformTaskViewModel.class);
+        this.performTaskViewModel = ViewModelProviders.of(performTaskFragment).get(PerformTaskViewModel.class);
     }
 
     @Override
@@ -136,11 +129,11 @@ public abstract class ShowStepFragmentBase<StepT extends StepView, ViewModelT ex
             Bundle arguments = getArguments();
             if (arguments != null) {
                 // noinspection unchecked
-                stepView = (StepT)this.getArguments().getSerializable(ARGUMENT_STEP_VIEW);
+                stepView = (StepT) this.getArguments().getSerializable(ARGUMENT_STEP_VIEW);
             }
         } else {
             // noinspection unchecked
-            stepView = (StepT)savedInstanceState.getSerializable(ARGUMENT_STEP_VIEW);
+            stepView = (StepT) savedInstanceState.getSerializable(ARGUMENT_STEP_VIEW);
         }
         this.stepView = stepView;
 
@@ -148,19 +141,20 @@ public abstract class ShowStepFragmentBase<StepT extends StepView, ViewModelT ex
 
         //noinspection unchecked
         this.showStepViewModel = (ViewModelT) ViewModelProviders
-                .of(this, this.showStepViewModelFactory.create(this.performTaskViewModel, stepView))
-                .get(stepView.getIdentifier(), this.showStepViewModelFactory.getViewModelClass(stepView));
+                .of(this, this.abstractShowStepViewModelFactory.create(this.performTaskViewModel, stepView))
+                .get(stepView.getIdentifier(), this.abstractShowStepViewModelFactory.getViewModelClass(stepView));
     }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
             Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        View view = inflater.inflate(this.getLayoutId(), container, false);
+        View view = inflater.inflate(getLayoutId(), container, false);
         this.stepViewBinding = this.instantiateAndBindBinding(view);
         this.stepViewBinding.setActionButtonClickListener(this::handleActionButtonClick);
         this.showStepViewModel.getStepView().observe(this, this::update);
         this.stepViewBinding.setActionButtonClickListener(this::handleActionButtonClick);
+
         return view;
     }
 
@@ -168,11 +162,6 @@ public abstract class ShowStepFragmentBase<StepT extends StepView, ViewModelT ex
     public void onDestroyView() {
         super.onDestroyView();
         this.stepViewBinding.unbind();
-    }
-
-    @Override
-    public void setPerformTaskFragment(@NonNull PerformTaskFragment performTaskFragment) {
-        this.performTaskFragment = performTaskFragment;
     }
 
     /**

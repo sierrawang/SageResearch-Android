@@ -30,14 +30,34 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.sagebionetworks.research.mobile_ui.inject.subcomponents;
+package org.sagebionetworks.research.domain.task;
 
-import java.lang.annotation.Retention;
-import java.lang.annotation.RetentionPolicy;
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 
-import javax.inject.Scope;
+import org.threeten.bp.Duration;
 
-@Scope
-@Retention(RetentionPolicy.RUNTIME)
-public @interface ShowStepFragmentScope {
+
+/**
+ * Created by liujoshua on 10/2/2017.
+ */
+
+public interface TaskInfoView {
+    @Nullable
+    String getCopyright();
+
+    @Nullable
+    String getDetail();
+
+    @Nullable
+    Duration getEstimatedDuration();
+
+    @NonNull
+    String getIdentifier();
+
+    @Nullable
+    String getSubtitle();
+
+    @Nullable
+    String getTitle();
 }

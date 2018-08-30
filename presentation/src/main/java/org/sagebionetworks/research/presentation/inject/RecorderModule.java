@@ -35,51 +35,42 @@ package org.sagebionetworks.research.presentation.inject;
 import static org.sagebionetworks.research.presentation.recorder.reactive.ReactiveFileResultRecorder.createJsonArrayLogger;
 
 import android.content.Context;
+import android.hardware.SensorEvent;
 
 import com.github.pwittchen.reactivesensors.library.ReactiveSensors;
 import com.google.gson.Gson;
 
 import org.sagebionetworks.research.domain.async.RecorderType;
+import org.sagebionetworks.research.domain.result.interfaces.Result;
 import org.sagebionetworks.research.presentation.recorder.Recorder;
 import org.sagebionetworks.research.presentation.recorder.RecorderConfigPresentation;
 import org.sagebionetworks.research.presentation.recorder.location.DistanceRecorderConfigPresentation;
 import org.sagebionetworks.research.presentation.recorder.location.Path;
 import org.sagebionetworks.research.presentation.recorder.location.PathAccumulator;
+import org.sagebionetworks.research.presentation.recorder.reactive.ReactiveFileResultRecorder;
 import org.sagebionetworks.research.presentation.recorder.reactive.source.ReactiveLocationFactory;
-import org.sagebionetworks.research.presentation.recorder.reactive.source.SensorRecorderSourceFactory;
+import org.sagebionetworks.research.presentation.recorder.reactive.source.SensorSourceFactory;
+import org.sagebionetworks.research.presentation.recorder.reactive.source.SensorSourceFactory.SensorConfig;
 import org.sagebionetworks.research.presentation.recorder.sensor.SensorRecorderConfigPresentation;
-import org.sagebionetworks.research.presentation.recorder.sensor.json.DeviceMotionJsonRecorder;
 import org.sagebionetworks.research.presentation.recorder.util.TaskOutputFileUtil;
 
 import java.io.IOException;
+import java.util.Collection;
+import java.util.HashSet;
 import java.util.Map;
 import java.util.UUID;
 
+import dagger.Lazy;
 import dagger.Module;
 import dagger.Provides;
 import dagger.multibindings.IntoMap;
 import dagger.multibindings.StringKey;
+import io.reactivex.Flowable;
 
 @Module
 public abstract class RecorderModule {
     public interface RecorderFactory {
-        Recorder create(RecorderConfigPresentation recorderConfiguration, UUID taskUUID) throws IOException;
-    }
-
-    @Provides
-    @IntoMap
-    @StringKey(RecorderType.MOTION)
-    static RecorderFactory provideMotionJsonRecorderFactory(Context context, Gson gson) {
-        return (recorderConfiguration, taskUUID) -> {
-            if (!(recorderConfiguration instanceof SensorRecorderConfigPresentation)) {
-                throw new IllegalArgumentException("RecorderConfigPresentation " + recorderConfiguration
-                        + " is not a SensorRecorderConfigPresentation.");
-            }
-
-            return new DeviceMotionJsonRecorder((SensorRecorderConfigPresentation) recorderConfiguration,
-                    context, gson, taskUUID, new SensorRecorderSourceFactory(
-                    new ReactiveSensors(context)));
-        };
+        Recorder<? extends Result> create(RecorderConfigPresentation recorderConfiguration, UUID taskUUID) throws IOException;
     }
 
     @Provides
@@ -101,6 +92,41 @@ public abstract class RecorderModule {
                             taskUUID,
                             recorderConfiguration.getIdentifier() + ".json",
                             context));
+        };
+    }
+
+    @Provides
+    static ReactiveSensors provideReactiveSensors(Context context) {
+        return new ReactiveSensors(context);
+    }
+    @Provides
+    @IntoMap
+    @StringKey(RecorderType.MOTION)
+    static RecorderFactory provideMotionJsonRecorderFactory(Context context, Gson gson,
+            SensorSourceFactory sensorSourceFactory) {
+        return (recorderConfiguration, taskUUID) -> {
+            if (!(recorderConfiguration instanceof SensorRecorderConfigPresentation)) {
+                throw new IllegalArgumentException("RecorderConfigPresentation " + recorderConfiguration
+                        + " is not a SensorRecorderConfigPresentation.");
+            }
+
+            SensorRecorderConfigPresentation sensorRecorderConfig
+                    = (SensorRecorderConfigPresentation) recorderConfiguration;
+
+            Collection<Flowable<SensorEvent>> sensorEventFlowables = new HashSet<>();
+            for (SensorConfig sensorConfig : sensorRecorderConfig.getSensorConfigs()) {
+                sensorEventFlowables.add(sensorSourceFactory.getSensorEvents(sensorConfig));
+            }
+
+            return ReactiveFileResultRecorder.createJsonArrayLogger(
+                    recorderConfiguration.getIdentifier(),
+                    Flowable.merge(sensorEventFlowables),
+                    gson,
+                    TaskOutputFileUtil.getTaskOutputFile(
+                            taskUUID,
+                            recorderConfiguration.getIdentifier() + ".json",
+                            context)
+            );
         };
     }
 

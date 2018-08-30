@@ -44,7 +44,7 @@ import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
-import org.sagebionetworks.research.domain.mobile_ui.R;
+import org.sagebionetworks.research.mobile_ui.R;
 import org.sagebionetworks.research.domain.task.navigation.TaskProgress;
 import org.sagebionetworks.research.mobile_ui.show_step.view.view_binding.UIStepViewBinding;
 import org.sagebionetworks.research.mobile_ui.widget.ActionButton;
@@ -71,6 +71,7 @@ public abstract class ShowUIStepFragmentBase<UIStepViewT extends UIStepView,
         }
 
         // If there is no previous step we will return null indicating the button should be hidden.
+        // TODO: observe hasBackwardStep LiveData to respond to changes due to TaskResult updates
         if (this.performTaskViewModel.hasPreviousStep()) {
             String title = getResources().getString(R.string.rs2_navigation_action_backward);
             return ActionViewBase.builder().setButtonTitle(DisplayString.create(null, title)).build();
@@ -135,6 +136,7 @@ public abstract class ShowUIStepFragmentBase<UIStepViewT extends UIStepView,
             return result;
         }
 
+        // TODO: use hasForwardStepLiveData to get updates from TaskResult changes @liujoshua 08/24/2018
         // if neither the task nor the step has an action we use a default one.
         String title;
         if (this.performTaskViewModel.hasNextStep()) {

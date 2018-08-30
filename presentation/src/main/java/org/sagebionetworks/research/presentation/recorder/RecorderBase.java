@@ -33,11 +33,11 @@
 package org.sagebionetworks.research.presentation.recorder;
 
 import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
 
 import org.sagebionetworks.research.domain.result.interfaces.Result;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.threeten.bp.Instant;
 
 import java.util.concurrent.atomic.AtomicBoolean;
 
@@ -50,12 +50,20 @@ public abstract class RecorderBase<R extends Result> implements Recorder<R> {
     @NonNull
     protected final String identifier;
 
-    protected AtomicBoolean isRecording;
+    protected Instant startTime = null;
+
+    protected Instant stopTime = null;
+
+    private final AtomicBoolean isRecording;
 
     public RecorderBase(@NonNull String identifier) {
         this.identifier = identifier;
 
         this.isRecording = new AtomicBoolean(false);
+    }
+
+    public void cancelRecorder() {
+        // no-op
     }
 
     @Override
@@ -65,38 +73,15 @@ public abstract class RecorderBase<R extends Result> implements Recorder<R> {
     }
 
     @Override
-    public boolean isRecording() {
-        return this.isRecording.get();
-    }
-
-    @Override
     public final void start() {
         LOGGER.debug("Start called on recorder with id: {}", identifier);
 
         if (isRecording.compareAndSet(false, true)) {
+            startTime = Instant.now();
             startRecorder();
         } else {
             LOGGER.warn("Cannot start. Recorder with id: {} already started", identifier);
         }
-    }
-
-    public abstract void startRecorder();
-
-    @Override
-    public void pause() {
-        LOGGER.debug("Pause called on recorder with id: {}", identifier);
-        // no-op
-    }
-
-    @Override
-    public boolean isPaused() {
-        return false;
-    }
-
-    @Override
-    public void resume() {
-        LOGGER.debug("Resume called on recorder with id: {}", identifier);
-        // no-op
     }
 
     @Override
@@ -104,13 +89,12 @@ public abstract class RecorderBase<R extends Result> implements Recorder<R> {
         LOGGER.debug("Stop called on recorder with id: {}", identifier);
 
         if (isRecording.compareAndSet(true, false)) {
+            stopTime = Instant.now();
             stopRecorder();
         } else {
             LOGGER.info("Recorder with id: {} already stopped.", identifier);
         }
     }
-
-    public abstract void stopRecorder();
 
     @Override
     public final void cancel() {
@@ -120,7 +104,29 @@ public abstract class RecorderBase<R extends Result> implements Recorder<R> {
         stop();
     }
 
-    public void cancelRecorder() {
+    @Override
+    public boolean isRecording() {
+        return this.isRecording.get();
+    }
+
+    @Override
+    public void pause() {
+        LOGGER.debug("Pause called on recorder with id: {}", identifier);
         // no-op
     }
+
+    @Override
+    public void resume() {
+        LOGGER.debug("Resume called on recorder with id: {}", identifier);
+        // no-op
+    }
+
+    @Override
+    public boolean isPaused() {
+        return false;
+    }
+
+    public abstract void startRecorder();
+
+    public abstract void stopRecorder();
 }

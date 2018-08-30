@@ -10,7 +10,6 @@ import javax.inject.Singleton;
 import dagger.Component;
 
 @Component(modules = {InputFieldsModule.class, GsonModule.class})
-@Singleton
 public interface InputFieldTestComponent {
     Gson gson();
 }

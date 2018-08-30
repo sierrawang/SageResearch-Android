@@ -40,7 +40,6 @@ import dagger.BindsInstance;
 import dagger.Component;
 
 @Component(modules = {ResearchStackDemoApplicationModule.class})
-@Singleton
 public abstract class ResearchStackDemoApplicationComponent {
     @Component.Builder
     public interface Builder {

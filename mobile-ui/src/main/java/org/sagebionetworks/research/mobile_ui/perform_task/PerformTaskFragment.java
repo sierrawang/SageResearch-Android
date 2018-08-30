@@ -49,12 +49,11 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-import org.sagebionetworks.research.domain.mobile_ui.R;
 import org.sagebionetworks.research.domain.result.implementations.TaskResultBase;
 import org.sagebionetworks.research.domain.result.interfaces.TaskResult;
-import org.sagebionetworks.research.mobile_ui.inject.ShowStepFragmentModule.ShowStepFragmentFactory;
+import org.sagebionetworks.research.mobile_ui.R;
+import org.sagebionetworks.research.mobile_ui.inject.ShowStepModule.ShowStepFragmentFactory;
 import org.sagebionetworks.research.mobile_ui.perform_task.PerformTaskFragment.OnPerformTaskExitListener.Status;
-import org.sagebionetworks.research.mobile_ui.show_step.ShowStepFragment;
 import org.sagebionetworks.research.mobile_ui.show_step.view.ShowStepFragmentBase;
 import org.sagebionetworks.research.presentation.model.TaskView;
 import org.sagebionetworks.research.presentation.model.interfaces.StepView;
@@ -69,6 +68,7 @@ import org.threeten.bp.ZonedDateTime;
 import org.threeten.bp.zone.ZoneRulesException;
 
 import java.util.UUID;
+import java.util.concurrent.atomic.AtomicBoolean;
 
 import javax.inject.Inject;
 
@@ -99,7 +99,6 @@ public class PerformTaskFragment extends Fragment implements HasSupportFragmentI
 
     public static final String LAST_RUN_KEY = "LAST_RUN";
 
-
     @Inject
     DispatchingAndroidInjector<Fragment> fragmentDispatchingAndroidInjector;
 
@@ -109,9 +108,11 @@ public class PerformTaskFragment extends Fragment implements HasSupportFragmentI
     @Inject
     PerformTaskViewModelFactory taskViewModelFactory;
 
-    private Fragment currentStepFragment;
+    private ShowStepFragmentBase currentStepFragment;
 
     private PerformTaskViewModel performTaskViewModel;
+
+    private AtomicBoolean showedStep;
 
     private ParcelUuid taskRunParcelableUuid;
 
@@ -135,6 +136,7 @@ public class PerformTaskFragment extends Fragment implements HasSupportFragmentI
     }
 
     public PerformTaskFragment() {
+        showedStep = new AtomicBoolean();
     }
 
     @Override
@@ -222,20 +224,22 @@ public class PerformTaskFragment extends Fragment implements HasSupportFragmentI
         }
         if (onPerformTaskExitListener != null) {
             onPerformTaskExitListener.onTaskExit(Status.FINISHED,
-                    performTaskViewModel.getTaskResult().getValue());
+                    performTaskViewModel.getTaskResult());
         }
     }
 
     @VisibleForTesting
     void showStep(StepView stepView) {
-        // No next step, task has ended
+        // No next step, and has shown a step, task has ended
         if (stepView == null) {
-            afterLastStep();
+            if (!showedStep.compareAndSet(false, true)) {
+                afterLastStep();
+            }
             return;
         }
+        showedStep.set(true);
 
-        ShowStepFragment step = showStepFragmentFactory.create(stepView);
-        step.setPerformTaskFragment(this);
+        ShowStepFragmentBase step = showStepFragmentFactory.create(stepView);
         currentStepFragment = step;
         FragmentTransaction transaction = getChildFragmentManager().beginTransaction();
 

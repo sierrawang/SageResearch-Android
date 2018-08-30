@@ -1,12 +1,14 @@
 package org.sagebionetworks.research.presentation.recorder.sensor;
 
+import android.support.annotation.NonNull;
+
 import org.sagebionetworks.research.domain.async.DeviceMotionRecorderConfiguration;
 import org.sagebionetworks.research.domain.async.RecorderConfiguration;
 import org.sagebionetworks.research.presentation.inject.RecorderConfigPresentationFactory;
 import org.sagebionetworks.research.presentation.inject.SensorModule.Sensors;
 import org.sagebionetworks.research.presentation.recorder.RecorderConfigPresentation;
-import org.sagebionetworks.research.presentation.recorder.reactive.source.SensorRecorderSourceFactory.SensorConfig;
-import org.sagebionetworks.research.presentation.recorder.reactive.source.SensorRecorderSourceFactory.SensorConfig.SensorConfigBuilder;
+import org.sagebionetworks.research.presentation.recorder.reactive.source.SensorSourceFactory.SensorConfig;
+import org.sagebionetworks.research.presentation.recorder.reactive.source.SensorSourceFactory.SensorConfig.SensorConfigBuilder;
 
 import java.util.HashSet;
 import java.util.Map;
@@ -24,8 +26,9 @@ public class SensorRecorderConfigPresentationFactory implements RecorderConfigPr
         this.sensorsMap = sensorsMap;
     }
 
+    @NonNull
     @Override
-    public RecorderConfigPresentation create(final RecorderConfiguration config) {
+    public RecorderConfigPresentation create(@NonNull final RecorderConfiguration config) {
         if (!(config instanceof DeviceMotionRecorderConfiguration)) {
             throw new IllegalArgumentException(
                     "Provided RecorderConfiguration " + config + " isn't a DeviceMotionRecorderConfiguration");
@@ -50,8 +53,9 @@ public class SensorRecorderConfigPresentationFactory implements RecorderConfigPr
 
         return SensorRecorderConfigPresentationImpl.builder()
                 .setIdentifier(config.getIdentifier())
+                .setType(config.getType())
                 .setStartStepIdentifier(config.getStartStepIdentifier())
-                .setStopStepIdentifier(config.getStopStepIdentifier())
+                .setStopStepIdentifier(config.getStartStepIdentifier())
                 .setSensorConfigs(sensorConfigs)
                 .build();
     }

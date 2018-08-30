@@ -39,7 +39,7 @@ import android.support.annotation.NonNull;
 
 import org.sagebionetworks.research.domain.result.interfaces.TaskResult;
 import org.sagebionetworks.research.domain.task.Task;
-import org.sagebionetworks.research.domain.task.TaskInfo;
+import org.sagebionetworks.research.domain.task.TaskInfoView;
 
 import java.util.UUID;
 
@@ -66,7 +66,7 @@ public interface TaskRepository {
      * @return The task info with the given identifier.
      */
     @NonNull
-    Single<TaskInfo> getTaskInfo(String taskIdentifier);
+    Single<TaskInfoView> getTaskInfo(String taskIdentifier);
 
     /**
      * Gets the task result with the given UUID.

@@ -46,6 +46,7 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import org.sagebionetworks.research.mobile_ui.show_step.view.view_binding.ActiveUIStepViewBinding;
+import org.sagebionetworks.research.presentation.model.action.ActionType;
 import org.sagebionetworks.research.presentation.model.interfaces.ActiveUIStepView;
 import org.sagebionetworks.research.presentation.show_step.show_step_view_models.ShowActiveUIStepViewModel;
 
@@ -92,18 +93,20 @@ public abstract class ShowActiveUIStepFragmentBase<S extends ActiveUIStepView, V
 
             if (count == 0) {
                 // TODO rkolmos 07/24/2018 implement commands and fix this to not always go forward
-                this.performTaskViewModel.goForward();
+                showStepViewModel.handleAction(ActionType.FORWARD);
                 return;
             }
 
             Integer duration = ((Long)this.stepView.getDuration().getSeconds()).intValue();
             int from = (int)(duration - count);
             Animator animator = this.getCountdownAnimator(from, from + 1);
-            animator.start();
+            if (animator !=null) {
+                animator.start();
+            }
 
             TextView countLabel = this.stepViewBinding.getCountLabel();
             if (countLabel != null) {
-                countLabel.setText(count.toString());
+                countLabel.setText(String.format(getResources().getConfiguration().locale,"%d",count));
             }
         };
     }

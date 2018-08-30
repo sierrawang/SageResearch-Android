@@ -39,9 +39,9 @@ public interface AsyncActionPresentation {
     @NonNull
     String getIdentifier();
 
-    @NonNull
-    String getType();
-
     @Nullable
     String getStartStepIdentifier();
+
+    @NonNull
+    String getType();
 }

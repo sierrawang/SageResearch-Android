@@ -32,6 +32,8 @@
 
 package org.sagebionetworks.research.presentation.perform_task;
 
+import static android.arch.lifecycle.LiveDataReactiveStreams.fromPublisher;
+
 import static com.google.common.base.Preconditions.checkNotNull;
 import static com.google.common.base.Preconditions.checkState;
 
@@ -39,27 +41,23 @@ import android.app.Application;
 import android.arch.lifecycle.AndroidViewModel;
 import android.arch.lifecycle.LiveData;
 import android.arch.lifecycle.MutableLiveData;
+import android.arch.lifecycle.Observer;
 import android.support.annotation.MainThread;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.annotation.VisibleForTesting;
 
 import org.sagebionetworks.research.domain.repository.TaskRepository;
-import org.sagebionetworks.research.domain.result.AnswerResultType;
-import org.sagebionetworks.research.domain.result.implementations.AnswerResultBase;
-import org.sagebionetworks.research.domain.result.implementations.ResultBase;
-import org.sagebionetworks.research.domain.result.implementations.TaskResultBase;
 import org.sagebionetworks.research.domain.result.interfaces.Result;
 import org.sagebionetworks.research.domain.result.interfaces.TaskResult;
 import org.sagebionetworks.research.domain.step.interfaces.SectionStep;
 import org.sagebionetworks.research.domain.step.interfaces.Step;
 import org.sagebionetworks.research.domain.step.interfaces.ThemedUIStep;
 import org.sagebionetworks.research.domain.task.Task;
-import org.sagebionetworks.research.domain.task.TaskInfo;
+import org.sagebionetworks.research.domain.task.TaskInfoView;
 import org.sagebionetworks.research.domain.task.navigation.StepNavigator;
 import org.sagebionetworks.research.domain.task.navigation.StepNavigatorFactory;
 import org.sagebionetworks.research.domain.task.navigation.TaskProgress;
-import org.sagebionetworks.research.presentation.contract.model.LoadableResource;
 import org.sagebionetworks.research.presentation.inject.RecorderConfigPresentationFactory;
 import org.sagebionetworks.research.presentation.inject.RecorderModule.RecorderFactory;
 import org.sagebionetworks.research.presentation.inject.StepViewModule.StepViewFactory;
@@ -69,22 +67,46 @@ import org.sagebionetworks.research.presentation.model.action.ActionType;
 import org.sagebionetworks.research.presentation.model.action.ActionView;
 import org.sagebionetworks.research.presentation.model.interfaces.StepView;
 import org.sagebionetworks.research.presentation.model.interfaces.StepView.NavDirection;
+import org.sagebionetworks.research.presentation.perform_task.TaskResultManager.TaskResultManagerConnection;
+import org.sagebionetworks.research.presentation.perform_task.TaskResultService.TaskResultServiceBinder;
 import org.sagebionetworks.research.presentation.recorder.service.RecorderManager;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.threeten.bp.Instant;
 import org.threeten.bp.ZonedDateTime;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 
-import io.reactivex.Completable;
-import io.reactivex.Observable;
+import io.reactivex.BackpressureStrategy;
+import io.reactivex.Single;
+import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.disposables.CompositeDisposable;
+import io.reactivex.schedulers.Schedulers;
 
 @MainThread
 public class PerformTaskViewModel extends AndroidViewModel {
+    /**
+     * Holds state from initial task load.
+     */
+    @VisibleForTesting
+    static class TaskLoadHolder {
+        public final TaskResult initialTaskResult;
+
+        public final Task task;
+
+        public final TaskResultServiceBinder taskResultServiceBinder;
+
+        private TaskLoadHolder(final Task task,
+                final TaskResultServiceBinder taskResultServiceBinder,
+                final TaskResult initialTaskResult) {
+            this.task = task;
+            this.taskResultServiceBinder = taskResultServiceBinder;
+            this.initialTaskResult = initialTaskResult;
+        }
+    }
+
     public static final String LAST_RUN_RESULT_ID = "lastRun";
 
     private static final Logger LOGGER = LoggerFactory.getLogger(PerformTaskViewModel.class);
@@ -95,6 +117,10 @@ public class PerformTaskViewModel extends AndroidViewModel {
 
     private final ZonedDateTime lastRun;
 
+    private final RecorderConfigPresentationFactory recorderConfigPresentationFactory;
+
+    private RecorderManager recorderManager;
+
     private StepNavigator stepNavigator;
 
     private final StepNavigatorFactory stepNavigatorFactory;
@@ -103,53 +129,46 @@ public class PerformTaskViewModel extends AndroidViewModel {
 
     private final MutableLiveData<StepView> stepViewLiveData;
 
-    private Map<Step, StepView> stepViewMapping;
+    private final Map<Step, StepView> stepViewMapping;
 
     private Task task;
 
-    private final MutableLiveData<TaskInfo> taskLiveData;
-
-    private final TaskMapper taskMapper;
+    private final MutableLiveData<TaskInfoView> taskInfoViewMutableLiveData;
 
     private final MutableLiveData<TaskProgress> taskProgressLiveData;
 
     private final TaskRepository taskRepository;
 
-    private final MutableLiveData<TaskResult> taskResultLiveData;
+    private final LiveData<TaskResult> taskResultLiveData;
+
+    private TaskResultManager taskResultManager;
+
+    private Single<TaskResultManagerConnection> taskResultManagerConnectionSingle;
 
     private final UUID taskRunUuid;
 
     private final TaskView taskView;
 
-    private final MutableLiveData<LoadableResource<TaskView>> taskViewLiveData;
-
-    private final RecorderFactory recorderFactory;
-
-    private final RecorderConfigPresentationFactory recorderConfigPresentationFactory;
-
-    private RecorderManager recorderManager;
-
-    public PerformTaskViewModel(Application application, @NonNull TaskView taskView, @NonNull UUID taskRunUUID,
-            @NonNull StepNavigatorFactory stepNavigatorFactory, @NonNull TaskRepository taskRepository,
-            @NonNull TaskMapper taskMapper, @NonNull RecorderFactory recorderFactory,
+    public PerformTaskViewModel(@NonNull Application application, @NonNull TaskView taskView,
+            @NonNull UUID taskRunUUID, @NonNull StepNavigatorFactory stepNavigatorFactory,
+            @NonNull TaskRepository taskRepository, @NonNull TaskMapper taskMapper,
+            @NonNull RecorderFactory recorderFactory,
             @NonNull RecorderConfigPresentationFactory recorderConfigPresentationFactory,
             @NonNull StepViewFactory stepViewFactory,
+            @NonNull TaskResultProcessingManager taskResultProcessingManager,
+            @NonNull TaskResultManager taskResultManager,
             @Nullable ZonedDateTime lastRun) {
         super(application);
-        this.recorderFactory = checkNotNull(recorderFactory);
         this.recorderConfigPresentationFactory = checkNotNull(recorderConfigPresentationFactory);
         this.taskView = checkNotNull(taskView);
         this.taskRunUuid = checkNotNull(taskRunUUID);
         this.stepNavigatorFactory = checkNotNull(stepNavigatorFactory);
         this.taskRepository = checkNotNull(taskRepository);
-        this.taskMapper = checkNotNull(taskMapper);
         this.stepViewFactory = checkNotNull(stepViewFactory);
+        this.taskResultManager = taskResultManager;
         this.lastRun = lastRun;
 
         // TODO migrate these LiveData to StepNavigationViewModel @liujoshua 2018/08/07
-
-        taskLiveData = new MutableLiveData<>();
-        taskResultLiveData = new MutableLiveData<>();
 
         taskProgressLiveData = new MutableLiveData<>();
         taskProgressLiveData.setValue(null);
@@ -159,35 +178,28 @@ public class PerformTaskViewModel extends AndroidViewModel {
 
         stepViewLiveData = new MutableLiveData<>();
         compositeDisposable = new CompositeDisposable();
-        taskViewLiveData = new MutableLiveData<>();
 
-        initTaskSteps(taskView, taskRunUuid);
-    }
+        taskInfoViewMutableLiveData = new MutableLiveData<>();
 
+        stepViewMapping = new HashMap<>();
 
-    public void addAsyncResult(Result result) {
-        checkState(taskResultLiveData.getValue() != null);
+        taskResultManagerConnectionSingle = taskResultManager
+                .getTaskResultManagerConnection(taskView.getIdentifier(), taskRunUUID);
 
-        if (LOGGER.isDebugEnabled()) {
-            LOGGER.debug("addAsyncResult called with result: {}", result);
-        }
+        taskResultLiveData = fromPublisher(
+                taskResultManagerConnectionSingle
+                        .flatMapObservable(TaskResultManagerConnection::getTaskResultObservable)
+                        .toFlowable(BackpressureStrategy.LATEST));
+        // we need something to get updates to this LiveData
+        taskResultLiveData
+                .observeForever(this::taskResultObserver);
+        taskResultProcessingManager.registerTaskRun(taskView.getIdentifier(), taskRunUuid);
 
-        taskResultLiveData.setValue(taskResultLiveData.getValue().addAsyncResult(result));
-    }
-
-    public void onAsyncError(Throwable t) {
-        LOGGER.warn("received async error", t);
-
-        // TODO: add error result
+        initWithTask(taskView);
     }
 
     public void addStepResult(Result result) {
-        checkState(taskResultLiveData.getValue() != null);
-
-        if (LOGGER.isDebugEnabled()) {
-            LOGGER.debug("addStepResult called with result: {}", result);
-        }
-        taskResultLiveData.setValue(taskResultLiveData.getValue().addStepHistory(result));
+        taskResultManagerConnectionSingle.blockingGet().addStepResult(result);
     }
 
     /**
@@ -210,22 +222,19 @@ public class PerformTaskViewModel extends AndroidViewModel {
         return currentStepLiveData;
     }
 
-    public StepNavigator getStepNavigator() {
-        return this.stepNavigator;
-    }
-
     @NonNull
     public LiveData<StepView> getStepView() {
         return stepViewLiveData;
     }
 
     public Task getTask() {
+        // TODO: remove @liujoshua 08/24/2018
         return task;
     }
 
     @NonNull
-    public LiveData<TaskInfo> getTaskInfo() {
-        return taskLiveData;
+    public LiveData<TaskInfoView> getTaskInfoView() {
+        return taskInfoViewMutableLiveData;
     }
 
     @NonNull
@@ -234,8 +243,13 @@ public class PerformTaskViewModel extends AndroidViewModel {
     }
 
     @NonNull
-    public LiveData<TaskResult> getTaskResult() {
+    public LiveData<TaskResult> getTaskResultLiveData() {
         return taskResultLiveData;
+    }
+
+    @NonNull
+    public TaskResult getTaskResult() {
+        return taskResultManagerConnectionSingle.blockingGet().getLatestTaskResult();
     }
 
     @NonNull
@@ -249,9 +263,8 @@ public class PerformTaskViewModel extends AndroidViewModel {
     public void goBack() {
         LOGGER.debug("goBack called");
         Step currentStep = currentStepLiveData.getValue();
-        TaskResult taskResult = taskResultLiveData.getValue();
+        TaskResult taskResult = taskResultManagerConnectionSingle.blockingGet().getLatestTaskResult();
         checkState(currentStep != null);
-        checkState(taskResult != null);
 
         Step backStep = stepNavigator.getPreviousStep(currentStep, taskResult);
         if (backStep != null) {
@@ -268,20 +281,7 @@ public class PerformTaskViewModel extends AndroidViewModel {
     public void goForward() {
         LOGGER.debug("goForward called");
         Step currentStep = currentStepLiveData.getValue();
-        TaskResult taskResult = taskResultLiveData.getValue();
-        checkState(taskResult != null);
-        if (currentStep != null) {
-            Result previousResult = taskResult.getResult(currentStep);
-            if (previousResult == null) {
-                // If for whatever reason the step didn't create a result matching it's identifier we create a ResultBase
-                // to mark that the step completed.
-                // TODO rkolmos 08/08/2018 fix the result start time to be correct.
-                this.addStepResult(new ResultBase(currentStep.getIdentifier(), Instant.now(), Instant.now()));
-                // After adding the step result we need to update the value of the task result.
-                taskResult = taskResultLiveData.getValue();
-                checkState(taskResult != null);
-            }
-        }
+        TaskResult taskResult = taskResultManagerConnectionSingle.blockingGet().getLatestTaskResult();
 
         Step nextStep = stepNavigator.getNextStep(currentStep, taskResult);
         this.recorderManager.onStepTransition(currentStep, nextStep, NavDirection.SHIFT_LEFT);
@@ -294,9 +294,9 @@ public class PerformTaskViewModel extends AndroidViewModel {
      * @return true if there is a step after the current one in the task, false otherwise.
      */
     public boolean hasNextStep() {
-        TaskResult taskResult = taskResultLiveData.getValue();
+        TaskResult taskResult = taskResultManagerConnectionSingle.blockingGet().getLatestTaskResult();
         checkState(taskResult != null);
-        return this.stepNavigator.getNextStep(this.getStep().getValue(), taskResult) != null;
+        return stepNavigator.getNextStep(this.getStep().getValue(), taskResult) != null;
     }
 
     /**
@@ -307,11 +307,12 @@ public class PerformTaskViewModel extends AndroidViewModel {
     public boolean hasPreviousStep() {
         Step currentStep = currentStepLiveData.getValue();
         checkState(currentStep != null);
-        TaskResult taskResult = taskResultLiveData.getValue();
+        TaskResult taskResult = taskResultManagerConnectionSingle.blockingGet().getLatestTaskResult();
         checkState(taskResult != null);
-        return this.stepNavigator.getPreviousStep(currentStep, taskResult) != null;
+        return stepNavigator.getPreviousStep(currentStep, taskResult) != null;
     }
 
+    @Override
     protected void onCleared() {
         compositeDisposable.dispose();
     }
@@ -330,74 +331,83 @@ public class PerformTaskViewModel extends AndroidViewModel {
             this.currentStepLiveData.setValue(null);
             this.stepViewLiveData.setValue(null);
             this.taskProgressLiveData.setValue(null);
+            taskResultManagerConnectionSingle.blockingGet().finishTask();
         } else {
-            TaskProgress nextProgress = this.stepNavigator.getProgress(nextStep, taskResult);
+            TaskProgress nextProgress = stepNavigator.getProgress(nextStep, taskResult);
             this.taskProgressLiveData.setValue(nextProgress);
             LOGGER.debug("Setting step: {}", nextStep);
             this.currentStepLiveData.setValue(nextStep);
             StepView stepView = this.stepViewMapping.get(nextStep);
+            if (stepView == null) {
+                LOGGER.warn("Step not found");
+            }
             this.stepViewLiveData.setValue(stepView);
         }
     }
 
-    @VisibleForTesting
-    void handleTaskLoad(Task task) {
-        LOGGER.debug("Loaded task: {}", task);
-        this.task = task;
-        this.recorderManager = new RecorderManager(this.task, this.taskRunUuid, this.getApplication(),
-                this.recorderConfigPresentationFactory);
-        // Subscribe to the recorder results and put them in the async results.
-        // TODO rkolmos 08/15/2018 If the UI disappears the recorder result may be lost, fix this.
-        this.compositeDisposable.add(Observable.create(this.recorderManager)
-                .subscribe(this::addAsyncResult));
-        stepNavigator = stepNavigatorFactory.create(task, task.getProgressMarkers());
-        this.stepViewMapping = new HashMap<>();
-        for (Step step : this.stepNavigator.getSteps()) {
+    void cacheStepViews(List<Step> steps) {
+        for (Step step : steps) {
             // This if statement is necessary to ensure we can call stepViewFactory.apply on the step.
-            if (!(step instanceof SectionStep)) {
-                this.stepViewMapping.put(step, stepViewFactory.apply(step));
+            if (step instanceof ThemedUIStep) {
+                stepViewMapping.put(step, stepViewFactory.apply(step));
+            } else if (step instanceof SectionStep) {
+                cacheStepViews(((SectionStep) step).getSteps());
+            } else {
+                LOGGER.warn("Unknown step type: {}", steps);
             }
         }
     }
 
-    @VisibleForTesting
-    void handleTaskResultFound(TaskResult taskResult) {
-        LOGGER.debug("Loaded taskResult: {}", taskResult);
-        if (this.lastRun != null) {
-            Result lastRunResult = new AnswerResultBase<>(LAST_RUN_RESULT_ID, Instant.now(), Instant.now(),
-                    this.lastRun,
-                    AnswerResultType.DATE);
-            taskResult = taskResult.addAsyncResult(lastRunResult);
-        }
-
-        taskResultLiveData.setValue(taskResult);
-    }
-
     // TODO: Make this private and have Fragment call, instead of calling in constructor. This should make it easier to test
     @VisibleForTesting
-    void initTaskSteps(TaskView taskView, UUID taskRunUuid) {
+    void initWithTask(TaskView taskView) {
         compositeDisposable.add(
-                Completable.mergeArray(
-                        taskRepository.getTask(taskView.getIdentifier())
-                                .doOnSuccess(this::handleTaskLoad)
-                                .toCompletable(),
-                        taskRepository.getTaskResult(taskRunUuid)
-                                .toSingle(new TaskResultBase(taskView.getIdentifier(), Instant.now(), taskRunUuid))
-                                .doOnSuccess(this::handleTaskResultFound)
-                                .toCompletable()
-                ).subscribe(this::taskInitSuccess, this::taskInitFail)
-        );
+                taskRepository.getTask(taskView.getIdentifier())
+                        .subscribeOn(Schedulers.io())
+                        .observeOn(AndroidSchedulers.mainThread())
+                        .subscribe(this::taskInitSuccess, this::taskInitFail));
     }
 
     @VisibleForTesting
     void taskInitFail(Throwable t) {
         LOGGER.warn("Failed to init task", t);
+
+        // TODO: live data for error state
     }
 
     @VisibleForTesting
-    void taskInitSuccess() {
+    @MainThread
+    void taskInitSuccess(Task task) {
         // TODO if there is a TaskResult with a task path (from a previous taskRunUuid), set current step to the last
         // step the user was at @liujoshua 2018/08/07
-        goForward();
+
+        this.task = task;
+        recorderManager = new RecorderManager(task, taskView.getIdentifier(), taskRunUuid, getApplication(),
+                taskResultManager, recorderConfigPresentationFactory);
+        // Subscribe to the recorder results and put them in the async results.
+
+        stepNavigator = stepNavigatorFactory.create(task, task.getProgressMarkers());
+
+        // eagerly cache step views
+        cacheStepViews(task.getSteps());
+
+        // wait to see a task result, which originates from TaskResultService
+        taskResultLiveData.observeForever(new Observer<TaskResult>() {
+            @Override
+            public void onChanged(@Nullable final TaskResult taskResult) {
+                LOGGER.debug("taskResult: {}", taskResult);
+                compositeDisposable.add(
+                        taskResultManagerConnectionSingle
+                                .subscribe((resultManagerConnection) -> {
+                                    goForward();
+                                }, t -> taskInitFail(t)));
+
+                taskResultLiveData.removeObserver(this);
+            }
+        });
+    }
+
+    void taskResultObserver(TaskResult taskResult) {
+        LOGGER.debug("Observed TaskResult: {}", taskResult);
     }
 }

@@ -1,4 +1,4 @@
-package org.sagebionetworks.research.presentation.recorder.sensor.json.pojo;
+package org.sagebionetworks.research.presentation.recorder.sensor.json;
 
 import android.support.annotation.Nullable;
 
