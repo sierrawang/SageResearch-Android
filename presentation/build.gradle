@@ -73,6 +73,8 @@ dependencies {
     implementation 'android.arch.lifecycle:reactivestreams:1.1.1'
     annotationProcessor "android.arch.lifecycle:compiler:1.1.1"
 
+    implementation 'org.threeten:threeten-extra:1.2'
+
     implementation 'org.slf4j:slf4j-api:1.7.21'
 
     api 'com.google.dagger:dagger-android:2.16'
