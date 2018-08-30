@@ -146,7 +146,7 @@ public abstract class ShowStepFragmentBase<StepT extends StepView, ViewModelT ex
     }
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
+    public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container,
             Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         View view = inflater.inflate(getLayoutId(), container, false);
@@ -156,6 +156,11 @@ public abstract class ShowStepFragmentBase<StepT extends StepView, ViewModelT ex
         this.stepViewBinding.setActionButtonClickListener(this::handleActionButtonClick);
 
         return view;
+    }
+
+    @Override
+    public void onSaveInstanceState(@NonNull Bundle outState) {
+        outState.putSerializable(ARGUMENT_STEP_VIEW, stepView);
     }
 
     @Override
