@@ -36,7 +36,7 @@ import org.sagebionetworks.research.mobile_ui.show_step.view.ShowActiveUIStepFra
 import org.sagebionetworks.research.mobile_ui.show_step.view.ShowCompletionStepFragment;
 import org.sagebionetworks.research.mobile_ui.show_step.view.ShowCountdownStepFragment;
 import org.sagebionetworks.research.mobile_ui.show_step.view.ShowFormUIStepFragment;
-import org.sagebionetworks.research.mobile_ui.show_step.view.ShowStepFragment;
+import org.sagebionetworks.research.mobile_ui.show_step.view.ShowStepFragmentBase;
 import org.sagebionetworks.research.mobile_ui.show_step.view.ShowUIStepFragment;
 
 import dagger.Module;
@@ -56,8 +56,8 @@ public abstract class ShowStepFragmentModule {
     @ContributesAndroidInjector
     abstract ShowFormUIStepFragment contributeShowFormUIStepFragmentInjector();
 
-    @ContributesAndroidInjector
-    abstract ShowStepFragment contributeShowStepFragmentInjector();
+//    @ContributesAndroidInjector
+//    abstract ShowStepFragmentBase contributeShowStepFragmentInjector();
 
     @ContributesAndroidInjector
     abstract ShowUIStepFragment contributeShowUIStepFragmentInjector();

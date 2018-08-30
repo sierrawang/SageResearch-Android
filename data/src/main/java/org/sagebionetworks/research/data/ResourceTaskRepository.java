@@ -64,7 +64,6 @@ import java.util.Set;
 import java.util.UUID;
 
 import javax.inject.Inject;
-import javax.inject.Singleton;
 
 import io.reactivex.Completable;
 import io.reactivex.Maybe;
@@ -73,9 +72,9 @@ import io.reactivex.Single;
 public class ResourceTaskRepository implements TaskRepository {
     private static final Logger LOGGER = LoggerFactory.getLogger(ResourceTaskRepository.class);
 
-    private final Context context;
+    protected final Context context;
 
-    private final Gson gson;
+    protected final Gson gson;
 
     @Inject
     public ResourceTaskRepository(Context context, Gson gson) {
