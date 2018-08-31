@@ -51,7 +51,7 @@
     <id name="rs2_step_header_action_button_group" />
 
     <!-- Standard Step Components -->
-    <id name="rs2_root_view"/>
+    <id name="rs2_step_fragment_root_view"/>
     <id name="rs2_step_navigation_action_bar" />
     <id name="rs2_step_header" />
     <id name="rs2_step_body" />
@@ -80,10 +80,6 @@
     <id name="countdownDial" />
     <id name="countLabel" />
     <id name="unitLabel" />
-
-    <!-- Id's for TappingStepViewBinding -->
-    <id name="leftTapButton" />
-    <id name="rightTapButton" />
 
     <!-- TODO Remove these when possible -->
     <id name="title" />

@@ -1,5 +1,4 @@
-package org.sagebionetworks.research.presentation.recorder.sensor.json.pojo;
-
+package org.sagebionetworks.research.presentation.recorder.sensor.json;
 
 import android.support.annotation.NonNull;
 
@@ -8,10 +7,10 @@ import com.google.gson.Gson;
 import com.google.gson.TypeAdapter;
 
 @AutoValue
-public abstract class UncalibratedPOJOImpl implements UncalibratedPOJO {
+public abstract class CoordinatePOJOImpl implements CoordinatePOJO {
     @AutoValue.Builder
     public static abstract class Builder {
-        public abstract UncalibratedPOJOImpl build();
+        public abstract CoordinatePOJOImpl build();
 
         @NonNull
         public abstract Builder setTimestampDate(@NonNull String timestampDate);
@@ -36,25 +35,15 @@ public abstract class UncalibratedPOJOImpl implements UncalibratedPOJO {
 
         @NonNull
         public abstract Builder setZ(float z);
-
-        @NonNull
-        public abstract Builder setXBias(float xBias);
-
-        @NonNull
-        public abstract Builder setYBias(float yBias);
-
-        @NonNull
-        public abstract Builder setZBias(float zBias);
     }
 
     @NonNull
     public static Builder builder() {
-        return new AutoValue_UncalibratedPOJOImpl.Builder();
+        return new AutoValue_CoordinatePOJOImpl.Builder();
     }
 
     @NonNull
-    public static TypeAdapter<UncalibratedPOJOImpl> typeAdapter(Gson gson) {
-        return new AutoValue_UncalibratedPOJOImpl.GsonTypeAdapter(gson);
+    public static TypeAdapter<CoordinatePOJOImpl> typeAdapter(Gson gson) {
+        return new AutoValue_CoordinatePOJOImpl.GsonTypeAdapter(gson);
     }
-
 }

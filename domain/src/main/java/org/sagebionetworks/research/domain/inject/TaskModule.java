@@ -38,7 +38,7 @@ import com.google.gson.JsonDeserializer;
 
 import org.sagebionetworks.research.domain.inject.GsonModule.ClassKey;
 import org.sagebionetworks.research.domain.task.Task;
-import org.sagebionetworks.research.domain.task.TaskInfo;
+import org.sagebionetworks.research.domain.task.TaskInfoView;
 import org.sagebionetworks.research.domain.task.TaskInfoBase;
 import org.sagebionetworks.research.domain.task.navigation.StepNavigatorFactory;
 import org.sagebionetworks.research.domain.task.navigation.TaskBase;
@@ -52,7 +52,6 @@ import dagger.multibindings.IntoMap;
 
 @Module(includes = {GsonModule.class})
 public abstract class TaskModule {
-    @Singleton
     @Provides
     static StepNavigatorFactory provideStepNavigatorFactory() {
         return new StrategyBasedNavigator.Factory();
@@ -73,7 +72,7 @@ public abstract class TaskModule {
      */
     @Provides
     @IntoMap
-    @ClassKey(TaskInfo.class)
+    @ClassKey(TaskInfoView.class)
     static JsonDeserializer<?> provideTaskInfoDeserializer() {
         return createPassThroughDeserializer(TaskInfoBase.class);
     }

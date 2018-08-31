@@ -37,6 +37,7 @@ import android.support.annotation.Nullable;
 
 import org.sagebionetworks.research.domain.Schema;
 import org.sagebionetworks.research.domain.step.interfaces.Step;
+import org.threeten.bp.Instant;
 
 import java.util.List;
 import java.util.UUID;
@@ -63,7 +64,7 @@ public interface TaskResult extends Result {
      *         The result to append to the step history.
      * @return a new TaskResult with the given result appended to the step history.
      */
-    @Nullable
+    @NonNull
     TaskResult addStepHistory(Result result);
 
     /**

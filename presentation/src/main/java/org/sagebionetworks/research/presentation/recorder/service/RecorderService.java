@@ -37,10 +37,10 @@ import android.os.Binder;
 import android.os.IBinder;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
-
 import com.google.common.collect.ImmutableMap;
-
+import dagger.android.DaggerService;
 import org.sagebionetworks.research.domain.async.RecorderType;
+import org.sagebionetworks.research.domain.result.interfaces.Result;
 import org.sagebionetworks.research.presentation.inject.RecorderModule.RecorderFactory;
 import org.sagebionetworks.research.presentation.recorder.Recorder;
 import org.sagebionetworks.research.presentation.recorder.RecorderActionType;
@@ -48,14 +48,11 @@ import org.sagebionetworks.research.presentation.recorder.RecorderConfigPresenta
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import javax.inject.Inject;
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
-
-import javax.inject.Inject;
-
-import dagger.android.DaggerService;
 
 /**
  * The RecorderService handles the recorders that are needed for the task. Recorders can do things such as record
@@ -69,8 +66,68 @@ import dagger.android.DaggerService;
  * <p>
  * RECORDER_ID_KEY -> the identifier of the recorder to perform the action on.
  * <p>
+ * TODO: create a reactive binding to the service, like for TaskResultService. Currently, step transitions and adding
+ * of recorders can be missed when the service is not yet bound @liujoshua 08/26/2018
  */
 public class RecorderService extends DaggerService {
+    public class RecorderInstantiationException extends Exception {
+        @Nullable
+        private final String message;
+
+        @NonNull
+        private final String recorderId;
+
+        @NonNull
+        @RecorderType
+        private final String recorderType;
+
+        public RecorderInstantiationException(@NonNull String recorderId, @NonNull @RecorderType String recorderType,
+                @Nullable String message) {
+            this.recorderId = recorderId;
+            this.recorderType = recorderType;
+            this.message = message;
+        }
+
+        public RecorderInstantiationException(@NonNull String recorderId,
+                @NonNull @RecorderType String recorderType) {
+            this(recorderId, recorderType, null);
+        }
+
+        @Override
+        @Nullable
+        public String getMessage() {
+            return message;
+        }
+
+        public String toString() {
+            if (message != null) {
+                return message;
+            } else {
+                return "Failed to instantiate recorder " + this.recorderId + " of type " + this.recorderType;
+            }
+        }
+
+        @NonNull
+        public String getRecorderId() {
+            return recorderId;
+        }
+
+        @NonNull
+        @RecorderType
+        public String getRecorderType() {
+            return recorderType;
+        }
+    }
+
+    /**
+     * Allows the RecorderService to be bound to.
+     */
+    public final class RecorderBinder extends Binder {
+        public RecorderService getService() {
+            return RecorderService.this;
+        }
+    }
+
     private static final Logger LOGGER = LoggerFactory.getLogger(RecorderService.class);
 
     public static final String RECORDER_TYPE_KEY = "RECORDER_TYPE";
@@ -81,10 +138,10 @@ public class RecorderService extends DaggerService {
 
     public static final String RECORDER_ACTION_KEY = "RECORDER_ACTION";
 
-    protected IBinder serviceBinder;
-
     // Maps Task Id to a Map of Recorder Id to Recorder.
-    protected Map<UUID, Map<String, Recorder>> recorderMapping;
+    protected Map<UUID, Map<String, Recorder<? extends Result>>> recorderMapping;
+
+    protected IBinder serviceBinder;
 
     @Inject
     RecorderFactory recorderFactory;
@@ -98,56 +155,6 @@ public class RecorderService extends DaggerService {
         super.onCreate();
         this.serviceBinder = new RecorderBinder();
         this.recorderMapping = new HashMap<>();
-    }
-
-    @Nullable
-    @Override
-    public IBinder onBind(final Intent intent) {
-        return this.serviceBinder;
-    }
-
-    /**
-     * Starts the recorder with the given identifier, or throws an IllegalArgumentException if the recorder with this
-     * identifier doesn't exist.
-     * @param taskIdentifier
-     *         The identifier of the task the recorder belongs to.
-     * @param recorderIdentifier
-     *         The identifier of the recorder to start.
-     */
-    public void startRecorder(@NonNull UUID taskIdentifier, @NonNull String recorderIdentifier) {
-        if (LOGGER.isDebugEnabled()) {
-            LOGGER.debug("Starting recorder: " + recorderIdentifier);
-        }
-
-        Recorder recorder = this.getRecorder(taskIdentifier, recorderIdentifier);
-        if (recorder == null) {
-            LOGGER.warn("Cannot start recorder that hasn't been created");
-        }
-
-        recorder.start();
-    }
-
-    /**
-     * Stops the recorder with the given identifier.
-     *
-     * @param taskIdentifier
-     *         The identifier of the task the recorder belongs to.
-     * @param recorderIdentifier
-     *         The identifier of the recorder to stop.
-     */
-    public void stopRecorder(@NonNull UUID taskIdentifier, @NonNull String recorderIdentifier) {
-        if (LOGGER.isDebugEnabled()) {
-            LOGGER.debug("Stopping recorder: " + recorderIdentifier);
-        }
-
-        Recorder recorder = this.getRecorder(taskIdentifier, recorderIdentifier);
-        if (recorder == null) {
-            LOGGER.warn("Cannot stop recorder that isn't started.");
-        }
-
-        recorder.stop();
-        // Remove the recorder for the mapping of active recorders
-        this.recorderMapping.get(taskIdentifier).remove(recorderIdentifier);
     }
 
     /**
@@ -171,15 +178,36 @@ public class RecorderService extends DaggerService {
         recorder.cancel();
     }
 
-    private Recorder getRecorder(@NonNull UUID taskIdentifier, @NonNull String recorderIdentifier) {
-        Map<String, Recorder> taskRecorderMap = this.recorderMapping.get(taskIdentifier);
-        if (taskRecorderMap == null) {
-            return null;
+    public Recorder<? extends Result> createRecorder(@NonNull UUID taskIdentifier,
+            @NonNull RecorderConfigPresentation recorderConfiguration)
+            throws IOException {
+        Recorder<? extends Result> recorder = this.recorderFactory.create(recorderConfiguration, taskIdentifier);
+
+        if (!this.recorderMapping.containsKey(taskIdentifier)) {
+            this.recorderMapping.put(taskIdentifier, new HashMap<>());
         }
 
-        return taskRecorderMap.get(recorderIdentifier);
+        Map<String, Recorder<? extends Result>> taskRecorderMapping = this.recorderMapping.get(taskIdentifier);
+        taskRecorderMapping.put(recorder.getIdentifier(), recorder);
+        return recorder;
     }
 
+    /**
+     * Get the active recorders for a task run.
+     *
+     * @param taskRunUUID
+     *         identifier for a task run
+     * @return an immutable map containing the active recorders keyed by their identifiers
+     */
+    @NonNull
+    public ImmutableMap<String, Recorder<? extends Result>> getActiveRecorders(@NonNull UUID taskRunUUID) {
+        Map<String, Recorder<? extends Result>> map = this.recorderMapping.get(taskRunUUID);
+        if (map == null) {
+            this.recorderMapping.put(taskRunUUID, new HashMap<>());
+            return ImmutableMap.of();
+        }
+        return ImmutableMap.copyOf(map);
+    }
 
     /**
      * Starts the command defined by the Intent with the given startId. The Intent passed to this method should have
@@ -215,86 +243,65 @@ public class RecorderService extends DaggerService {
         return START_STICKY;
     }
 
+    @Nullable
+    @Override
+    public IBinder onBind(final Intent intent) {
+        return this.serviceBinder;
+    }
+
     /**
-     * Get the active recorders for a task run.
+     * Starts the recorder with the given identifier, or throws an IllegalArgumentException if the recorder with this
+     * identifier doesn't exist.
      *
-     * @param taskRunUUID
-     *         identifier for a task run
-     * @return an immutable map containing the active recorders keyed by their identifiers
+     * @param taskIdentifier
+     *         The identifier of the task the recorder belongs to.
+     * @param recorderIdentifier
+     *         The identifier of the recorder to start.
      */
-    public ImmutableMap<String, Recorder> getActiveRecorders(@NonNull UUID taskRunUUID) {
-        Map<String, Recorder> map = this.recorderMapping.get(taskRunUUID);
-        return map != null ? ImmutableMap.copyOf(map) : null;
-    }
-
-    public Recorder createRecorder(@NonNull UUID taskIdentifier, @NonNull RecorderConfigPresentation recorderConfiguration)
-            throws IOException {
-        Recorder recorder = this.recorderFactory.create(recorderConfiguration, taskIdentifier);
-
-        if (!this.recorderMapping.containsKey(taskIdentifier)) {
-            this.recorderMapping.put(taskIdentifier, new HashMap<>());
+    public void startRecorder(@NonNull UUID taskIdentifier, @NonNull String recorderIdentifier) {
+        if (LOGGER.isDebugEnabled()) {
+            LOGGER.debug("Starting recorder: " + recorderIdentifier);
         }
 
-        Map<String, Recorder> taskRecorderMapping = this.recorderMapping.get(taskIdentifier);
-        taskRecorderMapping.put(recorder.getIdentifier(), recorder);
-        return recorder;
-    }
-
-    public class RecorderInstantiationException extends Exception {
-        @NonNull
-        private final String recorderId;
-
-        @NonNull
-        @RecorderType
-        private final String recorderType;
-
-        @Nullable
-        private final String message;
-
-        public RecorderInstantiationException(@NonNull String recorderId, @NonNull @RecorderType String recorderType,
-                @Nullable String message) {
-            this.recorderId = recorderId;
-            this.recorderType = recorderType;
-            this.message = message;
+        Recorder recorder = this.getRecorder(taskIdentifier, recorderIdentifier);
+        if (recorder == null) {
+            LOGGER.warn("Cannot start recorder that hasn't been created");
+            return;
         }
 
-        public RecorderInstantiationException(@NonNull String recorderId,
-                @NonNull @RecorderType String recorderType) {
-            this(recorderId, recorderType, null);
-        }
-
-        public String toString() {
-            if (message != null) {
-                return message;
-            } else {
-                return "Failed to instantiate recorder " + this.recorderId + " of type " + this.recorderType;
-            }
-        }
-
-        @NonNull
-        public String getRecorderId() {
-            return recorderId;
-        }
-
-        @NonNull
-        @RecorderType
-        public String getRecorderType() {
-            return recorderType;
-        }
-
-        @Override
-        @Nullable
-        public String getMessage() {
-            return message;
-        }
+        recorder.start();
     }
 
     /**
-     * Allows the RecorderService to be bound to.
+     * Stops the recorder with the given identifier.
+     *
+     * @param taskIdentifier
+     *         The identifier of the task the recorder belongs to.
+     * @param recorderIdentifier
+     *         The identifier of the recorder to stop.
      */
-    public final class RecorderBinder extends Binder {
-        public RecorderService getService() {
-            return RecorderService.this;
+    public void stopRecorder(@NonNull UUID taskIdentifier, @NonNull String recorderIdentifier) {
+        if (LOGGER.isDebugEnabled()) {
+            LOGGER.debug("Stopping recorder: " + recorderIdentifier);
         }
+
+        Recorder recorder = this.getRecorder(taskIdentifier, recorderIdentifier);
+        if (recorder == null) {
+            LOGGER.warn("Cannot stop recorder that isn't started.");
+            return;
+        }
+
+        recorder.stop();
+        // Remove the recorder for the mapping of active recorders
+        this.recorderMapping.get(taskIdentifier).remove(recorderIdentifier);
+    }
+
+    private Recorder getRecorder(@NonNull UUID taskIdentifier, @NonNull String recorderIdentifier) {
+        Map<String, Recorder<? extends Result>> taskRecorderMap = this.recorderMapping.get(taskIdentifier);
+        if (taskRecorderMap == null) {
+            return null;
+        }
+
+        return taskRecorderMap.get(recorderIdentifier);
     }
 }

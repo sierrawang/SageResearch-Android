@@ -37,10 +37,12 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.ServiceConnection;
 import android.os.IBinder;
+import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
-
 import com.google.common.collect.ImmutableMap;
-
+import com.google.common.collect.Sets;
+import io.reactivex.Single;
+import io.reactivex.disposables.CompositeDisposable;
 import org.sagebionetworks.research.domain.async.AsyncActionConfiguration;
 import org.sagebionetworks.research.domain.async.RecorderConfiguration;
 import org.sagebionetworks.research.domain.result.interfaces.Result;
@@ -48,6 +50,8 @@ import org.sagebionetworks.research.domain.step.interfaces.Step;
 import org.sagebionetworks.research.domain.task.Task;
 import org.sagebionetworks.research.presentation.inject.RecorderConfigPresentationFactory;
 import org.sagebionetworks.research.presentation.model.interfaces.StepView.NavDirection;
+import org.sagebionetworks.research.presentation.perform_task.TaskResultManager;
+import org.sagebionetworks.research.presentation.perform_task.TaskResultManager.TaskResultManagerConnection;
 import org.sagebionetworks.research.presentation.recorder.Recorder;
 import org.sagebionetworks.research.presentation.recorder.RecorderConfigPresentation;
 import org.sagebionetworks.research.presentation.recorder.service.RecorderService.RecorderBinder;
@@ -60,68 +64,65 @@ import java.util.Map;
 import java.util.Set;
 import java.util.UUID;
 
-import io.reactivex.ObservableEmitter;
-import io.reactivex.ObservableOnSubscribe;
-import io.reactivex.disposables.CompositeDisposable;
+import static com.google.common.base.Preconditions.checkNotNull;
 
 /**
- * A RecorderManager handles the work of creating recorders, and making the appropriate RecorderService calls to
- * start, stop, and cancel those recorders at the appropriate times.
+ * A RecorderManager managers a Task's recorders.
+ * <p>
+ * RecorderManager creates a Task's recorders and makes the appropriate RecorderService calls to start, stop, and
+ * cancel those recorders at the appropriate times.
  */
-public class RecorderManager implements ServiceConnection, ObservableOnSubscribe<Result> {
+public class RecorderManager implements ServiceConnection {
     private static final Logger LOGGER = LoggerFactory.getLogger(RecorderManager.class);
-
+    private final CompositeDisposable compositeDisposable;
+    private final Context context;
+    private final RecorderConfigPresentationFactory recorderConfigPresentationFactory;
+    private final Set<RecorderConfigPresentation> recorderConfigs;
+    private final Task task;
+    private final Single<TaskResultManagerConnection> taskResultManagerConnectionSingle;
+    private final UUID taskRunUUID;
+    private RecorderBinder binder;
     /**
      * Invariant: bound == true exactly when binder != null && service != null. binder == null exactly when service ==
      * null.
      */
     private boolean bound;
-
-    private RecorderBinder binder;
-
     private RecorderService service;
 
-    private Context context;
+    // TODO: a way to wait until service is bound
+    // TODO: unbind service
+    public RecorderManager(@NonNull Task task, @NonNull String taskIdentifier, @NonNull UUID taskRunUUID,
+                           Context context,
+                           @NonNull TaskResultManager taskResultManager,
+                           RecorderConfigPresentationFactory recorderConfigPresentationFactory) {
+        this.task = checkNotNull(task);
+        this.taskRunUUID = checkNotNull(taskRunUUID);
+        this.context = checkNotNull(context);
 
-    private Task task;
+        taskResultManagerConnectionSingle = taskResultManager
+                .getTaskResultManagerConnection(taskIdentifier, taskRunUUID);
+        this.recorderConfigPresentationFactory = checkNotNull(recorderConfigPresentationFactory);
 
-    private UUID taskRunUUID;
-
-    private RecorderConfigPresentationFactory recorderConfigPresentationFactory;
-
-    private Set<RecorderConfigPresentation> recorderConfigs;
-
-    private CompositeDisposable compositeDisposable;
-
-    private Set<ObservableEmitter<Result>> observers;
-
-    public RecorderManager(Task task, UUID taskRunUUID, Context context,
-            RecorderConfigPresentationFactory recorderConfigPresentationFactory) {
-        this.context = context;
-        this.taskRunUUID = taskRunUUID;
         this.compositeDisposable = new CompositeDisposable();
-        this.observers = new HashSet<>();
-        this.recorderConfigPresentationFactory = recorderConfigPresentationFactory;
-        this.task = task;
         Intent bindIntent = new Intent(context, RecorderService.class);
         this.context.bindService(bindIntent, this, Context.BIND_AUTO_CREATE);
         this.recorderConfigs = this.getRecorderConfigs();
     }
 
-    @Override
-    public void subscribe(final ObservableEmitter<Result> emitter) {
-        this.observers.add(emitter);
-    }
-
-    private Set<RecorderConfigPresentation> getRecorderConfigs() {
-        Set<RecorderConfigPresentation> recorderConfigs = new HashSet<>();
-        for (AsyncActionConfiguration asyncAction : this.task.getAsyncActions()) {
-            if (asyncAction instanceof RecorderConfiguration) {
-                recorderConfigs.add(recorderConfigPresentationFactory.create((RecorderConfiguration) asyncAction));
-            }
+    /**
+     * Returns a map of Recorder Id to Recorder containing all of the recorders that are currently active. An active
+     * recorder is any recorder that has been created and has not had stop() called on it.
+     *
+     * @return A map of Recorder Id to Recorder containing all of the active recorders.
+     */
+    @NonNull
+    public ImmutableMap<String, Recorder<? extends Result>> getActiveRecorders() {
+        if (this.bound) {
+            return this.service.getActiveRecorders(this.taskRunUUID);
+        } else {
+            LOGGER.warn("Cannot get active recorders Service is not bound");
+            return ImmutableMap.of();
         }
-
-        return recorderConfigs;
     }
 
     @Override
@@ -129,34 +130,15 @@ public class RecorderManager implements ServiceConnection, ObservableOnSubscribe
         this.binder = (RecorderBinder) iBinder;
         this.service = this.binder.getService();
         this.bound = true;
-        Map<String, Recorder> activeRecorders = this.getActiveRecorders();
+        Map<String, Recorder<? extends Result>> activeRecorders = this.getActiveRecorders();
         try {
             for (RecorderConfigPresentation config : this.recorderConfigs) {
-                if (activeRecorders == null || !activeRecorders.containsKey(config.getIdentifier())) {
+                if (!activeRecorders.containsKey(config.getIdentifier())) {
                     this.service.createRecorder(this.taskRunUUID, config);
                 }
             }
-
-            activeRecorders = this.getActiveRecorders();
-            if (activeRecorders != null) {
-                for (Recorder recorder : this.getActiveRecorders().values()) {
-                    this.compositeDisposable.add(
-                            ((Recorder<? extends Result>) recorder).getResult()
-                                    .subscribe((result) -> {
-                                        for (ObservableEmitter<Result> emitter : this.observers) {
-                                            emitter.onNext(result);
-                                            emitter.onComplete();
-                                        }
-                                    }, (throwable -> {
-                                        for (ObservableEmitter<Result> emitter : this.observers) {
-                                            emitter.onError(throwable);
-                                        }
-                                    })));
-                }
-            }
         } catch (IOException e) {
-            e.printStackTrace();
-            LOGGER.warn("Encountered IOException while initializing recorders");
+            LOGGER.warn("Encountered IOException while initializing recorders", e);
             // TODO rkolmos 8/13/2018 handle the IOException.
         }
     }
@@ -173,15 +155,12 @@ public class RecorderManager implements ServiceConnection, ObservableOnSubscribe
      * Starts, stops, and cancels the appropriate recorders in response to the step transition from previousStep to
      * nextStep in navDirection.
      *
-     * @param previousStep
-     *         The step that has just been transitioned away from, null indicates that nextStep is the first step.
-     * @param nextStep
-     *         The step that has just been transition to, null indicates that previousStep is the last step.
-     * @param navDirection
-     *         The direction in which the transition from previousStep to nextStep occurred in.
+     * @param previousStep The step that has just been transitioned away from, null indicates that nextStep is the first step.
+     * @param nextStep     The step that has just been transition to, null indicates that previousStep is the last step.
+     * @param navDirection The direction in which the transition from previousStep to nextStep occurred in.
      */
     public void onStepTransition(@Nullable Step previousStep, @Nullable Step nextStep,
-            @NavDirection int navDirection) {
+                                 @NavDirection int navDirection) {
         if (LOGGER.isDebugEnabled()) {
             LOGGER.debug("onStepTransition called from: " + previousStep + ", to: " + nextStep + " in direction: "
                     + navDirection);
@@ -194,21 +173,12 @@ public class RecorderManager implements ServiceConnection, ObservableOnSubscribe
         for (RecorderConfigPresentation config : this.recorderConfigs) {
             String startStepIdentifier = config.getStartStepIdentifier();
             String stopStepIdentifier = config.getStopStepIdentifier();
-            if (previousStep == null) {
-                if (startStepIdentifier == null) {
-                    // The task has just started so the recorder should be started if it has a null startStepIdentifier.
-                    shouldStart.add(config);
-                }
-            } else if (nextStep == null) {
-                // The task has just finished so the recorder should be stopped.
-                shouldStop.add(config);
-            } else if (navDirection == NavDirection.SHIFT_LEFT) {
-                String nextStepIdentifier = nextStep.getIdentifier();
-                String previousStepIdentifier = previousStep.getIdentifier();
-                if (startStepIdentifier != null && startStepIdentifier.equals(nextStepIdentifier)) {
+            if (navDirection == NavDirection.SHIFT_LEFT) {
+                if (nextStep != null && startStepIdentifier.equals(nextStep.getIdentifier())) {
                     // The recorder should be started since we are navigating to it's start step.
                     shouldStart.add(config);
-                } else if (stopStepIdentifier != null && stopStepIdentifier.equals(previousStepIdentifier)) {
+                }
+                if (previousStep != null && stopStepIdentifier.equals(previousStep.getIdentifier())) {
                     // The recorder should be stopped. Since it's stop step identifier has just ended.
                     shouldStop.add(config);
                 }
@@ -217,15 +187,22 @@ public class RecorderManager implements ServiceConnection, ObservableOnSubscribe
             }
         }
 
+        // recorders configured to cancel, or to both start and stop. let's not stop or start them
+        Set<RecorderConfigPresentation> startAndStopOrCancel = Sets
+                .union(Sets.intersection(shouldStart, shouldStop), shouldCancel);
+
         if (this.bound) {
-            Map<String, Recorder> activeRecorders = this.getActiveRecorders();
-            for (RecorderConfigPresentation config : shouldStart) {
+            Map<String, Recorder<? extends Result>> activeRecorders = this.getActiveRecorders();
+            for (RecorderConfigPresentation config : Sets.difference(shouldStart, startAndStopOrCancel)) {
+                // only wait for results of recorders which were started
+                taskResultManagerConnectionSingle.blockingGet()
+                        .addAsyncActionResult(activeRecorders.get(config.getIdentifier()).getResult());
                 this.service.startRecorder(this.taskRunUUID, config.getIdentifier());
             }
 
-            for (RecorderConfigPresentation config : shouldStop) {
+            for (RecorderConfigPresentation config : Sets.difference(shouldStop, startAndStopOrCancel)) {
                 String identifier = config.getIdentifier();
-                if (activeRecorders != null && activeRecorders.containsKey(identifier)) {
+                if (activeRecorders.containsKey(identifier)) {
                     if (activeRecorders.get(identifier).isRecording()) {
                         this.service.stopRecorder(this.taskRunUUID, identifier);
                     }
@@ -234,7 +211,7 @@ public class RecorderManager implements ServiceConnection, ObservableOnSubscribe
 
             for (RecorderConfigPresentation config : shouldCancel) {
                 String identifier = config.getIdentifier();
-                if (activeRecorders != null && activeRecorders.containsKey(identifier)) {
+                if (activeRecorders.containsKey(identifier)) {
                     if (activeRecorders.get(identifier).isRecording()) {
                         this.service.cancelRecorder(this.taskRunUUID, identifier);
                     }
@@ -246,18 +223,15 @@ public class RecorderManager implements ServiceConnection, ObservableOnSubscribe
         }
     }
 
-    /**
-     * Returns a map of Recorder Id to Recorder containing all of the recorders that are currently active. An active
-     * recorder is any recorder that has been created and has not had stop() called on it.
-     *
-     * @return A map of Recorder Id to Recorder containing all of the active recorders.
-     */
-    public ImmutableMap<String, Recorder> getActiveRecorders() {
-        if (this.bound) {
-            return this.service.getActiveRecorders(this.taskRunUUID);
-        } else {
-            LOGGER.warn("Cannot get active recorders Service is not bound");
-            return null;
+    private Set<RecorderConfigPresentation> getRecorderConfigs() {
+        Set<RecorderConfigPresentation> recorderConfigs = new HashSet<>();
+        for (AsyncActionConfiguration asyncAction : this.task.getAsyncActions()) {
+            if (asyncAction instanceof RecorderConfiguration) {
+                recorderConfigs.add(
+                        recorderConfigPresentationFactory.create((RecorderConfiguration) asyncAction));
+            }
         }
+
+        return recorderConfigs;
     }
 }

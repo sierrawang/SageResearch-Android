@@ -42,7 +42,6 @@ import javax.inject.Singleton;
 import dagger.Component;
 
 @Component(modules = {ActionModule.class, GsonModule.class})
-@Singleton
 public interface ActionTestComponent {
     Gson gson();
 }

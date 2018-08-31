@@ -5,7 +5,7 @@ import android.support.annotation.LayoutRes;
 import android.support.annotation.NonNull;
 import android.view.View;
 
-import org.sagebionetworks.research.domain.mobile_ui.R;
+import org.sagebionetworks.research.mobile_ui.R;
 import org.sagebionetworks.research.mobile_ui.perform_task.PerformTaskFragment;
 import org.sagebionetworks.research.mobile_ui.show_step.view.view_binding.ActiveUIStepViewBinding;
 import org.sagebionetworks.research.presentation.model.interfaces.CountdownStepView;

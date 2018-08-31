@@ -33,6 +33,7 @@
 package org.sagebionetworks.research.domain.result.implementations;
 
 import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 
 import com.google.common.base.MoreObjects.ToStringHelper;
 import com.google.common.base.Objects;
@@ -78,8 +79,8 @@ public class ResultBase extends ObjectHelper implements Result {
         this.data = ResultData.create(identifier, startTime, endTime);
     }
 
+    @Nullable
     @Override
-    @NonNull
     public Instant getEndTime() {
         return this.data.getEndTime();
     }

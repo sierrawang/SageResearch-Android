@@ -5,7 +5,7 @@ import android.support.annotation.Nullable;
 import android.support.v4.view.OnApplyWindowInsetsListener;
 import android.support.v4.view.WindowInsetsCompat;
 import android.view.ViewGroup;
-import org.sagebionetworks.research.domain.mobile_ui.R;
+import org.sagebionetworks.research.mobile_ui.R;
 
 /**
  * Provides OnApplyInsetsListener's that can be used to make views shift position by the system window insets to

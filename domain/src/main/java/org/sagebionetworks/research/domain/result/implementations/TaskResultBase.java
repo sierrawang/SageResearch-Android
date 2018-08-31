@@ -66,10 +66,14 @@ public class TaskResultBase extends ResultBase implements TaskResult {
     // Subclasses shouldn't hide this field as doing so will result in a gson error.
     private final TaskResultData taskResultData;
 
+    public TaskResultBase(@NonNull String identifier, @NonNull UUID taskRunUUID) {
+        this(identifier, Instant.now(), null, taskRunUUID, null, new ArrayList<>(), new ArrayList<>());
+    }
+
     public TaskResultBase(@NonNull String identifier, @NonNull Instant startDate,
             @Nullable Instant endDate, @NonNull UUID taskUUID, @Nullable Schema schema,
             @NonNull List<Result> stepHistory, @NonNull List<Result> asyncResults) {
-        super(identifier, startDate, endDate);
+        super(identifier, startDate, endDate == null ? Instant.now() : endDate);
         this.taskResultData = TaskResultData.create(taskUUID, schema, stepHistory, asyncResults);
     }
 
@@ -135,7 +139,7 @@ public class TaskResultBase extends ResultBase implements TaskResult {
 
     @Nullable
     @Override
-    public Result getResult(final Step step) {
+    public Result getResult(@NonNull final Step step) {
         return this.getResult(step.getIdentifier());
     }
 
@@ -187,6 +191,25 @@ public class TaskResultBase extends ResultBase implements TaskResult {
         return new TaskResultBase(this, newData);
     }
 
+    @Override
+    @NonNull
+    public List<Result> getResultsMatchingRegex(@RegEx String regex) {
+        List<Result> matches = new ArrayList<>();
+        for (Result result : this.taskResultData.getStepHistory()) {
+            if (result.getIdentifier().matches(regex)) {
+                matches.add(result);
+            }
+        }
+
+        return matches;
+    }
+
+    @Override
+    @Nullable
+    public Instant getEndTime() {
+        return this.data.getEndTime();
+    }
+
     @NonNull
     @ResultType
     @Override
@@ -222,7 +245,7 @@ public class TaskResultBase extends ResultBase implements TaskResult {
      * @param result
      *         The result to remove duplicates of and then append.
      * @return A copy of the given list with all duplicates of the given result removed and then the result appended
-     * to the end.
+     *         to the end.
      */
     private static List<Result> replaceAndAppendResult(List<Result> list, final Result result) {
         List<Result> returnValue = new ArrayList<>(list);
@@ -236,18 +259,5 @@ public class TaskResultBase extends ResultBase implements TaskResult {
 
         returnValue.add(result);
         return returnValue;
-    }
-
-    @Override
-    @NonNull
-    public List<Result> getResultsMatchingRegex(@RegEx String regex) {
-        List<Result> matches = new ArrayList<>();
-        for (Result result : this.taskResultData.getStepHistory()) {
-            if (result.getIdentifier().matches(regex)) {
-                matches.add(result);
-            }
-        }
-
-        return matches;
     }
 }

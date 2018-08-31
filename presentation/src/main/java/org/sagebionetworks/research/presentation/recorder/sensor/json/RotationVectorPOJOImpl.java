@@ -1,4 +1,4 @@
-package org.sagebionetworks.research.presentation.recorder.sensor.json.pojo;
+package org.sagebionetworks.research.presentation.recorder.sensor.json;
 
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -14,6 +14,21 @@ public abstract class RotationVectorPOJOImpl implements RotationVectorPOJO {
         public abstract RotationVectorPOJOImpl build();
 
         @NonNull
+        public abstract Builder setAccuracy(int accuracy);
+
+        @NonNull
+        public abstract Builder setEstimatedAccuracy(@Nullable Float estimatedAccuracy);
+
+        @NonNull
+        public abstract Builder setRotationReferenceCoordinate(@Nullable String rotationReferenceCoordinates);
+
+        @NonNull
+        public abstract Builder setSensorDataSubtype(@Nullable String sensorDataSubtype);
+
+        @NonNull
+        public abstract Builder setSensorType(@NonNull String sensorType);
+
+        @NonNull
         public abstract Builder setTimestampDate(@NonNull String timestampDate);
 
         @NonNull
@@ -23,10 +38,7 @@ public abstract class RotationVectorPOJOImpl implements RotationVectorPOJO {
         public abstract Builder setUptimeInSeconds(double uptimeInSeconds);
 
         @NonNull
-        public abstract Builder setSensorType(@NonNull String sensorType);
-
-        @NonNull
-        public abstract Builder setAccuracy(int accuracy);
+        public abstract Builder setW(@Nullable Float w);
 
         @NonNull
         public abstract Builder setX(float x);
@@ -36,18 +48,6 @@ public abstract class RotationVectorPOJOImpl implements RotationVectorPOJO {
 
         @NonNull
         public abstract Builder setZ(float z);
-
-        @NonNull
-        public abstract Builder setW(@Nullable Float w);
-
-        @NonNull
-        public abstract Builder setEstimatedAccuracy(@Nullable Float estimatedAccuracy);
-
-        @NonNull
-        public abstract Builder setSensorDataSubtype(@Nullable String sensorDataSubtype);
-
-        @NonNull
-        public abstract Builder setRotationReferenceCoordinate(@Nullable String rotationReferenceCoordinates);
     }
 
     @NonNull

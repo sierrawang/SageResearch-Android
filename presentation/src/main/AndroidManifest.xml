@@ -30,4 +30,12 @@
   ~ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
   -->
 
-<manifest package="org.sagebionetworks.research.presentation" />
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    package="org.sagebionetworks.research.presentation">
+
+    <application>
+        <service
+            android:name=".perform_task.TaskResultService"
+            android:label="TaskResultService"></service>
+    </application>
+</manifest>

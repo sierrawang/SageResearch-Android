@@ -61,16 +61,10 @@ public class FileResultBase extends ResultBase implements FileResult {
         this.fileResultData = FileResultData.create(fileType, relativePath);
     }
 
-    @Nullable
     @Override
-    public String getFileType() {
-        return this.fileResultData.getFileType();
-    }
-
-    @Nullable
-    @Override
-    public String getRelativePath() {
-        return this.fileResultData.getRelativePath();
+    @NonNull
+    public Instant getEndTime() {
+        return super.getEndTime();
     }
 
     @NonNull
@@ -97,5 +91,17 @@ public class FileResultBase extends ResultBase implements FileResult {
     protected ToStringHelper toStringHelper() {
         return super.toStringHelper()
                 .add("TaskResultData", this.fileResultData);
+    }
+
+    @Nullable
+    @Override
+    public String getFileType() {
+        return this.fileResultData.getFileType();
+    }
+
+    @Nullable
+    @Override
+    public String getRelativePath() {
+        return this.fileResultData.getRelativePath();
     }
 }

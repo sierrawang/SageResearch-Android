@@ -73,6 +73,8 @@ dependencies {
     implementation 'android.arch.lifecycle:reactivestreams:1.1.1'
     annotationProcessor "android.arch.lifecycle:compiler:1.1.1"
 
+    implementation 'org.threeten:threeten-extra:1.2'
+
     implementation 'org.slf4j:slf4j-api:1.7.21'
 
     api 'com.google.dagger:dagger-android:2.16'
@@ -82,7 +84,7 @@ dependencies {
 
     implementation 'com.google.code.gson:gson:2.8.2'
 
-    implementation 'com.github.pwittchen:reactivesensors-rx2:0.2.0'
+    api 'com.github.pwittchen:reactivesensors-rx2:0.2.0'
     implementation 'com.ryanharter.auto.value:auto-value-parcel-adapter:0.2.6'
 
     annotationProcessor "com.google.auto.value:auto-value:1.6"

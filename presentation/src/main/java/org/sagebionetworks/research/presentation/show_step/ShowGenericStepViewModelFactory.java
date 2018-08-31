@@ -34,12 +34,12 @@ package org.sagebionetworks.research.presentation.show_step;
 
 import org.sagebionetworks.research.presentation.model.interfaces.StepView;
 import org.sagebionetworks.research.presentation.perform_task.PerformTaskViewModel;
-import org.sagebionetworks.research.presentation.show_step.show_step_view_model_factories.AbstractShowStepViewModelFactory;
+import org.sagebionetworks.research.presentation.show_step.show_step_view_model_factories.ShowStepViewModelFactory;
 
 import javax.inject.Inject;
 
 public class ShowGenericStepViewModelFactory
-        implements AbstractShowStepViewModelFactory<ShowGenericStepViewModel, StepView> {
+        implements ShowStepViewModelFactory<ShowGenericStepViewModel, StepView> {
 
     @Inject
     public ShowGenericStepViewModelFactory() {
