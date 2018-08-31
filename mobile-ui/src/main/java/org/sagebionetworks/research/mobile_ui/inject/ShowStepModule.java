@@ -33,6 +33,7 @@
 package org.sagebionetworks.research.mobile_ui.inject;
 
 import android.support.annotation.NonNull;
+import android.support.v4.app.Fragment;
 
 import org.sagebionetworks.research.mobile_ui.show_step.view.ShowActiveUIStepFragment;
 import org.sagebionetworks.research.mobile_ui.show_step.view.ShowCompletionStepFragment;
@@ -74,7 +75,7 @@ public abstract class ShowStepModule {
 
     public interface ShowStepFragmentFactory {
         @NonNull
-        ShowStepFragmentBase create(@NonNull StepView stepView);
+        Fragment create(@NonNull StepView stepView);
     }
 
     @Provides
@@ -82,7 +83,7 @@ public abstract class ShowStepModule {
             Map<String, ShowStepFragmentFactory> showStepFragmentFactoryMap) {
         return (@NonNull StepView stepView) -> {
             if (showStepFragmentFactoryMap.containsKey(stepView.getType())) {
-                ShowStepFragmentBase fragment = showStepFragmentFactoryMap.get(stepView.getType()).create(stepView);
+                Fragment fragment = showStepFragmentFactoryMap.get(stepView.getType()).create(stepView);
                 LOGGER.debug("Created fragment with class: {} from stepView: {}",
                         fragment.getClass().getCanonicalName(), stepView);
                 if (fragment !=null ){

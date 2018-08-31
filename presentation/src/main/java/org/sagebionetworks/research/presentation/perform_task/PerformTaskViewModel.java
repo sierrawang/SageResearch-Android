@@ -348,12 +348,18 @@ public class PerformTaskViewModel extends AndroidViewModel {
     void cacheStepViews(List<Step> steps) {
         for (Step step : steps) {
             // This if statement is necessary to ensure we can call stepViewFactory.apply on the step.
-            if (step instanceof ThemedUIStep) {
-                stepViewMapping.put(step, stepViewFactory.apply(step));
-            } else if (step instanceof SectionStep) {
+            if (step instanceof SectionStep) {
                 cacheStepViews(((SectionStep) step).getSteps());
             } else {
-                LOGGER.warn("Unknown step type: {}", steps);
+                try {
+                    // We attempt to create a step view from the step.
+                    StepView stepView = stepViewFactory.apply(step);
+                    stepViewMapping.put(step, stepView);
+                } catch (IllegalArgumentException e) {
+                    // If the call to the stepViewFactory fails we provide a warning.
+                    LOGGER.warn("Unknown step type: {}", step);
+                }
+
             }
         }
     }

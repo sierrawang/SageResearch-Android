@@ -108,7 +108,7 @@ public class PerformTaskFragment extends Fragment implements HasSupportFragmentI
     @Inject
     PerformTaskViewModelFactory taskViewModelFactory;
 
-    private ShowStepFragmentBase currentStepFragment;
+    private Fragment currentStepFragment;
 
     private PerformTaskViewModel performTaskViewModel;
 
@@ -237,7 +237,7 @@ public class PerformTaskFragment extends Fragment implements HasSupportFragmentI
         }
         showedStep.set(true);
 
-        ShowStepFragmentBase step = showStepFragmentFactory.create(stepView);
+        Fragment step = showStepFragmentFactory.create(stepView);
         currentStepFragment = step;
         FragmentTransaction transaction = getChildFragmentManager().beginTransaction();
 
