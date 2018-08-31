@@ -65,6 +65,15 @@ public class CollectionResultBase extends ResultBase implements CollectionResult
         this.collectionResultData = CollectionResultData.create(inputResults);
     }
 
+    @Override
+    @NonNull
+    public CollectionResult appendInputResult(@NonNull Result inputResult) {
+        List<Result> inputResults = new ArrayList<>(this.getInputResults());
+        inputResults.add(inputResult);
+        return new CollectionResultBase(this.getIdentifier(), this.getStartTime(),
+                this.getEndTime(), inputResults);
+    }
+
     @NonNull
     @Override
     public ImmutableList<Result> getInputResults() {
@@ -73,11 +82,8 @@ public class CollectionResultBase extends ResultBase implements CollectionResult
 
     @Override
     @NonNull
-    public CollectionResult appendInputResult(@NonNull Result inputResult) {
-        List<Result> inputResults = new ArrayList<>(this.getInputResults());
-        inputResults.add(inputResult);
-        return new CollectionResultBase(this.getIdentifier(), this.getStartTime(),
-                this.getEndTime(), inputResults);
+    public Instant getEndTime() {
+        return super.getEndTime();
     }
 
     @NonNull

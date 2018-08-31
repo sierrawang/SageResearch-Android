@@ -204,6 +204,12 @@ public class TaskResultBase extends ResultBase implements TaskResult {
         return matches;
     }
 
+    @Override
+    @Nullable
+    public Instant getEndTime() {
+        return this.data.getEndTime();
+    }
+
     @NonNull
     @ResultType
     @Override

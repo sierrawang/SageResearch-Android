@@ -36,21 +36,31 @@ import android.support.annotation.NonNull;
 
 import com.google.common.collect.ImmutableList;
 
+import org.threeten.bp.Instant;
+
 /**
  * A CollectionResult represents a grouping of other results. Used when multiple results are logically linked (e.g.
  * part of the same step or part of the same form).
  */
 public interface CollectionResult extends Result {
     /**
-     * @return A list of the results that make up this collection Result.
-     */
-    @NonNull
-    ImmutableList<Result> getInputResults();
-
-    /**
-     * @param inputResult The result to append to this CollectionResult
+     * @param inputResult
+     *         The result to append to this CollectionResult
      * @return A new CollectionResult with the given result appended to the input results.
      */
     @NonNull
     CollectionResult appendInputResult(@NonNull Result inputResult);
+
+    /**
+     * @return The time this result ended.
+     */
+    @Override
+    @NonNull
+    Instant getEndTime();
+
+    /**
+     * @return A list of the results that make up this collection Result.
+     */
+    @NonNull
+    ImmutableList<Result> getInputResults();
 }

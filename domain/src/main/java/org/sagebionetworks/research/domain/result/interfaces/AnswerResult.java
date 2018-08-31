@@ -36,6 +36,7 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 
 import org.sagebionetworks.research.domain.result.AnswerResultType;
+import org.threeten.bp.Instant;
 
 /**
  * An AnswerResult stores some piece of data (e.g. the answer to a form question).
@@ -49,6 +50,13 @@ public interface AnswerResult<T> extends Result {
      */
     @Nullable
     T getAnswer();
+
+    /**
+     * @return The time this result ended.
+     */
+    @Override
+    @NonNull
+    Instant getEndTime();
 
     /**
      * @return the type of the answer associated with this result.

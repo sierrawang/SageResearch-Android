@@ -32,8 +32,11 @@
 
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="org.sagebionetworks.research.mobile_ui">
+
     <application>
-        <activity android:name=".perform_task.PerformTaskActivity" />
+        <activity
+            android:name=".perform_task.PerformTaskActivity"
+            android:screenOrientation="portrait" />
     </application>
 
     <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />

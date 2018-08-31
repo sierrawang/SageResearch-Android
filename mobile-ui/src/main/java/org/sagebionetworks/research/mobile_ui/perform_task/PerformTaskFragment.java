@@ -185,11 +185,9 @@ public class PerformTaskFragment extends Fragment implements HasSupportFragmentI
     }
 
     @Override
-    public void onSaveInstanceState(Bundle outState) {
-        if (outState != null) {
-            outState.putParcelable(ARGUMENT_TASK_VIEW, taskView);
-            outState.putParcelable(ARGUMENT_TASK_RUN_UUID, taskRunParcelableUuid);
-        }
+        public void onSaveInstanceState(@NonNull Bundle outState) {
+        outState.putParcelable(ARGUMENT_TASK_VIEW, taskView);
+        outState.putParcelable(ARGUMENT_TASK_RUN_UUID, taskRunParcelableUuid);
     }
 
     @Override
