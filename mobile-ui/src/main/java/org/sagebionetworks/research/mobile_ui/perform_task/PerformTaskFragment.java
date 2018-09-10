@@ -49,6 +49,8 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.google.auto.value.AutoValue;
+
 import org.sagebionetworks.research.domain.result.implementations.TaskResultBase;
 import org.sagebionetworks.research.domain.result.interfaces.TaskResult;
 import org.sagebionetworks.research.mobile_ui.R;
@@ -60,6 +62,7 @@ import org.sagebionetworks.research.presentation.model.interfaces.StepView;
 import org.sagebionetworks.research.presentation.model.interfaces.StepView.NavDirection;
 import org.sagebionetworks.research.presentation.perform_task.PerformTaskViewModel;
 import org.sagebionetworks.research.presentation.perform_task.PerformTaskViewModelFactory;
+import org.sagebionetworks.research.presentation.perform_task.PerformTaskViewModelFactory.SharedPrefsArgs;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.threeten.bp.Instant;
@@ -99,6 +102,8 @@ public class PerformTaskFragment extends Fragment implements HasSupportFragmentI
 
     public static final String LAST_RUN_KEY = "LAST_RUN";
 
+    public static final String RUN_COUNT_KEY = "RUN_COUNT";
+
     @Inject
     DispatchingAndroidInjector<Fragment> fragmentDispatchingAndroidInjector;
 
@@ -120,6 +125,7 @@ public class PerformTaskFragment extends Fragment implements HasSupportFragmentI
 
     private Unbinder unbinder;
 
+    private SharedPrefsArgs sharedPrefsArgs;
 
     public static PerformTaskFragment newInstance(@NonNull TaskView taskView, @Nullable UUID taskRunUUID) {
         checkNotNull(taskView);
@@ -170,9 +176,10 @@ public class PerformTaskFragment extends Fragment implements HasSupportFragmentI
         }
 
         TaskResult taskResult = new TaskResultBase("taskID", Instant.now(), UUID.randomUUID());
+        sharedPrefsArgs = getSharedPrefsArgs();
         performTaskViewModel = ViewModelProviders
                 .of(this, taskViewModelFactory.create(taskView, taskRunParcelableUuid.getUuid(),
-                        this.getLastRun()))
+                        sharedPrefsArgs))
                 .get(PerformTaskViewModel.class);
         performTaskViewModel.getStepView().observe(this, this::showStep);
     }
@@ -185,7 +192,7 @@ public class PerformTaskFragment extends Fragment implements HasSupportFragmentI
     }
 
     @Override
-        public void onSaveInstanceState(@NonNull Bundle outState) {
+    public void onSaveInstanceState(@NonNull Bundle outState) {
         outState.putParcelable(ARGUMENT_TASK_VIEW, taskView);
         outState.putParcelable(ARGUMENT_TASK_RUN_UUID, taskRunParcelableUuid);
     }
@@ -212,6 +219,8 @@ public class PerformTaskFragment extends Fragment implements HasSupportFragmentI
         SharedPreferences sharedPreferences = getContext().getSharedPreferences(sharedPreferencesKey,
                 Context.MODE_PRIVATE);
         sharedPreferences.edit().putLong(LAST_RUN_KEY, Instant.now().toEpochMilli()).apply();
+        sharedPreferences.edit().putInt(RUN_COUNT_KEY, sharedPrefsArgs.runCount + 1).apply();
+
 
         OnPerformTaskExitListener onPerformTaskExitListener = null;
         if (getParentFragment() instanceof OnPerformTaskExitListener) {
@@ -253,7 +262,7 @@ public class PerformTaskFragment extends Fragment implements HasSupportFragmentI
     }
 
     // TODO refactor last run persistence and insertion into TaskResult into task completion handler
-    private ZonedDateTime getLastRun() {
+    private SharedPrefsArgs getSharedPrefsArgs() {
         String sharedPreferencesKey = this.taskView.getIdentifier();
         SharedPreferences sharedPreferences = getContext().getSharedPreferences(sharedPreferencesKey,
                 Context.MODE_PRIVATE);
@@ -263,13 +272,15 @@ public class PerformTaskFragment extends Fragment implements HasSupportFragmentI
         }
 
         Instant lastRunInstant = Instant.ofEpochMilli(lastRun);
-        ZoneId zoneId = null;
+        ZoneId zoneId;
         try {
             zoneId = ZoneId.systemDefault();
         } catch (ZoneRulesException e) {
             zoneId = ZoneId.of("Z"); // UTC time.
         }
 
-        return ZonedDateTime.ofInstant(lastRunInstant, zoneId);
+        ZonedDateTime lastRunDateTime = ZonedDateTime.ofInstant(lastRunInstant, zoneId);
+        int runCount = sharedPreferences.getInt(RUN_COUNT_KEY, 1);
+        return new SharedPrefsArgs(lastRunDateTime, runCount);
     }
 }

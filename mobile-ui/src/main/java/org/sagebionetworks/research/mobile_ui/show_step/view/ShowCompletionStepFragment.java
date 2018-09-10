@@ -34,17 +34,41 @@ package org.sagebionetworks.research.mobile_ui.show_step.view;
 
 import android.os.Bundle;
 import android.support.annotation.NonNull;
+import android.support.constraint.Placeholder;
 import android.view.View;
+import android.widget.TextView;
 
+import org.sagebionetworks.research.domain.result.interfaces.AnswerResult;
+import org.sagebionetworks.research.domain.result.interfaces.Result;
+import org.sagebionetworks.research.domain.result.interfaces.TaskResult;
 import org.sagebionetworks.research.mobile_ui.R;
 import org.sagebionetworks.research.mobile_ui.perform_task.PerformTaskFragment;
 import org.sagebionetworks.research.mobile_ui.show_step.view.view_binding.UIStepViewBinding;
+import org.sagebionetworks.research.presentation.DisplayString;
 import org.sagebionetworks.research.presentation.model.interfaces.CompletionStepView;
 import org.sagebionetworks.research.presentation.model.interfaces.StepView;
+import org.sagebionetworks.research.presentation.perform_task.PerformTaskViewModel;
 import org.sagebionetworks.research.presentation.show_step.show_step_view_models.ShowUIStepViewModel;
 
 public class ShowCompletionStepFragment extends
         ShowUIStepFragmentBase<CompletionStepView, ShowUIStepViewModel<CompletionStepView>, UIStepViewBinding<CompletionStepView>> {
+    private static final String PLACEHOLDER = "%@";
+
+    @NonNull
+    public static Integer getRunCount(@NonNull TaskResult taskResult) {
+        for (Result result : taskResult.getAsyncResults()) {
+            if (result.getIdentifier().equals(PerformTaskViewModel.RUN_COUNT_RESULT_ID) &&
+                    result instanceof AnswerResult) {
+                Object answer = ((AnswerResult) result).getAnswer();
+                if (answer instanceof Integer) {
+                    return (Integer) answer;
+                }
+            }
+        }
+
+        return 1;
+    }
+
     @NonNull
     public static ShowCompletionStepFragment newInstance(@NonNull StepView stepView) {
         if (!(stepView instanceof CompletionStepView)) {
@@ -66,5 +90,36 @@ public class ShowCompletionStepFragment extends
     @Override
     protected UIStepViewBinding<CompletionStepView> instantiateAndBindBinding(final View view) {
         return new UIStepViewBinding<>(view);
+    }
+
+    @Override
+    protected void update(@NonNull CompletionStepView stepView) {
+        super.update(stepView);
+        int numberOfRuns = getRunCount(performTaskViewModel.getTaskResult()); // TODO make this accurate.
+
+        String ordinal = OrdinalUtil.getNumberOrdinal(numberOfRuns);
+        TextView titleLabel = this.stepViewBinding.getTitle();
+        if (titleLabel != null) {
+            DisplayString titleDisplayString = stepView.getTitle();
+            if (titleDisplayString != null) {
+                String title = titleDisplayString.getDisplayString();
+                if (title != null) {
+                    title = title.replaceAll(PLACEHOLDER, ordinal);
+                    titleLabel.setText(title);
+                }
+            }
+        }
+
+        TextView textLabel = this.stepViewBinding.getText();
+        if (textLabel != null) {
+            DisplayString textDisplayString = stepView.getText();
+            if (textDisplayString != null) {
+                String text = textDisplayString.getDisplayString();
+                if (text != null) {
+                    text = text.replaceAll(PLACEHOLDER, ordinal);
+                    textLabel.setText(text);
+                }
+            }
+        }
     }
 }

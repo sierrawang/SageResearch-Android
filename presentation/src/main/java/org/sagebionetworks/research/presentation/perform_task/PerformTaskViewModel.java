@@ -46,8 +46,11 @@ import android.support.annotation.MainThread;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.annotation.VisibleForTesting;
+import android.support.v4.app.INotificationSideChannel;
 
 import org.sagebionetworks.research.domain.repository.TaskRepository;
+import org.sagebionetworks.research.domain.result.AnswerResultType;
+import org.sagebionetworks.research.domain.result.implementations.AnswerResultBase;
 import org.sagebionetworks.research.domain.result.interfaces.Result;
 import org.sagebionetworks.research.domain.result.interfaces.TaskResult;
 import org.sagebionetworks.research.domain.step.interfaces.SectionStep;
@@ -67,11 +70,13 @@ import org.sagebionetworks.research.presentation.model.action.ActionType;
 import org.sagebionetworks.research.presentation.model.action.ActionView;
 import org.sagebionetworks.research.presentation.model.interfaces.StepView;
 import org.sagebionetworks.research.presentation.model.interfaces.StepView.NavDirection;
+import org.sagebionetworks.research.presentation.perform_task.PerformTaskViewModelFactory.SharedPrefsArgs;
 import org.sagebionetworks.research.presentation.perform_task.TaskResultManager.TaskResultManagerConnection;
 import org.sagebionetworks.research.presentation.perform_task.TaskResultService.TaskResultServiceBinder;
 import org.sagebionetworks.research.presentation.recorder.service.RecorderManager;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.threeten.bp.Instant;
 import org.threeten.bp.ZonedDateTime;
 
 import java.util.HashMap;
@@ -80,6 +85,7 @@ import java.util.Map;
 import java.util.UUID;
 
 import io.reactivex.BackpressureStrategy;
+import io.reactivex.Maybe;
 import io.reactivex.Single;
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.disposables.CompositeDisposable;
@@ -109,13 +115,15 @@ public class PerformTaskViewModel extends AndroidViewModel {
 
     public static final String LAST_RUN_RESULT_ID = "lastRun";
 
+    public static final String RUN_COUNT_RESULT_ID = "runCount";
+
     private static final Logger LOGGER = LoggerFactory.getLogger(PerformTaskViewModel.class);
 
     private final CompositeDisposable compositeDisposable;
 
     private final MutableLiveData<Step> currentStepLiveData;
 
-    private final ZonedDateTime lastRun;
+    private final SharedPrefsArgs sharedPrefsArgs;
 
     private final RecorderConfigPresentationFactory recorderConfigPresentationFactory;
 
@@ -157,7 +165,7 @@ public class PerformTaskViewModel extends AndroidViewModel {
             @NonNull StepViewFactory stepViewFactory,
             @NonNull TaskResultProcessingManager taskResultProcessingManager,
             @NonNull TaskResultManager taskResultManager,
-            @Nullable ZonedDateTime lastRun) {
+            @Nullable SharedPrefsArgs sharedPrefsArgs) {
         super(application);
         this.recorderConfigPresentationFactory = checkNotNull(recorderConfigPresentationFactory);
         this.taskView = checkNotNull(taskView);
@@ -166,7 +174,7 @@ public class PerformTaskViewModel extends AndroidViewModel {
         this.taskRepository = checkNotNull(taskRepository);
         this.stepViewFactory = checkNotNull(stepViewFactory);
         this.taskResultManager = taskResultManager;
-        this.lastRun = lastRun;
+        this.sharedPrefsArgs = sharedPrefsArgs;
 
         // TODO migrate these LiveData to StepNavigationViewModel @liujoshua 2018/08/07
 
@@ -405,6 +413,12 @@ public class PerformTaskViewModel extends AndroidViewModel {
                 compositeDisposable.add(
                         taskResultManagerConnectionSingle
                                 .subscribe((resultManagerConnection) -> {
+                                    resultManagerConnection.addAsyncActionResult(Maybe.fromCallable(
+                                            () -> new AnswerResultBase<>(LAST_RUN_RESULT_ID, Instant.now(), Instant.now(),
+                                                    sharedPrefsArgs.lastRun, AnswerResultType.DATE)));
+                                    resultManagerConnection.addAsyncActionResult(Maybe.fromCallable(
+                                            () -> new AnswerResultBase<>(RUN_COUNT_RESULT_ID, Instant.now(), Instant.now(),
+                                                    sharedPrefsArgs.runCount, AnswerResultType.INTEGER)));
                                     goForward();
                                 }, t -> taskInitFail(t)));
 
