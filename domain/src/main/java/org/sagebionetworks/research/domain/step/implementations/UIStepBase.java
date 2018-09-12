@@ -89,7 +89,7 @@ public class UIStepBase extends StepBase implements ThemedUIStep {
     private final String title;
 
     // Gson initialize defaults
-    UIStepBase() {
+    protected UIStepBase() {
         super("", new HashSet<>());
         actions = ImmutableMap.of();
         hiddenActions = ImmutableSet.of();
