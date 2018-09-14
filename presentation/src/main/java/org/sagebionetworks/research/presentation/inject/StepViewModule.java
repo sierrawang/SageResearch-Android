@@ -38,7 +38,6 @@ import org.sagebionetworks.research.domain.step.StepType;
 import org.sagebionetworks.research.domain.step.interfaces.Step;
 import org.sagebionetworks.research.presentation.mapper.DrawableMapper;
 import org.sagebionetworks.research.presentation.model.implementations.ActiveUIStepViewBase;
-import org.sagebionetworks.research.presentation.model.implementations.CompletionStepViewBase;
 import org.sagebionetworks.research.presentation.model.implementations.CountdownStepViewBase;
 import org.sagebionetworks.research.presentation.model.implementations.FormUIStepViewBase;
 import org.sagebionetworks.research.presentation.model.implementations.UIStepViewBase;
@@ -93,13 +92,6 @@ public abstract class StepViewModule {
     @StepTypeKey(StepType.UI)
     static InternalStepViewFactory provideUIStepFactory() {
         return UIStepViewBase::fromUIStep;
-    }
-
-    @Provides
-    @IntoMap
-    @StepTypeKey(StepType.COMPLETION)
-    static InternalStepViewFactory provideCompletionStepFactory() {
-        return CompletionStepViewBase::fromCompletionStep;
     }
 
     @Provides

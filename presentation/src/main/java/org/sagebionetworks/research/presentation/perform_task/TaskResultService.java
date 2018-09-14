@@ -286,7 +286,9 @@ public class TaskResultService extends DaggerService {
                         .subscribeOn(Schedulers.io())
                         .doOnComplete(() ->
                                 LOGGER.debug("task completion received for taskRunUUID {}", taskRunUUID))
-                        .subscribe()
+                        .subscribe(
+                                () -> {},
+                                throwable -> LOGGER.debug("task completion threw throwable {}", throwable))
         );
 
         // wait for all async results to come back, then mark the task result observable as finished

@@ -33,16 +33,14 @@
 package org.sagebionetworks.research.mobile_ui.inject;
 
 import android.support.annotation.NonNull;
+import android.support.v4.app.Fragment;
 
 import org.sagebionetworks.research.mobile_ui.show_step.view.ShowActiveUIStepFragment;
-import org.sagebionetworks.research.mobile_ui.show_step.view.ShowCompletionStepFragment;
 import org.sagebionetworks.research.mobile_ui.show_step.view.ShowCountdownStepFragment;
 import org.sagebionetworks.research.mobile_ui.show_step.view.ShowFormUIStepFragment;
-import org.sagebionetworks.research.mobile_ui.show_step.view.ShowStepFragmentBase;
 import org.sagebionetworks.research.mobile_ui.show_step.view.ShowUIStepFragment;
 import org.sagebionetworks.research.presentation.inject.DrawableModule;
 import org.sagebionetworks.research.presentation.model.implementations.ActiveUIStepViewBase;
-import org.sagebionetworks.research.presentation.model.implementations.CompletionStepViewBase;
 import org.sagebionetworks.research.presentation.model.implementations.CountdownStepViewBase;
 import org.sagebionetworks.research.presentation.model.implementations.FormUIStepViewBase;
 import org.sagebionetworks.research.presentation.model.implementations.UIStepViewBase;
@@ -74,7 +72,7 @@ public abstract class ShowStepModule {
 
     public interface ShowStepFragmentFactory {
         @NonNull
-        ShowStepFragmentBase create(@NonNull StepView stepView);
+        Fragment create(@NonNull StepView stepView);
     }
 
     @Provides
@@ -82,7 +80,7 @@ public abstract class ShowStepModule {
             Map<String, ShowStepFragmentFactory> showStepFragmentFactoryMap) {
         return (@NonNull StepView stepView) -> {
             if (showStepFragmentFactoryMap.containsKey(stepView.getType())) {
-                ShowStepFragmentBase fragment = showStepFragmentFactoryMap.get(stepView.getType()).create(stepView);
+                Fragment fragment = showStepFragmentFactoryMap.get(stepView.getType()).create(stepView);
                 LOGGER.debug("Created fragment with class: {} from stepView: {}",
                         fragment.getClass().getCanonicalName(), stepView);
                 if (fragment !=null ){
@@ -107,13 +105,6 @@ public abstract class ShowStepModule {
     @StepViewKey(UIStepViewBase.TYPE)
     static ShowStepFragmentFactory provideShowUIStepFragmentFactory() {
         return ShowUIStepFragment::newInstance;
-    }
-
-    @Provides
-    @IntoMap
-    @StepViewKey(CompletionStepViewBase.TYPE)
-    static ShowStepFragmentFactory provideShowCompletionStepFragmentFactory() {
-        return ShowCompletionStepFragment::newInstance;
     }
 
     @Provides

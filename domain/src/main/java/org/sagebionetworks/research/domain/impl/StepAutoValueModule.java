@@ -39,10 +39,8 @@ import com.google.gson.JsonDeserializer;
 import org.sagebionetworks.research.domain.inject.GsonModule;
 import org.sagebionetworks.research.domain.inject.GsonModule.ClassKey;
 import org.sagebionetworks.research.domain.inject.StepModule.StepClassKey;
-import org.sagebionetworks.research.domain.step.implementations.CompletionStepBase;
 import org.sagebionetworks.research.domain.step.implementations.CountdownStepImpl;
 import org.sagebionetworks.research.domain.step.interfaces.ActiveUIStep;
-import org.sagebionetworks.research.domain.step.interfaces.CompletionStep;
 import org.sagebionetworks.research.domain.step.interfaces.CountdownStep;
 
 import dagger.Module;

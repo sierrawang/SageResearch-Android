@@ -38,6 +38,7 @@ import android.app.Application;
 import android.arch.lifecycle.ViewModel;
 import android.arch.lifecycle.ViewModelProvider;
 import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 
 import org.sagebionetworks.research.domain.repository.TaskRepository;
 import org.sagebionetworks.research.domain.task.navigation.StepNavigatorFactory;
@@ -53,6 +54,21 @@ import java.util.UUID;
 import javax.inject.Inject;
 
 public class PerformTaskViewModelFactory {
+    /**
+     * Class to encapsulate the arguments coming from SharedPreferences.
+     */
+    public static class SharedPrefsArgs {
+        @Nullable
+        public final ZonedDateTime lastRun;
+
+        public final int runCount;
+
+        public SharedPrefsArgs(final ZonedDateTime lastRun, final int runCount) {
+            this.lastRun = lastRun;
+            this.runCount = runCount;
+        }
+    }
+
     private final Application application;
 
     private final RecorderConfigPresentationFactory recorderConfigPresentationFactory;
@@ -92,7 +108,7 @@ public class PerformTaskViewModelFactory {
     }
 
     public ViewModelProvider.Factory create(@NonNull TaskView taskView, @NonNull UUID taskRunUUID,
-            ZonedDateTime lastRun) {
+            SharedPrefsArgs sharedPrefsArgs) {
         checkNotNull(taskView);
         checkNotNull(taskRunUUID);
 
@@ -105,7 +121,7 @@ public class PerformTaskViewModelFactory {
                     // noinspection unchecked
                     return (T) new PerformTaskViewModel(application, taskView, taskRunUUID, stepNavigatorFactory,
                             taskRepository, taskMapper, recorderFactory, recorderConfigPresentationFactory,
-                            stepViewFactory, taskResultProcessingManager, taskResultManager, lastRun);
+                            stepViewFactory, taskResultProcessingManager, taskResultManager, sharedPrefsArgs);
                 }
                 throw new IllegalArgumentException("Unknown ViewModel class");
             }
