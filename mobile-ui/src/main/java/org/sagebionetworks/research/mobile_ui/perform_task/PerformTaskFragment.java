@@ -266,7 +266,7 @@ public class PerformTaskFragment extends Fragment implements HasSupportFragmentI
     }
 
     // TODO refactor last run persistence and insertion into TaskResult into task completion handler
-    private SharedPrefsArgs getSharedPrefsArgs() {
+    private @Nullable SharedPrefsArgs getSharedPrefsArgs() {
         String sharedPreferencesKey = this.taskView.getIdentifier();
         SharedPreferences sharedPreferences = getContext().getSharedPreferences(sharedPreferencesKey,
                 Context.MODE_PRIVATE);
