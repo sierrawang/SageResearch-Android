@@ -5,12 +5,14 @@ import static com.google.common.base.Preconditions.checkNotNull;
 import android.support.annotation.NonNull;
 
 import com.google.common.collect.ImmutableList;
+import com.google.common.collect.ImmutableSet;
 
 import org.sagebionetworks.research.presentation.perform_task.TaskResultManager.TaskResultManagerConnection;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.util.List;
+import java.util.Set;
 import java.util.UUID;
 
 import javax.inject.Inject;
@@ -34,14 +36,14 @@ public class BoundServiceTaskResultProcessingManager implements TaskResultProces
 
     private final CompositeDisposable compositeDisposable;
 
-    private final ImmutableList<TaskResultProcessor> taskResultProcessors;
+    private final ImmutableSet<TaskResultProcessor> taskResultProcessors;
 
     @Inject
     public BoundServiceTaskResultProcessingManager(
             final @NonNull BoundServiceTaskResultManager boundServiceTaskResultManager,
-            final @NonNull List<TaskResultProcessor> taskResultProcessors) {
+            final @NonNull Set<TaskResultProcessor> taskResultProcessors) {
         this.boundServiceTaskResultManager = checkNotNull(boundServiceTaskResultManager);
-        this.taskResultProcessors = ImmutableList.copyOf(checkNotNull(taskResultProcessors));
+        this.taskResultProcessors = ImmutableSet.copyOf(checkNotNull(taskResultProcessors));
         compositeDisposable = new CompositeDisposable();
     }
 

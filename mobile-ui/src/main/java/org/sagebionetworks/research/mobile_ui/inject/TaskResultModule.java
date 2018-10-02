@@ -4,11 +4,15 @@ import org.sagebionetworks.research.presentation.perform_task.BoundServiceTaskRe
 import org.sagebionetworks.research.presentation.perform_task.BoundServiceTaskResultProcessingManager;
 import org.sagebionetworks.research.presentation.perform_task.TaskResultManager;
 import org.sagebionetworks.research.presentation.perform_task.TaskResultProcessingManager;
+import org.sagebionetworks.research.presentation.perform_task.TaskResultProcessingManager.TaskResultProcessor;
 import org.sagebionetworks.research.presentation.perform_task.TaskResultService;
+
+import java.util.Set;
 
 import dagger.Binds;
 import dagger.Module;
 import dagger.android.ContributesAndroidInjector;
+import dagger.multibindings.Multibinds;
 
 @Module
 public abstract class TaskResultModule {
@@ -21,4 +25,7 @@ public abstract class TaskResultModule {
     @Binds
     abstract TaskResultProcessingManager provideTaskResultProcessingManager(
             BoundServiceTaskResultProcessingManager boundServiceTaskResultProcessingManager);
+
+    @Multibinds
+    abstract Set<TaskResultProcessor> provideTaskResultProcessors();
 }
