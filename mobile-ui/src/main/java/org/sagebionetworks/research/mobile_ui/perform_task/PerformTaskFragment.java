@@ -125,7 +125,7 @@ public class PerformTaskFragment extends Fragment implements HasSupportFragmentI
 
     private Unbinder unbinder;
 
-    @Nullable private SharedPrefsArgs sharedPrefsArgs;
+    private @Nullable SharedPrefsArgs sharedPrefsArgs;
 
     public static PerformTaskFragment newInstance(@NonNull TaskView taskView, @Nullable UUID taskRunUUID) {
         checkNotNull(taskView);
