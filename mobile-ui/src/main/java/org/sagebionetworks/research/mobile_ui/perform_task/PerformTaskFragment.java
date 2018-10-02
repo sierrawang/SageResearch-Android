@@ -125,7 +125,7 @@ public class PerformTaskFragment extends Fragment implements HasSupportFragmentI
 
     private Unbinder unbinder;
 
-    private SharedPrefsArgs sharedPrefsArgs;
+    @Nullable private SharedPrefsArgs sharedPrefsArgs;
 
     public static PerformTaskFragment newInstance(@NonNull TaskView taskView, @Nullable UUID taskRunUUID) {
         checkNotNull(taskView);
@@ -219,7 +219,11 @@ public class PerformTaskFragment extends Fragment implements HasSupportFragmentI
         SharedPreferences sharedPreferences = getContext().getSharedPreferences(sharedPreferencesKey,
                 Context.MODE_PRIVATE);
         sharedPreferences.edit().putLong(LAST_RUN_KEY, Instant.now().toEpochMilli()).apply();
-        sharedPreferences.edit().putInt(RUN_COUNT_KEY, sharedPrefsArgs.runCount + 1).apply();
+        int runCount = 1;
+        if (sharedPrefsArgs != null) {
+            runCount = sharedPrefsArgs.runCount + 1;
+        }
+        sharedPreferences.edit().putInt(RUN_COUNT_KEY, runCount).apply();
 
 
         OnPerformTaskExitListener onPerformTaskExitListener = null;
