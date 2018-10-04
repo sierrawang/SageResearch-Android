@@ -218,13 +218,14 @@ public class PerformTaskFragment extends Fragment implements HasSupportFragmentI
         String sharedPreferencesKey = this.taskView.getIdentifier();
         SharedPreferences sharedPreferences = getContext().getSharedPreferences(sharedPreferencesKey,
                 Context.MODE_PRIVATE);
-        sharedPreferences.edit().putLong(LAST_RUN_KEY, Instant.now().toEpochMilli()).apply();
         int runCount = 1;
         if (sharedPrefsArgs != null) {
             runCount = sharedPrefsArgs.runCount + 1;
         }
-        sharedPreferences.edit().putInt(RUN_COUNT_KEY, runCount).apply();
-
+        sharedPreferences.edit()
+                .putLong(LAST_RUN_KEY, Instant.now().toEpochMilli())
+                .putInt(RUN_COUNT_KEY, runCount)
+                .apply();
 
         OnPerformTaskExitListener onPerformTaskExitListener = null;
         if (getParentFragment() instanceof OnPerformTaskExitListener) {
