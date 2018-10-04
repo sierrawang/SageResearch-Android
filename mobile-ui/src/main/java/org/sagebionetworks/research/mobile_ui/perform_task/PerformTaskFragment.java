@@ -125,7 +125,7 @@ public class PerformTaskFragment extends Fragment implements HasSupportFragmentI
 
     private Unbinder unbinder;
 
-    private SharedPrefsArgs sharedPrefsArgs;
+    private @Nullable SharedPrefsArgs sharedPrefsArgs;
 
     public static PerformTaskFragment newInstance(@NonNull TaskView taskView, @Nullable UUID taskRunUUID) {
         checkNotNull(taskView);
@@ -218,9 +218,14 @@ public class PerformTaskFragment extends Fragment implements HasSupportFragmentI
         String sharedPreferencesKey = this.taskView.getIdentifier();
         SharedPreferences sharedPreferences = getContext().getSharedPreferences(sharedPreferencesKey,
                 Context.MODE_PRIVATE);
-        sharedPreferences.edit().putLong(LAST_RUN_KEY, Instant.now().toEpochMilli()).apply();
-        sharedPreferences.edit().putInt(RUN_COUNT_KEY, sharedPrefsArgs.runCount + 1).apply();
-
+        int runCount = 1;
+        if (sharedPrefsArgs != null) {
+            runCount = sharedPrefsArgs.runCount + 1;
+        }
+        sharedPreferences.edit()
+                .putLong(LAST_RUN_KEY, Instant.now().toEpochMilli())
+                .putInt(RUN_COUNT_KEY, runCount)
+                .apply();
 
         OnPerformTaskExitListener onPerformTaskExitListener = null;
         if (getParentFragment() instanceof OnPerformTaskExitListener) {
@@ -262,7 +267,7 @@ public class PerformTaskFragment extends Fragment implements HasSupportFragmentI
     }
 
     // TODO refactor last run persistence and insertion into TaskResult into task completion handler
-    private SharedPrefsArgs getSharedPrefsArgs() {
+    private @Nullable SharedPrefsArgs getSharedPrefsArgs() {
         String sharedPreferencesKey = this.taskView.getIdentifier();
         SharedPreferences sharedPreferences = getContext().getSharedPreferences(sharedPreferencesKey,
                 Context.MODE_PRIVATE);
