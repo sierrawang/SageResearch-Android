@@ -89,6 +89,7 @@ public class ShowUIStepViewModel<S extends UIStepView> extends ShowStepViewModel
                 performTaskViewModel.goBack();
                 break;
             case ActionType.SKIP:
+                // I don't think is supposed to happen
                 performTaskViewModel.goForward();
                 break;
             case ActionType.CANCEL:
