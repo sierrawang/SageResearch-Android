@@ -34,7 +34,7 @@
 
 buildscript {
     ext.kotlin_version = '1.2.71'
-    ext.support_library_version = '27.1.1'
+    ext.support_library_version = '28.0.0'
 
     repositories {
         jcenter()
@@ -71,26 +71,26 @@ allprojects {
         google()
     }
 
-    configurations.all {
-        resolutionStrategy {
-            // fail eagerly on version conflict (includes transitive dependencies)
-            // e.g. multiple different versions of the same dependency (group and name are equal)
-            failOnVersionConflict()
-
-            // prefer modules that are part of this build (multi-project or composite build) over external modules
-            preferProjectModules()
-
-            eachDependency { DependencyResolveDetails details ->
-                if (details.requested.group == 'com.android.support') {
-                    if (details.requested.name != 'multidex'
-                            && details.requested.name != 'multidex-instrumentation') {
-                        details.useVersion "$support_library_version"
-                    }
-                }
-            }
-
-        }
-    }
+//    configurations.all {
+//        resolutionStrategy {
+//            // fail eagerly on version conflict (includes transitive dependencies)
+//            // e.g. multiple different versions of the same dependency (group and name are equal)
+//            failOnVersionConflict()
+//
+//            // prefer modules that are part of this build (multi-project or composite build) over external modules
+//            preferProjectModules()
+//
+//            eachDependency { DependencyResolveDetails details ->
+//                if (details.requested.group == 'com.android.support') {
+//                    if (details.requested.name != 'multidex'
+//                            && details.requested.name != 'multidex-instrumentation') {
+//                        details.useVersion "$support_library_version"
+//                    }
+//                }
+//            }
+//
+//        }
+//    }
 }
 
 subprojects {
