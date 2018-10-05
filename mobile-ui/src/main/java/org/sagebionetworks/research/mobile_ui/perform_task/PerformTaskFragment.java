@@ -208,6 +208,35 @@ public class PerformTaskFragment extends Fragment implements HasSupportFragmentI
         return fragmentDispatchingAndroidInjector;
     }
 
+    public void cancelTask(boolean showDialog) {
+        LOGGER.debug("Cancel button clicked");
+
+        if(showDialog) {
+            LOGGER.debug("Show the dialog here");
+            new android.support.v7.app.AlertDialog.Builder(this.getActivity())
+                    .setTitle("Are you sure that you want to stop?")
+                    .setPositiveButton("Discard Results", (dialog, i) -> checkExitListener(Status.CANCELLED))
+                    .setNegativeButton("Keep Going", null).create().show();
+        }
+        else {
+            checkExitListener(Status.CANCELLED);
+        }
+    }
+
+    public void checkExitListener(Status finishStatus) {
+        OnPerformTaskExitListener onPerformTaskExitListener = null;
+        if (getParentFragment() instanceof OnPerformTaskExitListener) {
+            onPerformTaskExitListener = (OnPerformTaskExitListener) getParentFragment();
+        }
+        if (onPerformTaskExitListener == null && getActivity() instanceof OnPerformTaskExitListener) {
+            onPerformTaskExitListener = (OnPerformTaskExitListener) getActivity();
+        }
+        if (onPerformTaskExitListener != null) {
+            onPerformTaskExitListener.onTaskExit(finishStatus,
+                    performTaskViewModel.getTaskResult());
+        }
+    }
+
     void afterLastStep() {
         if (currentStepFragment != null) {
             getChildFragmentManager().beginTransaction().remove(currentStepFragment).commit();
@@ -221,18 +250,8 @@ public class PerformTaskFragment extends Fragment implements HasSupportFragmentI
         sharedPreferences.edit().putLong(LAST_RUN_KEY, Instant.now().toEpochMilli()).apply();
         sharedPreferences.edit().putInt(RUN_COUNT_KEY, sharedPrefsArgs.runCount + 1).apply();
 
+        checkExitListener(Status.FINISHED);
 
-        OnPerformTaskExitListener onPerformTaskExitListener = null;
-        if (getParentFragment() instanceof OnPerformTaskExitListener) {
-            onPerformTaskExitListener = (OnPerformTaskExitListener) getParentFragment();
-        }
-        if (onPerformTaskExitListener == null && getActivity() instanceof OnPerformTaskExitListener) {
-            onPerformTaskExitListener = (OnPerformTaskExitListener) getActivity();
-        }
-        if (onPerformTaskExitListener != null) {
-            onPerformTaskExitListener.onTaskExit(Status.FINISHED,
-                    performTaskViewModel.getTaskResult());
-        }
     }
 
     @VisibleForTesting

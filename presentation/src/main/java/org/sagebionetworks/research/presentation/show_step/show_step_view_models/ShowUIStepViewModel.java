@@ -88,6 +88,15 @@ public class ShowUIStepViewModel<S extends UIStepView> extends ShowStepViewModel
             case ActionType.BACKWARD:
                 performTaskViewModel.goBack();
                 break;
+            case ActionType.SKIP:
+                performTaskViewModel.goForward();
+                break;
+            case ActionType.CANCEL:
+                break;
+            case ActionType.INFO:
+                break;
+            case ActionType.ADD_MORE:
+                break;
             default:
                 throw new UnsupportedOperationException("Unsupported actionType: " + actionType);
         }
