@@ -32,12 +32,11 @@
 
 package org.sagebionetworks.research.domain.task.navigation.strategy.factory.next_step;
 
-import android.support.annotation.Nullable;
+import androidx.annotation.Nullable;
 
 import com.google.common.base.MoreObjects;
 
 import org.sagebionetworks.research.domain.result.interfaces.TaskResult;
-import org.sagebionetworks.research.domain.task.Task;
 import org.sagebionetworks.research.domain.task.navigation.strategy.StepNavigationStrategy.NextStepStrategy;
 
 public final class ConstantNextStepStrategy implements NextStepStrategy {

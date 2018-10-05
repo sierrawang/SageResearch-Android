@@ -32,7 +32,7 @@
 
 package org.sagebionetworks.research.domain.result.implementations;
 
-import android.support.annotation.NonNull;
+import androidx.annotation.NonNull;
 
 import com.google.common.base.MoreObjects.ToStringHelper;
 import com.google.common.base.Objects;

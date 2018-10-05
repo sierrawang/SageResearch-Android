@@ -33,9 +33,9 @@
 package org.sagebionetworks.research.presentation.model.form;
 
 import android.os.Parcel;
-import android.os.Parcelable;
-import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
+
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.Range;
@@ -43,7 +43,6 @@ import com.google.common.collect.Range;
 import org.sagebionetworks.research.domain.form.data_types.InputDataType;
 import org.sagebionetworks.research.domain.form.InputUIHint;
 import org.sagebionetworks.research.domain.form.TextField.TextFieldOptions;
-import org.sagebionetworks.research.domain.form.data_types.InputDataType;
 import org.sagebionetworks.research.domain.form.implementations.ChoiceInputField;
 import org.sagebionetworks.research.domain.form.interfaces.Choice;
 import org.sagebionetworks.research.domain.form.interfaces.InputField;
@@ -52,7 +51,6 @@ import org.sagebionetworks.research.presentation.DisplayString;
 import org.sagebionetworks.research.presentation.mapper.DrawableMapper;
 
 import java.io.Serializable;
-import java.util.ArrayList;
 import java.util.List;
 
 public class InputFieldViewBase<E> implements InputFieldView, Serializable {

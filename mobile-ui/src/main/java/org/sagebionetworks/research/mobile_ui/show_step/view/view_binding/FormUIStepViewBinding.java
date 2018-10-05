@@ -32,7 +32,7 @@
 
 package org.sagebionetworks.research.mobile_ui.show_step.view.view_binding;
 
-import android.support.v7.widget.RecyclerView;
+import androidx.recyclerview.widget.RecyclerView;
 import android.view.View;
 
 import org.sagebionetworks.research.mobile_ui.R2.id;

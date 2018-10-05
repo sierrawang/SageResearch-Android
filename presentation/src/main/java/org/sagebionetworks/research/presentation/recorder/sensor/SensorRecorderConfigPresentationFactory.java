@@ -3,7 +3,7 @@ package org.sagebionetworks.research.presentation.recorder.sensor;
 import android.content.Context;
 import android.hardware.Sensor;
 import android.hardware.SensorManager;
-import android.support.annotation.NonNull;
+import androidx.annotation.NonNull;
 import org.sagebionetworks.research.domain.async.DeviceMotionRecorderConfiguration;
 import org.sagebionetworks.research.domain.async.RecorderConfiguration;
 import org.sagebionetworks.research.presentation.inject.RecorderConfigPresentationFactory;

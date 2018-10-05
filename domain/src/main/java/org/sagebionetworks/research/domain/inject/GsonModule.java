@@ -32,8 +32,8 @@
 
 package org.sagebionetworks.research.domain.inject;
 
-import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 
 import com.dampcake.gson.immutable.ImmutableAdapterFactory;
 import com.google.gson.Gson;
@@ -44,7 +44,6 @@ import com.google.gson.JsonElement;
 import com.google.gson.JsonParseException;
 import com.google.gson.JsonSerializationContext;
 import com.google.gson.JsonSerializer;
-import com.google.gson.TypeAdapter;
 import com.google.gson.TypeAdapterFactory;
 
 import org.aaronhe.threetengson.ThreeTenGsonAdapter;
@@ -57,8 +56,6 @@ import java.lang.reflect.Type;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
-
-import javax.inject.Singleton;
 
 import dagger.MapKey;
 import dagger.Module;

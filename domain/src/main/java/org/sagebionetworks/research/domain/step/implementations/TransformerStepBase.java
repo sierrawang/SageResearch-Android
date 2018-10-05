@@ -32,7 +32,7 @@
 
 package org.sagebionetworks.research.domain.step.implementations;
 
-import android.support.annotation.NonNull;
+import androidx.annotation.NonNull;
 
 import com.google.common.base.MoreObjects;
 import com.google.common.base.MoreObjects.ToStringHelper;
@@ -45,7 +45,6 @@ import com.google.gson.JsonParseException;
 import com.google.gson.annotations.SerializedName;
 
 import org.sagebionetworks.research.domain.interfaces.HashCodeHelper;
-import org.sagebionetworks.research.domain.result.interfaces.Result;
 import org.sagebionetworks.research.domain.step.StepType;
 import org.sagebionetworks.research.domain.step.interfaces.TransformerStep;
 

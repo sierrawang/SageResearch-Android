@@ -32,13 +32,12 @@
 
 package org.sagebionetworks.research.presentation.show_step.show_step_view_models;
 
-import android.arch.lifecycle.LiveData;
-import android.arch.lifecycle.LiveDataReactiveStreams;
-import android.arch.lifecycle.MutableLiveData;
+import androidx.lifecycle.LiveData;
+import androidx.lifecycle.LiveDataReactiveStreams;
+import androidx.lifecycle.MutableLiveData;
 
 import org.sagebionetworks.research.presentation.model.interfaces.ActiveUIStepView;
 import org.sagebionetworks.research.presentation.perform_task.PerformTaskViewModel;
-import org.threeten.bp.Instant;
 
 import java.util.concurrent.TimeUnit;
 

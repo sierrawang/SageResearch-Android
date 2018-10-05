@@ -32,8 +32,8 @@
 
 package org.sagebionetworks.research.domain.step.implementations;
 
-import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 
 import com.google.common.base.MoreObjects.ToStringHelper;
 import com.google.common.base.Objects;
@@ -43,8 +43,6 @@ import com.google.gson.annotations.SerializedName;
 
 import org.sagebionetworks.research.domain.async.AsyncActionConfiguration;
 import org.sagebionetworks.research.domain.interfaces.HashCodeHelper;
-import org.sagebionetworks.research.domain.result.implementations.ResultBase;
-import org.sagebionetworks.research.domain.result.interfaces.Result;
 import org.sagebionetworks.research.domain.step.StepType;
 import org.sagebionetworks.research.domain.step.interfaces.ThemedUIStep;
 import org.sagebionetworks.research.domain.step.ui.action.Action;
@@ -52,7 +50,6 @@ import org.sagebionetworks.research.domain.step.ui.theme.ColorTheme;
 import org.sagebionetworks.research.domain.step.ui.theme.ImageTheme;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.threeten.bp.Instant;
 
 import java.util.HashSet;
 import java.util.Map;

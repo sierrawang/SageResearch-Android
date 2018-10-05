@@ -32,7 +32,7 @@
 
 package org.sagebionetworks.research.domain.step.ui.action;
 
-import android.support.annotation.Nullable;
+import androidx.annotation.Nullable;
 
 public interface SkipToStepAction extends Action {
     /**

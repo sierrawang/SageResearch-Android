@@ -32,8 +32,8 @@
 
 package org.sagebionetworks.research.mobile_ui.inject;
 
-import android.support.annotation.NonNull;
-import android.support.v4.app.Fragment;
+import androidx.annotation.NonNull;
+import androidx.fragment.app.Fragment;
 
 import org.sagebionetworks.research.mobile_ui.show_step.view.ShowActiveUIStepFragment;
 import org.sagebionetworks.research.mobile_ui.show_step.view.ShowCountdownStepFragment;

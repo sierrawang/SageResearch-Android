@@ -42,7 +42,7 @@ android {
         versionCode 1
         versionName "0.0.0"
         multiDexEnabled true
-        testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
+        testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
         javaCompileOptions {
             annotationProcessorOptions {
                 arguments = ['autovaluegson.mutableAdaptersWithDefaultSetters': 'true']
@@ -63,11 +63,11 @@ android {
 
 dependencies {
     implementation fileTree(dir: 'libs', include: ['*.jar'])
-    implementation 'com.android.support.constraint:constraint-layout:1.1.2'
+    implementation 'androidx.constraintlayout:constraintlayout:2.0.0-alpha2'
     implementation project(':data')
     implementation project(':mobile-ui')
 
-    implementation 'com.android.support:multidex:1.0.3'
+    implementation 'androidx.multidex:multidex:2.0.0'
 
     implementation 'com.google.code.gson:gson:2.8.2'
 
@@ -76,7 +76,7 @@ dependencies {
     implementation 'com.jakewharton:butterknife:8.8.1'
     annotationProcessor 'com.jakewharton:butterknife-compiler:8.8.1'
 
-    implementation "com.android.support:design:$support_library_version"
+    implementation 'com.google.android.material:material:1.0.0'
 
     implementation 'org.slf4j:slf4j-api:1.7.21'
     implementation 'com.github.tony19:logback-android-core:1.1.1-6'
@@ -92,10 +92,10 @@ dependencies {
     annotationProcessor 'com.ryanharter.auto.value:auto-value-gson:0.7.0'
     annotationProcessor 'com.google.auto.value:auto-value-annotations:1.6' // include again for auto-value-gson
 
-    implementation "android.arch.lifecycle:extensions:1.1.1"
+    implementation "androidx.lifecycle:lifecycle-extensions:2.0.0"
 
-    annotationProcessor "android.arch.lifecycle:compiler:1.1.1"
-    implementation "com.android.support:appcompat-v7:$support_library_version"
+    annotationProcessor "androidx.lifecycle:lifecycle-compiler:2.0.0"
+    implementation 'androidx.appcompat:appcompat:1.0.0'
 
     api 'com.google.dagger:dagger-android:2.16'
     api 'com.google.dagger:dagger-android-support:2.16'
@@ -107,9 +107,9 @@ dependencies {
 
     testImplementation 'org.mockito:mockito-core:2.8.9'
     testImplementation 'junit:junit:4.12'
-    testImplementation "android.arch.core:core-testing:1.1.1"
+    testImplementation "androidx.arch.core:core-testing:2.0.0"
 
-    androidTestImplementation('com.android.support.test.espresso:espresso-core:2.2.2', {
+    androidTestImplementation('androidx.test.espresso:espresso-core:3.1.0-beta01', {
         exclude group: 'com.android.support', module: 'support-annotations'
     })
 }

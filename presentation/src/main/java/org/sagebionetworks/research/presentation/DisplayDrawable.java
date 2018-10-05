@@ -32,9 +32,8 @@
 
 package org.sagebionetworks.research.presentation;
 
-import android.os.Parcelable;
-import android.support.annotation.DrawableRes;
-import android.support.annotation.Nullable;
+import androidx.annotation.DrawableRes;
+import androidx.annotation.Nullable;
 
 import com.google.auto.value.AutoValue;
 

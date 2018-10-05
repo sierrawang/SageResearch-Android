@@ -32,8 +32,8 @@
 
 package org.sagebionetworks.research.domain.form.implementations;
 
-import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 
 import com.google.common.base.MoreObjects.ToStringHelper;
 import com.google.common.base.Objects;
@@ -42,7 +42,6 @@ import com.google.common.collect.Range;
 
 import org.sagebionetworks.research.domain.form.data_types.InputDataType;
 import org.sagebionetworks.research.domain.form.TextField.TextFieldOptions;
-import org.sagebionetworks.research.domain.form.data_types.InputDataType;
 import org.sagebionetworks.research.domain.form.interfaces.Choice;
 import org.sagebionetworks.research.domain.form.interfaces.ChoiceOptions;
 import org.sagebionetworks.research.domain.interfaces.HashCodeHelper;

@@ -33,11 +33,10 @@
 package org.sagebionetworks.research.mobile_ui.widget;
 
 import android.content.Context;
-import android.support.annotation.Keep;
-import android.support.v4.view.WindowInsetsCompat;
-import android.support.v7.widget.AppCompatTextView;
+import androidx.annotation.Keep;
+import androidx.core.view.WindowInsetsCompat;
+import androidx.appcompat.widget.AppCompatTextView;
 import android.util.AttributeSet;
-import android.view.WindowInsets;
 
 @Keep
 public class ActionButton extends AppCompatTextView {

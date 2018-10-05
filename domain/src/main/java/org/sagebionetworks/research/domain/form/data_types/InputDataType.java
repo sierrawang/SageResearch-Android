@@ -32,8 +32,7 @@
 
 package org.sagebionetworks.research.domain.form.data_types;
 
-import android.os.Parcelable;
-import android.support.annotation.Nullable;
+import androidx.annotation.Nullable;
 
 import com.google.gson.JsonDeserializationContext;
 import com.google.gson.JsonDeserializer;

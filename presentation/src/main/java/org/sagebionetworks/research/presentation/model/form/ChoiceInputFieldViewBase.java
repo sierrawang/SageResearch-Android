@@ -33,7 +33,7 @@
 package org.sagebionetworks.research.presentation.model.form;
 
 import android.os.Parcel;
-import android.support.annotation.NonNull;
+import androidx.annotation.NonNull;
 
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.Range;

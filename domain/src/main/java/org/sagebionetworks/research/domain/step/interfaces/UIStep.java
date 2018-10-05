@@ -32,7 +32,7 @@
 
 package org.sagebionetworks.research.domain.step.interfaces;
 
-import android.support.annotation.Nullable;
+import androidx.annotation.Nullable;
 
 import org.sagebionetworks.research.domain.step.ui.action.ActionHandler;
 

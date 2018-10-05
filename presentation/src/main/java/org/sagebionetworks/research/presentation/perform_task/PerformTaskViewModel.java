@@ -32,21 +32,21 @@
 
 package org.sagebionetworks.research.presentation.perform_task;
 
-import static android.arch.lifecycle.LiveDataReactiveStreams.fromPublisher;
+import static androidx.lifecycle.LiveDataReactiveStreams.fromPublisher;
 
 import static com.google.common.base.Preconditions.checkNotNull;
 import static com.google.common.base.Preconditions.checkState;
 
 import android.app.Application;
-import android.arch.lifecycle.AndroidViewModel;
-import android.arch.lifecycle.LiveData;
-import android.arch.lifecycle.MutableLiveData;
-import android.arch.lifecycle.Observer;
-import android.support.annotation.MainThread;
-import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
-import android.support.annotation.VisibleForTesting;
-import android.support.v4.app.INotificationSideChannel;
+import androidx.lifecycle.AndroidViewModel;
+import androidx.lifecycle.LiveData;
+import androidx.lifecycle.MutableLiveData;
+import androidx.lifecycle.Observer;
+import androidx.annotation.MainThread;
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.annotation.VisibleForTesting;
+import androidx.core.app.INotificationSideChannel;
 
 import org.sagebionetworks.research.domain.repository.TaskRepository;
 import org.sagebionetworks.research.domain.result.AnswerResultType;
@@ -55,7 +55,6 @@ import org.sagebionetworks.research.domain.result.interfaces.Result;
 import org.sagebionetworks.research.domain.result.interfaces.TaskResult;
 import org.sagebionetworks.research.domain.step.interfaces.SectionStep;
 import org.sagebionetworks.research.domain.step.interfaces.Step;
-import org.sagebionetworks.research.domain.step.interfaces.ThemedUIStep;
 import org.sagebionetworks.research.domain.task.Task;
 import org.sagebionetworks.research.domain.task.TaskInfoView;
 import org.sagebionetworks.research.domain.task.navigation.StepNavigator;
@@ -77,7 +76,6 @@ import org.sagebionetworks.research.presentation.recorder.service.RecorderManage
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.threeten.bp.Instant;
-import org.threeten.bp.ZonedDateTime;
 
 import java.util.HashMap;
 import java.util.List;
