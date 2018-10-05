@@ -31,8 +31,5 @@
   -->
 
 <resources>
-    <declare-styleable name="RoundedButton">
-        <attr name="backgroundColor" format="reference" />
-        <attr name="textColor" format="reference" />
-    </declare-styleable>
+
 </resources>

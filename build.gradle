@@ -41,6 +41,7 @@ buildscript {
         google()
         maven { url 'https://plugins.gradle.org/m2/' }
         mavenLocal()
+        maven { url "https://oss.sonatype.org/content/repositories/snapshots" }
     }
     dependencies {
         classpath 'com.android.tools.build:gradle:3.2.0'
@@ -56,9 +57,8 @@ buildscript {
         classpath 'com.chaitanyapramod.gradle:findbugs-android:1.0'
 
         classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlin_version"
-        classpath 'com.jakewharton:butterknife-gradle-plugin:8.4.0'
-        // NOTE: Do not place your application dependencies here; they belong
-        // in the individual module build.gradle files
+
+        classpath 'com.jakewharton:butterknife-gradle-plugin:9.0.0-SNAPSHOT'
     }
 }
 
@@ -69,6 +69,7 @@ allprojects {
     repositories {
         jcenter()
         google()
+        maven { url "https://oss.sonatype.org/content/repositories/snapshots" }
     }
 
 //    configurations.all {
