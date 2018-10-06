@@ -32,9 +32,9 @@
 
 package org.sagebionetworks.research.presentation.show_step.show_step_view_model_factories;
 
+import androidx.annotation.NonNull;
 import androidx.lifecycle.ViewModel;
 import androidx.lifecycle.ViewModelProvider;
-import androidx.annotation.NonNull;
 
 import org.sagebionetworks.research.presentation.model.BaseStepView;
 import org.sagebionetworks.research.presentation.model.interfaces.StepView;

@@ -33,7 +33,6 @@
 package org.sagebionetworks.research.domain.step.interfaces;
 
 import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
 
 import com.google.common.collect.ImmutableSet;
 

@@ -34,8 +34,6 @@ package org.sagebionetworks.research.app.inject;
 
 import org.sagebionetworks.research.app.ResearchStackDemoApplication;
 
-import javax.inject.Singleton;
-
 import dagger.BindsInstance;
 import dagger.Component;
 

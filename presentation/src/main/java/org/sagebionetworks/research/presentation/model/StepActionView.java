@@ -35,8 +35,8 @@ package org.sagebionetworks.research.presentation.model;
 import androidx.annotation.DrawableRes;
 import androidx.annotation.NonNull;
 
-import org.sagebionetworks.research.presentation.model.action.ActionType;
 import org.sagebionetworks.research.presentation.DisplayString;
+import org.sagebionetworks.research.presentation.model.action.ActionType;
 
 public class StepActionView {
     @NonNull

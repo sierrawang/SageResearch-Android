@@ -35,10 +35,11 @@ package org.sagebionetworks.research.presentation.perform_task;
 import static com.google.common.base.Preconditions.checkNotNull;
 
 import android.app.Application;
-import androidx.lifecycle.ViewModel;
-import androidx.lifecycle.ViewModelProvider;
+
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.lifecycle.ViewModel;
+import androidx.lifecycle.ViewModelProvider;
 
 import org.sagebionetworks.research.domain.repository.TaskRepository;
 import org.sagebionetworks.research.domain.task.navigation.StepNavigatorFactory;

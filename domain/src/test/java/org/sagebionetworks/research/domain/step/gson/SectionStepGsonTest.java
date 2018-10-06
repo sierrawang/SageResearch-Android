@@ -32,6 +32,13 @@
 
 package org.sagebionetworks.research.domain.step.gson;
 
+import static junit.framework.Assert.assertEquals;
+import static junit.framework.Assert.assertNotNull;
+import static junit.framework.Assert.assertTrue;
+
+import static org.junit.Assert.assertNotEquals;
+import static org.sagebionetworks.research.domain.JsonAssetUtil.readJsonFile;
+
 import org.junit.Test;
 import org.sagebionetworks.research.domain.step.interfaces.ActiveUIStep;
 import org.sagebionetworks.research.domain.step.interfaces.SectionStep;
@@ -39,10 +46,6 @@ import org.sagebionetworks.research.domain.step.interfaces.Step;
 import org.sagebionetworks.research.domain.step.interfaces.UIStep;
 
 import java.util.List;
-
-import static junit.framework.Assert.*;
-import static org.junit.Assert.assertNotEquals;
-import static org.sagebionetworks.research.domain.JsonAssetUtil.readJsonFile;
 
 public class SectionStepGsonTest extends IndividualStepGsonTest {
     @Test

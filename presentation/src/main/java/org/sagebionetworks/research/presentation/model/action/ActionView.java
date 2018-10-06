@@ -35,8 +35,9 @@ package org.sagebionetworks.research.presentation.model.action;
 import org.sagebionetworks.research.presentation.DisplayDrawable;
 import org.sagebionetworks.research.presentation.DisplayString;
 
-import javax.annotation.Nullable;
 import java.io.Serializable;
+
+import javax.annotation.Nullable;
 
 public interface ActionView extends Serializable {
     @Nullable

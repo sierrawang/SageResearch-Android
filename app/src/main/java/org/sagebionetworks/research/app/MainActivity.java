@@ -33,6 +33,7 @@
 package org.sagebionetworks.research.app;
 
 import android.os.Bundle;
+
 import androidx.appcompat.app.AppCompatActivity;
 
 import org.sagebionetworks.research.domain.repository.TaskRepository;

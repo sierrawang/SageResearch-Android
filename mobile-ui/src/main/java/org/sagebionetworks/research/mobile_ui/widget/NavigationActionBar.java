@@ -35,12 +35,13 @@ package org.sagebionetworks.research.mobile_ui.widget;
 import android.content.Context;
 import android.content.res.TypedArray;
 import android.graphics.PorterDuff.Mode;
+import android.util.AttributeSet;
+import android.view.View;
+
 import androidx.annotation.Keep;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.constraintlayout.widget.ConstraintLayout;
-import android.util.AttributeSet;
-import android.view.View;
 
 import org.sagebionetworks.research.mobile_ui.R;
 import org.sagebionetworks.research.mobile_ui.R2;

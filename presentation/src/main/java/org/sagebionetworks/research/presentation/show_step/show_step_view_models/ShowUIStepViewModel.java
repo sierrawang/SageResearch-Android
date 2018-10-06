@@ -32,9 +32,9 @@
 
 package org.sagebionetworks.research.presentation.show_step.show_step_view_models;
 
+import androidx.annotation.Nullable;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
-import androidx.annotation.Nullable;
 
 import org.sagebionetworks.research.domain.result.implementations.ResultBase;
 import org.sagebionetworks.research.domain.result.interfaces.Result;

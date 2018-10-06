@@ -32,8 +32,8 @@
 
 package org.sagebionetworks.research.presentation.contract.perform_task;
 
-import androidx.lifecycle.LiveData;
 import androidx.annotation.NonNull;
+import androidx.lifecycle.LiveData;
 
 import org.sagebionetworks.research.domain.task.TaskInfoView;
 import org.sagebionetworks.research.presentation.contract.model.LoadableResource;

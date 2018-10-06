@@ -34,16 +34,16 @@ package org.sagebionetworks.research.mobile_ui.show_step.view;
 
 import android.animation.Animator;
 import android.animation.ObjectAnimator;
-import androidx.lifecycle.LiveData;
-import androidx.lifecycle.Observer;
 import android.os.Bundle;
-import androidx.annotation.Nullable;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.animation.LinearInterpolator;
 import android.widget.ProgressBar;
 import android.widget.TextView;
+
+import androidx.annotation.Nullable;
+import androidx.lifecycle.Observer;
 
 import org.sagebionetworks.research.mobile_ui.show_step.view.view_binding.ActiveUIStepViewBinding;
 import org.sagebionetworks.research.presentation.model.action.ActionType;

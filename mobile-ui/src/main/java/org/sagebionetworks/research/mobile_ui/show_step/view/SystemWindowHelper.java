@@ -1,10 +1,12 @@
 package org.sagebionetworks.research.mobile_ui.show_step.view;
 
+import android.view.ViewGroup;
+
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.core.view.OnApplyWindowInsetsListener;
 import androidx.core.view.WindowInsetsCompat;
-import android.view.ViewGroup;
+
 import org.sagebionetworks.research.mobile_ui.R;
 
 /**

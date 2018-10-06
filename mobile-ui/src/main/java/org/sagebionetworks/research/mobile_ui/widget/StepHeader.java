@@ -34,13 +34,14 @@ package org.sagebionetworks.research.mobile_ui.widget;
 
 import android.content.Context;
 import android.content.res.TypedArray;
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
-import androidx.constraintlayout.widget.ConstraintLayout;
 import android.util.AttributeSet;
 import android.view.View;
 import android.widget.ProgressBar;
 import android.widget.TextView;
+
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.constraintlayout.widget.ConstraintLayout;
 
 import org.sagebionetworks.research.mobile_ui.R;
 import org.sagebionetworks.research.mobile_ui.R2;

@@ -7,7 +7,6 @@ import com.google.auto.value.AutoValue;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.Range;
 
-
 import org.sagebionetworks.research.domain.form.InputUIHint;
 import org.sagebionetworks.research.domain.form.TextField.TextFieldOptions;
 import org.sagebionetworks.research.domain.form.data_types.InputDataType;

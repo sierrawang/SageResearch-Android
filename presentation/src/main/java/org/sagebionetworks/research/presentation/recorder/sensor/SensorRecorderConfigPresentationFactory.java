@@ -3,7 +3,9 @@ package org.sagebionetworks.research.presentation.recorder.sensor;
 import android.content.Context;
 import android.hardware.Sensor;
 import android.hardware.SensorManager;
+
 import androidx.annotation.NonNull;
+
 import org.sagebionetworks.research.domain.async.DeviceMotionRecorderConfiguration;
 import org.sagebionetworks.research.domain.async.RecorderConfiguration;
 import org.sagebionetworks.research.presentation.inject.RecorderConfigPresentationFactory;
@@ -12,11 +14,12 @@ import org.sagebionetworks.research.presentation.recorder.RecorderConfigPresenta
 import org.sagebionetworks.research.presentation.recorder.reactive.source.SensorSourceFactory.SensorConfig;
 import org.sagebionetworks.research.presentation.recorder.reactive.source.SensorSourceFactory.SensorConfig.SensorConfigBuilder;
 
-import javax.inject.Inject;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+
+import javax.inject.Inject;
 
 public class SensorRecorderConfigPresentationFactory implements RecorderConfigPresentationFactory {
     private static final int SECONDS_TO_MICROSECONDS = 1_000_000;

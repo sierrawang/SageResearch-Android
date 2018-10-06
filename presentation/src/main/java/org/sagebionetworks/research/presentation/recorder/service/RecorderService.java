@@ -35,10 +35,12 @@ package org.sagebionetworks.research.presentation.recorder.service;
 import android.content.Intent;
 import android.os.Binder;
 import android.os.IBinder;
+
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+
 import com.google.common.collect.ImmutableMap;
-import dagger.android.DaggerService;
+
 import org.sagebionetworks.research.domain.async.RecorderType;
 import org.sagebionetworks.research.domain.result.interfaces.Result;
 import org.sagebionetworks.research.presentation.inject.RecorderModule.RecorderFactory;
@@ -48,11 +50,14 @@ import org.sagebionetworks.research.presentation.recorder.RecorderConfigPresenta
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import javax.inject.Inject;
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
+
+import javax.inject.Inject;
+
+import dagger.android.DaggerService;
 
 /**
  * The RecorderService handles the recorders that are needed for the task. Recorders can do things such as record

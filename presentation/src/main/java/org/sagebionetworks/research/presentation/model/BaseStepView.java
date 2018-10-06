@@ -33,6 +33,7 @@
 package org.sagebionetworks.research.presentation.model;
 
 import android.os.Parcelable;
+
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 

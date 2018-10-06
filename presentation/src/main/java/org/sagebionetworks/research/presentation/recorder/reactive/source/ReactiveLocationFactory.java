@@ -40,6 +40,7 @@ import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
 import android.os.Bundle;
+
 import androidx.annotation.NonNull;
 import androidx.core.content.PermissionChecker;
 

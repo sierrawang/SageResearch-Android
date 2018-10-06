@@ -1,9 +1,10 @@
 package org.sagebionetworks.research.mobile_ui.show_step.view;
 
 import android.os.Bundle;
+import android.view.View;
+
 import androidx.annotation.LayoutRes;
 import androidx.annotation.NonNull;
-import android.view.View;
 
 import org.sagebionetworks.research.mobile_ui.R;
 import org.sagebionetworks.research.mobile_ui.show_step.view.view_binding.ActiveUIStepViewBinding;

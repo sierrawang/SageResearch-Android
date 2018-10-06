@@ -5,14 +5,16 @@ import android.hardware.SensorEvent;
 import android.hardware.SensorManager;
 import android.os.Build;
 import android.os.SystemClock;
+
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.annotation.VisibleForTesting;
+
 import com.google.common.base.Strings;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.ImmutableSet;
 import com.google.gson.JsonObject;
-import io.reactivex.functions.BiFunction;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.threeten.bp.Instant;
@@ -22,6 +24,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+
+import io.reactivex.functions.BiFunction;
 
 /**
  * Created by TheMDP on 2/5/17.

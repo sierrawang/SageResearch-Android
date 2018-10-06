@@ -35,6 +35,7 @@ package org.sagebionetworks.research.presentation.recorder.location.json;
 import android.location.Location;
 import android.os.Build;
 import android.os.SystemClock;
+
 import androidx.annotation.NonNull;
 
 import com.google.auto.value.AutoValue;

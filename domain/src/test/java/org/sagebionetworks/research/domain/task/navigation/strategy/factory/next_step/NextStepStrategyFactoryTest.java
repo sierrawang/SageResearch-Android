@@ -32,7 +32,6 @@
 
 package org.sagebionetworks.research.domain.task.navigation.strategy.factory.next_step;
 
-import static junit.framework.Assert.assertNotNull;
 import static org.junit.Assert.assertEquals;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
@@ -45,10 +44,6 @@ import org.sagebionetworks.research.domain.step.gson.IndividualStepGsonTest;
 import org.sagebionetworks.research.domain.step.interfaces.Step;
 import org.sagebionetworks.research.domain.task.Task;
 import org.sagebionetworks.research.domain.task.navigation.strategy.StepNavigationStrategy.NextStepStrategy;
-
-import java.lang.reflect.InvocationHandler;
-import java.lang.reflect.Method;
-import java.lang.reflect.Proxy;
 
 public class NextStepStrategyFactoryTest extends IndividualStepGsonTest {
 

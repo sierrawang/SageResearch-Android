@@ -10,8 +10,8 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
 import com.google.common.io.CharStreams;
-import com.google.gson.Gson;
 import com.google.common.reflect.TypeToken;
+import com.google.gson.Gson;
 
 import java.io.BufferedReader;
 import java.io.File;

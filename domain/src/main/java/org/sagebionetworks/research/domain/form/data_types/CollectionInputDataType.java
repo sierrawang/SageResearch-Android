@@ -34,6 +34,7 @@ package org.sagebionetworks.research.domain.form.data_types;
 
 
 import android.os.Parcel;
+
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.annotation.StringDef;

@@ -33,6 +33,7 @@
 package org.sagebionetworks.research.presentation.recorder.location;
 
 import android.location.Location;
+
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 

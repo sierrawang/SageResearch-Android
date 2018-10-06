@@ -32,9 +32,6 @@
 
 package org.sagebionetworks.research.domain.inject;
 
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
-
 import com.dampcake.gson.immutable.ImmutableAdapterFactory;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;

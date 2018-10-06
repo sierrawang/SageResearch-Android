@@ -33,6 +33,7 @@
 package org.sagebionetworks.research.presentation.mapper;
 
 import android.content.res.Resources.NotFoundException;
+
 import androidx.annotation.DrawableRes;
 import androidx.annotation.NonNull;
 

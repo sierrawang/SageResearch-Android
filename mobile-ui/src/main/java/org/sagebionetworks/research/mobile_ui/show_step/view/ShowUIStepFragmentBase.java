@@ -35,8 +35,6 @@ package org.sagebionetworks.research.mobile_ui.show_step.view;
 import android.graphics.drawable.AnimationDrawable;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
-import androidx.core.view.OnApplyWindowInsetsListener;
-import androidx.core.view.ViewCompat;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -44,18 +42,21 @@ import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
-import org.sagebionetworks.research.mobile_ui.R;
+import androidx.core.view.OnApplyWindowInsetsListener;
+import androidx.core.view.ViewCompat;
+
 import org.sagebionetworks.research.domain.task.navigation.TaskProgress;
+import org.sagebionetworks.research.mobile_ui.R;
 import org.sagebionetworks.research.mobile_ui.show_step.view.view_binding.UIStepViewBinding;
 import org.sagebionetworks.research.mobile_ui.widget.ActionButton;
-import org.sagebionetworks.research.presentation.model.action.ActionType;
 import org.sagebionetworks.research.presentation.DisplayDrawable;
 import org.sagebionetworks.research.presentation.DisplayString;
 import org.sagebionetworks.research.presentation.model.AnimationImageThemeView;
+import org.sagebionetworks.research.presentation.model.FetchableImageThemeView;
 import org.sagebionetworks.research.presentation.model.ImageThemeView;
+import org.sagebionetworks.research.presentation.model.action.ActionType;
 import org.sagebionetworks.research.presentation.model.action.ActionView;
 import org.sagebionetworks.research.presentation.model.action.ActionViewBase;
-import org.sagebionetworks.research.presentation.model.FetchableImageThemeView;
 import org.sagebionetworks.research.presentation.model.interfaces.UIStepView;
 import org.sagebionetworks.research.presentation.show_step.show_step_view_models.ShowUIStepViewModel;
 

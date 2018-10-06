@@ -2,7 +2,6 @@ package org.sagebionetworks.research.domain.step.implementations;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import androidx.annotation.StringDef;
 
 import com.google.auto.value.AutoValue;
 import com.google.common.collect.ImmutableMap;

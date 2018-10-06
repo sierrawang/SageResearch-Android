@@ -33,6 +33,7 @@
 package org.sagebionetworks.research.presentation.model.implementations;
 
 import android.os.Parcel;
+
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
@@ -46,11 +47,11 @@ import org.sagebionetworks.research.domain.step.interfaces.ThemedUIStep;
 import org.sagebionetworks.research.domain.step.ui.action.Action;
 import org.sagebionetworks.research.domain.step.ui.action.ReminderAction;
 import org.sagebionetworks.research.domain.step.ui.action.SkipToStepAction;
-import org.sagebionetworks.research.presentation.model.action.ActionType;
 import org.sagebionetworks.research.presentation.DisplayString;
 import org.sagebionetworks.research.presentation.mapper.DrawableMapper;
 import org.sagebionetworks.research.presentation.model.ColorThemeView;
 import org.sagebionetworks.research.presentation.model.ImageThemeView;
+import org.sagebionetworks.research.presentation.model.action.ActionType;
 import org.sagebionetworks.research.presentation.model.action.ActionView;
 import org.sagebionetworks.research.presentation.model.action.ActionViewBase;
 import org.sagebionetworks.research.presentation.model.action.ReminderActionViewBase;

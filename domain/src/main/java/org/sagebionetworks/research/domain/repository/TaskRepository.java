@@ -33,6 +33,7 @@
 package org.sagebionetworks.research.domain.repository;
 
 import android.content.res.Resources.NotFoundException;
+
 import androidx.annotation.CheckResult;
 import androidx.annotation.DrawableRes;
 import androidx.annotation.NonNull;

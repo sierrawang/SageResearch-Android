@@ -37,8 +37,6 @@ import com.google.gson.Gson;
 import org.sagebionetworks.research.domain.inject.ActionModule;
 import org.sagebionetworks.research.domain.inject.GsonModule;
 
-import javax.inject.Singleton;
-
 import dagger.Component;
 
 @Component(modules = {ActionModule.class, GsonModule.class})
