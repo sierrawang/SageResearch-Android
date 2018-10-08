@@ -34,17 +34,21 @@ package org.sagebionetworks.research.presentation.speech
 
 import android.Manifest
 import android.annotation.TargetApi
-import android.arch.lifecycle.LifecycleService
 import android.arch.lifecycle.LiveData
 import android.arch.lifecycle.MutableLiveData
 import android.arch.lifecycle.Observer
 import android.content.Context
 import android.content.Intent
 import android.media.AudioManager
+import android.media.ToneGenerator
 import android.os.Build
 import android.os.IBinder
+import android.os.Vibrator
 import android.speech.tts.TextToSpeech
 import android.speech.tts.UtteranceProgressListener
+import android.support.annotation.RequiresPermission
+import dagger.android.AndroidInjection
+import dagger.android.DaggerService
 import org.sagebionetworks.research.presentation.speech.TextToSpeechService.TextToSpeechState.SpeakingState.ERROR
 import org.sagebionetworks.research.presentation.speech.TextToSpeechService.TextToSpeechState.SpeakingState.IDLE
 import org.sagebionetworks.research.presentation.speech.TextToSpeechService.TextToSpeechState.SpeakingState.QUEUED
@@ -54,11 +58,9 @@ import org.slf4j.LoggerFactory
 import org.threeten.bp.Duration
 import java.util.HashMap
 import java.util.Locale
-import android.media.ToneGenerator
-import android.os.Vibrator
-import android.support.annotation.RequiresPermission
+import javax.inject.Inject
 
-class TextToSpeechService : LifecycleService(), TextToSpeech.OnInitListener {
+class TextToSpeechService : DaggerService(), TextToSpeech.OnInitListener {
     /**
      * Stores whether the TextToSpeechService is IDLE, SPEAKING, or has encountered an ERROR, as well as
      * the currently being spoken text in the case the service is SPEAKING. If the service isn't SPEAKING
@@ -93,40 +95,8 @@ class TextToSpeechService : LifecycleService(), TextToSpeech.OnInitListener {
 
     companion object {
         private val LOGGER: Logger = LoggerFactory.getLogger(TextToSpeechService::class.java)
-        private val START_KEY = "start"
-        private val END_KEY = "end"
-        private val HALFWAY_KEY = "halfway"
-
-        /**
-         * Returns a canonical version of the speech map provided with all special keys converted to their value in
-         * seconds. A special key is some String key in the speech map that maps to a specific offset. Supported
-         * special keys are,
-         *      START_KEY -> 0
-         *      HALFWAY_KEY -> duration.seconds / 2
-         *      END_KEY -> duration.seconds
-         * @param speechMap The map of String offsets to spoken instructions, which may contain special case keys
-         * @param duration The duration of the current step, used to compute the value of special case keys
-         */
-        private fun getCanonicalSpeechMap(speechMap: Map<String, String>, duration: Duration): Map<Long, String> {
-            val result: MutableMap<Long, String> = mutableMapOf()
-            for (entry in speechMap.entries) {
-                val startOffset: Long? =
-                        when (entry.key) {
-                            START_KEY -> 0
-                            HALFWAY_KEY -> duration.seconds / 2
-                            END_KEY -> duration.seconds
-                            else -> entry.key.toLongOrNull()
-                        }
-                if (startOffset == null) {
-                    LOGGER.warn("failed to parse start time for $entry, omitting this spoken instruction")
-                } else {
-                    result[startOffset] = entry.value
-                }
-            }
-
-            return result
-        }
     }
+
 
     private val serviceBinder: Binder = Binder()
     private var bindCount: Int = 0
@@ -134,6 +104,7 @@ class TextToSpeechService : LifecycleService(), TextToSpeech.OnInitListener {
     private var textToSpeech: TextToSpeech? = null
     private var futureSpeechData: FutureSpeechData? = null
     private var textToSpeakOnInit: String? = null
+    @Inject lateinit var specialKeyMap: Map<String, (Duration) -> Long>
     // Queuing behavior is passed to all calls to TextToSpeech.speak(), default value is QUEUE_ADD
     var queueingBehavior = TextToSpeech.QUEUE_ADD
     // The duration of the sound played by playSound() and the vibration triggered by vibrate() in ms, default value
@@ -144,33 +115,53 @@ class TextToSpeechService : LifecycleService(), TextToSpeech.OnInitListener {
         get() = _state
     // The private state value is mutable so the service can update it's state as needed
     private val _state = MutableLiveData<TextToSpeechState>()
+    private val stateObserver: Observer<TextToSpeechState>
 
     init {
         _state.value = TextToSpeechState(IDLE, null)
         // We observe the state so that if every client unbinds and the service stops speaking, the service
         // stops itself.
-        _state.observe(this, Observer<TextToSpeechState> { state ->
+        stateObserver = Observer { state ->
             if (state != null) {
                 if (bindCount == 0 && state.speakingState != SPEAKING && state.speakingState != QUEUED) {
                     stopSelf()
                 }
             }
-        })
+        }
+        _state.observeForever(stateObserver)
+    }
+
+    override fun onCreate() {
+        super.onCreate()
+        AndroidInjection.inject(this)
     }
 
     override fun onBind(intent: Intent?): IBinder {
-        super.onBind(intent)
         bindCount++
+        if (LOGGER.isDebugEnabled) {
+            LOGGER.debug("onBind() called bindCount = $bindCount")
+        }
+
         return serviceBinder
     }
 
     override fun onUnbind(intent: Intent?): Boolean {
         bindCount--
+        if (LOGGER.isDebugEnabled) {
+            LOGGER.debug("onUnbind() called bindCount = $bindCount")
+        }
+
         if (bindCount == 0 && _state.value!!.speakingState != SPEAKING) {
             stopSelf()
         }
 
         return super.onUnbind(intent)
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        _state.removeObserver(stateObserver)
+        futureSpeechData?.countdown?.removeObserver(::onCountdownChanged)
     }
 
     override fun onInit(status: Int) {
@@ -220,15 +211,24 @@ class TextToSpeechService : LifecycleService(), TextToSpeech.OnInitListener {
      * spoken to the user.
      */
     fun registerSpeechesOnCountdown(duration: Duration, countdown: LiveData<Long>, speechMap: Map<String, String>) {
+        if (LOGGER.isDebugEnabled) {
+            LOGGER.debug("register speeches on countdown called,\nduration: $duration\ncountdown: $countdown\n" +
+                    "speechMap: $speechMap")
+        }
+
         textToSpeech = TextToSpeech(this, this)
         futureSpeechData = FutureSpeechData(getCanonicalSpeechMap(speechMap, duration), duration, countdown)
-        futureSpeechData!!.countdown.observe(this, Observer<Long>(this::onCountdownChanged))
+        futureSpeechData!!.countdown.observeForever(::onCountdownChanged)
     }
 
     /**
      * Stops speaking and removes all registered speeches.
      */
     fun clear() {
+        if (LOGGER.isDebugEnabled) {
+            LOGGER.debug("clear() called")
+        }
+
         val tts = textToSpeech
         // Stop speaking and shut down the current text to speech.
         if (tts != null) {
@@ -240,6 +240,7 @@ class TextToSpeechService : LifecycleService(), TextToSpeech.OnInitListener {
             textToSpeech = null
         }
 
+        futureSpeechData?.countdown?.removeObserver(::onCountdownChanged)
         futureSpeechData = null
     }
 
@@ -248,6 +249,10 @@ class TextToSpeechService : LifecycleService(), TextToSpeech.OnInitListener {
      * @param text the text to speak to the user.
      */
     fun speakText(text: String) {
+        if (LOGGER.isDebugEnabled) {
+            LOGGER.debug("speakText() called with text = $text")
+        }
+
         val tts = textToSpeech
         // Setting this will guarantee the text gets spoken in the case that tts isn't set up yet
         textToSpeakOnInit = text
@@ -264,6 +269,10 @@ class TextToSpeechService : LifecycleService(), TextToSpeech.OnInitListener {
      * Plays a tone to the user. This method doesn't wait for the text to speech to be idle before playing the tone.
      */
     fun playSound(duration: Int = defaultVibrateAndSoundDurationMillis.toInt()) {
+        if (LOGGER.isDebugEnabled) {
+            LOGGER.debug("playSound() called with duration = $duration")
+        }
+
         val toneG = ToneGenerator(AudioManager.STREAM_ALARM, 50) // 50 = half volume
         // Play a low and high tone for 500 ms at full volume
         toneG.startTone(ToneGenerator.TONE_CDMA_LOW_L, duration)
@@ -272,8 +281,53 @@ class TextToSpeechService : LifecycleService(), TextToSpeech.OnInitListener {
 
     @RequiresPermission(Manifest.permission.VIBRATE)
     fun vibrate(duration: Long = defaultVibrateAndSoundDurationMillis) {
+        if (LOGGER.isDebugEnabled) {
+            LOGGER.debug("vibrate() called with duration = $duration")
+        }
+
         val v = getSystemService(Context.VIBRATOR_SERVICE) as Vibrator
         v.vibrate(duration)
+    }
+
+    /**
+     * Returns a canonical version of the speech map provided with all special keys converted to their value in
+     * seconds. A special key is some String key in the speech map that maps to a specific offset. Supported
+     * special keys are,
+     *      START_KEY -> 0
+     *      HALFWAY_KEY -> duration.seconds / 2
+     *      END_KEY -> duration.seconds
+     * @param speechMap The map of String offsets to spoken instructions, which may contain special case keys
+     * @param duration The duration of the current step, used to compute the value of special case keys
+     */
+    private fun getCanonicalSpeechMap(speechMap: Map<String, String>, duration: Duration): Map<Long, String> {
+        val result: MutableMap<Long, String> = mutableMapOf()
+        for (entry in speechMap.entries) {
+            val startOffset: Long? =
+                    when {
+                        specialKeyMap.containsKey(entry.key) -> specialKeyMap[entry.key]!!(duration)
+                        else -> entry.key.toLongOrNull()
+                    }
+            when {
+                startOffset == null -> LOGGER.warn("failed to parse start time for $entry," +
+                        " omitting this spoken instruction")
+                startOffset > duration.seconds -> {
+                    if (LOGGER.isDebugEnabled) {
+                        LOGGER.debug("start offset for $entry, exceeds duration $duration, " +
+                                "treating instruction as an end.")
+                    }
+
+                    result[duration.seconds] = entry.value
+                }
+                else -> result[startOffset] = entry.value
+            }
+        }
+
+        if (LOGGER.isDebugEnabled) {
+            LOGGER.debug("getCanonicalSpeechMap() called, \nduration=$duration\ninput: $speechMap\n" +
+                    "\noutput:$result")
+        }
+
+        return result
     }
 
     /**

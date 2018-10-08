@@ -16,6 +16,8 @@ import org.sagebionetworks.research.presentation.model.action.ActionView;
 import org.sagebionetworks.research.presentation.model.interfaces.CountdownStepView;
 import org.threeten.bp.Duration;
 
+import java.util.Map;
+
 public class CountdownStepViewBase extends ActiveUIStepViewBase implements CountdownStepView {
     public static final String TYPE = StepType.COUNTDOWN;
 
@@ -24,8 +26,10 @@ public class CountdownStepViewBase extends ActiveUIStepViewBase implements Count
                                  @Nullable DisplayString title, @Nullable DisplayString text,
                                  @Nullable DisplayString detail, @Nullable DisplayString footnote,
                                  @Nullable ColorThemeView colorTheme, @Nullable ImageThemeView imageTheme,
-                                 @NonNull Duration duration, boolean isBackgroundAudioRequired) {
-        super(identifier, navDirection, actions, title, text, detail, footnote, colorTheme, imageTheme, duration, isBackgroundAudioRequired);
+                                 @NonNull Duration duration, @NonNull Map<String, String> spokenInstructions,
+            boolean isBackgroundAudioRequired) {
+        super(identifier, navDirection, actions, title, text, detail, footnote, colorTheme, imageTheme, duration,
+                spokenInstructions, isBackgroundAudioRequired);
     }
 
     public static CountdownStepViewBase fromCountdownStep(Step step, DrawableMapper mapper) {
@@ -37,7 +41,8 @@ public class CountdownStepViewBase extends ActiveUIStepViewBase implements Count
         return new CountdownStepViewBase(activeStep.getIdentifier(), activeStep.getNavDirection(),
                 activeStep.getActions(), activeStep.getTitle(), activeStep.getText(),
                 activeStep.getDetail(), activeStep.getFootnote(), activeStep.getColorTheme(),
-                activeStep.getImageTheme(), activeStep.getDuration(), activeStep.isBackgroundAudioRequired());
+                activeStep.getImageTheme(), activeStep.getDuration(), activeStep.getSpokenInstructions(),
+                activeStep.isBackgroundAudioRequired());
     }
 
     @Override

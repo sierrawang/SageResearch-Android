@@ -30,24 +30,40 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.sagebionetworks.research.mobile_ui.inject;
+package org.sagebionetworks.research.presentation.inject
 
-import org.sagebionetworks.research.domain.inject.ActionModule;
-import org.sagebionetworks.research.domain.inject.GsonModule;
-import org.sagebionetworks.research.domain.inject.StepModule;
-import org.sagebionetworks.research.domain.inject.TaskModule;
-import org.sagebionetworks.research.presentation.inject.RecorderConfigPresentationModule;
-import org.sagebionetworks.research.presentation.inject.RecorderModule;
-import org.sagebionetworks.research.presentation.inject.ShowStepViewModelModule;
-import org.sagebionetworks.research.presentation.inject.StepViewModule;
-import org.sagebionetworks.research.presentation.inject.TextToSpeechModule;
+import dagger.Module
+import dagger.Provides
+import dagger.multibindings.IntoMap
+import dagger.multibindings.Multibinds
+import dagger.multibindings.StringKey
+import org.threeten.bp.Duration
 
-import dagger.Module;
-import dagger.android.AndroidInjectionModule;
+@Module
+abstract class TextToSpeechModule {
+    @Multibinds
+    abstract fun specialKeyMap(): Map<String, (Duration) -> Long>
 
-@Module(includes = {GsonModule.class, TaskModule.class, StepModule.class, RecorderModule.class, TextToSpeechModule.class,
-        RecorderConfigPresentationModule.class, StepViewModule.class, ShowStepViewModelModule.class,
-        ShowStepModule.class, ActionModule.class, TaskResultModule.class, AndroidInjectionModule.class})
-public abstract class PerformTaskModule {
+    companion object {
+        @Provides
+        @IntoMap
+        @StringKey("start")
+        fun provideStartSpecialKey(): (Duration) -> Long {
+            return { _ -> 0 }
+        }
 
+        @Provides
+        @IntoMap
+        @StringKey("halfway")
+        fun provideHalfwaySpecialKey(): (Duration) -> Long {
+            return { duration -> duration.seconds / 2 }
+        }
+
+        @Provides
+        @IntoMap
+        @StringKey("end")
+        fun provideEndSpecialKey(): (Duration) -> Long {
+            return Duration::getSeconds
+        }
+    }
 }
