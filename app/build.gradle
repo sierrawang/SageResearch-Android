@@ -34,12 +34,11 @@ apply plugin: 'com.android.application'
 apply from: '../config/quality/quality.gradle'
 
 android {
-    compileSdkVersion 27
-    buildToolsVersion "27.0.3"
+    compileSdkVersion 28
     defaultConfig {
         applicationId "org.sagebionetworks.research.app"
         minSdkVersion 19
-        targetSdkVersion 27
+        targetSdkVersion 28
         versionCode 1
         versionName "0.0.0"
         multiDexEnabled true
@@ -71,6 +70,8 @@ dependencies {
     implementation 'com.android.support:multidex:1.0.3'
 
     implementation 'com.google.code.gson:gson:2.8.2'
+
+    implementation 'com.google.code.findbugs:jsr305:2.0.1'
 
     implementation 'com.jakewharton:butterknife:8.8.1'
     annotationProcessor 'com.jakewharton:butterknife-compiler:8.8.1'
