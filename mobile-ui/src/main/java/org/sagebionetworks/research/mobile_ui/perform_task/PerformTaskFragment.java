@@ -248,10 +248,7 @@ public class PerformTaskFragment extends Fragment implements HasSupportFragmentI
         SharedPreferences sharedPreferences = getContext().getSharedPreferences(sharedPreferencesKey,
                 Context.MODE_PRIVATE);
 
-        sharedPreferences.edit().putLong(LAST_RUN_KEY, Instant.now().toEpochMilli()).apply();
-        sharedPreferences.edit().putInt(RUN_COUNT_KEY, sharedPrefsArgs.runCount + 1).apply();
 
-        checkExitListener(Status.FINISHED);
         int runCount = 1;
         if (sharedPrefsArgs != null) {
             runCount = sharedPrefsArgs.runCount + 1;
@@ -260,7 +257,7 @@ public class PerformTaskFragment extends Fragment implements HasSupportFragmentI
                 .putLong(LAST_RUN_KEY, Instant.now().toEpochMilli())
                 .putInt(RUN_COUNT_KEY, runCount)
                 .apply();
-
+        checkExitListener(Status.FINISHED);
     }
 
     @VisibleForTesting
