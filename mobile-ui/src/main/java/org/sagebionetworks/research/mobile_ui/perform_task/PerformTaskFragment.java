@@ -208,6 +208,35 @@ public class PerformTaskFragment extends Fragment implements HasSupportFragmentI
         return fragmentDispatchingAndroidInjector;
     }
 
+    public void cancelTask(boolean showDialog) {
+        LOGGER.debug("Cancel button clicked");
+
+        if(showDialog) {
+            LOGGER.debug("Show the dialog here");
+            new android.support.v7.app.AlertDialog.Builder(this.getActivity())
+                    .setTitle("Are you sure that you want to stop?")
+                    .setPositiveButton("Discard Results", (dialog, i) -> checkExitListener(Status.CANCELLED))
+                    .setNegativeButton("Keep Going", null).create().show();
+        }
+        else {
+            checkExitListener(Status.CANCELLED);
+        }
+    }
+
+    public void checkExitListener(Status finishStatus) {
+        OnPerformTaskExitListener onPerformTaskExitListener = null;
+        if (getParentFragment() instanceof OnPerformTaskExitListener) {
+            onPerformTaskExitListener = (OnPerformTaskExitListener) getParentFragment();
+        }
+        if (onPerformTaskExitListener == null && getActivity() instanceof OnPerformTaskExitListener) {
+            onPerformTaskExitListener = (OnPerformTaskExitListener) getActivity();
+        }
+        if (onPerformTaskExitListener != null) {
+            onPerformTaskExitListener.onTaskExit(finishStatus,
+                    performTaskViewModel.getTaskResult());
+        }
+    }
+
     void afterLastStep() {
         if (currentStepFragment != null) {
             getChildFragmentManager().beginTransaction().remove(currentStepFragment).commit();
@@ -218,6 +247,8 @@ public class PerformTaskFragment extends Fragment implements HasSupportFragmentI
         String sharedPreferencesKey = this.taskView.getIdentifier();
         SharedPreferences sharedPreferences = getContext().getSharedPreferences(sharedPreferencesKey,
                 Context.MODE_PRIVATE);
+
+
         int runCount = 1;
         if (sharedPrefsArgs != null) {
             runCount = sharedPrefsArgs.runCount + 1;
@@ -226,18 +257,7 @@ public class PerformTaskFragment extends Fragment implements HasSupportFragmentI
                 .putLong(LAST_RUN_KEY, Instant.now().toEpochMilli())
                 .putInt(RUN_COUNT_KEY, runCount)
                 .apply();
-
-        OnPerformTaskExitListener onPerformTaskExitListener = null;
-        if (getParentFragment() instanceof OnPerformTaskExitListener) {
-            onPerformTaskExitListener = (OnPerformTaskExitListener) getParentFragment();
-        }
-        if (onPerformTaskExitListener == null && getActivity() instanceof OnPerformTaskExitListener) {
-            onPerformTaskExitListener = (OnPerformTaskExitListener) getActivity();
-        }
-        if (onPerformTaskExitListener != null) {
-            onPerformTaskExitListener.onTaskExit(Status.FINISHED,
-                    performTaskViewModel.getTaskResult());
-        }
+        checkExitListener(Status.FINISHED);
     }
 
     @VisibleForTesting
