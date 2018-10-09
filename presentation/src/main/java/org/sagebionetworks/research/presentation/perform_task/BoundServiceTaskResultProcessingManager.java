@@ -16,6 +16,7 @@ import java.util.Set;
 import java.util.UUID;
 
 import javax.inject.Inject;
+import javax.inject.Singleton;
 
 import io.reactivex.Observable;
 import io.reactivex.Single;
@@ -25,6 +26,7 @@ import io.reactivex.schedulers.Schedulers;
 /**
  * Manages processing of TaskResults via a bound service.
  */
+@Singleton
 public class BoundServiceTaskResultProcessingManager implements TaskResultProcessingManager {
     /**
      * Upon connection to TaskResultService, calls each TaskProcessor with the final TaskResult and waits for every

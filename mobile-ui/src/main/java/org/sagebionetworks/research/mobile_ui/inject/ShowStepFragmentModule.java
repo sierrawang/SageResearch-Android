@@ -35,6 +35,7 @@ package org.sagebionetworks.research.mobile_ui.inject;
 import org.sagebionetworks.research.mobile_ui.show_step.view.ShowActiveUIStepFragment;
 import org.sagebionetworks.research.mobile_ui.show_step.view.ShowCountdownStepFragment;
 import org.sagebionetworks.research.mobile_ui.show_step.view.ShowFormUIStepFragment;
+import org.sagebionetworks.research.mobile_ui.show_step.view.ShowStepFragmentBase;
 import org.sagebionetworks.research.mobile_ui.show_step.view.ShowUIStepFragment;
 
 import dagger.Module;
@@ -43,17 +44,18 @@ import dagger.android.ContributesAndroidInjector;
 @Module
 public abstract class ShowStepFragmentModule {
     @ContributesAndroidInjector
+    @ShowStepFragmentScope
     abstract ShowActiveUIStepFragment contributeShowActiveUIStepFragmentInjector();
 
     @ContributesAndroidInjector
+    @ShowStepFragmentScope
     abstract ShowCountdownStepFragment contributeShowCountdownStepFragmentInjector();
 
     @ContributesAndroidInjector
+    @ShowStepFragmentScope
     abstract ShowFormUIStepFragment contributeShowFormUIStepFragmentInjector();
 
-//    @ContributesAndroidInjector
-//    abstract ShowStepFragmentBase contributeShowStepFragmentInjector();
-
     @ContributesAndroidInjector
+    @ShowStepFragmentScope
     abstract ShowUIStepFragment contributeShowUIStepFragmentInjector();
 }
