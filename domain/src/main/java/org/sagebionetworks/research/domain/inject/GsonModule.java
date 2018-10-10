@@ -54,12 +54,9 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
 
-import javax.inject.Singleton;
-
 import dagger.MapKey;
 import dagger.Module;
 import dagger.Provides;
-import dagger.Reusable;
 import dagger.multibindings.IntoSet;
 import dagger.multibindings.Multibinds;
 
@@ -121,11 +118,12 @@ public abstract class GsonModule {
     }
 
     @Provides
-    @Singleton
     static Gson provideGson(Map<Class<?>, JsonDeserializer<?>> jsonDeserializerMap,
             Map<Class<?>, JsonSerializer<?>> jsonSerializerMap,
             Set<TypeAdapterFactory> typeAdapterFactories,
             Set<RuntimeTypeAdapterFactory> runtimeTypeAdapterFactories) {
+        LOGGER.debug("Providing Gson");
+
         GsonBuilder builder = new GsonBuilder();
         // Register Deserializers
         for (Entry<Class<?>, ? extends Object> entry : jsonDeserializerMap.entrySet()) {
