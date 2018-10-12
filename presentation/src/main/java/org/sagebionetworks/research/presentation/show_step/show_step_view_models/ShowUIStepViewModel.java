@@ -93,13 +93,13 @@ public class ShowUIStepViewModel<S extends UIStepView> extends ShowStepViewModel
                 performTaskViewModel.goForward();
                 break;
             case ActionType.CANCEL:
-                LOGGER.debug("Reached the Action Type CANCEL case");
+                LOGGER.warn("Reached the Action Type CANCEL case");
                 break;
             case ActionType.INFO:
-                LOGGER.debug("Reached the Action Type INFO case");
+                LOGGER.warn("Reached the Action Type INFO case");
                 break;
             case ActionType.ADD_MORE:
-                LOGGER.debug("Reached the Action Type ADD_MORE case");
+                LOGGER.warn("Reached the Action Type ADD_MORE case");
                 break;
             default:
                 LOGGER.warn("Reached an unsupported Action Type");
