@@ -4,20 +4,19 @@ import static com.google.common.base.Preconditions.checkNotNull;
 
 import android.support.annotation.NonNull;
 
-import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableSet;
 
 import org.sagebionetworks.research.presentation.perform_task.TaskResultManager.TaskResultManagerConnection;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.util.List;
 import java.util.Set;
 import java.util.UUID;
 
 import javax.inject.Inject;
 
-import io.reactivex.Observable;
+import io.reactivex.Completable;
+import io.reactivex.Flowable;
 import io.reactivex.Single;
 import io.reactivex.disposables.CompositeDisposable;
 import io.reactivex.schedulers.Schedulers;
@@ -56,9 +55,11 @@ public class BoundServiceTaskResultProcessingManager implements TaskResultProces
                 connection
                         .observeOn(Schedulers.io())
                         .flatMapCompletable(trmc ->
-                                Observable.fromIterable(taskResultProcessors)
-                                        .flatMapCompletable(trp -> trmc.getFinalTaskResult()
-                                                .flatMapCompletable(trp::processTaskResult))
+                                Completable.mergeDelayError(
+                                        Flowable.fromIterable(taskResultProcessors)
+                                                .map(trp -> trmc.getFinalTaskResult()
+                                                        .flatMapCompletable(trp::processTaskResult)
+                                                ))
                                         .doOnComplete(trmc::disconnect))
                         .subscribe(
                                 () -> {
