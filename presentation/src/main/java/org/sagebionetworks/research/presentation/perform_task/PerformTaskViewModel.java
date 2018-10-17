@@ -413,12 +413,14 @@ public class PerformTaskViewModel extends AndroidViewModel {
                 compositeDisposable.add(
                         taskResultManagerConnectionSingle
                                 .subscribe((resultManagerConnection) -> {
-                                    resultManagerConnection.addAsyncActionResult(Maybe.fromCallable(
-                                            () -> new AnswerResultBase<>(LAST_RUN_RESULT_ID, Instant.now(), Instant.now(),
-                                                    sharedPrefsArgs.lastRun, AnswerResultType.DATE)));
-                                    resultManagerConnection.addAsyncActionResult(Maybe.fromCallable(
-                                            () -> new AnswerResultBase<>(RUN_COUNT_RESULT_ID, Instant.now(), Instant.now(),
-                                                    sharedPrefsArgs.runCount, AnswerResultType.INTEGER)));
+                                    if (sharedPrefsArgs != null) {
+                                        resultManagerConnection.addAsyncActionResult(Maybe.fromCallable(
+                                                () -> new AnswerResultBase<>(LAST_RUN_RESULT_ID, Instant.now(), Instant.now(),
+                                                        sharedPrefsArgs.lastRun, AnswerResultType.DATE)));
+                                        resultManagerConnection.addAsyncActionResult(Maybe.fromCallable(
+                                                () -> new AnswerResultBase<>(RUN_COUNT_RESULT_ID, Instant.now(), Instant.now(),
+                                                        sharedPrefsArgs.runCount, AnswerResultType.INTEGER)));
+                                    }
                                     goForward();
                                 }, t -> taskInitFail(t)));
 
