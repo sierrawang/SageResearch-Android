@@ -49,14 +49,11 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-import com.google.auto.value.AutoValue;
-
 import org.sagebionetworks.research.domain.result.implementations.TaskResultBase;
 import org.sagebionetworks.research.domain.result.interfaces.TaskResult;
 import org.sagebionetworks.research.mobile_ui.R;
 import org.sagebionetworks.research.mobile_ui.inject.ShowStepModule.ShowStepFragmentFactory;
 import org.sagebionetworks.research.mobile_ui.perform_task.PerformTaskFragment.OnPerformTaskExitListener.Status;
-import org.sagebionetworks.research.mobile_ui.show_step.view.ShowStepFragmentBase;
 import org.sagebionetworks.research.presentation.model.TaskView;
 import org.sagebionetworks.research.presentation.model.interfaces.StepView;
 import org.sagebionetworks.research.presentation.model.interfaces.StepView.NavDirection;
@@ -125,7 +122,7 @@ public class PerformTaskFragment extends Fragment implements HasSupportFragmentI
 
     private Unbinder unbinder;
 
-    private SharedPrefsArgs sharedPrefsArgs;
+    private @Nullable SharedPrefsArgs sharedPrefsArgs;
 
     public static PerformTaskFragment newInstance(@NonNull TaskView taskView, @Nullable UUID taskRunUUID) {
         checkNotNull(taskView);
@@ -208,6 +205,35 @@ public class PerformTaskFragment extends Fragment implements HasSupportFragmentI
         return fragmentDispatchingAndroidInjector;
     }
 
+    public void cancelTask(boolean showDialog) {
+        LOGGER.debug("Cancel button clicked");
+
+        if(showDialog) {
+            LOGGER.debug("Show the dialog here");
+            new android.support.v7.app.AlertDialog.Builder(this.getActivity())
+                    .setTitle("Are you sure that you want to stop?")
+                    .setPositiveButton("Discard Results", (dialog, i) -> checkExitListener(Status.CANCELLED))
+                    .setNegativeButton("Keep Going", null).create().show();
+        }
+        else {
+            checkExitListener(Status.CANCELLED);
+        }
+    }
+
+    public void checkExitListener(Status finishStatus) {
+        OnPerformTaskExitListener onPerformTaskExitListener = null;
+        if (getParentFragment() instanceof OnPerformTaskExitListener) {
+            onPerformTaskExitListener = (OnPerformTaskExitListener) getParentFragment();
+        }
+        if (onPerformTaskExitListener == null && getActivity() instanceof OnPerformTaskExitListener) {
+            onPerformTaskExitListener = (OnPerformTaskExitListener) getActivity();
+        }
+        if (onPerformTaskExitListener != null) {
+            onPerformTaskExitListener.onTaskExit(finishStatus,
+                    performTaskViewModel.getTaskResult());
+        }
+    }
+
     void afterLastStep() {
         if (currentStepFragment != null) {
             getChildFragmentManager().beginTransaction().remove(currentStepFragment).commit();
@@ -218,21 +244,17 @@ public class PerformTaskFragment extends Fragment implements HasSupportFragmentI
         String sharedPreferencesKey = this.taskView.getIdentifier();
         SharedPreferences sharedPreferences = getContext().getSharedPreferences(sharedPreferencesKey,
                 Context.MODE_PRIVATE);
-        sharedPreferences.edit().putLong(LAST_RUN_KEY, Instant.now().toEpochMilli()).apply();
-        sharedPreferences.edit().putInt(RUN_COUNT_KEY, sharedPrefsArgs.runCount + 1).apply();
 
 
-        OnPerformTaskExitListener onPerformTaskExitListener = null;
-        if (getParentFragment() instanceof OnPerformTaskExitListener) {
-            onPerformTaskExitListener = (OnPerformTaskExitListener) getParentFragment();
+        int runCount = 1;
+        if (sharedPrefsArgs != null) {
+            runCount = sharedPrefsArgs.runCount + 1;
         }
-        if (onPerformTaskExitListener == null && getActivity() instanceof OnPerformTaskExitListener) {
-            onPerformTaskExitListener = (OnPerformTaskExitListener) getActivity();
-        }
-        if (onPerformTaskExitListener != null) {
-            onPerformTaskExitListener.onTaskExit(Status.FINISHED,
-                    performTaskViewModel.getTaskResult());
-        }
+        sharedPreferences.edit()
+                .putLong(LAST_RUN_KEY, Instant.now().toEpochMilli())
+                .putInt(RUN_COUNT_KEY, runCount)
+                .apply();
+        checkExitListener(Status.FINISHED);
     }
 
     @VisibleForTesting
@@ -262,7 +284,7 @@ public class PerformTaskFragment extends Fragment implements HasSupportFragmentI
     }
 
     // TODO refactor last run persistence and insertion into TaskResult into task completion handler
-    private SharedPrefsArgs getSharedPrefsArgs() {
+    private @Nullable SharedPrefsArgs getSharedPrefsArgs() {
         String sharedPreferencesKey = this.taskView.getIdentifier();
         SharedPreferences sharedPreferences = getContext().getSharedPreferences(sharedPreferencesKey,
                 Context.MODE_PRIVATE);

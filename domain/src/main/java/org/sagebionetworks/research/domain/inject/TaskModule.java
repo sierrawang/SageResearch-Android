@@ -38,13 +38,11 @@ import com.google.gson.JsonDeserializer;
 
 import org.sagebionetworks.research.domain.inject.GsonModule.ClassKey;
 import org.sagebionetworks.research.domain.task.Task;
-import org.sagebionetworks.research.domain.task.TaskInfoView;
 import org.sagebionetworks.research.domain.task.TaskInfoBase;
+import org.sagebionetworks.research.domain.task.TaskInfoView;
 import org.sagebionetworks.research.domain.task.navigation.StepNavigatorFactory;
 import org.sagebionetworks.research.domain.task.navigation.TaskBase;
 import org.sagebionetworks.research.domain.task.navigation.strategy.StrategyBasedNavigator;
-
-import javax.inject.Singleton;
 
 import dagger.Module;
 import dagger.Provides;
@@ -76,5 +74,4 @@ public abstract class TaskModule {
     static JsonDeserializer<?> provideTaskInfoDeserializer() {
         return createPassThroughDeserializer(TaskInfoBase.class);
     }
-
 }

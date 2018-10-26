@@ -32,7 +32,6 @@
 
 package org.sagebionetworks.research.domain.task.navigation;
 
-import org.sagebionetworks.research.domain.step.interfaces.Step;
 import org.sagebionetworks.research.domain.task.Task;
 
 import java.util.List;

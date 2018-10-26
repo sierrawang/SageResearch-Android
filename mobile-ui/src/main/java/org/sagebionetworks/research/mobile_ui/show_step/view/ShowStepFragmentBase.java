@@ -217,7 +217,12 @@ public abstract class ShowStepFragmentBase<StepT extends StepView, ViewModelT ex
     protected void handleActionButtonClick(@NonNull ActionButton actionButton) {
         @ActionType String actionType = this.getActionTypeFromActionButton(actionButton);
         if (actionType.equals(ActionType.CANCEL)) {
-            // TODO handle task canceling
+            boolean showDialog = false;
+            if(this.performTaskViewModel.hasPreviousStep()) {
+                showDialog = true;
+            }
+            this.performTaskFragment.cancelTask(showDialog);
+
         } else {
             this.showStepViewModel.handleAction(actionType);
         }
