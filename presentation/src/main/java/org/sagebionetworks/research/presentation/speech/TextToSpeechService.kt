@@ -32,19 +32,23 @@
 
 package org.sagebionetworks.research.presentation.speech
 
-import android.Manifest
+import android.Manifest.permission
 import android.annotation.TargetApi
 import android.arch.lifecycle.LiveData
+import android.arch.lifecycle.MediatorLiveData
 import android.arch.lifecycle.MutableLiveData
 import android.arch.lifecycle.Observer
 import android.content.Context
 import android.content.Intent
 import android.media.AudioManager
 import android.media.ToneGenerator
-import android.os.Build
+import android.os.Build.VERSION
+import android.os.Build.VERSION_CODES
 import android.os.IBinder
 import android.os.Vibrator
 import android.speech.tts.TextToSpeech
+import android.speech.tts.TextToSpeech.Engine
+import android.speech.tts.TextToSpeech.OnInitListener
 import android.speech.tts.UtteranceProgressListener
 import android.support.annotation.RequiresPermission
 import dagger.android.AndroidInjection
@@ -58,9 +62,13 @@ import org.slf4j.LoggerFactory
 import org.threeten.bp.Duration
 import java.util.HashMap
 import java.util.Locale
-import javax.inject.Inject
 
-class TextToSpeechService : DaggerService(), TextToSpeech.OnInitListener {
+/**
+ * Service that allows clients to setup speeches to play at a given time interval. For example a client
+ * may want to have various instructions play at different offset's into an active step. Supports keywords
+ * "start", "end", and "halfway" which allow the inputs in a form that is easier for humans to process.
+ */
+class TextToSpeechService : DaggerService(), OnInitListener {
     /**
      * Stores whether the TextToSpeechService is IDLE, SPEAKING, or has encountered an ERROR, as well as
      * the currently being spoken text in the case the service is SPEAKING. If the service isn't SPEAKING
@@ -83,7 +91,8 @@ class TextToSpeechService : DaggerService(), TextToSpeech.OnInitListener {
         }
     }
 
-    private data class FutureSpeechData(val speechMap: Map<Long, String>, val duration: Duration,
+    private data class FutureSpeechData(val speechMap: MutableMap<Long, Pair<String, Boolean>>,
+            val duration: Duration,
             val countdown: LiveData<Long>) {
 
         fun hasQueuedSpeech(): Boolean {
@@ -97,38 +106,63 @@ class TextToSpeechService : DaggerService(), TextToSpeech.OnInitListener {
         private val LOGGER: Logger = LoggerFactory.getLogger(TextToSpeechService::class.java)
     }
 
-
     private val serviceBinder: Binder = Binder()
-    private var bindCount: Int = 0
     // values set when after a step is set by the client
     private var textToSpeech: TextToSpeech? = null
     private var futureSpeechData: FutureSpeechData? = null
     private var textToSpeakOnInit: String? = null
-    @Inject lateinit var specialKeyMap: Map<String, (Duration) -> Long>
+    // TODO rkolmos 10/19/2018 make this a dagger binding so users can add their own keys.
+    private val specialKeyMap: MutableMap<String, (Duration) -> Long> = mutableMapOf()
+
+    init {
+        specialKeyMap["start"] = { _ -> 0 }
+        // halfway rounding down to the nearest second is good enough.
+        specialKeyMap["halfway"] = { duration -> duration.seconds / 2 }
+        specialKeyMap["end"] = { duration -> duration.seconds }
+    }
+
     // Queuing behavior is passed to all calls to TextToSpeech.speak(), default value is QUEUE_ADD
     var queueingBehavior = TextToSpeech.QUEUE_ADD
     // The duration of the sound played by playSound() and the vibration triggered by vibrate() in ms, default value
     // is 500.
     var defaultVibrateAndSoundDurationMillis: Long = 500
+    // The amount of time in seconds that speeches will still be spoken for if the service is initialized after
+    // the speeches exact time. (ie, if speechGracePeriod = 5 and the service is initialized 4 seconds after the step
+    // formally starts, instructions with the key "start" will still be spoken.
+    var speechGracePeriod: Long = 5
     // The public getter for state should have type live data so client's don't modify it.
     val state: LiveData<TextToSpeechState>
         get() = _state
     // The private state value is mutable so the service can update it's state as needed
     private val _state = MutableLiveData<TextToSpeechState>()
-    private val stateObserver: Observer<TextToSpeechState>
+    private val bindCount = MutableLiveData<Int>()
+    private val cleanupMediator = MediatorLiveData<Pair<Int, TextToSpeechState>>()
+    private val cleanupObserver: Observer<Pair<Int, TextToSpeechState>>
 
     init {
-        _state.value = TextToSpeechState(IDLE, null)
+        bindCount.postValue(0)
+        _state.postValue(TextToSpeechState(IDLE, null))
         // We observe the state so that if every client unbinds and the service stops speaking, the service
         // stops itself.
-        stateObserver = Observer { state ->
-            if (state != null) {
-                if (bindCount == 0 && state.speakingState != SPEAKING && state.speakingState != QUEUED) {
-                    stopSelf()
-                }
+        cleanupMediator.postValue(Pair(0, TextToSpeechState(IDLE, null)))
+        cleanupMediator.addSource(bindCount) { count ->
+            // these checks must be null safe to prevent the service from crashing when
+            cleanupMediator.postValue(
+                    Pair(count ?: 0,
+                            cleanupMediator.value?.second ?: TextToSpeechState(IDLE, null)))
+        }
+        cleanupMediator.addSource(_state) { s ->
+            cleanupMediator.postValue(Pair(cleanupMediator.value?.first ?: 0,
+                    s ?: TextToSpeechState(IDLE, null)))
+        }
+        cleanupObserver = Observer { pair ->
+            if (pair != null && pair.first == 0 && pair.second.speakingState != SPEAKING
+                    && pair.second.speakingState != QUEUED) {
+                stopSelf()
             }
         }
-        _state.observeForever(stateObserver)
+
+        cleanupMediator.observeForever(cleanupObserver)
     }
 
     override fun onCreate() {
@@ -137,7 +171,7 @@ class TextToSpeechService : DaggerService(), TextToSpeech.OnInitListener {
     }
 
     override fun onBind(intent: Intent?): IBinder {
-        bindCount++
+        bindCount.postValue((bindCount.value ?: 0) + 1)
         if (LOGGER.isDebugEnabled) {
             LOGGER.debug("onBind() called bindCount = $bindCount")
         }
@@ -146,22 +180,21 @@ class TextToSpeechService : DaggerService(), TextToSpeech.OnInitListener {
     }
 
     override fun onUnbind(intent: Intent?): Boolean {
-        bindCount--
+        bindCount.postValue(bindCount.value!! - 1)
         if (LOGGER.isDebugEnabled) {
             LOGGER.debug("onUnbind() called bindCount = $bindCount")
-        }
-
-        if (bindCount == 0 && _state.value!!.speakingState != SPEAKING) {
-            stopSelf()
         }
 
         return super.onUnbind(intent)
     }
 
     override fun onDestroy() {
+        textToSpeech?.stop()
+        textToSpeech?.shutdown()
+        textToSpeech = null
+        cleanupMediator.removeObserver(cleanupObserver)
+        clear()
         super.onDestroy()
-        _state.removeObserver(stateObserver)
-        futureSpeechData?.countdown?.removeObserver(::onCountdownChanged)
     }
 
     override fun onInit(status: Int) {
@@ -176,29 +209,34 @@ class TextToSpeechService : DaggerService(), TextToSpeech.OnInitListener {
                         if (tts != null && !tts.isSpeaking) {
                             val data = futureSpeechData
                             if (data == null || !data.hasQueuedSpeech()) {
-                                _state.value = TextToSpeechState(IDLE, null)
+                                // The TTS has just finished so we can shut it down and set the state to idle
+                                _state.postValue(TextToSpeechState(IDLE, null))
+                                textToSpeech!!.shutdown()
                             } else {
-                                _state.value = TextToSpeechState(QUEUED, null)
+                                // More speech is queued
+                                _state.postValue(TextToSpeechState(QUEUED, null))
                             }
                         }
                     }
 
                     override fun onError(text: String?) {
-                        _state.value = TextToSpeechState(ERROR, null)
+                        _state.postValue(TextToSpeechState(ERROR, null))
                     }
 
                     override fun onStart(text: String?) {
-                        _state.value = TextToSpeechState(SPEAKING, text)
+                        _state.postValue(TextToSpeechState(SPEAKING, text))
                     }
                 })
                 if (textToSpeakOnInit != null) {
                     speakText(textToSpeakOnInit!!)
                 }
             } else {
+                LOGGER.warn("Language not available for TTS")
+                textToSpeech?.shutdown()
                 textToSpeech = null
             }
         } else {
-            LOGGER.debug("Failed to initialize TTS with error code $status")
+            LOGGER.warn("Failed to initialize TTS with error code $status")
             textToSpeech = null
         }
     }
@@ -217,8 +255,31 @@ class TextToSpeechService : DaggerService(), TextToSpeech.OnInitListener {
         }
 
         textToSpeech = TextToSpeech(this, this)
-        futureSpeechData = FutureSpeechData(getCanonicalSpeechMap(speechMap, duration), duration, countdown)
-        futureSpeechData!!.countdown.observeForever(::onCountdownChanged)
+        val canonicalSpeechMap = getCanonicalSpeechMap(speechMap, duration).toMutableMap()
+        val currentCount = countdown.value
+        if (currentCount != null) {
+            // filter out all the speeches that shouldn't be spoken right now, and sort the ones that should in
+            // increasing order of offset.
+            val skippedSpeeches = canonicalSpeechMap.filter { entry ->
+                val currentOffset = duration.seconds - currentCount
+                entry.key < currentOffset && currentOffset - entry.key < speechGracePeriod
+            }.toSortedMap()
+
+            for (speech in skippedSpeeches) {
+                if (!speech.value.second) {
+                    if (LOGGER.isDebugEnabled) {
+                        LOGGER.debug(
+                                "Spoken Instruction: {}, should have been spoken before the service was initialized," +
+                                        " and was still within the grace period.")
+                    }
+                    speakText(speech.value.first)
+                    canonicalSpeechMap[speech.key] = speech.value.copy(second = true)
+                }
+            }
+        }
+
+        futureSpeechData = FutureSpeechData(canonicalSpeechMap, duration, countdown)
+        futureSpeechData?.countdown?.observeForever(::onCountdownChanged)
     }
 
     /**
@@ -250,18 +311,20 @@ class TextToSpeechService : DaggerService(), TextToSpeech.OnInitListener {
      */
     fun speakText(text: String) {
         if (LOGGER.isDebugEnabled) {
-            LOGGER.debug("speakText() called with text = $text")
+            LOGGER.debug("speakText() called with text \"$text\"")
         }
 
         val tts = textToSpeech
         // Setting this will guarantee the text gets spoken in the case that tts isn't set up yet
         textToSpeakOnInit = text
         if (tts != null) {
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            if (VERSION.SDK_INT >= VERSION_CODES.LOLLIPOP) {
                 speakGreater21(text, tts)
             } else {
                 speakUnder20(text, tts)
             }
+        } else {
+            LOGGER.warn("speakText() called but TextToSpeech is not initialized")
         }
     }
 
@@ -279,7 +342,7 @@ class TextToSpeechService : DaggerService(), TextToSpeech.OnInitListener {
         toneG.startTone(ToneGenerator.TONE_CDMA_HIGH_L, duration)
     }
 
-    @RequiresPermission(Manifest.permission.VIBRATE)
+    @RequiresPermission(permission.VIBRATE)
     fun vibrate(duration: Long = defaultVibrateAndSoundDurationMillis) {
         if (LOGGER.isDebugEnabled) {
             LOGGER.debug("vibrate() called with duration = $duration")
@@ -299,8 +362,9 @@ class TextToSpeechService : DaggerService(), TextToSpeech.OnInitListener {
      * @param speechMap The map of String offsets to spoken instructions, which may contain special case keys
      * @param duration The duration of the current step, used to compute the value of special case keys
      */
-    private fun getCanonicalSpeechMap(speechMap: Map<String, String>, duration: Duration): Map<Long, String> {
-        val result: MutableMap<Long, String> = mutableMapOf()
+    private fun getCanonicalSpeechMap(speechMap: Map<String, String>,
+            duration: Duration): Map<Long, Pair<String, Boolean>> {
+        val result: MutableMap<Long, Pair<String, Boolean>> = mutableMapOf()
         for (entry in speechMap.entries) {
             val startOffset: Long? =
                     when {
@@ -316,9 +380,9 @@ class TextToSpeechService : DaggerService(), TextToSpeech.OnInitListener {
                                 "treating instruction as an end.")
                     }
 
-                    result[duration.seconds] = entry.value
+                    result[duration.seconds] = Pair(entry.value, false)
                 }
-                else -> result[startOffset] = entry.value
+                else -> result[startOffset] = Pair(entry.value, false)
             }
         }
 
@@ -339,7 +403,7 @@ class TextToSpeechService : DaggerService(), TextToSpeech.OnInitListener {
     @SuppressWarnings("deprecation")
     private fun speakUnder20(text: String, tts: TextToSpeech) {
         val map: HashMap<String, String> = HashMap()
-        map[TextToSpeech.Engine.KEY_PARAM_UTTERANCE_ID] = "MessageId"
+        map[Engine.KEY_PARAM_UTTERANCE_ID] = "MessageId"
         tts.speak(text, queueingBehavior, map)
     }
 
@@ -349,7 +413,7 @@ class TextToSpeechService : DaggerService(), TextToSpeech.OnInitListener {
      * @param text the text to speak to the user.
      * @param tts the TextToSpeech to use to speak the text.
      */
-    @TargetApi(Build.VERSION_CODES.LOLLIPOP)
+    @TargetApi(VERSION_CODES.LOLLIPOP)
     private fun speakGreater21(text: String, tts: TextToSpeech) {
         val utteranceId = hashCode().toString()
         tts.speak(text, queueingBehavior, null, utteranceId)
@@ -363,9 +427,10 @@ class TextToSpeechService : DaggerService(), TextToSpeech.OnInitListener {
         val data = futureSpeechData
         if (data != null && count != null) {
             val elapsedTime = data.duration.seconds - count
-            val text = data.speechMap[elapsedTime]
-            if (text != null) {
-                speakText(text)
+            val pair = data.speechMap[elapsedTime]
+            if (pair != null && !pair.second) {
+                speakText(pair.first)
+                data.speechMap[elapsedTime] = pair.copy(second = true)
             }
         }
     }

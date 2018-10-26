@@ -42,6 +42,7 @@ import android.content.Intent;
 import android.content.ServiceConnection;
 import android.os.Bundle;
 import android.os.IBinder;
+import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -51,10 +52,12 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import org.sagebionetworks.research.mobile_ui.show_step.view.view_binding.ActiveUIStepViewBinding;
+import org.sagebionetworks.research.mobile_ui.widget.ActionButton;
 import org.sagebionetworks.research.presentation.model.action.ActionType;
 import org.sagebionetworks.research.presentation.model.interfaces.ActiveUIStepView;
 import org.sagebionetworks.research.presentation.show_step.show_step_view_models.ShowActiveUIStepViewModel;
 import org.sagebionetworks.research.presentation.speech.TextToSpeechService;
+import org.sagebionetworks.research.presentation.speech.TextToSpeechService.TextToSpeechState.SpeakingState;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -134,6 +137,35 @@ public abstract class ShowActiveUIStepFragmentBase<S extends ActiveUIStepView, V
         }
     }
 
+    public void goForward() {
+        if (!stepView.getSpokenInstructions().isEmpty() && isBound) {
+            textToSpeechService.getState().observe(this, state -> {
+                if (state.getSpeakingState().equals(SpeakingState.IDLE)) {
+                    showStepViewModel.handleAction(ActionType.FORWARD);
+                }
+            });
+        }
+    }
+
+    /**
+     * Called whenever one of this fragment's ActionButton's is clicked. Subclasses should override to correctly
+     * handle their ActionButtons.
+     *
+     * @param actionButton
+     *         the ActionButton that was clicked by the user.
+     */
+    @Override
+    protected void handleActionButtonClick(@NonNull ActionButton actionButton) {
+        @ActionType String actionType = this.getActionTypeFromActionButton(actionButton);
+        if (actionType.equals(ActionType.CANCEL)) {
+            // TODO handle task canceling
+        } else if (actionType.equals(ActionType.FORWARD)) {
+            // TODO change this to do something more appropriate
+            goForward();
+        } else {
+            this.showStepViewModel.handleAction(actionType);
+        }
+    }
 
     /**
      * Returns The observer to use on the countdown. By default the observer sets the count label to
@@ -149,7 +181,7 @@ public abstract class ShowActiveUIStepFragmentBase<S extends ActiveUIStepView, V
 
             if (count == 0) {
                 // TODO rkolmos 07/24/2018 implement commands and fix this to not always go forward
-                showStepViewModel.handleAction(ActionType.FORWARD);
+                goForward();
                 return;
             }
 
