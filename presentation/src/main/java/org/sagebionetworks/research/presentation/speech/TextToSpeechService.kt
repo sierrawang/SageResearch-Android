@@ -69,6 +69,7 @@ import java.util.Locale
  * "start", "end", and "halfway" which allow the inputs in a form that is easier for humans to process.
  */
 class TextToSpeechService : DaggerService(), OnInitListener {
+
     /**
      * Stores whether the TextToSpeechService is IDLE, SPEAKING, or has encountered an ERROR, as well as
      * the currently being spoken text in the case the service is SPEAKING. If the service isn't SPEAKING
@@ -143,10 +144,10 @@ class TextToSpeechService : DaggerService(), OnInitListener {
         bindCount.postValue(0)
         _state.postValue(TextToSpeechState(IDLE, null))
         // We observe the state so that if every client unbinds and the service stops speaking, the service
-        // stops itself.
+        // stops itself. In the initial state the service is IDLE, and has 0 bound clients.
         cleanupMediator.postValue(Pair(0, TextToSpeechState(IDLE, null)))
         cleanupMediator.addSource(bindCount) { count ->
-            // these checks must be null safe to prevent the service from crashing when
+            // these checks must be null safe to prevent the service from crashing
             cleanupMediator.postValue(
                     Pair(count ?: 0,
                             cleanupMediator.value?.second ?: TextToSpeechState(IDLE, null)))
@@ -158,6 +159,8 @@ class TextToSpeechService : DaggerService(), OnInitListener {
         cleanupObserver = Observer { pair ->
             if (pair != null && pair.first == 0 && pair.second.speakingState != SPEAKING
                     && pair.second.speakingState != QUEUED) {
+                // If there are no bound clients, and speech isn't either currently happening, or queued to happen
+                // we should stop this service.
                 stopSelf()
             }
         }
@@ -171,20 +174,16 @@ class TextToSpeechService : DaggerService(), OnInitListener {
     }
 
     override fun onBind(intent: Intent?): IBinder {
-        bindCount.postValue((bindCount.value ?: 0) + 1)
-        if (LOGGER.isDebugEnabled) {
-            LOGGER.debug("onBind() called bindCount = $bindCount")
-        }
-
+        val bindCountValue = (bindCount.value ?: 0) + 1
+        bindCount.postValue(bindCountValue)
+        LOGGER.debug("onBind() called bindCount = $bindCount")
         return serviceBinder
     }
 
     override fun onUnbind(intent: Intent?): Boolean {
-        bindCount.postValue(bindCount.value!! - 1)
-        if (LOGGER.isDebugEnabled) {
-            LOGGER.debug("onUnbind() called bindCount = $bindCount")
-        }
-
+        val bindCountValue = (bindCount.value ?: 1) - 1
+        bindCount.postValue(bindCountValue)
+        LOGGER.debug("onUnbind() called bindCount = $bindCount")
         return super.onUnbind(intent)
     }
 
@@ -199,34 +198,36 @@ class TextToSpeechService : DaggerService(), OnInitListener {
 
     override fun onInit(status: Int) {
         if (status == TextToSpeech.SUCCESS) {
-            val languageAvailable = textToSpeech!!.isLanguageAvailable(Locale.getDefault())
+            val languageAvailable = textToSpeech?.isLanguageAvailable(Locale.getDefault())
             // >= 0 means LANG_AVAILABLE, LANG_COUNTRY_AVAILABLE, or LANG_COUNTRY_VAR_AVAILABLE
-            if (languageAvailable >= 0) {
-                textToSpeech!!.language = Locale.getDefault()
-                textToSpeech!!.setOnUtteranceProgressListener(object : UtteranceProgressListener() {
-                    override fun onDone(text: String?) {
-                        val tts = textToSpeech
-                        if (tts != null && !tts.isSpeaking) {
-                            val data = futureSpeechData
-                            if (data == null || !data.hasQueuedSpeech()) {
-                                // The TTS has just finished so we can shut it down and set the state to idle
-                                _state.postValue(TextToSpeechState(IDLE, null))
-                                textToSpeech!!.shutdown()
-                            } else {
-                                // More speech is queued
-                                _state.postValue(TextToSpeechState(QUEUED, null))
+            if (languageAvailable != null && languageAvailable >= 0) {
+                textToSpeech?.let { tts ->
+                    tts.language = Locale.getDefault()
+                    tts.setOnUtteranceProgressListener(object : UtteranceProgressListener() {
+                        override fun onDone(text: String?) {
+                            if (!tts.isSpeaking) {
+                                val data = futureSpeechData
+                                if (data == null || !data.hasQueuedSpeech()) {
+                                    // The TTS has just finished so we can shut it down and set the state to idle
+                                    _state.postValue(TextToSpeechState(IDLE, null))
+                                    tts.shutdown()
+                                } else {
+                                    // More speech is queued
+                                    _state.postValue(TextToSpeechState(QUEUED, null))
+                                }
                             }
                         }
-                    }
 
-                    override fun onError(text: String?) {
-                        _state.postValue(TextToSpeechState(ERROR, null))
-                    }
+                        override fun onError(text: String?) {
+                            _state.postValue(TextToSpeechState(ERROR, null))
+                        }
 
-                    override fun onStart(text: String?) {
-                        _state.postValue(TextToSpeechState(SPEAKING, text))
-                    }
-                })
+                        override fun onStart(text: String?) {
+                            _state.postValue(TextToSpeechState(SPEAKING, text))
+                        }
+                    })
+                }
+
                 if (textToSpeakOnInit != null) {
                     speakText(textToSpeakOnInit!!)
                 }
@@ -249,11 +250,8 @@ class TextToSpeechService : DaggerService(), OnInitListener {
      * spoken to the user.
      */
     fun registerSpeechesOnCountdown(duration: Duration, countdown: LiveData<Long>, speechMap: Map<String, String>) {
-        if (LOGGER.isDebugEnabled) {
-            LOGGER.debug("register speeches on countdown called,\nduration: $duration\ncountdown: $countdown\n" +
-                    "speechMap: $speechMap")
-        }
-
+        LOGGER.debug(
+                "register speeches on countdown called,\nduration: $duration\ncountdown: $countdown\nspeechMap: $speechMap")
         textToSpeech = TextToSpeech(this, this)
         val canonicalSpeechMap = getCanonicalSpeechMap(speechMap, duration).toMutableMap()
         val currentCount = countdown.value
@@ -267,11 +265,9 @@ class TextToSpeechService : DaggerService(), OnInitListener {
 
             for (speech in skippedSpeeches) {
                 if (!speech.value.second) {
-                    if (LOGGER.isDebugEnabled) {
-                        LOGGER.debug(
-                                "Spoken Instruction: {}, should have been spoken before the service was initialized," +
-                                        " and was still within the grace period.")
-                    }
+                    LOGGER.debug(
+                            "Spoken Instruction: {}, should have been spoken before the service was initialized," +
+                                    " and was still within the grace period.")
                     speakText(speech.value.first)
                     canonicalSpeechMap[speech.key] = speech.value.copy(second = true)
                 }
@@ -286,13 +282,9 @@ class TextToSpeechService : DaggerService(), OnInitListener {
      * Stops speaking and removes all registered speeches.
      */
     fun clear() {
-        if (LOGGER.isDebugEnabled) {
-            LOGGER.debug("clear() called")
-        }
-
-        val tts = textToSpeech
-        // Stop speaking and shut down the current text to speech.
-        if (tts != null) {
+        LOGGER.debug("clear() called")
+        textToSpeech?.let { tts ->
+            // Stop speaking and shut down the current text to speech.
             if (tts.isSpeaking) {
                 tts.stop()
             }
@@ -310,21 +302,15 @@ class TextToSpeechService : DaggerService(), OnInitListener {
      * @param text the text to speak to the user.
      */
     fun speakText(text: String) {
-        if (LOGGER.isDebugEnabled) {
-            LOGGER.debug("speakText() called with text \"$text\"")
-        }
-
-        val tts = textToSpeech
-        // Setting this will guarantee the text gets spoken in the case that tts isn't set up yet
-        textToSpeakOnInit = text
-        if (tts != null) {
+        LOGGER.debug("speakText() called with text \"$text\"")
+        textToSpeech?.let { tts ->
+            // Setting this will guarantee the text gets spoken in the case that tts isn't set up yet
+            textToSpeakOnInit = text
             if (VERSION.SDK_INT >= VERSION_CODES.LOLLIPOP) {
                 speakGreater21(text, tts)
             } else {
                 speakUnder20(text, tts)
             }
-        } else {
-            LOGGER.warn("speakText() called but TextToSpeech is not initialized")
         }
     }
 
@@ -332,10 +318,7 @@ class TextToSpeechService : DaggerService(), OnInitListener {
      * Plays a tone to the user. This method doesn't wait for the text to speech to be idle before playing the tone.
      */
     fun playSound(duration: Int = defaultVibrateAndSoundDurationMillis.toInt()) {
-        if (LOGGER.isDebugEnabled) {
-            LOGGER.debug("playSound() called with duration = $duration")
-        }
-
+        LOGGER.debug("playSound() called with duration = $duration")
         val toneG = ToneGenerator(AudioManager.STREAM_ALARM, 50) // 50 = half volume
         // Play a low and high tone for 500 ms at full volume
         toneG.startTone(ToneGenerator.TONE_CDMA_LOW_L, duration)
@@ -344,10 +327,7 @@ class TextToSpeechService : DaggerService(), OnInitListener {
 
     @RequiresPermission(permission.VIBRATE)
     fun vibrate(duration: Long = defaultVibrateAndSoundDurationMillis) {
-        if (LOGGER.isDebugEnabled) {
-            LOGGER.debug("vibrate() called with duration = $duration")
-        }
-
+        LOGGER.debug("vibrate() called with duration = $duration")
         val v = getSystemService(Context.VIBRATOR_SERVICE) as Vibrator
         v.vibrate(duration)
     }
