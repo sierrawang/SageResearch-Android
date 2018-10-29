@@ -349,14 +349,10 @@ class TextToSpeechService : DaggerService(), OnInitListener {
                         else -> entry.key.toLongOrNull()
                     }
             when {
-                startOffset == null -> LOGGER.warn("failed to parse start time for $entry," +
-                        " omitting this spoken instruction")
+                startOffset == null ->
+                    LOGGER.warn("failed to parse start time for $entry, omitting this spoken instruction")
                 startOffset > duration.seconds -> {
-                    if (LOGGER.isDebugEnabled) {
-                        LOGGER.debug("start offset for $entry, exceeds duration $duration, " +
-                                "treating instruction as an end.")
-                    }
-
+                    LOGGER.debug("start offset for $entry, exceeds duration $duration, treating instruction as an end.")
                     result[duration.seconds] = Pair(entry.value, false)
                 }
                 else -> result[startOffset] = Pair(entry.value, false)
