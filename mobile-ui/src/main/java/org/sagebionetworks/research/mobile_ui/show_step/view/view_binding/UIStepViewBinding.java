@@ -107,7 +107,7 @@ public class UIStepViewBinding<S extends UIStepView> implements StepViewBinding<
         public TextView footnote;
 
         /**
-         * Views can optionally have an image view with the id `rs2_image_view`. This view generally displays and
+         * Views can optionally have an image view with the id `rs2_image_view`. This view generally displays an
          * image or icon that is associated with the step.
          */
         @Nullable

@@ -43,4 +43,8 @@
     <string name="rs2_navigation_action_backward">Back</string>
     <string name="rs2_navigation_action_cancel"></string>
     <string name="rs2_navigation_action_info"></string>
+
+    <string name="rs2_are_you_sure_cancel_task">Are you sure that you want to stop?</string>
+    <string name="rs2_are_you_sure_cancel_task_discard">"Discard Results"</string>
+    <string name="rs2_are_you_sure_cancel_task_keep_going">Keep Going</string>
 </resources>
