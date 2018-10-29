@@ -228,9 +228,7 @@ class TextToSpeechService : DaggerService(), OnInitListener {
                     })
                 }
 
-                if (textToSpeakOnInit != null) {
-                    speakText(textToSpeakOnInit!!)
-                }
+                textToSpeakOnInit?.let { speakText(it) }
             } else {
                 LOGGER.warn("Language not available for TTS")
                 textToSpeech?.shutdown()
@@ -328,8 +326,7 @@ class TextToSpeechService : DaggerService(), OnInitListener {
     @RequiresPermission(permission.VIBRATE)
     fun vibrate(duration: Long = defaultVibrateAndSoundDurationMillis) {
         LOGGER.debug("vibrate() called with duration = $duration")
-        val v = getSystemService(Context.VIBRATOR_SERVICE) as Vibrator
-        v.vibrate(duration)
+        (getSystemService(Context.VIBRATOR_SERVICE) as? Vibrator)?.vibrate(duration)
     }
 
     /**
@@ -342,8 +339,8 @@ class TextToSpeechService : DaggerService(), OnInitListener {
      * @param speechMap The map of String offsets to spoken instructions, which may contain special case keys
      * @param duration The duration of the current step, used to compute the value of special case keys
      */
-    private fun getCanonicalSpeechMap(speechMap: Map<String, String>,
-            duration: Duration): Map<Long, Pair<String, Boolean>> {
+    private fun getCanonicalSpeechMap(speechMap: Map<String, String>, duration: Duration)
+            : Map<Long, Pair<String, Boolean>> {
         val result: MutableMap<Long, Pair<String, Boolean>> = mutableMapOf()
         for (entry in speechMap.entries) {
             val startOffset: Long? =
@@ -366,11 +363,7 @@ class TextToSpeechService : DaggerService(), OnInitListener {
             }
         }
 
-        if (LOGGER.isDebugEnabled) {
-            LOGGER.debug("getCanonicalSpeechMap() called, \nduration=$duration\ninput: $speechMap\n" +
-                    "\noutput:$result")
-        }
-
+        LOGGER.debug("getCanonicalSpeechMap() called, \nduration=$duration\ninput: $speechMap\n\noutput:$result")
         return result
     }
 
