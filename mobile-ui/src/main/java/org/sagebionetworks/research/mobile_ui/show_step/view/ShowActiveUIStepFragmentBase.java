@@ -36,7 +36,13 @@ import android.animation.Animator;
 import android.animation.ObjectAnimator;
 import android.arch.lifecycle.LiveData;
 import android.arch.lifecycle.Observer;
+import android.content.ComponentName;
+import android.content.Context;
+import android.content.Intent;
+import android.content.ServiceConnection;
 import android.os.Bundle;
+import android.os.IBinder;
+import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -46,15 +52,50 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import org.sagebionetworks.research.mobile_ui.show_step.view.view_binding.ActiveUIStepViewBinding;
+import org.sagebionetworks.research.mobile_ui.widget.ActionButton;
 import org.sagebionetworks.research.presentation.model.action.ActionType;
 import org.sagebionetworks.research.presentation.model.interfaces.ActiveUIStepView;
 import org.sagebionetworks.research.presentation.show_step.show_step_view_models.ShowActiveUIStepViewModel;
+import org.sagebionetworks.research.presentation.speech.TextToSpeechService;
+import org.sagebionetworks.research.presentation.speech.TextToSpeechService.TextToSpeechState.SpeakingState;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public abstract class ShowActiveUIStepFragmentBase<S extends ActiveUIStepView, VM extends ShowActiveUIStepViewModel<S>,
         SB extends ActiveUIStepViewBinding<S>> extends
         ShowUIStepFragmentBase<S, VM, SB> {
+    private class Connection implements ServiceConnection {
+        @Override
+        public void onServiceConnected(final ComponentName componentName, final IBinder iBinder) {
+            isBound = true;
+            textToSpeechService = ((TextToSpeechService.Binder)iBinder).getService();
+            textToSpeechService.registerSpeechesOnCountdown(stepView.getDuration(), showStepViewModel.getCountdown(),
+                    stepView.getSpokenInstructions());
+        }
+
+        @Override
+        public void onServiceDisconnected(final ComponentName componentName) {
+            isBound = false;
+            textToSpeechService = null;
+        }
+    }
+
+    public static final Logger LOGGER = LoggerFactory.getLogger(ShowActiveUIStepFragmentBase.class);
     // Multiply integer animation values by a constant to smooth it out.
     public static final int PROGRESS_BAR_ANIMATION_MULTIPLIER = 100;
+
+    private Connection connection;
+    private boolean isBound;
+    private TextToSpeechService textToSpeechService;
+
+    @Override
+    public void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        connection = new Connection();
+        if (!stepView.getSpokenInstructions().isEmpty()) {
+            bindTextToSpeechService();
+        }
+    }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup viewGroup, Bundle savedInstanceState) {
@@ -73,10 +114,57 @@ public abstract class ShowActiveUIStepFragmentBase<S extends ActiveUIStepView, V
 
         Observer<Long> countdownObserver = this.getCountdownObserver();
         if (countdownObserver != null) {
-            this.showStepViewModel.getCountdown().observe(this, this.getCountdownObserver());
+            LiveData<Long> countdown = showStepViewModel.getCountdown();
+            countdown.observe(this, this.getCountdownObserver());
         }
 
         return result;
+    }
+
+    @Override
+    public void onStart() {
+        super.onStart();
+        if (!stepView.getSpokenInstructions().isEmpty() && !isBound) {
+            LOGGER.warn("TextToSpeechService is not bound");
+        }
+    }
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        if (isBound) {
+            getContext().unbindService(connection);
+        }
+    }
+
+    public void goForward() {
+        if (!stepView.getSpokenInstructions().isEmpty() && isBound) {
+            textToSpeechService.getState().observe(this, state -> {
+                if (state.getSpeakingState().equals(SpeakingState.IDLE)) {
+                    showStepViewModel.handleAction(ActionType.FORWARD);
+                }
+            });
+        }
+    }
+
+    /**
+     * Called whenever one of this fragment's ActionButton's is clicked. Subclasses should override to correctly
+     * handle their ActionButtons.
+     *
+     * @param actionButton
+     *         the ActionButton that was clicked by the user.
+     */
+    @Override
+    protected void handleActionButtonClick(@NonNull ActionButton actionButton) {
+        @ActionType String actionType = this.getActionTypeFromActionButton(actionButton);
+        if (actionType.equals(ActionType.CANCEL)) {
+            // TODO handle task canceling
+        } else if (actionType.equals(ActionType.FORWARD)) {
+            // TODO change this to do something more appropriate
+            goForward();
+        } else {
+            this.showStepViewModel.handleAction(actionType);
+        }
     }
 
     /**
@@ -93,7 +181,7 @@ public abstract class ShowActiveUIStepFragmentBase<S extends ActiveUIStepView, V
 
             if (count == 0) {
                 // TODO rkolmos 07/24/2018 implement commands and fix this to not always go forward
-                showStepViewModel.handleAction(ActionType.FORWARD);
+                goForward();
                 return;
             }
 
@@ -132,5 +220,10 @@ public abstract class ShowActiveUIStepFragmentBase<S extends ActiveUIStepView, V
         }
 
         return null;
+    }
+
+    protected void bindTextToSpeechService() {
+        Intent intent = new Intent(getContext(), TextToSpeechService.class);
+        getContext().bindService(intent, connection, Context.BIND_AUTO_CREATE);
     }
 }
