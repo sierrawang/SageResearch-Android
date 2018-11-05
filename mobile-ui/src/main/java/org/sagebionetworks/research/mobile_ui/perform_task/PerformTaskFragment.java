@@ -45,6 +45,7 @@ import android.support.annotation.Nullable;
 import android.support.annotation.VisibleForTesting;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
+import android.support.v7.app.AlertDialog;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -208,12 +209,14 @@ public class PerformTaskFragment extends Fragment implements HasSupportFragmentI
     public void cancelTask(boolean showDialog) {
         LOGGER.debug("Cancel button clicked");
 
-        if(showDialog) {
+        if(showDialog && getActivity() != null) {
             LOGGER.debug("Show the dialog here");
-            new android.support.v7.app.AlertDialog.Builder(this.getActivity())
-                    .setTitle("Are you sure that you want to stop?")
-                    .setPositiveButton("Discard Results", (dialog, i) -> checkExitListener(Status.CANCELLED))
-                    .setNegativeButton("Keep Going", null).create().show();
+            new AlertDialog.Builder(getActivity())
+                    .setTitle(R.string.rs2_are_you_sure_cancel_task)
+                    .setPositiveButton(R.string.rs2_are_you_sure_cancel_task_discard,
+                            (dialog, i) -> checkExitListener(Status.CANCELLED))
+                    .setNegativeButton(R.string.rs2_are_you_sure_cancel_task_keep_going,
+                            null).create().show();
         }
         else {
             checkExitListener(Status.CANCELLED);
