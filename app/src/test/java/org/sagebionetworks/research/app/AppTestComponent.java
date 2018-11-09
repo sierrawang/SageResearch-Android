@@ -34,13 +34,11 @@ package org.sagebionetworks.research.app;
 
 import com.google.gson.Gson;
 
-import org.sagebionetworks.research.app.inject.ResearchStackDemoApplicationModule;
-
-import javax.inject.Singleton;
+import org.sagebionetworks.research.app.inject.SageResearchDemoApplication;
 
 import dagger.Component;
 
-@Component(modules = ResearchStackDemoApplicationModule.class)
+@Component(modules = SageResearchDemoApplication.class)
 public interface AppTestComponent {
     Gson gson();
 }

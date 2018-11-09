@@ -44,10 +44,11 @@ import org.sagebionetworks.research.presentation.inject.TextToSpeechModule;
 
 import dagger.Module;
 import dagger.android.AndroidInjectionModule;
+import dagger.android.support.AndroidSupportInjectionModule;
 
 @Module(includes = {GsonModule.class, TaskModule.class, StepModule.class, RecorderModule.class, TextToSpeechModule.class,
         RecorderConfigPresentationModule.class, StepViewModule.class, ShowStepViewModelModule.class,
-        ShowStepModule.class, ActionModule.class, TaskResultModule.class, AndroidInjectionModule.class})
+        ShowStepModule.class, ActionModule.class, TaskResultModule.class, AndroidSupportInjectionModule.class})
 public abstract class PerformTaskModule {
 
 }

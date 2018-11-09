@@ -62,6 +62,7 @@ import org.slf4j.LoggerFactory
 import org.threeten.bp.Duration
 import java.util.HashMap
 import java.util.Locale
+import javax.inject.Inject
 
 /**
  * Service that allows clients to setup speeches to play at a given time interval. For example a client
@@ -112,16 +113,10 @@ class TextToSpeechService : DaggerService(), OnInitListener {
     private var textToSpeech: TextToSpeech? = null
     private var futureSpeechData: FutureSpeechData? = null
     private var textToSpeakOnInit: String? = null
-    // TODO rkolmos 10/19/2018 make this a dagger binding so users can add their own keys.
-    private val specialKeyMap: MutableMap<String, (Duration) -> Long> = mutableMapOf()
 
-    init {
-        specialKeyMap["start"] = { _ -> 0 }
-        // halfway rounding down to the nearest second is good enough.
-        specialKeyMap["halfway"] = { duration -> duration.seconds / 2 }
-        specialKeyMap["end"] = { duration -> duration.seconds }
-    }
-
+    @Inject
+    lateinit var specialKeyMap: MutableMap<String, (Duration) -> Long>
+    
     // Queuing behavior is passed to all calls to TextToSpeech.speak(), default value is QUEUE_ADD
     var queueingBehavior = TextToSpeech.QUEUE_ADD
     // The duration of the sound played by playSound() and the vibration triggered by vibrate() in ms, default value

@@ -32,6 +32,7 @@
 
 apply plugin: 'com.android.library'
 apply plugin: 'kotlin-android'
+apply plugin: 'kotlin-kapt'
 
 android {
     compileSdkVersion 28
@@ -65,6 +66,8 @@ android {
 
 dependencies {
     implementation fileTree(dir: 'libs', include: ['*.jar'])
+    implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version"
+
     api project(':domain')
     api "com.android.support:support-annotations:$support_library_version"
     implementation "com.android.support:appcompat-v7:$support_library_version"
@@ -72,7 +75,7 @@ dependencies {
 
     implementation "android.arch.lifecycle:extensions:1.1.1" // ViewModel and LiveData
     implementation 'android.arch.lifecycle:reactivestreams:1.1.1'
-    annotationProcessor "android.arch.lifecycle:compiler:1.1.1"
+    kapt "android.arch.lifecycle:compiler:1.1.1"
 
     implementation 'org.threeten:threeten-extra:1.2'
 
@@ -80,26 +83,25 @@ dependencies {
 
     api 'com.google.dagger:dagger-android:2.16'
     api 'com.google.dagger:dagger-android-support:2.16'
-    annotationProcessor 'com.google.dagger:dagger-android-processor:2.16'
-    annotationProcessor "com.google.dagger:dagger-compiler:2.16"
+    kapt 'com.google.dagger:dagger-android-processor:2.16'
+    kapt "com.google.dagger:dagger-compiler:2.16"
 
     implementation 'com.google.code.gson:gson:2.8.2'
 
     api 'com.github.pwittchen:reactivesensors-rx2:0.2.0'
     implementation 'com.ryanharter.auto.value:auto-value-parcel-adapter:0.2.6'
 
-    annotationProcessor "com.google.auto.value:auto-value:1.6"
-    annotationProcessor 'com.ryanharter.auto.value:auto-value-gson:0.7.0'
-    annotationProcessor 'com.google.auto.value:auto-value-annotations:1.6' // include again for auto-value-gson
-    annotationProcessor 'com.ryanharter.auto.value:auto-value-parcel:0.2.6'
+    kapt "com.google.auto.value:auto-value:1.6"
+    kapt 'com.ryanharter.auto.value:auto-value-gson:0.7.0'
+    kapt 'com.google.auto.value:auto-value-annotations:1.6' // include again for auto-value-gson
+    kapt 'com.ryanharter.auto.value:auto-value-parcel:0.2.6'
 
-    testAnnotationProcessor 'com.google.dagger:dagger-android-processor:2.16'
-    testAnnotationProcessor 'com.google.dagger:dagger-compiler:2.16'
+    kaptTest 'com.google.dagger:dagger-android-processor:2.16'
+    kaptTest 'com.google.dagger:dagger-compiler:2.16'
 
     testImplementation 'junit:junit:4.12'
     testImplementation "android.arch.core:core-testing:1.1.1"
     testImplementation 'org.mockito:mockito-core:2.8.9'
-    compile "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version"
 }
 repositories {
     mavenCentral()

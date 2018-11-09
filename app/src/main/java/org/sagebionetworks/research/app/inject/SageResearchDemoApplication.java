@@ -60,7 +60,7 @@ import io.reactivex.Completable;
 
 @Module(includes = {AppTaskModule.class, DataModule.class},
         subcomponents = {MainActivitySubcomponent.class})
-public abstract class ResearchStackDemoApplicationModule {
+public abstract class SageResearchDemoApplication {
     @Binds
     public abstract Application provideApplication(ResearchStackDemoApplication app);
 
