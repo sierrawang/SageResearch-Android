@@ -34,12 +34,10 @@ package org.sagebionetworks.research.app.inject;
 
 import org.sagebionetworks.research.app.ResearchStackDemoApplication;
 
-import javax.inject.Singleton;
-
 import dagger.BindsInstance;
 import dagger.Component;
 
-@Component(modules = {ResearchStackDemoApplicationModule.class})
+@Component(modules = {SageResearchDemoApplication.class})
 public abstract class ResearchStackDemoApplicationComponent {
     @Component.Builder
     public interface Builder {

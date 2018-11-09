@@ -30,40 +30,48 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.sagebionetworks.research.presentation.inject
+package org.sagebionetworks.research.presentation.inject;
 
-import dagger.Module
-import dagger.Provides
-import dagger.multibindings.IntoMap
-import dagger.multibindings.Multibinds
-import dagger.multibindings.StringKey
-import org.threeten.bp.Duration
+import org.sagebionetworks.research.presentation.speech.TextToSpeechService;
+import org.threeten.bp.Duration;
 
-@Module
-abstract class TextToSpeechModule {
+import java.util.Map;
+
+import dagger.Module;
+import dagger.Provides;
+import dagger.android.ContributesAndroidInjector;
+import dagger.android.support.AndroidSupportInjectionModule;
+import dagger.multibindings.IntoMap;
+import dagger.multibindings.Multibinds;
+import dagger.multibindings.StringKey;
+import kotlin.jvm.functions.Function1;
+
+@Module(includes = {AndroidSupportInjectionModule.class})
+public abstract class TextToSpeechModule {
+    @ContributesAndroidInjector
+    abstract TextToSpeechService provideTextToSpeechService();
+
     @Multibinds
-    abstract fun specialKeyMap(): Map<String, (Duration) -> Long>
+    abstract Map<String, Function1<Duration, Long>> specialKeyMap();
 
-    companion object {
-        @Provides
-        @IntoMap
-        @StringKey("start")
-        fun provideStartSpecialKey(): (Duration) -> Long {
-            return { _ -> 0 }
-        }
+    @Provides
+    @IntoMap
+    @StringKey("start")
+    static Function1<Duration, Long> provideStartSpecialKey() {
+        return (duration) -> 0L;
+    }
 
-        @Provides
-        @IntoMap
-        @StringKey("halfway")
-        fun provideHalfwaySpecialKey(): (Duration) -> Long {
-            return { duration -> duration.seconds / 2 }
-        }
+    @Provides
+    @IntoMap
+    @StringKey("halfway")
+    static Function1<Duration, Long> provideHalfwaySpecialKey() {
+        return (duration) -> duration.getSeconds() / 2;
+    }
 
-        @Provides
-        @IntoMap
-        @StringKey("end")
-        fun provideEndSpecialKey(): (Duration) -> Long {
-            return Duration::getSeconds
-        }
+    @Provides
+    @IntoMap
+    @StringKey("end")
+    static Function1<Duration, Long> provideEndSpecialKey() {
+        return Duration::getSeconds;
     }
 }
