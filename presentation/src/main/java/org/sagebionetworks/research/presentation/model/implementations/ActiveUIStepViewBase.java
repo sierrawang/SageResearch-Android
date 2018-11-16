@@ -37,7 +37,6 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 
 import com.google.common.collect.ImmutableMap;
-import com.google.errorprone.annotations.Immutable;
 
 import org.sagebionetworks.research.domain.step.StepType;
 import org.sagebionetworks.research.domain.step.interfaces.ActiveUIStep;
@@ -48,16 +47,10 @@ import org.sagebionetworks.research.presentation.model.ColorThemeView;
 import org.sagebionetworks.research.presentation.model.ImageThemeView;
 import org.sagebionetworks.research.presentation.model.action.ActionView;
 import org.sagebionetworks.research.presentation.model.interfaces.ActiveUIStepView;
-import org.slf4j.IMarkerFactory;
 import org.threeten.bp.Duration;
-
-import java.util.Map;
 
 public class ActiveUIStepViewBase extends UIStepViewBase implements ActiveUIStepView {
     public static final String TYPE = StepType.ACTIVE;
-
-    @NonNull
-    private final Map<String, String> spokenInstructions;
 
     @NonNull
     private final Duration duration;
@@ -75,39 +68,29 @@ public class ActiveUIStepViewBase extends UIStepViewBase implements ActiveUIStep
         // round off any extra precision.
         Double millis = (activeUIStep.getDuration() != null ? activeUIStep.getDuration() : 0D) * 1000;
         Duration duration = Duration.ofMillis(millis.longValue());
-        Map<String, String> spokenInstructions = activeUIStep.getSpokenInstructions();
-        if (spokenInstructions == null) {
-            spokenInstructions = ImmutableMap.of();
-        }
-
         return new ActiveUIStepViewBase(uiStepView.getIdentifier(), uiStepView.getNavDirection(),
                 uiStepView.getActions(), uiStepView.getTitle(), uiStepView.getText(), uiStepView.getDetail(),
                 uiStepView.getFootnote(), uiStepView.getColorTheme(), uiStepView.getImageTheme(), duration,
-                spokenInstructions, activeUIStep.isBackgroundAudioRequired());
+                activeUIStep.isBackgroundAudioRequired());
     }
 
-    public ActiveUIStepViewBase(@NonNull final String identifier,
-            final int navDirection,
+    public ActiveUIStepViewBase(@NonNull final String identifier, final int navDirection,
             @NonNull final ImmutableMap<String, ActionView> actions,
             @Nullable final DisplayString title,
             @Nullable final DisplayString text,
             @Nullable final DisplayString detail,
             @Nullable final DisplayString footnote,
             @Nullable final ColorThemeView colorTheme,
-            @Nullable final ImageThemeView imageTheme,
-            @NonNull final Duration duration,
-            @NonNull final Map<String, String> spokenInstructions,
+            @Nullable final ImageThemeView imageTheme, @NonNull final Duration duration,
             final boolean isBackgroundAudioRequired) {
         super(identifier, navDirection, actions, title, text, detail, footnote, colorTheme, imageTheme);
         this.duration = duration;
-        this.spokenInstructions = spokenInstructions;
         this.isBackgroundAudioRequired = isBackgroundAudioRequired;
     }
 
     protected ActiveUIStepViewBase(Parcel in) {
         super(in);
         this.duration = (Duration) in.readSerializable();
-        this.spokenInstructions = ImmutableMap.of();
         this.isBackgroundAudioRequired = in.readByte() != 0;
     }
 
@@ -115,12 +98,6 @@ public class ActiveUIStepViewBase extends UIStepViewBase implements ActiveUIStep
     @Override
     public String getType() {
         return TYPE;
-    }
-
-    @Override
-    @NonNull
-    public Map<String, String> getSpokenInstructions() {
-        return spokenInstructions;
     }
 
     @Override

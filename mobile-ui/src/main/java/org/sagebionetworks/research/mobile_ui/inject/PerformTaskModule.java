@@ -40,13 +40,12 @@ import org.sagebionetworks.research.presentation.inject.RecorderConfigPresentati
 import org.sagebionetworks.research.presentation.inject.RecorderModule;
 import org.sagebionetworks.research.presentation.inject.ShowStepViewModelModule;
 import org.sagebionetworks.research.presentation.inject.StepViewModule;
-import org.sagebionetworks.research.presentation.inject.TextToSpeechModule;
 
 import dagger.Module;
 import dagger.android.AndroidInjectionModule;
 import dagger.android.support.AndroidSupportInjectionModule;
 
-@Module(includes = {GsonModule.class, TaskModule.class, StepModule.class, RecorderModule.class, TextToSpeechModule.class,
+@Module(includes = {GsonModule.class, TaskModule.class, StepModule.class, RecorderModule.class,
         RecorderConfigPresentationModule.class, StepViewModule.class, ShowStepViewModelModule.class,
         ShowStepModule.class, ActionModule.class, TaskResultModule.class, AndroidSupportInjectionModule.class})
 public abstract class PerformTaskModule {
