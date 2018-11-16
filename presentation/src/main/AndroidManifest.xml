@@ -36,9 +36,6 @@
     <application>
         <service
             android:name=".perform_task.TaskResultService"
-            android:label="TaskResultService" />
-        <service
-            android:name=".speech.TextToSpeechService"
-            android:label="TextToSpeechService" />
+            android:label="TaskResultService"></service>
     </application>
 </manifest>
