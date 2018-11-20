@@ -102,7 +102,8 @@ public class StrategyBasedNavigator implements StepNavigator {
             int fromIndex = indexOfStep(fromStep);
             int toIndex = indexOfStep(toStep);
 
-            if (toIndex < fromIndex) {
+            // If they are equal, then the step will be restarted and we should still show right transition
+            if (toIndex <= fromIndex) {
                 return NavDirection.SHIFT_RIGHT;
             }
         }
