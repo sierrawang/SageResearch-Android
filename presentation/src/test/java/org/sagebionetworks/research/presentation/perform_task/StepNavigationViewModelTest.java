@@ -51,6 +51,8 @@ import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 import org.sagebionetworks.research.domain.result.interfaces.TaskResult;
 import org.sagebionetworks.research.domain.step.interfaces.Step;
+import org.sagebionetworks.research.domain.task.navigation.NavDirection;
+import org.sagebionetworks.research.domain.task.navigation.StepAndNavDirection;
 import org.sagebionetworks.research.domain.task.navigation.StepNavigator;
 
 public class StepNavigationViewModelTest {
@@ -77,7 +79,8 @@ public class StepNavigationViewModelTest {
 
         TaskResult taskResult = mock(TaskResult.class);
 
-        when(stepNavigator.getNextStep(isNull(), eq(taskResult))).thenReturn(nextStep);
+        when(stepNavigator.getNextStep(isNull(), eq(taskResult))).thenReturn(new StepAndNavDirection(nextStep,
+                NavDirection.SHIFT_LEFT));
 
         stepNavigationViewModel.getCurrentStepLiveData().observeForever(currentStepObs);
         stepNavigationViewModel.getForwardStepLiveData().observeForever(nextStepObs);
@@ -89,7 +92,8 @@ public class StepNavigationViewModelTest {
         verify(previousStepObs, atLeastOnce()).onChanged(null);
         verify(nextStepObs, atLeastOnce()).onChanged(nextStep);
 
-        when(stepNavigator.getNextStep(eq(nextStep), eq(taskResult))).thenReturn(nextStep2);
+        when(stepNavigator.getNextStep(eq(nextStep), eq(taskResult))).thenReturn(new StepAndNavDirection(nextStep2,
+                NavDirection.SHIFT_LEFT));
         when(stepNavigator.getPreviousStep(eq(nextStep), eq(taskResult))).thenReturn(null);
 
         stepNavigationViewModel.goForward();

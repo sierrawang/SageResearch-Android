@@ -32,31 +32,17 @@
 
 package org.sagebionetworks.research.presentation.model.interfaces;
 
-import static java.lang.annotation.RetentionPolicy.SOURCE;
-
-import android.support.annotation.IntDef;
 import android.support.annotation.NonNull;
 
 import java.io.Serializable;
-import java.lang.annotation.Retention;
 
 /**
  * //TODO: make parcelable @liujoshua 2018/08/30 Map a {@link org.sagebionetworks.research.domain.step.interfaces.Step}
  * to a {@link StepView} when data is moving from the Domain layer to this layer.
  */
 public interface StepView extends Serializable {
-    @Retention(SOURCE)
-    @IntDef({NavDirection.SHIFT_LEFT, NavDirection.SHIFT_RIGHT})
-    @interface NavDirection {
-        int SHIFT_LEFT = 1;
-        int SHIFT_RIGHT = -1;
-    }
-
     @NonNull
     String getIdentifier();
-
-    @NavDirection
-    int getNavDirection();
 
     @NonNull
     String getType();

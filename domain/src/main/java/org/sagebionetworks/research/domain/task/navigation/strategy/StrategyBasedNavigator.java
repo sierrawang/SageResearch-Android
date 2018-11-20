@@ -36,11 +36,14 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 
 import org.jetbrains.annotations.NotNull;
+import org.sagebionetworks.research.domain.result.interfaces.NavigationResult;
 import org.sagebionetworks.research.domain.result.interfaces.Result;
 import org.sagebionetworks.research.domain.result.interfaces.TaskResult;
 import org.sagebionetworks.research.domain.step.interfaces.SectionStep;
 import org.sagebionetworks.research.domain.step.interfaces.Step;
 import org.sagebionetworks.research.domain.task.Task;
+import org.sagebionetworks.research.domain.task.navigation.NavDirection;
+import org.sagebionetworks.research.domain.task.navigation.StepAndNavDirection;
 import org.sagebionetworks.research.domain.task.navigation.StepNavigator;
 import org.sagebionetworks.research.domain.task.navigation.StepNavigatorFactory;
 import org.sagebionetworks.research.domain.task.navigation.TaskProgress;
@@ -49,7 +52,10 @@ import org.sagebionetworks.research.domain.task.navigation.strategy.StepNavigati
 import org.sagebionetworks.research.domain.task.navigation.strategy.StepNavigationStrategy.NextStepStrategy;
 import org.sagebionetworks.research.domain.task.navigation.strategy.StepNavigationStrategy.SkipStepStrategy;
 
+import java.util.ArrayList;
 import java.util.List;
+
+import javax.annotation.Nonnull;
 
 public class StrategyBasedNavigator implements StepNavigator {
     public static class Factory implements StepNavigatorFactory {
@@ -79,6 +85,31 @@ public class StrategyBasedNavigator implements StepNavigator {
         this.treeNavigator = new TreeNavigator(task.getSteps(), progressMarkers);
     }
 
+    /**
+     * Only supported return values are NavDirection values
+     * @param fromStep step to be considered where the user is currently
+     * @param toStep step to be considered where the user is going to go next
+     * @return the navigation direction moving from fromStep to toStep
+     */
+    private @NavDirection int getNextStepDirection(@Nullable final Step fromStep,
+            @Nullable final Step toStep, @NotNull final TaskResult taskResult) {
+
+        // The StrategyBasedNavigator's next step can potentially be a previously visited step.
+        // In that case, we want to identify it, and provide a more logical transition to the user with SHIFT_RIGHT.
+        if (fromStep != null && toStep != null) {
+            // This is a simple index check of step list order, more complex logic may be needed,
+            // If so, this can be adjusted, or getNextStepDirection can be overridden
+            int fromIndex = indexOfStep(fromStep);
+            int toIndex = indexOfStep(toStep);
+
+            if (toIndex < fromIndex) {
+                return NavDirection.SHIFT_RIGHT;
+            }
+        }
+
+        return NavDirection.SHIFT_LEFT;
+    }
+
     @Override
     @Nullable
     public Step getStep(@NonNull final String identifier) {
@@ -86,21 +117,28 @@ public class StrategyBasedNavigator implements StepNavigator {
     }
 
     @Override
-    @Nullable
-    public Step getNextStep(final Step step, @NonNull TaskResult taskResult) {
+    public @Nonnull StepAndNavDirection getNextStep(final Step step, @NonNull TaskResult taskResult) {
         Step nextStep = null;
-        // First we try to get the next step from the step by casting it to a NextStepStrategy.
-        if (step instanceof NextStepStrategy) {
+
+        // First we try to get the next step from the result by casting it to a NavigationResult
+        String skipToIdentifier = getSkipToIdentifierFromNavigationResult(step, taskResult);
+        if (skipToIdentifier != null) {
+            nextStep = treeNavigator.getStep(skipToIdentifier);
+        }
+
+        // If we don't get a valid step from casting the result to a NavigationResult,
+        // let's try to get the next step from the step by casting it to a NextStepStrategy.
+        if (nextStep == null && step instanceof NextStepStrategy) {
             String nextStepId = ((NextStepStrategy)step).getNextStepIdentifier(taskResult);
             if (nextStepId != null) {
                 nextStep = this.getStep(nextStepId);
             }
         }
 
-        // If we don't get a valid step from casting to a NextStepStrategy we default to using the tree navigator to
+        // If we didn't get a valid step from the previous checks, we default to using the tree navigator to
         // get the next step.
         if (nextStep == null) {
-            nextStep = treeNavigator.getNextStep(step, taskResult);
+            nextStep = treeNavigator.getNextStep(step, taskResult).getStep();
         }
 
         if (nextStep != null) {
@@ -109,7 +147,8 @@ public class StrategyBasedNavigator implements StepNavigator {
             // As long as the next step we have found shouldn't be skipped we return it.
             if (!(nextStep instanceof SkipStepStrategy) ||
                     !((SkipStepStrategy) nextStep).shouldSkip(taskResult)) {
-                return nextStep;
+                @NavDirection int navDirection = getNextStepDirection(step, nextStep, taskResult);
+                return new StepAndNavDirection(nextStep, navDirection);
             }
 
             // If we should skip the next step we found, we recurse on the next step to get the one after that.
@@ -117,7 +156,7 @@ public class StrategyBasedNavigator implements StepNavigator {
         }
 
         // If the tree navigator returns null we also return null.
-        return null;
+        return new StepAndNavDirection(null, NavDirection.SHIFT_LEFT);
     }
 
     @Override
@@ -170,5 +209,51 @@ public class StrategyBasedNavigator implements StepNavigator {
         }
 
         return step;
+    }
+
+    /**
+     * Performs a section resolved dive into indexing the steps to use for navigation direction
+     * @param step to find the index of
+     * @return the index of the step when the task steps are flattened
+     */
+    private int indexOfStep(Step step) {
+        List<Step> flattenedSteps = new ArrayList<>();
+        flattenTaskSteps(task.getSteps(), flattenedSteps);
+        return flattenedSteps.indexOf(step);
+    }
+
+    /**
+     * Builds a flattened list of steps from the task by resolving sections
+     * @param outStepList the pass by reference step list to keep adding steps to
+     */
+    private void flattenTaskSteps(@Nullable List<Step> inStepList, @Nonnull List<Step> outStepList) {
+        if (inStepList == null || inStepList.isEmpty()) {
+            return;
+        }
+        for (Step step : inStepList) {
+            if (step instanceof SectionStep) {
+                SectionStep sectionStep = (SectionStep)step;
+                outStepList.add(sectionStep);
+                flattenTaskSteps(sectionStep.getSteps(), outStepList);
+            } else {
+                outStepList.add(step);
+            }
+        }
+    }
+
+    /**
+     * @param step current step that would contain the possible NavigationResult
+     * @param taskResult current task result for the task
+     * @return an identifier that the navigator should skip to based on a specific NavigationResult scenario,
+     *         null otherwise.
+     */
+    private @Nullable String getSkipToIdentifierFromNavigationResult(Step step, TaskResult taskResult) {
+        if (step != null) {
+            Result result = taskResult.getResult(step);
+            if (result instanceof NavigationResult) {
+                return ((NavigationResult)result).getSkipToIdentifier();
+            }
+        }
+        return null;
     }
 }

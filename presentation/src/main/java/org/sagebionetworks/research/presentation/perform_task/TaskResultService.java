@@ -22,8 +22,10 @@ import org.sagebionetworks.research.domain.result.interfaces.TaskResult;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
@@ -325,9 +327,38 @@ public class TaskResultService extends DaggerService {
         return taskResultSingle.ignoreElement();
     }
 
+    /**
+     * Adds an async result to the task result associated with the taskRunUUID.
+     * If an async result with the same identifier already exists,
+     * The task result will only store the one with the most recent startTime.
+     * @param taskRunUUID associated with the task result to add the async result to
+     * @param asyncResult to add to the task result
+     */
     @VisibleForTesting
     void addAsyncResult(UUID taskRunUUID, Result asyncResult) {
-        updateTaskResult(taskRunUUID, taskToTaskResult.get(taskRunUUID).addAsyncResult(asyncResult));
+        boolean shouldAddAsyncResult = true;
+        TaskResult taskResult = taskToTaskResult.get(taskRunUUID);
+        Result previousResultWithSameIdentifier = null;
+        // Find the previous result with the same identifier if one exists
+        for (Result result: taskResult.getAsyncResults()) {
+            if (result.getIdentifier().equals(asyncResult.getIdentifier())) {
+                previousResultWithSameIdentifier = result;
+            }
+        }
+        if (previousResultWithSameIdentifier != null) {
+            // If we have a previous async result with the same identifier, only include the one started first
+            shouldAddAsyncResult =
+                    previousResultWithSameIdentifier.getStartTime()
+                        .isBefore(asyncResult.getStartTime());
+
+            // If we should still add the async result parameter, we need to delete the previous one
+            if (shouldAddAsyncResult) {
+                updateTaskResult(taskRunUUID, taskResult.removeAsyncResult(previousResultWithSameIdentifier));
+            }
+        }
+        if (shouldAddAsyncResult) {
+            updateTaskResult(taskRunUUID, taskResult.addAsyncResult(asyncResult));
+        }
     }
 
     @VisibleForTesting

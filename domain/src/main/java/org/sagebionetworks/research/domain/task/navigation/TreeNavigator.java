@@ -19,6 +19,8 @@ import java.util.List;
 import java.util.Set;
 import java.util.concurrent.atomic.AtomicBoolean;
 
+import javax.annotation.Nonnull;
+
 public class TreeNavigator implements StepNavigator {
 
     /*
@@ -138,10 +140,11 @@ public class TreeNavigator implements StepNavigator {
         return this.stepsById.get(identifier);
     }
 
-    @Nullable
+    @Nonnull
     @Override
-    public Step getNextStep(@Nullable Step step, @NotNull TaskResult taskResult) {
-        return nextStepHelper(step, this.root, new AtomicBoolean(false));
+    public StepAndNavDirection getNextStep(@Nullable Step step, @NotNull TaskResult taskResult) {
+        Step nextStep = nextStepHelper(step, this.root, new AtomicBoolean(false));
+        return new StepAndNavDirection(nextStep, NavDirection.SHIFT_LEFT);
     }
 
     @Nullable

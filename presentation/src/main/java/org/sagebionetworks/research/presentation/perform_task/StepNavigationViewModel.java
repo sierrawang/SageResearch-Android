@@ -66,7 +66,7 @@ public class StepNavigationViewModel {
         this.trLiveData=taskResultLiveData;
 
         forwardStepLiveData = Transformations.switchMap(taskResultLiveData,
-                tr -> Transformations.map(currentStepLiveData, s -> stepNavigator.getNextStep(s, tr)));
+                tr -> Transformations.map(currentStepLiveData, s -> stepNavigator.getNextStep(s, tr).getStep()));
         hasForwardStepLiveData = Transformations.map(forwardStepLiveData, n -> (n != null));
 
         backwardStepLiveData = Transformations.switchMap(taskResultLiveData,

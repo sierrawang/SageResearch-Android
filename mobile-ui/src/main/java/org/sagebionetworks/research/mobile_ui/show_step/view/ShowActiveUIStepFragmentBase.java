@@ -45,10 +45,12 @@ import android.view.animation.LinearInterpolator;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
+import org.sagebionetworks.research.domain.result.implementations.ResultBase;
 import org.sagebionetworks.research.mobile_ui.show_step.view.view_binding.ActiveUIStepViewBinding;
 import org.sagebionetworks.research.presentation.model.action.ActionType;
 import org.sagebionetworks.research.presentation.model.interfaces.ActiveUIStepView;
 import org.sagebionetworks.research.presentation.show_step.show_step_view_models.ShowActiveUIStepViewModel;
+import org.threeten.bp.Instant;
 
 public abstract class ShowActiveUIStepFragmentBase<S extends ActiveUIStepView, VM extends ShowActiveUIStepViewModel<S>,
         SB extends ActiveUIStepViewBinding<S>> extends
@@ -93,6 +95,7 @@ public abstract class ShowActiveUIStepFragmentBase<S extends ActiveUIStepView, V
 
             if (count == 0) {
                 // TODO rkolmos 07/24/2018 implement commands and fix this to not always go forward
+                addStepResultAfterCountdown();
                 showStepViewModel.handleAction(ActionType.FORWARD);
                 return;
             }
@@ -132,5 +135,16 @@ public abstract class ShowActiveUIStepFragmentBase<S extends ActiveUIStepView, V
         }
 
         return null;
+    }
+
+    /**
+     * Add the basic step result to mark the step as completed, can be overridden for custom results.
+     */
+    protected void addStepResultAfterCountdown() {
+        // Because we use SkipToActionView, we must explicitly set a base result to move forward normally
+        // Usually, this is done automatically in showStepViewModel.handleAction(),
+        // But, if we already have NavigationResult, it won't create the default one to navigate normally.
+        performTaskViewModel.addStepResult(
+                new ResultBase(stepView.getIdentifier(), showStepViewModel.getStartTime(), Instant.now()));
     }
 }

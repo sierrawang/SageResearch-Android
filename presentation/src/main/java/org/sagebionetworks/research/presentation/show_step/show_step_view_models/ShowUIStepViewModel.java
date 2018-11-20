@@ -57,6 +57,12 @@ public class ShowUIStepViewModel<S extends UIStepView> extends ShowStepViewModel
     protected final S stepView;
 
     private final Instant startTime;
+    /**
+     * @return the instant when the step view started
+     */
+    public Instant getStartTime() {
+        return startTime;
+    }
 
     public ShowUIStepViewModel(PerformTaskViewModel performTaskViewModel, S stepView) {
         this.performTaskViewModel = performTaskViewModel;

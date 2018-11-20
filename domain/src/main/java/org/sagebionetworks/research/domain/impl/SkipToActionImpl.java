@@ -30,25 +30,43 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.sagebionetworks.research.presentation.recorder.sensor;
+package org.sagebionetworks.research.domain.impl;
 
-import android.support.annotation.NonNull;
+import com.google.auto.value.AutoValue;
+import com.google.gson.Gson;
+import com.google.gson.TypeAdapter;
 
-import org.sagebionetworks.research.presentation.recorder.RecorderConfigPresentation;
-import org.sagebionetworks.research.presentation.recorder.RestartableRecorderConfiguration;
-import org.sagebionetworks.research.presentation.recorder.reactive.source.SensorSourceFactory.SensorConfig;
+import org.sagebionetworks.research.domain.step.ui.action.ActionDeserializationType;
+import org.sagebionetworks.research.domain.step.ui.action.SkipToAction;
 
-import java.util.Set;
+@AutoValue
+abstract class SkipToActionImpl implements SkipToAction {
+    @AutoValue.Builder
+    public abstract static class Builder {
+        public abstract SkipToActionImpl build();
 
-/**
- * Recorder configuration for sensors available through android.hardware.SensorManager.
- */
-public interface SensorRecorderConfigPresentation extends RestartableRecorderConfiguration {
-    /**
-     * Returns the set of recorder types that the motion recorder should measure.
-     *
-     * @return the set of recorder types that the motion recorder should measure.
-     */
-    @NonNull
-    Set<SensorConfig> getSensorConfigs();
+        public abstract Builder setButtonIconName(String buttonIconName);
+
+        public abstract Builder setButtonTitle(String buttonTitle);
+
+        public abstract Builder setSkipToIdentifier(String skipToIdentifier);
+    }
+
+    public static final String TYPE_KEY = ActionDeserializationType.SKIP;
+
+    public static Builder builder() {
+        return new AutoValue_SkipToActionImpl.Builder();
+    }
+
+    public static TypeAdapter<SkipToActionImpl> typeAdapter(Gson gson) {
+        return new AutoValue_SkipToActionImpl.GsonTypeAdapter(gson);
+    }
+
+    @Override
+    @ActionDeserializationType
+    public String getType() {
+        return TYPE_KEY;
+    }
+
+    public abstract Builder toBuilder();
 }

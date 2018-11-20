@@ -30,38 +30,14 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.sagebionetworks.research.presentation.model.action;
+package org.sagebionetworks.research.presentation.recorder;
 
-import com.google.auto.value.AutoValue;
-
-import org.sagebionetworks.research.domain.step.ui.action.SkipToStepAction;
-import org.sagebionetworks.research.presentation.DisplayDrawable;
-import org.sagebionetworks.research.presentation.DisplayString;
-
-import javax.annotation.Nullable;
-
-@AutoValue
-public abstract class SkipToStepActionViewBase implements SkipToStepActionView {
-    @AutoValue.Builder
-    public abstract static class Builder {
-        public abstract SkipToStepActionViewBase build();
-
-        public abstract Builder setButtonIcon(@Nullable DisplayDrawable buttonIcon);
-
-        public abstract Builder setButtonTitle(@Nullable DisplayString buttonTitle);
-
-        public abstract Builder setSkipToStepIdentifier(@Nullable String skipToStepIdentifier);
-    }
-
-    public static Builder builder() {
-        return new AutoValue_SkipToStepActionViewBase.Builder();
-    }
-
-    public static SkipToStepActionViewBase fromSkipToStepAction(SkipToStepAction skipToStepAction) {
-        // TODO rkolmos 06/07/2018 add the icon to this method.
-        return SkipToStepActionViewBase.builder()
-                .setButtonTitle(DisplayString.create(null, skipToStepAction.getButtonTitle()))
-                .setSkipToStepIdentifier(skipToStepAction.getSkipToStepIdentifier())
-                .build();
-    }
+/**
+ * Extends `RecorderConfiguration` for a recorder that might be restarted.
+ */
+public interface RestartableRecorderConfiguration extends RecorderConfigPresentation {
+    /**
+     * @return if the file used in a previous run of a recording be deleted?
+     */
+    boolean getShouldDeletePrevious();
 }

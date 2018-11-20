@@ -68,13 +68,13 @@ public class ActiveUIStepViewBase extends UIStepViewBase implements ActiveUIStep
         // round off any extra precision.
         Double millis = (activeUIStep.getDuration() != null ? activeUIStep.getDuration() : 0D) * 1000;
         Duration duration = Duration.ofMillis(millis.longValue());
-        return new ActiveUIStepViewBase(uiStepView.getIdentifier(), uiStepView.getNavDirection(),
+        return new ActiveUIStepViewBase(uiStepView.getIdentifier(),
                 uiStepView.getActions(), uiStepView.getTitle(), uiStepView.getText(), uiStepView.getDetail(),
                 uiStepView.getFootnote(), uiStepView.getColorTheme(), uiStepView.getImageTheme(), duration,
                 activeUIStep.isBackgroundAudioRequired());
     }
 
-    public ActiveUIStepViewBase(@NonNull final String identifier, final int navDirection,
+    public ActiveUIStepViewBase(@NonNull final String identifier,
             @NonNull final ImmutableMap<String, ActionView> actions,
             @Nullable final DisplayString title,
             @Nullable final DisplayString text,
@@ -83,7 +83,7 @@ public class ActiveUIStepViewBase extends UIStepViewBase implements ActiveUIStep
             @Nullable final ColorThemeView colorTheme,
             @Nullable final ImageThemeView imageTheme, @NonNull final Duration duration,
             final boolean isBackgroundAudioRequired) {
-        super(identifier, navDirection, actions, title, text, detail, footnote, colorTheme, imageTheme);
+        super(identifier, actions, title, text, detail, footnote, colorTheme, imageTheme);
         this.duration = duration;
         this.isBackgroundAudioRequired = isBackgroundAudioRequired;
     }

@@ -50,6 +50,8 @@ import org.slf4j.LoggerFactory;
 
 import java.util.List;
 
+import javax.annotation.Nonnull;
+
 /**
  * The OrderedStepNavigator moves through a linear series of steps.
  * <p>
@@ -88,9 +90,9 @@ public class OrderedStepNavigator implements StepNavigator {
         return stepsById.get(identifier);
     }
 
-    @Nullable
+    @Nonnull
     @Override
-    public Step getNextStep(@Nullable Step step, @NonNull TaskResult taskResult) {
+    public StepAndNavDirection getNextStep(@Nullable Step step, @NonNull TaskResult taskResult) {
         // default to the first step
         int nextStepIndex = 0;
 
@@ -107,7 +109,7 @@ public class OrderedStepNavigator implements StepNavigator {
             return null;
         }
 
-        return steps.get(nextStepIndex);
+        return new StepAndNavDirection(steps.get(nextStepIndex), NavDirection.SHIFT_LEFT);
     }
 
     @Nullable

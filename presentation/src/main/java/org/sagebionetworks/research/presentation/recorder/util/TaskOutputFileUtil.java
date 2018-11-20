@@ -55,7 +55,8 @@ public final class TaskOutputFileUtil {
         String outputFilename = taskRunUUID.toString() + "/" + filename;
 
         File outputFile = new File(path, outputFilename);
-        if (!outputFile.isFile()) {
+
+        if (!outputFile.isFile() && !outputFile.exists()) {
             outputFile.getParentFile().mkdirs();
             outputFile.createNewFile();
         }

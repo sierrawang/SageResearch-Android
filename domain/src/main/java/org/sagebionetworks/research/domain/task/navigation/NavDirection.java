@@ -30,25 +30,17 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.sagebionetworks.research.presentation.recorder.sensor;
+package org.sagebionetworks.research.domain.task.navigation;
 
-import android.support.annotation.NonNull;
+import static java.lang.annotation.RetentionPolicy.SOURCE;
 
-import org.sagebionetworks.research.presentation.recorder.RecorderConfigPresentation;
-import org.sagebionetworks.research.presentation.recorder.RestartableRecorderConfiguration;
-import org.sagebionetworks.research.presentation.recorder.reactive.source.SensorSourceFactory.SensorConfig;
+import android.support.annotation.IntDef;
 
-import java.util.Set;
+import java.lang.annotation.Retention;
 
-/**
- * Recorder configuration for sensors available through android.hardware.SensorManager.
- */
-public interface SensorRecorderConfigPresentation extends RestartableRecorderConfiguration {
-    /**
-     * Returns the set of recorder types that the motion recorder should measure.
-     *
-     * @return the set of recorder types that the motion recorder should measure.
-     */
-    @NonNull
-    Set<SensorConfig> getSensorConfigs();
+@Retention(SOURCE)
+@IntDef({NavDirection.SHIFT_LEFT, NavDirection.SHIFT_RIGHT})
+public @interface NavDirection {
+    int SHIFT_LEFT = 1;
+    int SHIFT_RIGHT = -1;
 }

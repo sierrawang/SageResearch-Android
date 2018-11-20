@@ -259,9 +259,7 @@ public class RecorderService extends DaggerService {
      *         The identifier of the recorder to start.
      */
     public void startRecorder(@NonNull UUID taskIdentifier, @NonNull String recorderIdentifier) {
-        if (LOGGER.isDebugEnabled()) {
-            LOGGER.debug("Starting recorder: " + recorderIdentifier);
-        }
+        LOGGER.info("Starting recorder: " + recorderIdentifier);
 
         Recorder recorder = this.getRecorder(taskIdentifier, recorderIdentifier);
         if (recorder == null) {
@@ -281,9 +279,7 @@ public class RecorderService extends DaggerService {
      *         The identifier of the recorder to stop.
      */
     public void stopRecorder(@NonNull UUID taskIdentifier, @NonNull String recorderIdentifier) {
-        if (LOGGER.isDebugEnabled()) {
-            LOGGER.debug("Stopping recorder: " + recorderIdentifier);
-        }
+        LOGGER.info("Stopping recorder: " + recorderIdentifier);
 
         Recorder recorder = this.getRecorder(taskIdentifier, recorderIdentifier);
         if (recorder == null) {
@@ -292,7 +288,6 @@ public class RecorderService extends DaggerService {
         }
 
         recorder.stop();
-        // Remove the recorder for the mapping of active recorders
         this.recorderMapping.get(taskIdentifier).remove(recorderIdentifier);
     }
 
