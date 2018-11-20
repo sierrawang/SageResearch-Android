@@ -210,7 +210,7 @@ public class RecorderManager implements ServiceConnection {
         if (this.bound) {
             Map<String, Recorder<? extends Result>> activeRecorders = this.getActiveRecorders();
             for (RecorderConfigPresentation config : Sets.difference(shouldStart, startAndStopOrCancel)) {
-                Recorder activeRecorder = activeRecorders.get(config.getIdentifier());
+                Recorder<? extends Result> activeRecorder = activeRecorders.get(config.getIdentifier());
                 // This is important to call before creating the result because this may
                 // re-create the recorder to prep for a proper recorder restart
                 activeRecorder = validateRecorderStateBeforeStart(activeRecorder, config);
@@ -258,7 +258,7 @@ public class RecorderManager implements ServiceConnection {
      * @param config the config of the recorder that will be starting
      */
     @Nullable
-    private Recorder validateRecorderStateBeforeStart(
+    private Recorder<? extends Result> validateRecorderStateBeforeStart(
             @Nullable Recorder<? extends Result> recorder, @NonNull RecorderConfigPresentation config) {
 
         if (recorder == null) {

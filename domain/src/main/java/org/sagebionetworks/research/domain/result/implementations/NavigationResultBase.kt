@@ -62,7 +62,6 @@ class NavigationResultBase(
 /**
  * NavigationAnswerResultBase is a simple encapsulation of an AnswerResult that can control navigation when
  * the next step is determined by a StrategyBasedNavigator.
- * the next step is determined by a StrategyBasedNavigator.
  * @param identifier the step identifier to be assigned to the result.
  * @param startTime The start Instant of this result.
  * @param endTime The end Instant of this result.
