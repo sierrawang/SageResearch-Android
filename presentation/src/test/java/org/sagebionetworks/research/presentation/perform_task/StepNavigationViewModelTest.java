@@ -102,7 +102,8 @@ public class StepNavigationViewModelTest {
         verify(previousStepObs, atLeastOnce()).onChanged(null);
         verify(nextStepObs, atLeastOnce()).onChanged(nextStep2);
 
-        when(stepNavigator.getNextStep(eq(nextStep2), eq(taskResult))).thenReturn(null);
+        when(stepNavigator.getNextStep(eq(nextStep2), eq(taskResult)))
+                .thenReturn(new StepAndNavDirection(null, NavDirection.SHIFT_LEFT));
         when(stepNavigator.getPreviousStep(eq(nextStep2), eq(taskResult))).thenReturn(nextStep);
 
         stepNavigationViewModel.goForward();
@@ -121,7 +122,8 @@ public class StepNavigationViewModelTest {
         reset(stepNavigator);
 
         TaskResult taskResult2 = mock(TaskResult.class);
-        when(stepNavigator.getNextStep(eq(nextStep), eq(taskResult2))).thenReturn(null);
+        when(stepNavigator.getNextStep(eq(nextStep), eq(taskResult2)))
+                .thenReturn(new StepAndNavDirection(null, NavDirection.SHIFT_LEFT));
         when(stepNavigator.getPreviousStep(eq(nextStep), eq(taskResult2))).thenReturn(nextStep2);
 
         taskResultMutableLiveData.setValue(taskResult2);
