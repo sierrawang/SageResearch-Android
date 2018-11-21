@@ -32,6 +32,7 @@
 
 package org.sagebionetworks.research.domain.task.navigation.strategy;
 
+import android.media.tv.TvView.TimeShiftPositionCallback;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 
@@ -86,14 +87,14 @@ public class StrategyBasedNavigator implements StepNavigator {
     }
 
     /**
-     * Only supported return values are NavDirection values
+     * Only supported return values are NavDirection values.
+     * This should only be called be in the case where skip and next navigation rules are being applied.
      * @param fromStep step to be considered where the user is currently
      * @param toStep step to be considered where the user is going to go next
      * @return the navigation direction moving from fromStep to toStep
      */
     private @NavDirection int getNextStepDirection(@Nullable final Step fromStep,
             @Nullable final Step toStep, @NotNull final TaskResult taskResult) {
-
         // The StrategyBasedNavigator's next step can potentially be a previously visited step.
         // In that case, we want to identify it, and provide a more logical transition to the user with SHIFT_RIGHT.
         if (fromStep != null && toStep != null) {
@@ -101,13 +102,11 @@ public class StrategyBasedNavigator implements StepNavigator {
             // If so, this can be adjusted, or getNextStepDirection can be overridden
             int fromIndex = indexOfStep(fromStep);
             int toIndex = indexOfStep(toStep);
-
             // If they are equal, then the step will be restarted and we should still show right transition
             if (toIndex <= fromIndex) {
                 return NavDirection.SHIFT_RIGHT;
             }
         }
-
         return NavDirection.SHIFT_LEFT;
     }
 
@@ -121,9 +120,12 @@ public class StrategyBasedNavigator implements StepNavigator {
     public @Nonnull StepAndNavDirection getNextStep(final Step step, @NonNull TaskResult taskResult) {
         Step nextStep = null;
 
+        boolean wasNavigationRuleApplied = false;
+
         // First we try to get the next step from the result by casting it to a NavigationResult
         String skipToIdentifier = getSkipToIdentifierFromNavigationResult(step, taskResult);
         if (skipToIdentifier != null) {
+            wasNavigationRuleApplied = true;
             nextStep = treeNavigator.getStep(skipToIdentifier);
         }
 
@@ -132,6 +134,7 @@ public class StrategyBasedNavigator implements StepNavigator {
         if (nextStep == null && step instanceof NextStepStrategy) {
             String nextStepId = ((NextStepStrategy)step).getNextStepIdentifier(taskResult);
             if (nextStepId != null) {
+                wasNavigationRuleApplied = true;
                 nextStep = this.getStep(nextStepId);
             }
         }
@@ -148,7 +151,10 @@ public class StrategyBasedNavigator implements StepNavigator {
             // As long as the next step we have found shouldn't be skipped we return it.
             if (!(nextStep instanceof SkipStepStrategy) ||
                     !((SkipStepStrategy) nextStep).shouldSkip(taskResult)) {
-                @NavDirection int navDirection = getNextStepDirection(step, nextStep, taskResult);
+                @NavDirection int navDirection = NavDirection.SHIFT_LEFT;
+                if (wasNavigationRuleApplied) {
+                    navDirection = getNextStepDirection(step, nextStep, taskResult);
+                }
                 return new StepAndNavDirection(nextStep, navDirection);
             }
 

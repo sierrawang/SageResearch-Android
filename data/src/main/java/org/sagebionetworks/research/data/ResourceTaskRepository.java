@@ -32,6 +32,8 @@
 
 package org.sagebionetworks.research.data;
 
+import static org.sagebionetworks.research.domain.task.navigation.TreeNavigator.SECTION_STEP_PREFIX_SEPARATOR;
+
 import static java.nio.charset.StandardCharsets.UTF_8;
 
 import android.content.Context;
@@ -223,7 +225,8 @@ public class ResourceTaskRepository implements TaskRepository {
             ImmutableList<Step> steps = section.getSteps();
             ImmutableList.Builder<Step> builder = new ImmutableList.Builder<>();
             for (Step innerStep : steps) {
-                builder.add(resolveTransformers(innerStep, prefix + section.getIdentifier() + "_"));
+                builder.add(resolveTransformers(innerStep,
+                        prefix + section.getIdentifier() + SECTION_STEP_PREFIX_SEPARATOR));
             }
 
             return section.copyWithSteps(builder.build());
@@ -272,7 +275,8 @@ public class ResourceTaskRepository implements TaskRepository {
                     }
                 }
 
-                copy = copy.copyWithIdentifier(step.getIdentifier() + "_" + copy.getIdentifier());
+                copy = copy.copyWithIdentifier(
+                        step.getIdentifier() + SECTION_STEP_PREFIX_SEPARATOR + copy.getIdentifier());
                 accumlator.add(copy);
             }
         }
