@@ -118,14 +118,22 @@ public class StrategyBasedNavigator implements StepNavigator {
 
     @Override
     public @Nonnull StepAndNavDirection getNextStep(final Step step, @NonNull TaskResult taskResult) {
-        Step nextStep = null;
+        return _nextStep(step, step, taskResult);
+    }
 
-        boolean wasNavigationRuleApplied = false;
+    /**
+     * Uses a series of interfaces that can provide different strategies for choosing the next step.
+     * @param step the current step
+     * @param taskResult for the task
+     * @param originalStep that the user is moving away from
+     * @return The step and the navigation direction to that step
+     */
+    protected @Nonnull StepAndNavDirection _nextStep(final Step step, final Step originalStep, @NonNull TaskResult taskResult) {
+        Step nextStep = null;
 
         // First we try to get the next step from the result by casting it to a NavigationResult
         String skipToIdentifier = getSkipToIdentifierFromNavigationResult(step, taskResult);
         if (skipToIdentifier != null) {
-            wasNavigationRuleApplied = true;
             nextStep = treeNavigator.getStep(skipToIdentifier);
         }
 
@@ -134,7 +142,6 @@ public class StrategyBasedNavigator implements StepNavigator {
         if (nextStep == null && step instanceof NextStepStrategy) {
             String nextStepId = ((NextStepStrategy)step).getNextStepIdentifier(taskResult);
             if (nextStepId != null) {
-                wasNavigationRuleApplied = true;
                 nextStep = this.getStep(nextStepId);
             }
         }
@@ -151,15 +158,11 @@ public class StrategyBasedNavigator implements StepNavigator {
             // As long as the next step we have found shouldn't be skipped we return it.
             if (!(nextStep instanceof SkipStepStrategy) ||
                     !((SkipStepStrategy) nextStep).shouldSkip(taskResult)) {
-                @NavDirection int navDirection = NavDirection.SHIFT_LEFT;
-                if (wasNavigationRuleApplied) {
-                    navDirection = getNextStepDirection(step, nextStep, taskResult);
-                }
-                return new StepAndNavDirection(nextStep, navDirection);
+                return new StepAndNavDirection(nextStep, getNextStepDirection(originalStep, nextStep, taskResult));
             }
 
             // If we should skip the next step we found, we recurse on the next step to get the one after that.
-            return this.getNextStep(nextStep, taskResult);
+            return _nextStep(nextStep, originalStep, taskResult);
         }
 
         // If the tree navigator returns null we also return null.
