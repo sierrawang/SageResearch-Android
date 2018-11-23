@@ -83,7 +83,7 @@ public abstract class InstructionStep implements ActiveUIStep {
         public abstract Builder setDuration(@Nullable Double duration);
 
         @NonNull
-        public abstract Builder setFirstRunOnly(boolean firstRunOnly);
+        public abstract Builder setIsFirstRunOnly(boolean isFirstRunOnly);
 
         @NonNull
         public abstract Builder setFootnote(@Nullable String footnote);
