@@ -22,10 +22,11 @@ import org.sagebionetworks.research.presentation.show_step.show_step_view_models
 
 public class ShowCountdownStepFragment extends ShowActiveUIStepFragmentBase<CountdownStepView,
         ShowActiveUIStepViewModel<CountdownStepView>, ActiveUIStepViewBinding<CountdownStepView>> {
+
     @Override
     public void onStart() {
         super.onStart();
-        if (!showStepViewModel.isCountdownStarted()) {
+        if (!showStepViewModel.isCountdownRunning() && !showStepViewModel.isCountdownPaused()) {
             showStepViewModel.startCountdown();
         }
     }
@@ -71,7 +72,7 @@ public class ShowCountdownStepFragment extends ShowActiveUIStepFragmentBase<Coun
     protected void handleActionButtonClick(@NonNull ActionButton actionButton) {
         @ActionType String actionType = this.getActionTypeFromActionButton(actionButton);
         if (actionType.equals(ActionType.FORWARD)) {
-            if (showStepViewModel.isCountdownStarted()) {
+            if (showStepViewModel.isCountdownRunning()) {
                 showStepViewModel.pauseCountdown();
             } else {
                 showStepViewModel.resumeCountdown();
@@ -89,7 +90,7 @@ public class ShowCountdownStepFragment extends ShowActiveUIStepFragmentBase<Coun
      * @return the proper title for the countdown pause/resume button.
      */
     private String getPauseResumeCountdownButtonTitle() {
-        if (showStepViewModel.isCountdownStarted()) {
+        if (showStepViewModel.isCountdownRunning()) {
             return getResources().getString(R.string.countdown_pause);
         } else {
             return getResources().getString(R.string.countdown_resume);

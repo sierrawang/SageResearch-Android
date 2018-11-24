@@ -56,8 +56,20 @@ public class ShowActiveUIStepViewModel<S extends ActiveUIStepView> extends ShowU
     protected @NonNull Long currentDuration = 0L;
     protected @NonNull Long currentStartingValue = 0L;
 
-    public boolean isCountdownStarted() {
+    /**
+     * @return true if countdown is currently running, false if not running or paused.
+     */
+    public boolean isCountdownRunning() {
         return countDownObserver != null;
+    }
+
+    /**
+     * @return true if the countdown is currently paused, false otherwise.
+     */
+    public boolean isCountdownPaused() {
+        return !isCountdownRunning() && (
+                currentStartingValue != 0 && // hasn't started yet
+                        !currentStartingValue.equals(currentDuration)); // is done
     }
 
     public ShowActiveUIStepViewModel(final PerformTaskViewModel performTaskViewModel, final S stepView) {
@@ -78,15 +90,6 @@ public class ShowActiveUIStepViewModel<S extends ActiveUIStepView> extends ShowU
     }
 
     /**
-     * Called every second through the FlowableFromObservable.
-     * @param countDown current value of the count down
-     */
-    protected void updateCountdown(Long countDown) {
-        currentStartingValue = currentDuration - countDown;
-        this.countdown.setValue(countDown);
-    }
-
-    /**
      * This function pauses the countdown at its current countdown value.
      */
     public void pauseCountdown() {
@@ -98,7 +101,7 @@ public class ShowActiveUIStepViewModel<S extends ActiveUIStepView> extends ShowU
      * If pauseCountdown() was never called, nothing is done.
      */
     public void resumeCountdown() {
-        if (isCountdownStarted()) {
+        if (isCountdownRunning()) {
             return;  // Guard against pauseCountdown() never being called.
         }
         this.tempLiveData = LiveDataReactiveStreams.fromPublisher(
@@ -108,6 +111,15 @@ public class ShowActiveUIStepViewModel<S extends ActiveUIStepView> extends ShowU
                                 .map(i -> currentDuration - i)));
         countDownObserver = this::updateCountdown;
         this.tempLiveData.observeForever(countDownObserver);
+    }
+
+    /**
+     * Called every second through the FlowableFromObservable.
+     * @param countDown current value of the count down
+     */
+    protected void updateCountdown(Long countDown) {
+        currentStartingValue = currentDuration - countDown;
+        this.countdown.setValue(countDown);
     }
 
     /**
