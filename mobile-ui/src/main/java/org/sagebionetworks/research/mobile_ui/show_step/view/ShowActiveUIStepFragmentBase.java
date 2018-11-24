@@ -52,6 +52,8 @@ import org.sagebionetworks.research.presentation.model.interfaces.ActiveUIStepVi
 import org.sagebionetworks.research.presentation.show_step.show_step_view_models.ShowActiveUIStepViewModel;
 import org.threeten.bp.Instant;
 
+import java.util.Locale;
+
 public abstract class ShowActiveUIStepFragmentBase<S extends ActiveUIStepView, VM extends ShowActiveUIStepViewModel<S>,
         SB extends ActiveUIStepViewBinding<S>> extends
         ShowUIStepFragmentBase<S, VM, SB> {
@@ -70,7 +72,7 @@ public abstract class ShowActiveUIStepFragmentBase<S extends ActiveUIStepView, V
 
         TextView countLabel = this.stepViewBinding.getCountLabel();
         if (countLabel != null) {
-            countLabel.setText(duration.toString());
+            countLabel.setText(String.format(duration.toString(), Locale.getDefault()));
         }
 
         Observer<Long> countdownObserver = this.getCountdownObserver();
