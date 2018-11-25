@@ -315,12 +315,11 @@ public class StrategyBasedNavigatorTest extends IndividualNavigatorTest {
         Task task = mockTask(steps, TEST_PROGRESS_MARKERS);
         StrategyBasedNavigator navigator = new StrategyBasedNavigator(task, TEST_PROGRESS_MARKERS);
 
+        // Remove the last navigation result so we just go to end of the task
         List<Result> stepHistory = new ArrayList<>();
         stepHistory.add(new NavigationResultBase("step1", Instant.EPOCH, Instant.EPOCH, "step3"));
         stepHistory.add(new ResultBase("step2", Instant.EPOCH, Instant.EPOCH));
-        stepHistory.add(new NavigationAnswerResultBase<>("step3", Instant.EPOCH, Instant.EPOCH,
-                10, ResultType.ANSWER, "step2"));
-        TaskResult taskResult = mockTaskResultFromResultsAndSteps("task", steps, stepHistory);
+        TaskResult taskResult = mockTaskResultFromResultsAndSteps("task", steps.subList(0, 2), stepHistory);
 
         StepAndNavDirection nextStepAndDirection = navigator.getNextStep(null, taskResult);
         assertEquals(NavDirection.SHIFT_LEFT, nextStepAndDirection.getNavDirection());
@@ -332,6 +331,13 @@ public class StrategyBasedNavigatorTest extends IndividualNavigatorTest {
         assertNotNull(nextStepAndDirection.getStep());
         assertEquals("step3", nextStepAndDirection.getStep().getIdentifier());
 
+        // Remove the last navigation result so we just go to end of the task
+        stepHistory = new ArrayList<>();
+        stepHistory.add(new NavigationResultBase("step1", Instant.EPOCH, Instant.EPOCH, "step3"));
+        stepHistory.add(new ResultBase("step2", Instant.EPOCH, Instant.EPOCH));
+        stepHistory.add(new NavigationResultBase("step3", Instant.EPOCH, Instant.EPOCH, "step2"));
+        taskResult = mockTaskResultFromResultsAndSteps("task", steps, stepHistory);
+
         nextStepAndDirection = navigator.getNextStep(nextStepAndDirection.getStep(), taskResult);
         assertEquals(NavDirection.SHIFT_RIGHT, nextStepAndDirection.getNavDirection());
         assertNotNull(nextStepAndDirection.getStep());
@@ -342,8 +348,10 @@ public class StrategyBasedNavigatorTest extends IndividualNavigatorTest {
         assertNotNull(nextStepAndDirection.getStep());
         assertEquals("step3", nextStepAndDirection.getStep().getIdentifier());
 
-        // Remove the last navigation result so we just go to end of the task
-        stepHistory.set(2, new ResultBase("step3", Instant.EPOCH, Instant.EPOCH));
+        stepHistory = new ArrayList<>();
+        stepHistory.add(new NavigationResultBase("step1", Instant.EPOCH, Instant.EPOCH, "step3"));
+        stepHistory.add(new ResultBase("step2", Instant.EPOCH, Instant.EPOCH));
+        stepHistory.add(new ResultBase("step3", Instant.EPOCH, Instant.EPOCH));
         taskResult = mockTaskResultFromResultsAndSteps("task", steps, stepHistory);
 
         nextStepAndDirection = navigator.getNextStep(nextStepAndDirection.getStep(), taskResult);
