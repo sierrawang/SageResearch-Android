@@ -88,24 +88,16 @@ public class StrategyBasedNavigator implements StepNavigator {
 
     /**
      * Only supported return values are NavDirection values.
-     * This should only be called be in the case where skip and next navigation rules are being applied.
+     * This should only be called be in the case where a skip to strategy has been used.
      * @param fromStep step to be considered where the user is currently
      * @param toStep step to be considered where the user is going to go next
      * @return the navigation direction moving from fromStep to toStep
      */
     private @NavDirection int getNextStepDirection(@Nullable final Step fromStep,
             @Nullable final Step toStep, @NotNull final TaskResult taskResult) {
-        // The StrategyBasedNavigator's next step can potentially be a previously visited step.
-        // In that case, we want to identify it, and provide a more logical transition to the user with SHIFT_RIGHT.
-        if (fromStep != null && toStep != null) {
-            // This is a simple index check of step list order, more complex logic may be needed,
-            // If so, this can be adjusted, or getNextStepDirection can be overridden
-            int fromIndex = indexOfStep(fromStep);
-            int toIndex = indexOfStep(toStep);
-            // If they are equal, then the step will be restarted and we should still show right transition
-            if (toIndex <= fromIndex) {
-                return NavDirection.SHIFT_RIGHT;
-            }
+        // If we have a previous result for this step, we can consider that we are going back to it
+        if (toStep != null && taskResult.getResult(toStep) != null) {
+            return NavDirection.SHIFT_RIGHT;
         }
         return NavDirection.SHIFT_LEFT;
     }
@@ -118,7 +110,7 @@ public class StrategyBasedNavigator implements StepNavigator {
 
     @Override
     public @Nonnull StepAndNavDirection getNextStep(final Step step, @NonNull TaskResult taskResult) {
-        return _nextStep(step, step, taskResult);
+        return _nextStep(step, step, false, taskResult);
     }
 
     /**
@@ -128,12 +120,15 @@ public class StrategyBasedNavigator implements StepNavigator {
      * @param originalStep that the user is moving away from
      * @return The step and the navigation direction to that step
      */
-    protected @Nonnull StepAndNavDirection _nextStep(final Step step, final Step originalStep, @NonNull TaskResult taskResult) {
+    protected @Nonnull StepAndNavDirection _nextStep(final Step step,
+            final Step originalStep, @NonNull Boolean hasSkipToStrategyBeenUsed,
+            @NonNull TaskResult taskResult) {
         Step nextStep = null;
 
         // First we try to get the next step from the result by casting it to a NavigationResult
         String skipToIdentifier = getSkipToIdentifierFromNavigationResult(step, taskResult);
         if (skipToIdentifier != null) {
+            hasSkipToStrategyBeenUsed = true;
             nextStep = treeNavigator.getStep(skipToIdentifier);
         }
 
@@ -158,11 +153,16 @@ public class StrategyBasedNavigator implements StepNavigator {
             // As long as the next step we have found shouldn't be skipped we return it.
             if (!(nextStep instanceof SkipStepStrategy) ||
                     !((SkipStepStrategy) nextStep).shouldSkip(taskResult)) {
-                return new StepAndNavDirection(nextStep, getNextStepDirection(originalStep, nextStep, taskResult));
+                @NavDirection int navDirection = NavDirection.SHIFT_LEFT;
+                // Only look for custom navigation direction if skip/next strategy logic in finding the next step.
+                if (hasSkipToStrategyBeenUsed) {
+                    navDirection = getNextStepDirection(originalStep, nextStep, taskResult);
+                }
+                return new StepAndNavDirection(nextStep, navDirection);
             }
 
             // If we should skip the next step we found, we recurse on the next step to get the one after that.
-            return _nextStep(nextStep, originalStep, taskResult);
+            return _nextStep(nextStep, originalStep, hasSkipToStrategyBeenUsed, taskResult);
         }
 
         // If the tree navigator returns null we also return null.
