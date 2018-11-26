@@ -142,6 +142,16 @@ public interface TaskResult extends Result {
     TaskResult removeStepHistory(Result result);
 
     /**
+     * Returns a new TaskResult with the given result and all results after it removed from the async result list.
+     *
+     * @param result
+     *         The result to begin removing results at.
+     * @return a new TaskResult with the given result and all results after it removed from he async result list.
+     */
+    @Nullable
+    TaskResult removeAsyncResult(Result result);
+
+    /**
      * Returns a list of Results from this task result whose identifier match the given regex. If
      * no results match the empty list will be returned.
      * @param regex The regex to match in the results identifiers.

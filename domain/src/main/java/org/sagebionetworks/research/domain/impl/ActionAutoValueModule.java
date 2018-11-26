@@ -41,7 +41,7 @@ import org.sagebionetworks.research.domain.inject.GsonModule;
 import org.sagebionetworks.research.domain.inject.GsonModule.ClassKey;
 import org.sagebionetworks.research.domain.step.ui.action.Action;
 import org.sagebionetworks.research.domain.step.ui.action.ReminderAction;
-import org.sagebionetworks.research.domain.step.ui.action.SkipToStepAction;
+import org.sagebionetworks.research.domain.step.ui.action.SkipToAction;
 
 import dagger.Module;
 import dagger.Provides;
@@ -79,15 +79,15 @@ public class ActionAutoValueModule {
 
     @Provides
     @IntoMap
-    @ClassKey(SkipToStepAction.class)
+    @ClassKey(SkipToAction.class)
     static JsonDeserializer<?> provideSkipToStepActionDeserializer() {
-        return createPassThroughDeserializer(SkipToStepActionImpl.class);
+        return createPassThroughDeserializer(SkipToActionImpl.class);
     }
 
     @Provides
     @IntoMap
-    @ActionKey(SkipToStepAction.class)
+    @ActionKey(SkipToAction.class)
     static String provideSkipToStepActionTypeKey() {
-        return SkipToStepActionImpl.TYPE_KEY;
+        return SkipToActionImpl.TYPE_KEY;
     }
 }

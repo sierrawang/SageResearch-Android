@@ -46,7 +46,6 @@ import android.support.annotation.MainThread;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.annotation.VisibleForTesting;
-import android.support.v4.app.INotificationSideChannel;
 
 import org.sagebionetworks.research.domain.repository.TaskRepository;
 import org.sagebionetworks.research.domain.result.AnswerResultType;
@@ -55,9 +54,10 @@ import org.sagebionetworks.research.domain.result.interfaces.Result;
 import org.sagebionetworks.research.domain.result.interfaces.TaskResult;
 import org.sagebionetworks.research.domain.step.interfaces.SectionStep;
 import org.sagebionetworks.research.domain.step.interfaces.Step;
-import org.sagebionetworks.research.domain.step.interfaces.ThemedUIStep;
 import org.sagebionetworks.research.domain.task.Task;
 import org.sagebionetworks.research.domain.task.TaskInfoView;
+import org.sagebionetworks.research.domain.task.navigation.NavDirection;
+import org.sagebionetworks.research.domain.task.navigation.StepAndNavDirection;
 import org.sagebionetworks.research.domain.task.navigation.StepNavigator;
 import org.sagebionetworks.research.domain.task.navigation.StepNavigatorFactory;
 import org.sagebionetworks.research.domain.task.navigation.TaskProgress;
@@ -68,8 +68,9 @@ import org.sagebionetworks.research.presentation.mapper.TaskMapper;
 import org.sagebionetworks.research.presentation.model.TaskView;
 import org.sagebionetworks.research.presentation.model.action.ActionType;
 import org.sagebionetworks.research.presentation.model.action.ActionView;
+import org.sagebionetworks.research.presentation.model.implementations.UIStepViewBase;
 import org.sagebionetworks.research.presentation.model.interfaces.StepView;
-import org.sagebionetworks.research.presentation.model.interfaces.StepView.NavDirection;
+import org.sagebionetworks.research.presentation.model.interfaces.UIStepView;
 import org.sagebionetworks.research.presentation.perform_task.PerformTaskViewModelFactory.SharedPrefsArgs;
 import org.sagebionetworks.research.presentation.perform_task.TaskResultManager.TaskResultManagerConnection;
 import org.sagebionetworks.research.presentation.perform_task.TaskResultService.TaskResultServiceBinder;
@@ -77,12 +78,13 @@ import org.sagebionetworks.research.presentation.recorder.service.RecorderManage
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.threeten.bp.Instant;
-import org.threeten.bp.ZonedDateTime;
 
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
+
+import javax.annotation.Nonnull;
 
 import io.reactivex.BackpressureStrategy;
 import io.reactivex.Maybe;
@@ -135,7 +137,8 @@ public class PerformTaskViewModel extends AndroidViewModel {
 
     private final StepViewFactory stepViewFactory;
 
-    private final MutableLiveData<StepView> stepViewLiveData;
+    // TODO: nav direction returned in the live data
+    private final MutableLiveData<StepViewNavigation> stepViewLiveData;
 
     private final Map<Step, StepView> stepViewMapping;
 
@@ -231,7 +234,7 @@ public class PerformTaskViewModel extends AndroidViewModel {
     }
 
     @NonNull
-    public LiveData<StepView> getStepView() {
+    public LiveData<StepViewNavigation> getStepView() {
         return stepViewLiveData;
     }
 
@@ -271,13 +274,15 @@ public class PerformTaskViewModel extends AndroidViewModel {
     public void goBack() {
         LOGGER.debug("goBack called");
         Step currentStep = currentStepLiveData.getValue();
+
         TaskResult taskResult = taskResultManagerConnectionSingle.blockingGet().getLatestTaskResult();
         checkState(currentStep != null);
 
+        @NavDirection int direction = NavDirection.SHIFT_RIGHT;
         Step backStep = stepNavigator.getPreviousStep(currentStep, taskResult);
         if (backStep != null) {
-            this.recorderManager.onStepTransition(currentStep, backStep, NavDirection.SHIFT_RIGHT);
-            this.updateCurrentStep(backStep, taskResult);
+            this.recorderManager.onStepTransition(currentStep, backStep, direction);
+            this.updateCurrentStep(backStep, taskResult, direction);
         } else {
             LOGGER.warn("goBack called from first step");
         }
@@ -291,9 +296,11 @@ public class PerformTaskViewModel extends AndroidViewModel {
         Step currentStep = currentStepLiveData.getValue();
         TaskResult taskResult = taskResultManagerConnectionSingle.blockingGet().getLatestTaskResult();
 
-        Step nextStep = stepNavigator.getNextStep(currentStep, taskResult);
-        this.recorderManager.onStepTransition(currentStep, nextStep, NavDirection.SHIFT_LEFT);
-        this.updateCurrentStep(nextStep, taskResult);
+        StepAndNavDirection nextStepAndDirection = stepNavigator.getNextStep(currentStep, taskResult);
+        Step nextStep = nextStepAndDirection.getStep();
+        @NavDirection int navDirection = nextStepAndDirection.getNavDirection();
+        this.recorderManager.onStepTransition(currentStep, nextStep, navDirection);
+        this.updateCurrentStep(nextStep, taskResult, navDirection);
     }
 
     /**
@@ -302,9 +309,10 @@ public class PerformTaskViewModel extends AndroidViewModel {
      * @return true if there is a step after the current one in the task, false otherwise.
      */
     public boolean hasNextStep() {
+        // TODO: mdephillips 11/20/18 move this function to the StepNavigator interface like iOS
         TaskResult taskResult = taskResultManagerConnectionSingle.blockingGet().getLatestTaskResult();
-        checkState(taskResult != null);
-        return stepNavigator.getNextStep(this.getStep().getValue(), taskResult) != null;
+        StepAndNavDirection nextStepAndDirection = stepNavigator.getNextStep(getStep().getValue(), taskResult);
+        return nextStepAndDirection.getStep() != null;
     }
 
     /**
@@ -313,10 +321,10 @@ public class PerformTaskViewModel extends AndroidViewModel {
      * @return true if there is a step before the current one in the task, false otherwise.
      */
     public boolean hasPreviousStep() {
+        // TODO: mdephillips 11/20/18 move this function to the StepNavigator interface like iOS
         Step currentStep = currentStepLiveData.getValue();
         checkState(currentStep != null);
         TaskResult taskResult = taskResultManagerConnectionSingle.blockingGet().getLatestTaskResult();
-        checkState(taskResult != null);
         return stepNavigator.getPreviousStep(currentStep, taskResult) != null;
     }
 
@@ -334,7 +342,9 @@ public class PerformTaskViewModel extends AndroidViewModel {
      * @param taskResult
      *         The task result before this switch occured.
      */
-    protected void updateCurrentStep(@Nullable Step nextStep, @NonNull TaskResult taskResult) {
+    protected void updateCurrentStep(@Nullable Step nextStep,
+            @NonNull TaskResult taskResult, @NavDirection int navDirection) {
+
         if (nextStep == null) {
             this.currentStepLiveData.setValue(null);
             this.stepViewLiveData.setValue(null);
@@ -349,7 +359,7 @@ public class PerformTaskViewModel extends AndroidViewModel {
             if (stepView == null) {
                 LOGGER.warn("Step not found");
             }
-            this.stepViewLiveData.setValue(stepView);
+            this.stepViewLiveData.setValue(new StepViewNavigation(stepView, navDirection));
         }
     }
 
@@ -431,5 +441,25 @@ public class PerformTaskViewModel extends AndroidViewModel {
 
     void taskResultObserver(TaskResult taskResult) {
         LOGGER.debug("Observed TaskResult: {}", taskResult);
+    }
+
+    /**
+     * Class encapsulating a StepView and the direction of the transition to it
+     */
+    public class StepViewNavigation {
+        private final @Nonnull StepView stepView;
+        public @Nonnull StepView getStepView() {
+            return stepView;
+        }
+
+        private final @NavDirection int navDirection;
+        public @NavDirection int getNavDirection() {
+            return navDirection;
+        }
+
+        public StepViewNavigation(@Nonnull StepView stepView, @NavDirection int navDirection) {
+            this.stepView = stepView;
+            this.navDirection = navDirection;
+        }
     }
 }

@@ -35,7 +35,10 @@ package org.sagebionetworks.research.presentation.show_step.show_step_view_model
 import android.arch.lifecycle.LiveData;
 import android.arch.lifecycle.LiveDataReactiveStreams;
 import android.arch.lifecycle.MutableLiveData;
+import android.arch.lifecycle.Observer;
+import android.support.annotation.NonNull;
 
+import org.jetbrains.annotations.Nullable;
 import org.sagebionetworks.research.presentation.model.interfaces.ActiveUIStepView;
 import org.sagebionetworks.research.presentation.perform_task.PerformTaskViewModel;
 import org.threeten.bp.Instant;
@@ -49,19 +52,84 @@ public class ShowActiveUIStepViewModel<S extends ActiveUIStepView> extends ShowU
     protected LiveData<Long> tempLiveData;
     protected MutableLiveData<Long> countdown;
 
+    protected @Nullable Observer<Long> countDownObserver;
+    protected @NonNull Long currentDuration = 0L;
+    protected @NonNull Long currentStartingValue = 0L;
+
+    /**
+     * @return true if countdown is currently running, false if not running or paused.
+     */
+    public boolean isCountdownRunning() {
+        return countDownObserver != null;
+    }
+
+    /**
+     * @return true if the countdown is currently paused, false otherwise.
+     */
+    public boolean isCountdownPaused() {
+        return !isCountdownRunning() && (
+                currentStartingValue != 0 && // hasn't started yet
+                        !currentStartingValue.equals(currentDuration)); // is done
+    }
+
     public ShowActiveUIStepViewModel(final PerformTaskViewModel performTaskViewModel, final S stepView) {
         super(performTaskViewModel, stepView);
         this.countdown = new MutableLiveData<>();
     }
 
+    /**
+     * This function starts the countdown from a value equal to the step view's provided duration,
+     * and counts down at second intervals.
+     * To get a countdown update every second, observe countdown LiveData.
+     */
     public void startCountdown() {
-            long duration = this.stepView.getDuration().getSeconds();
-            this.tempLiveData = LiveDataReactiveStreams.fromPublisher(
-                    new FlowableFromObservable<>(
-                            Observable.<Long>intervalRange(0, duration + 1,
-                                    0, 1, TimeUnit.SECONDS)
-                                    .map(i -> duration - i)));
-            this.tempLiveData.observeForever(this.countdown::setValue);
+        removeAnyPreviousObservers();
+        currentStartingValue = 0L;
+        currentDuration = this.stepView.getDuration().getSeconds();
+        resumeCountdown();
+    }
+
+    /**
+     * This function pauses the countdown at its current countdown value.
+     */
+    public void pauseCountdown() {
+        removeAnyPreviousObservers();
+    }
+
+    /**
+     * This resumes the countdown from whatever its countdown value was when pauseCountdown() was called.
+     * If pauseCountdown() was never called, nothing is done.
+     */
+    public void resumeCountdown() {
+        if (isCountdownRunning()) {
+            return;  // Guard against pauseCountdown() never being called.
+        }
+        this.tempLiveData = LiveDataReactiveStreams.fromPublisher(
+                new FlowableFromObservable<>(
+                        Observable.<Long>intervalRange(currentStartingValue, currentDuration + 1,
+                                0, 1, TimeUnit.SECONDS)
+                                .map(i -> currentDuration - i)));
+        countDownObserver = this::updateCountdown;
+        this.tempLiveData.observeForever(countDownObserver);
+    }
+
+    /**
+     * Called every second through the FlowableFromObservable.
+     * @param countDown current value of the count down
+     */
+    protected void updateCountdown(Long countDown) {
+        currentStartingValue = currentDuration - countDown;
+        this.countdown.setValue(countDown);
+    }
+
+    /**
+     * This stops the countdown by removing the countdown observer.
+     */
+    protected void removeAnyPreviousObservers() {
+        if (countDownObserver != null) {
+            this.tempLiveData.removeObserver(countDownObserver);
+            countDownObserver = null;
+        }
     }
 
     public LiveData<Long> getCountdown() {

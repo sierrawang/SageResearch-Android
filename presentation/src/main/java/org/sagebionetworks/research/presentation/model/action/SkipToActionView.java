@@ -34,7 +34,7 @@ package org.sagebionetworks.research.presentation.model.action;
 
 import javax.annotation.Nullable;
 
-public interface SkipToStepActionView extends ActionView {
+public interface SkipToActionView extends ActionView {
     @Nullable
-    String getSkipToStepIdentifier();
+    String getSkipToIdentifier();
 }

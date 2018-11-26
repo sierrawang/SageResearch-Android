@@ -30,43 +30,17 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.sagebionetworks.research.domain.impl;
+package org.sagebionetworks.research.domain.result.interfaces
 
-import com.google.auto.value.AutoValue;
-import com.google.gson.Gson;
-import com.google.gson.TypeAdapter;
-
-import org.sagebionetworks.research.domain.step.ui.action.ActionDeserializationType;
-import org.sagebionetworks.research.domain.step.ui.action.SkipToStepAction;
-
-@AutoValue
-abstract class SkipToStepActionImpl implements SkipToStepAction {
-    @AutoValue.Builder
-    public abstract static class Builder {
-        public abstract SkipToStepActionImpl build();
-
-        public abstract Builder setButtonIconName(String buttonIconName);
-
-        public abstract Builder setButtonTitle(String buttonTitle);
-
-        public abstract Builder setSkipToStepIdentifier(String reminderIdentifier);
-    }
-
-    public static final String TYPE_KEY = ActionDeserializationType.SKIP;
-
-    public static Builder builder() {
-        return new AutoValue_SkipToStepActionImpl.Builder();
-    }
-
-    public static TypeAdapter<SkipToStepActionImpl> typeAdapter(Gson gson) {
-        return new AutoValue_SkipToStepActionImpl.GsonTypeAdapter(gson);
-    }
-
-    @Override
-    @ActionDeserializationType
-    public String getType() {
-        return TYPE_KEY;
-    }
-
-    public abstract Builder toBuilder();
+/**
+ * NavigationResult is used to communicate to a StrategyBasedNavigator to go directly to a step with
+ * identifier skipToIdentifier.
+ * This interface can be attached to any other result type using Kotlin object delegation.
+ * This allows for any sub-class of Result to attach Navigation functionality
+ * without extending directly from NavigationResult class type.
+ * See NavigationResultBase for examples.
+ */
+interface NavigationResult {
+    val skipToIdentifier: String?
 }
+

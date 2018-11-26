@@ -41,7 +41,6 @@ import com.google.common.collect.ImmutableSet;
 import com.google.gson.Gson;
 import com.google.gson.TypeAdapter;
 
-import org.sagebionetworks.research.domain.result.interfaces.TaskResult;
 import org.sagebionetworks.research.domain.step.StepType;
 import org.sagebionetworks.research.domain.step.interfaces.Step;
 import org.sagebionetworks.research.presentation.model.interfaces.StepView;
@@ -64,8 +63,6 @@ public abstract class BaseStepView implements StepView, Parcelable {
 
         public abstract Builder setIdentifier(@NonNull String identifier);
 
-        public abstract Builder setNavDirection(@NavDirection int navDirection);
-
         public abstract Builder setStepActionViews(@NonNull Set<StepActionView> stepActionViews);
 
         public abstract Builder setTitle(@Nullable String title);
@@ -73,7 +70,6 @@ public abstract class BaseStepView implements StepView, Parcelable {
 
     public static Builder builder() {
         return new AutoValue_BaseStepView.Builder()
-                .setNavDirection(NavDirection.SHIFT_LEFT)
                 .setStepActionViews(Collections.emptySet());
     }
 
@@ -86,8 +82,6 @@ public abstract class BaseStepView implements StepView, Parcelable {
 
     @NonNull
     public abstract String getIdentifier();
-
-    public abstract int getNavDirection();
 
     @NonNull
     public abstract ImmutableSet<StepActionView> getStepActionViews();

@@ -52,13 +52,14 @@ import android.view.ViewGroup;
 
 import org.sagebionetworks.research.domain.result.implementations.TaskResultBase;
 import org.sagebionetworks.research.domain.result.interfaces.TaskResult;
+import org.sagebionetworks.research.domain.task.navigation.NavDirection;
 import org.sagebionetworks.research.mobile_ui.R;
 import org.sagebionetworks.research.mobile_ui.inject.ShowStepModule.ShowStepFragmentFactory;
 import org.sagebionetworks.research.mobile_ui.perform_task.PerformTaskFragment.OnPerformTaskExitListener.Status;
 import org.sagebionetworks.research.presentation.model.TaskView;
 import org.sagebionetworks.research.presentation.model.interfaces.StepView;
-import org.sagebionetworks.research.presentation.model.interfaces.StepView.NavDirection;
 import org.sagebionetworks.research.presentation.perform_task.PerformTaskViewModel;
+import org.sagebionetworks.research.presentation.perform_task.PerformTaskViewModel.StepViewNavigation;
 import org.sagebionetworks.research.presentation.perform_task.PerformTaskViewModelFactory;
 import org.sagebionetworks.research.presentation.perform_task.PerformTaskViewModelFactory.SharedPrefsArgs;
 import org.slf4j.Logger;
@@ -261,7 +262,11 @@ public class PerformTaskFragment extends Fragment implements HasSupportFragmentI
     }
 
     @VisibleForTesting
-    void showStep(StepView stepView) {
+    void showStep(@Nullable StepViewNavigation stepViewNavigation) {
+        StepView stepView = null;
+        if (stepViewNavigation != null) {
+            stepView = stepViewNavigation.getStepView();
+        }
         // No next step, and has shown a step, task has ended
         if (stepView == null) {
             if (!showedStep.compareAndSet(false, true)) {
@@ -275,10 +280,14 @@ public class PerformTaskFragment extends Fragment implements HasSupportFragmentI
         currentStepFragment = step;
         FragmentTransaction transaction = getChildFragmentManager().beginTransaction();
 
-        if (NavDirection.SHIFT_LEFT == stepView.getNavDirection()) {
+        @NavDirection int navDirection = stepViewNavigation.getNavDirection();
+        if (NavDirection.SHIFT_LEFT == navDirection) {
             transaction.setCustomAnimations(R.anim.rs2_right_slide_in, R.anim.rs2_left_slide_out);
-        } else {
+        } else if (NavDirection.SHIFT_RIGHT == navDirection) {
             transaction.setCustomAnimations(R.anim.rs2_left_slide_in, R.anim.rs2_right_slide_out);
+        } else {
+            LOGGER.error("Custom NavDirection " + navDirection + " not supported.  Shifting left by default.");
+            transaction.setCustomAnimations(R.anim.rs2_right_slide_in, R.anim.rs2_left_slide_out);
         }
 
         transaction

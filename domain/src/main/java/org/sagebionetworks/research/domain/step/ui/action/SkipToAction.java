@@ -30,25 +30,14 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.sagebionetworks.research.presentation.recorder.sensor;
+package org.sagebionetworks.research.domain.step.ui.action;
 
-import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 
-import org.sagebionetworks.research.presentation.recorder.RecorderConfigPresentation;
-import org.sagebionetworks.research.presentation.recorder.RestartableRecorderConfiguration;
-import org.sagebionetworks.research.presentation.recorder.reactive.source.SensorSourceFactory.SensorConfig;
-
-import java.util.Set;
-
-/**
- * Recorder configuration for sensors available through android.hardware.SensorManager.
- */
-public interface SensorRecorderConfigPresentation extends RestartableRecorderConfiguration {
+public interface SkipToAction extends Action {
     /**
-     * Returns the set of recorder types that the motion recorder should measure.
-     *
-     * @return the set of recorder types that the motion recorder should measure.
+     * @return the identifier of the step to skip to fro this action.
      */
-    @NonNull
-    Set<SensorConfig> getSensorConfigs();
+    @Nullable
+    String getSkipToIdentifier();
 }

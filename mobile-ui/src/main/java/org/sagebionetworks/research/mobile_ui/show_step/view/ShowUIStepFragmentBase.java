@@ -35,6 +35,7 @@ package org.sagebionetworks.research.mobile_ui.show_step.view;
 import android.graphics.drawable.AnimationDrawable;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.v4.view.OnApplyWindowInsetsListener;
 import android.support.v4.view.ViewCompat;
 import android.view.LayoutInflater;
@@ -44,6 +45,7 @@ import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
+import org.sagebionetworks.research.domain.result.implementations.NavigationResultBase;
 import org.sagebionetworks.research.mobile_ui.R;
 import org.sagebionetworks.research.domain.task.navigation.TaskProgress;
 import org.sagebionetworks.research.mobile_ui.show_step.view.view_binding.UIStepViewBinding;
@@ -56,8 +58,10 @@ import org.sagebionetworks.research.presentation.model.ImageThemeView;
 import org.sagebionetworks.research.presentation.model.action.ActionView;
 import org.sagebionetworks.research.presentation.model.action.ActionViewBase;
 import org.sagebionetworks.research.presentation.model.FetchableImageThemeView;
+import org.sagebionetworks.research.presentation.model.action.SkipToActionView;
 import org.sagebionetworks.research.presentation.model.interfaces.UIStepView;
 import org.sagebionetworks.research.presentation.show_step.show_step_view_models.ShowUIStepViewModel;
+import org.threeten.bp.Instant;
 
 import java.util.List;
 
@@ -169,6 +173,25 @@ public abstract class ShowUIStepFragmentBase<UIStepViewT extends UIStepView,
         return ActionViewBase.builder().setButtonTitle(DisplayString.create(null, title)).build();
     }
 
+    /**
+     * Called whenever one of this fragment's ActionButton's is clicked.
+     * @param actionButton the ActionButton that was clicked by the user.
+     */
+    @Override
+    protected void handleActionButtonClick(@NonNull ActionButton actionButton) {
+        @ActionType String actionType = this.getActionTypeFromActionButton(actionButton);
+        ActionView actionView = stepView.getActionFor(actionType);
+        if (actionView instanceof SkipToActionView) {
+            // It is important to note that once a NavigationResult is added to the step history,
+            // It will continue moving to the Step specified in SkipToActionView's skipToIdentifier.
+            // This can trigger and infinite navigation loop if skipToIdentifier moves backwards.
+            // To counter that scenario, the StepView with the SkipToActionView must explicitly set a Result.
+            handleSkipToStepAction((SkipToActionView)actionView);
+        } else {
+            super.handleActionButtonClick(actionButton);
+        }
+    }
+
     @Override
     protected void update(UIStepViewT stepView) {
         super.update(stepView);
@@ -268,4 +291,17 @@ public abstract class ShowUIStepFragmentBase<UIStepViewT extends UIStepView,
         this.updateButtonFromActionView(infoButton, infoActionView);
     }
     // endregion
+
+    /**
+     * Called when a skip to step action view has been clicked.
+     * Can be overridden by sub-classes to provide custom navigation results with attached data.
+     * @param actionView for a skip to step action view.
+     */
+    protected void handleSkipToStepAction(SkipToActionView actionView) {
+        String skipToStepId = actionView.getSkipToIdentifier();
+        NavigationResultBase navigationResult = new NavigationResultBase(
+                stepView.getIdentifier(), Instant.now(), Instant.now(), skipToStepId);
+        performTaskViewModel.addStepResult(navigationResult);
+        showStepViewModel.handleAction(ActionType.FORWARD);
+    }
 }

@@ -71,13 +71,12 @@ public class FormUIStepViewBase extends UIStepViewBase implements FormUIStepView
             inputFields.add(InputFieldViewBase.fromInputField(field, mapper));
         }
 
-        return new FormUIStepViewBase(uiStepView.getIdentifier(), uiStepView.getNavDirection(),
+        return new FormUIStepViewBase(uiStepView.getIdentifier(),
                 uiStepView.getActions(), uiStepView.getTitle(), uiStepView.getText(), uiStepView.getDetail(),
                 uiStepView.getFootnote(), uiStepView.getColorTheme(), uiStepView.getImageTheme(), inputFields);
     }
 
     public FormUIStepViewBase(@NonNull final String identifier,
-            @NavDirection final int navDirection,
             @NonNull final ImmutableMap<String, ActionView> actions,
             @Nullable final DisplayString title,
             @Nullable final DisplayString text,
@@ -86,7 +85,7 @@ public class FormUIStepViewBase extends UIStepViewBase implements FormUIStepView
             @Nullable final ColorThemeView colorTheme,
             @Nullable final ImageThemeView imageTheme,
             final List<InputFieldView> inputFields) {
-        super(identifier, navDirection, actions, title, text, detail, footnote, colorTheme, imageTheme);
+        super(identifier, actions, title, text, detail, footnote, colorTheme, imageTheme);
         this.inputFields = inputFields;
     }
 

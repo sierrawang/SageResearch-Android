@@ -1,6 +1,7 @@
 package org.sagebionetworks.research.domain.task.navigation;
 
 import android.support.annotation.NonNull;
+import android.text.TextUtils;
 
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
@@ -14,10 +15,13 @@ import org.sagebionetworks.research.domain.step.interfaces.SectionStep;
 import org.sagebionetworks.research.domain.step.interfaces.Step;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 import java.util.concurrent.atomic.AtomicBoolean;
+
+import javax.annotation.Nonnull;
 
 public class TreeNavigator implements StepNavigator {
 
@@ -34,6 +38,12 @@ public class TreeNavigator implements StepNavigator {
         @Nullable
         private final Step step;
 
+        // The parent node of this node, root nodes will have this as null
+        @Nullable
+        private final Node parent;
+
+        //
+
         /**
          * Constructs a new node from the given list of steps. This node will represent the root of a Tree in which
          * the steps are the children.
@@ -43,7 +53,8 @@ public class TreeNavigator implements StepNavigator {
          */
         private Node(@Nullable List<Step> steps) {
             this.step = null;
-            this.children = constructChildNodes(steps);
+            this.parent = null;
+            this.children = constructChildNodes(steps, null);
         }
 
         /**
@@ -52,10 +63,11 @@ public class TreeNavigator implements StepNavigator {
          * @param step
          *         the step to construct the node from.
          */
-        private Node(@NonNull Step step) {
+        private Node(@NonNull Step step, @Nullable Node parentNode) {
             this.step = step;
+            this.parent = parentNode;
             if (step instanceof SectionStep) {
-                this.children = constructChildNodes(((SectionStep) step).getSteps());
+                this.children = constructChildNodes(((SectionStep) step).getSteps(), this);
             } else {
                 this.children = null;
             }
@@ -77,11 +89,11 @@ public class TreeNavigator implements StepNavigator {
          *         the list of steps to construct nodes from.
          * @return An ImmutableList of nodes constructed from the given steps.
          */
-        private ImmutableList<Node> constructChildNodes(@Nullable List<Step> childSteps) {
+        private ImmutableList<Node> constructChildNodes(@Nullable List<Step> childSteps, @Nullable Node parentNode) {
             if (childSteps != null && !childSteps.isEmpty()) {
                 List<Node> children = new ArrayList<>();
                 for (Step childStep : childSteps) {
-                    children.add(new Node(childStep));
+                    children.add(new Node(childStep, parentNode));
                 }
 
                 ImmutableList.Builder<Node> builder = new ImmutableList.Builder<>();
@@ -100,7 +112,34 @@ public class TreeNavigator implements StepNavigator {
         private boolean isLeaf() {
             return this.children == null;
         }
+
+        /**
+         * @return a flattened list of all nodes within the tree
+         */
+        @NonNull
+        private List<Node> findAllNodes() {
+            List<Node> leafNodes = new ArrayList<>();
+            findAllNodesRecursively(leafNodes);
+            return leafNodes;
+        }
+
+        /**
+         * @return recursively traverse nodes until we have all the nodes in thge list
+         */
+        private void findAllNodesRecursively(List<Node> nodeListByRef) {
+            nodeListByRef.add(this);
+            if (children != null) {
+                for (Node child : children) {
+                    child.findAllNodesRecursively(nodeListByRef);
+                }
+            }
+        }
     }
+
+    /**
+     * The separator used when naming sub-steps within SectionSteps
+     */
+    public static final String SECTION_STEP_PREFIX_SEPARATOR = "_";
 
     // Stores the list of progressMarkers which are the identifiers of the steps which count
     // towards computing the progress. An empty list represents the absence of progress markers,
@@ -135,13 +174,99 @@ public class TreeNavigator implements StepNavigator {
     @Nullable
     @Override
     public Step getStep(@NotNull String identifier) {
-        return this.stepsById.get(identifier);
+        Step step = this.stepsById.get(identifier);
+        if (step == null) {
+            // Due to the way that SectionStep's sub-step identifiers are created in ResourceTaskRepository.
+            // There may be some step identifiers that are prefixed with their sub-step identifiers.
+            // However, we can detect for that scenario with isNestedWithinSectionSteps function.
+            step = findStepNestedWithinSectionSteps(identifier);
+        }
+        return step;
     }
 
+    /**
+     * @param identifier to find at the end of the stepIdentifierPath
+     * @return true if we found the sub-step identifier at the end of the path,
+     *         and each part of the path is a section step containing the next part of the path.
+     */
     @Nullable
+    private Step findStepNestedWithinSectionSteps(@NotNull String identifier) {
+        for (Node node: root.findAllNodes()) {
+            if (isValidNestedStep(node, identifier)) {
+                return node.step;
+            }
+        }
+        return null;
+    }
+
+    /**
+     * @param node to check the validity of its path.
+     * @param matchingIdentifier that we are trying to match up with a valid leaf.
+     * @return true the path of the node corresponds
+     *         to the correct format of ResourceTaskRepository nested section steps.
+     */
+    private boolean isValidNestedStep(@NonNull Node node, @NonNull String matchingIdentifier) {
+        // Node must be a leaf to check for a valid nested step
+        if (node.step == null) {
+            return false;
+        }
+
+        // Create the path components to validate if the node's path
+        // conforms to how ResourceTaskRepository creates identifiers.
+        List<String> stepIdentifierPath = Arrays.asList(node.step.getIdentifier().split(SECTION_STEP_PREFIX_SEPARATOR));
+        if (stepIdentifierPath == null || node.parent == null || stepIdentifierPath.size() <= 0) {
+            return false;
+        }
+
+        int pathIndex = stepIdentifierPath.size();
+
+        // Make sure that the last part of the path is our matching identifier
+        if (!matchingIdentifier.equals(stepIdentifierPath.get(pathIndex - 1))) {
+            return false;
+        }
+
+        // Loop backwards and check that the node's nested step identifiers
+        // match how we expect the ResourceTaskRepository to make them.
+        Node parentNode = node;
+        do {
+            // Build the full identifier we expect for this node
+            List<String> currentPathToNode = stepIdentifierPath.subList(0, pathIndex);
+            String stepIdentifier = join(SECTION_STEP_PREFIX_SEPARATOR, currentPathToNode);
+
+            // If our expectedIdentifier doesn't match what the step identifier really is, it is not valid.
+            if (!(parentNode.step != null &&
+                    parentNode.step.getIdentifier().equals(stepIdentifier))) {
+                return false;
+            }
+            pathIndex--;
+            parentNode = parentNode.parent;
+        } while(parentNode != null);
+
+        // If we reached this point, all checks have passed and this is a valid nested step.
+        return true;
+    }
+
+    /**
+     * Unit testable join function.
+     * TextUtils.join() does not work with unit tests because it's in the Android framework.
+     */
+    @NonNull
+    private String join(@NonNull String delimiter, @NonNull List<String> parts) {
+        StringBuilder sb = new StringBuilder("");
+        for (int i = 0; i < parts.size(); i++) {
+            if (i > 0) {
+                sb.append(delimiter);
+            }
+            sb.append(parts.get(i));
+        }
+        return sb.toString();
+    }
+
+    @NotNull
     @Override
-    public Step getNextStep(@Nullable Step step, @NotNull TaskResult taskResult) {
-        return nextStepHelper(step, this.root, new AtomicBoolean(false));
+    public StepAndNavDirection getNextStep(@Nullable Step step, @NotNull TaskResult taskResult) {
+        Step nextStep = nextStepHelper(step, this.root, new AtomicBoolean(false));
+        return new StepAndNavDirection(nextStep, NavDirection.SHIFT_LEFT);
     }
 
     @Nullable

@@ -2,5 +2,5 @@
   "type": "navigation",
   "buttonIcon": "icon",
   "buttonTitle": "title",
-  "skipToStepIdentifier": "skipTo"
+  "skipToIdentifier": "skipTo"
 }
