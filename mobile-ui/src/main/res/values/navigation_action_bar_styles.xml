@@ -32,30 +32,26 @@
 
 <resources>
 
-    <style name="Widget.ResearchStack.NavigationActionBar.PrimaryButton" parent="">
-        <item name="android:background">@drawable/rs2_rounded_button</item>
-        <item name="android:textColor">@color/appTextDark</item>
-        <item name="android:fontFamily">@font/lato</item>
-        <item name="android:textSize">20sp</item>
-        <item name="android:textStyle">bold</item>
-        <item name="android:gravity">center</item>
+    <style
+        name="Widget.ResearchStack.NavigationActionBar.PrimaryButton"
+        parent="Research.ButterScotch.RoundedCornerMaterialButton">
         <item name="android:minHeight">@dimen/rs2_step_navigation_primary_button_min_height</item>
     </style>
 
-    <style name="Widget.ResearchStack.NavigationActionBar.PrimaryButton.Forward" parent="Widget.ResearchStack.NavigationActionBar.PrimaryButton">
+    <style
+        name="Widget.ResearchStack.NavigationActionBar.PrimaryButton.Forward"
+        parent="Widget.ResearchStack.NavigationActionBar.PrimaryButton">
         <item name="android:text">@string/rs2_navigation_action_forward</item>
     </style>
 
-    <style name="Widget.ResearchStack.NavigationActionBar.PrimaryButton.Backward" parent="Widget.ResearchStack.NavigationActionBar.PrimaryButton">
+    <style name="Widget.ResearchStack.NavigationActionBar.PrimaryButton.Backward"
+        parent="Widget.ResearchStack.NavigationActionBar.PrimaryButton">
         <item name="android:text">@string/rs2_navigation_action_backward</item>
     </style>
 
-    <style name="Widget.ResearchStack.NavigationActionBar.Skip" parent="">
+    <style name="Widget.ResearchStack.NavigationActionBar.Skip"
+        parent="Research.ImageButton">
         <item name="android:textColor">@color/royal500</item>
-        <item name="android:fontFamily">@font/lato</item>
-        <item name="android:textSize">20sp</item>
-        <item name="android:textStyle">bold</item>
-        <item name="android:gravity">center</item>
         <item name="android:text">@string/rs2_navigation_action_skip</item>
     </style>
 

@@ -308,4 +308,20 @@ public class PerformTaskFragment extends Fragment implements HasSupportFragmentI
         int runCount = sharedPreferences.getInt(RUN_COUNT_KEY, 1);
         return new SharedPrefsArgs(lastRunDateTime, runCount);
     }
+
+    /**
+     * Calls upon the perform task view model to go to the next step view
+     * If there is no next step view, the task will be finished
+     */
+    public void goForward() {
+        performTaskViewModel.goForward();
+    }
+
+    /**
+     * Calls upon the perform task view model to go to the previous step view
+     * If there is no next step view, the task will be canceled
+     */
+    public void goBackwards() {
+        performTaskViewModel.goBack();
+    }
 }
