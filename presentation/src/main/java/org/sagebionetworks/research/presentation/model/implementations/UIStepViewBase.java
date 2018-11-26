@@ -45,7 +45,7 @@ import org.sagebionetworks.research.domain.step.interfaces.Step;
 import org.sagebionetworks.research.domain.step.interfaces.ThemedUIStep;
 import org.sagebionetworks.research.domain.step.ui.action.Action;
 import org.sagebionetworks.research.domain.step.ui.action.ReminderAction;
-import org.sagebionetworks.research.domain.step.ui.action.SkipToStepAction;
+import org.sagebionetworks.research.domain.step.ui.action.SkipToAction;
 import org.sagebionetworks.research.presentation.model.action.ActionType;
 import org.sagebionetworks.research.presentation.DisplayString;
 import org.sagebionetworks.research.presentation.mapper.DrawableMapper;
@@ -54,7 +54,7 @@ import org.sagebionetworks.research.presentation.model.ImageThemeView;
 import org.sagebionetworks.research.presentation.model.action.ActionView;
 import org.sagebionetworks.research.presentation.model.action.ActionViewBase;
 import org.sagebionetworks.research.presentation.model.action.ReminderActionViewBase;
-import org.sagebionetworks.research.presentation.model.action.SkipToStepActionViewBase;
+import org.sagebionetworks.research.presentation.model.action.SkipToActionViewBase;
 import org.sagebionetworks.research.presentation.model.interfaces.UIStepView;
 
 import java.util.HashMap;
@@ -81,9 +81,6 @@ public class UIStepViewBase implements UIStepView {
 
     @Nullable
     private final ImageThemeView imageTheme;
-
-    @NavDirection
-    private final int navDirection;
 
     @Nullable
     private final DisplayString text;
@@ -113,9 +110,7 @@ public class UIStepViewBase implements UIStepView {
         DisplayString footnote = DisplayString.create(null, uiStep.getFootnote());
         ColorThemeView colorTheme = ColorThemeView.fromColorTheme(uiStep.getColorTheme());
         ImageThemeView imageTheme = ImageThemeView.fromImageTheme(uiStep.getImageTheme(), mapper);
-        // TODO: rkolmos 05/30/2018 for now the nav direction is always left.
-        return new UIStepViewBase(identifier, NavDirection.SHIFT_LEFT, actions, title, text, detail, footnote,
-                colorTheme, imageTheme);
+        return new UIStepViewBase(identifier, actions, title, text, detail, footnote, colorTheme, imageTheme);
     }
 
     /**
@@ -139,13 +134,12 @@ public class UIStepViewBase implements UIStepView {
      *         The imageTheme the UIStepViewBase should use, with resources fully resolved.
      */
     public UIStepViewBase(@NonNull final String identifier,
-            final int navDirection, @NonNull final ImmutableMap<String, ActionView> actions,
+            @NonNull final ImmutableMap<String, ActionView> actions,
             @Nullable final DisplayString title,
             @Nullable final DisplayString text, @Nullable final DisplayString detail,
             @Nullable final DisplayString footnote, @Nullable final ColorThemeView colorTheme,
             @Nullable final ImageThemeView imageTheme) {
         this.identifier = identifier;
-        this.navDirection = navDirection;
         this.actions = actions;
         this.title = title;
         this.text = text;
@@ -157,7 +151,6 @@ public class UIStepViewBase implements UIStepView {
 
     protected UIStepViewBase(Parcel in) {
         this.identifier = in.readString();
-        this.navDirection = in.readInt();
         this.actions = (ImmutableMap<String, ActionView>) in.readSerializable();
         this.title = in.readParcelable(DisplayString.class.getClassLoader());
         this.text = in.readParcelable(DisplayString.class.getClassLoader());
@@ -229,11 +222,6 @@ public class UIStepViewBase implements UIStepView {
     }
 
     @Override
-    public int getNavDirection() {
-        return navDirection;
-    }
-
-    @Override
     public String toString() {
         return MoreObjects.toStringHelper(this)
                 .add("actions", actions)
@@ -242,7 +230,6 @@ public class UIStepViewBase implements UIStepView {
                 .add("footnote", footnote)
                 .add("identifier", identifier)
                 .add("imageTheme", imageTheme)
-                .add("navDirection", navDirection)
                 .add("text", text)
                 .add("title", title)
                 .toString();
@@ -257,8 +244,7 @@ public class UIStepViewBase implements UIStepView {
             return false;
         }
         final UIStepViewBase that = (UIStepViewBase) o;
-        return navDirection == that.navDirection &&
-                Objects.equal(actions, that.actions) &&
+        return Objects.equal(actions, that.actions) &&
                 Objects.equal(colorTheme, that.colorTheme) &&
                 Objects.equal(detail, that.detail) &&
                 Objects.equal(footnote, that.footnote) &&
@@ -271,7 +257,7 @@ public class UIStepViewBase implements UIStepView {
     @Override
     public int hashCode() {
         return Objects
-                .hashCode(actions, colorTheme, detail, footnote, identifier, imageTheme, navDirection, text, title);
+                .hashCode(actions, colorTheme, detail, footnote, identifier, imageTheme, text, title);
     }
 
     protected static Map<String, ActionView> getActionsFrom(Map<String, Action> actions) {
@@ -281,8 +267,8 @@ public class UIStepViewBase implements UIStepView {
             Action action = entry.getValue();
             if (action instanceof ReminderAction) {
                 returnValue.put(key, ReminderActionViewBase.fromReminderAction((ReminderAction) action));
-            } else if (action instanceof SkipToStepAction) {
-                returnValue.put(key, SkipToStepActionViewBase.fromSkipToStepAction((SkipToStepAction) action));
+            } else if (action instanceof SkipToAction) {
+                returnValue.put(key, SkipToActionViewBase.fromSkipToStepAction((SkipToAction) action));
             } else {
                 returnValue.put(key, ActionViewBase.fromAction(action));
             }

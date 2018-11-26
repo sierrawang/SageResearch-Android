@@ -58,9 +58,9 @@ interface StepNavigator {
      *
      * @param step current step, or null if retrieving first step for TaskInfoView
      * @param taskResult current step result
-     * @return next step, or null if there is no next step
+     * @return next step and the navigation direction
      */
-    fun getNextStep(step: Step?, taskResult: TaskResult): Step?
+    fun getNextStep(step: Step?, taskResult: TaskResult): StepAndNavDirection
 
     /**
      * Get the step to go to before the given step.
@@ -86,3 +86,10 @@ interface StepNavigator {
      */
     fun getSteps(): List<Step>
 }
+
+/**
+ * StepAndNavDirection is a simple holder class to return a Tuple in getNextStep
+ */
+data class StepAndNavDirection(val step: Step?, val navDirection: Int = NavDirection.SHIFT_LEFT)
+
+

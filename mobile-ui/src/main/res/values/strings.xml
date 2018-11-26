@@ -32,6 +32,9 @@
 
 <resources>
     <!-- TODO: Remove or change this placeholder text -->
+    <string name="countdown_pause">Pause</string>
+    <string name="countdown_resume">Resume</string>
+
     <string name="hello_blank_fragment">Hello blank fragment</string>
     <string name="rs2_remind_later">Remind me later</string>
     <string name="tap_button_text">Tap</string>

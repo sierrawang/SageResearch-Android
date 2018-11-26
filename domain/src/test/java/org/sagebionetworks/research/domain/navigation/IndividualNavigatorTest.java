@@ -102,6 +102,24 @@ public abstract class IndividualNavigatorTest {
         return taskResult;
     }
 
+    public static TaskResult mockTaskResultFromResultsAndSteps(String identifier, List<Step> steps, List<Result> stepResults) {
+        TaskResult taskResult = mock(TaskResult.class);
+        for (int i = 0; i < steps.size(); i++) {
+            Result stepResult = stepResults.get(i);
+            Step step = steps.get(i);
+            String resultIdentifier = stepResult.getIdentifier();
+            when(taskResult.getResult(resultIdentifier)).thenReturn(stepResult);
+            when(taskResult.getResult(step)).thenReturn(stepResult);
+        }
+
+        ImmutableList.Builder<Result> builder = new ImmutableList.Builder<>();
+        builder.addAll(stepResults);
+        ImmutableList<Result> stepHistory = builder.build();
+        when(taskResult.getStepHistory()).thenReturn(stepHistory);
+        when(taskResult.getIdentifier()).thenReturn(identifier);
+        return taskResult;
+    }
+
     public IndividualNavigatorTest(StepNavigator navigator) {
         this.navigator = navigator;
         this.steps = TEST_STEPS;
@@ -158,7 +176,7 @@ public abstract class IndividualNavigatorTest {
     @Test
     public void testForward_From2() {
         TaskResult taskResult = mockTaskResult("task", steps.subList(0, 2));
-        Step nextStep = navigator.getNextStep(steps.get(2), taskResult);
+        Step nextStep = navigator.getNextStep(steps.get(2), taskResult).getStep();
         assertNotNull(nextStep);
         assertEquals("step3", nextStep.getIdentifier());
     }
@@ -176,7 +194,7 @@ public abstract class IndividualNavigatorTest {
         SectionStep step5 = (SectionStep) steps.get(5);
         stepHistory.add(mockTaskResult(step5.getIdentifier(), new ArrayList<Step>()));
         TaskResult taskResult = mockTaskResultFromResults("task", stepHistory);
-        Step nextStep = navigator.getNextStep(step5.getSteps().get(0), taskResult);
+        Step nextStep = navigator.getNextStep(step5.getSteps().get(0), taskResult).getStep();
         assertNotNull(nextStep);
         assertEquals("step5.Y", nextStep.getIdentifier());
     }
@@ -193,7 +211,7 @@ public abstract class IndividualNavigatorTest {
         SectionStep step5 = (SectionStep) steps.get(5);
         stepHistory.add(mockTaskResult(step5.getIdentifier(), step5.getSteps().subList(0, 2)));
         TaskResult taskResult = mockTaskResultFromResults("task", stepHistory);
-        Step nextStep = navigator.getNextStep(step5.getSteps().get(2), taskResult);
+        Step nextStep = navigator.getNextStep(step5.getSteps().get(2), taskResult).getStep();
         assertNotNull(nextStep);
         assertEquals("step6.A", nextStep.getIdentifier());
     }

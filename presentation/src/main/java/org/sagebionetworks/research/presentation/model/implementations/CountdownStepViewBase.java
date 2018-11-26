@@ -19,13 +19,13 @@ import org.threeten.bp.Duration;
 public class CountdownStepViewBase extends ActiveUIStepViewBase implements CountdownStepView {
     public static final String TYPE = StepType.COUNTDOWN;
 
-    public CountdownStepViewBase(@NonNull String identifier, int navDirection,
+    public CountdownStepViewBase(@NonNull String identifier,
                                  @NonNull ImmutableMap<String, ActionView> actions,
                                  @Nullable DisplayString title, @Nullable DisplayString text,
                                  @Nullable DisplayString detail, @Nullable DisplayString footnote,
                                  @Nullable ColorThemeView colorTheme, @Nullable ImageThemeView imageTheme,
                                  @NonNull Duration duration, boolean isBackgroundAudioRequired) {
-        super(identifier, navDirection, actions, title, text, detail, footnote, colorTheme, imageTheme, duration, isBackgroundAudioRequired);
+        super(identifier, actions, title, text, detail, footnote, colorTheme, imageTheme, duration, isBackgroundAudioRequired);
     }
 
     public static CountdownStepViewBase fromCountdownStep(Step step, DrawableMapper mapper) {
@@ -34,7 +34,7 @@ public class CountdownStepViewBase extends ActiveUIStepViewBase implements Count
         }
 
         ActiveUIStepViewBase activeStep = ActiveUIStepViewBase.fromActiveUIStep(step, mapper);
-        return new CountdownStepViewBase(activeStep.getIdentifier(), activeStep.getNavDirection(),
+        return new CountdownStepViewBase(activeStep.getIdentifier(),
                 activeStep.getActions(), activeStep.getTitle(), activeStep.getText(),
                 activeStep.getDetail(), activeStep.getFootnote(), activeStep.getColorTheme(),
                 activeStep.getImageTheme(), activeStep.getDuration(), activeStep.isBackgroundAudioRequired());

@@ -191,6 +191,28 @@ public class TaskResultBase extends ResultBase implements TaskResult {
         return new TaskResultBase(this, newData);
     }
 
+    @Nullable
+    @Override
+    public TaskResult removeAsyncResult(final Result result) {
+        List<Result> asyncResults = new ArrayList<>(this.getAsyncResults());
+        Iterator<Result> iterator = asyncResults.iterator();
+        boolean foundResult = false;
+        while (iterator.hasNext()) {
+            Result stepResult = iterator.next();
+            if (!foundResult && stepResult.getIdentifier().equals(result.getIdentifier())) {
+                foundResult = true;
+            }
+
+            if (foundResult) {
+                iterator.remove();
+            }
+        }
+
+        TaskResultData newData = TaskResultData.create(
+                getTaskUUID(), getSchemaInfo(), getStepHistory(), asyncResults);
+        return new TaskResultBase(this, newData);
+    }
+
     @Override
     @NonNull
     public List<Result> getResultsMatchingRegex(@RegEx String regex) {

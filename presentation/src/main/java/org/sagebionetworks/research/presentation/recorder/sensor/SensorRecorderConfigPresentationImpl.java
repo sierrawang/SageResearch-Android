@@ -56,12 +56,18 @@ public abstract class SensorRecorderConfigPresentationImpl implements SensorReco
 
         public abstract Builder setStopStepIdentifier(@Nullable String stopStepIdentifier);
 
+        public abstract Builder setShouldDeletePrevious(boolean shouldDeletePrevious);
+
         public abstract Builder setType(@NonNull String type);
     }
 
     public static Builder builder() {
-        return new AutoValue_SensorRecorderConfigPresentationImpl.Builder();
+        return new AutoValue_SensorRecorderConfigPresentationImpl.Builder()
+                .setShouldDeletePrevious(true);
     }
+
+    @Override
+    public abstract boolean getShouldDeletePrevious();
 
     @Override
     @NonNull

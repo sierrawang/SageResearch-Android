@@ -35,10 +35,6 @@ package org.sagebionetworks.research.domain.inject;
 import org.sagebionetworks.research.domain.RuntimeTypeAdapterFactory;
 import org.sagebionetworks.research.domain.step.ui.action.Action;
 import org.sagebionetworks.research.domain.impl.ActionAutoValueModule;
-import org.sagebionetworks.research.domain.step.ui.action.ReminderAction;
-import org.sagebionetworks.research.domain.step.ui.action.SkipToStepAction;
-import org.sagebionetworks.research.domain.step.ui.action.Action;
-import org.sagebionetworks.research.domain.impl.ActionAutoValueModule;
 
 import java.util.Map;
 import java.util.Map.Entry;

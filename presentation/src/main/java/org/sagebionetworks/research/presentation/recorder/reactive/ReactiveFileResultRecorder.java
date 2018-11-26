@@ -116,7 +116,13 @@ public class ReactiveFileResultRecorder<E> extends ReactiveRecorder<E, FileResul
 
         try {
             reactiveDataSubscription = subscription;
+
+            // Creating a new PrintSteam object here will overwrite any
+            // file that already exists at this location
+            // If ever we want to allow for appending to a file,
+            // call new PrintStream(new FileOutputStream(outputFile, true));
             outputStream = new PrintStream(this.outputFile);
+
             outputStream.print(this.start);
         } catch (Throwable t) {
             onReactiveDataError(t);

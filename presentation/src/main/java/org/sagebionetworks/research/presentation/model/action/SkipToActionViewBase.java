@@ -30,16 +30,38 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.sagebionetworks.research.domain.step.ui.action;
+package org.sagebionetworks.research.presentation.model.action;
 
-import android.support.annotation.Nullable;
+import com.google.auto.value.AutoValue;
 
-public interface SkipToStepAction extends Action {
-    /**
-     * Returns the identifier of the step to skip to for this action.
-     *
-     * @return the identifier of the step to skip to fro this action.
-     */
-    @Nullable
-    String getSkipToStepIdentifier();
+import org.sagebionetworks.research.domain.step.ui.action.SkipToAction;
+import org.sagebionetworks.research.presentation.DisplayDrawable;
+import org.sagebionetworks.research.presentation.DisplayString;
+
+import javax.annotation.Nullable;
+
+@AutoValue
+public abstract class SkipToActionViewBase implements SkipToActionView {
+    @AutoValue.Builder
+    public abstract static class Builder {
+        public abstract SkipToActionViewBase build();
+
+        public abstract Builder setButtonIcon(@Nullable DisplayDrawable buttonIcon);
+
+        public abstract Builder setButtonTitle(@Nullable DisplayString buttonTitle);
+
+        public abstract Builder setSkipToIdentifier(@Nullable String skipToIdentifier);
+    }
+
+    public static Builder builder() {
+        return new AutoValue_SkipToActionViewBase.Builder();
+    }
+
+    public static SkipToActionViewBase fromSkipToStepAction(SkipToAction skipToStepAction) {
+        // TODO rkolmos 06/07/2018 add the icon to this method.
+        return SkipToActionViewBase.builder()
+                .setButtonTitle(DisplayString.create(null, skipToStepAction.getButtonTitle()))
+                .setSkipToIdentifier(skipToStepAction.getSkipToIdentifier())
+                .build();
+    }
 }

@@ -10,28 +10,34 @@ import static junit.framework.Assert.assertTrue;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.argThat;
 import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 import static org.mockito.Mockito.withSettings;
 
-import com.google.common.collect.ImmutableList;
-
 import org.junit.Test;
 import org.mockito.ArgumentMatcher;
+import org.sagebionetworks.research.domain.result.ResultType;
+import org.sagebionetworks.research.domain.result.implementations.NavigationAnswerResultBase;
+import org.sagebionetworks.research.domain.result.implementations.NavigationResultBase;
+import org.sagebionetworks.research.domain.result.implementations.ResultBase;
+import org.sagebionetworks.research.domain.result.implementations.TaskResultBase;
 import org.sagebionetworks.research.domain.result.interfaces.Result;
 import org.sagebionetworks.research.domain.result.interfaces.TaskResult;
 import org.sagebionetworks.research.domain.step.interfaces.SectionStep;
 import org.sagebionetworks.research.domain.step.interfaces.Step;
 import org.sagebionetworks.research.domain.task.Task;
-import org.sagebionetworks.research.domain.task.Task;
+import org.sagebionetworks.research.domain.task.navigation.NavDirection;
+import org.sagebionetworks.research.domain.task.navigation.StepAndNavDirection;
 import org.sagebionetworks.research.domain.task.navigation.TaskProgress;
 import org.sagebionetworks.research.domain.task.navigation.strategy.StepNavigationStrategy.BackStepStrategy;
 import org.sagebionetworks.research.domain.task.navigation.strategy.StepNavigationStrategy.NextStepStrategy;
 import org.sagebionetworks.research.domain.task.navigation.strategy.StepNavigationStrategy.SkipStepStrategy;
 import org.sagebionetworks.research.domain.task.navigation.strategy.StrategyBasedNavigator;
+import org.threeten.bp.Instant;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
+import java.util.UUID;
 
 public class StrategyBasedNavigatorTest extends IndividualNavigatorTest {
     private static final String SKIP_RESULT_IDENTIFIER = "skip";
@@ -120,7 +126,7 @@ public class StrategyBasedNavigatorTest extends IndividualNavigatorTest {
     public void testNext_From3() {
         TaskResult taskResult = mockTaskResult("task", STRATEGY_TEST_STEPS.subList(0, 3));
         // Step 3 has a next rule which returns "step1" so we should move on to step1.
-        Step nextStep = STRATEGY_TEST_NAVIGATOR.getNextStep(STRATEGY_TEST_STEPS.get(3), taskResult);
+        Step nextStep = STRATEGY_TEST_NAVIGATOR.getNextStep(STRATEGY_TEST_STEPS.get(3), taskResult).getStep();
         assertNotNull(nextStep);
         assertEquals("step1", nextStep.getIdentifier());
     }
@@ -130,7 +136,7 @@ public class StrategyBasedNavigatorTest extends IndividualNavigatorTest {
     public void testNext_FromIntroduction() {
         TaskResult taskResult = mockTaskResult("task", new ArrayList<Step>());
         // The introduction step has a next rule which returns "step2" so we should move on to step2.
-        Step nextStep = STRATEGY_TEST_NAVIGATOR.getNextStep(STRATEGY_TEST_STEPS.get(0), taskResult);
+        Step nextStep = STRATEGY_TEST_NAVIGATOR.getNextStep(STRATEGY_TEST_STEPS.get(0), taskResult).getStep();
         assertNotNull(nextStep);
         assertEquals("step2", nextStep.getIdentifier());
     }
@@ -147,7 +153,7 @@ public class StrategyBasedNavigatorTest extends IndividualNavigatorTest {
         TaskResult taskResult = mockTaskResultFromResults("task", stepHistory);
         // step5.Y has a next rule returns "step7" so we should move on to step7.
         SectionStep step5 = (SectionStep) STRATEGY_TEST_STEPS.get(5);
-        Step nextStep = STRATEGY_TEST_NAVIGATOR.getNextStep(step5.getSteps().get(1), taskResult);
+        Step nextStep = STRATEGY_TEST_NAVIGATOR.getNextStep(step5.getSteps().get(1), taskResult).getStep();
         assertNotNull(nextStep);
         assertEquals("step7", nextStep.getIdentifier());
     }
@@ -164,7 +170,7 @@ public class StrategyBasedNavigatorTest extends IndividualNavigatorTest {
         TaskResult taskResult = mockTaskResultFromResults("task", stepHistory);
         // step5.Z has a next rule returns "step4.B" so we should move on to step4.B.
         SectionStep step5 = (SectionStep) STRATEGY_TEST_STEPS.get(5);
-        Step nextStep = STRATEGY_TEST_NAVIGATOR.getNextStep(step5.getSteps().get(2), taskResult);
+        Step nextStep = STRATEGY_TEST_NAVIGATOR.getNextStep(step5.getSteps().get(2), taskResult).getStep();
         assertNotNull(nextStep);
         assertEquals("step4.B", nextStep.getIdentifier());
     }
@@ -181,7 +187,7 @@ public class StrategyBasedNavigatorTest extends IndividualNavigatorTest {
         stepHistory.add(mockSectionResult(STRATEGY_TEST_STEPS.get(6), 0, 3));
         TaskResult taskResult = mockTaskResultFromResults("task", stepHistory);
         // step7 has a next rule returns "step6.A" so we should move on to step6.A.
-        Step nextStep = STRATEGY_TEST_NAVIGATOR.getNextStep(STRATEGY_TEST_STEPS.get(7), taskResult);
+        Step nextStep = STRATEGY_TEST_NAVIGATOR.getNextStep(STRATEGY_TEST_STEPS.get(7), taskResult).getStep();
         assertNotNull(nextStep);
         assertEquals("step6.A", nextStep.getIdentifier());
     }
@@ -193,7 +199,7 @@ public class StrategyBasedNavigatorTest extends IndividualNavigatorTest {
         TaskResult taskResult = mockTaskResult("task", STRATEGY_TEST_STEPS.subList(0, 2));
         // Step 2 returns null for it's next step identifier so the default behaviour should kick in and we should
         // move on to step3.
-        Step nextStep = STRATEGY_TEST_NAVIGATOR.getNextStep(STRATEGY_TEST_STEPS.get(2), taskResult);
+        Step nextStep = STRATEGY_TEST_NAVIGATOR.getNextStep(STRATEGY_TEST_STEPS.get(2), taskResult).getStep();
         assertNotNull(nextStep);
         assertEquals("step3", nextStep.getIdentifier());
     }
@@ -221,7 +227,7 @@ public class StrategyBasedNavigatorTest extends IndividualNavigatorTest {
         }
         TaskResult taskResult = mockTaskResultFromResults("task", stepHistory);
         // From step1, step2 shouldn't be skipped so we should end up there.
-        Step nextStep = STRATEGY_TEST_NAVIGATOR.getNextStep(STRATEGY_TEST_STEPS.get(1), taskResult);
+        Step nextStep = STRATEGY_TEST_NAVIGATOR.getNextStep(STRATEGY_TEST_STEPS.get(1), taskResult).getStep();
         assertNotNull(nextStep);
         assertEquals("step2", nextStep.getIdentifier());
     }
@@ -238,7 +244,7 @@ public class StrategyBasedNavigatorTest extends IndividualNavigatorTest {
         TaskResult taskResult = mockTaskResultFromResults("task", stepHistory);
         // From step4.C, we should go directly to step5.X since this step shouldn't be skipped.
         SectionStep step4 = (SectionStep) STRATEGY_TEST_STEPS.get(4);
-        Step nextStep = STRATEGY_TEST_NAVIGATOR.getNextStep(step4.getSteps().get(2), taskResult);
+        Step nextStep = STRATEGY_TEST_NAVIGATOR.getNextStep(step4.getSteps().get(2), taskResult).getStep();
         assertNotNull(nextStep);
         assertEquals("step5.X", nextStep.getIdentifier());
     }
@@ -253,7 +259,7 @@ public class StrategyBasedNavigatorTest extends IndividualNavigatorTest {
         }
         TaskResult taskResult = mockTaskResultFromResults("task", stepHistory);
         // From step1 we should go directly to step 3 since step 2 should be skipped.
-        Step nextStep = STRATEGY_TEST_NAVIGATOR.getNextStep(STRATEGY_TEST_STEPS.get(1), taskResult);
+        Step nextStep = STRATEGY_TEST_NAVIGATOR.getNextStep(STRATEGY_TEST_STEPS.get(1), taskResult).getStep();
         assertNotNull(nextStep);
         assertEquals("step3", nextStep.getIdentifier());
     }
@@ -270,7 +276,7 @@ public class StrategyBasedNavigatorTest extends IndividualNavigatorTest {
         TaskResult taskResult = mockTaskResultFromResults("task", stepHistory);
         // From step4.C, we should go directly to step5.Y since step5.X should be skipped.
         SectionStep step4 = (SectionStep) STRATEGY_TEST_STEPS.get(4);
-        Step nextStep = STRATEGY_TEST_NAVIGATOR.getNextStep(step4.getSteps().get(2), taskResult);
+        Step nextStep = STRATEGY_TEST_NAVIGATOR.getNextStep(step4.getSteps().get(2), taskResult).getStep();
         assertNotNull(nextStep);
         assertEquals("step5.Y", nextStep.getIdentifier());
     }
@@ -301,6 +307,56 @@ public class StrategyBasedNavigatorTest extends IndividualNavigatorTest {
         }
 
         return step;
+    }
+
+    @Test
+    public void test_NavigationResultBase() {
+        List<Step> steps = Arrays.asList(mockStep("step1"), mockStep("step2"), mockStep("step3"));
+        Task task = mockTask(steps, TEST_PROGRESS_MARKERS);
+        StrategyBasedNavigator navigator = new StrategyBasedNavigator(task, TEST_PROGRESS_MARKERS);
+
+        // Remove the last navigation result so we just go to end of the task
+        List<Result> stepHistory = new ArrayList<>();
+        stepHistory.add(new NavigationResultBase("step1", Instant.EPOCH, Instant.EPOCH, "step3"));
+        stepHistory.add(new ResultBase("step2", Instant.EPOCH, Instant.EPOCH));
+        TaskResult taskResult = mockTaskResultFromResultsAndSteps("task", steps.subList(0, 2), stepHistory);
+
+        StepAndNavDirection nextStepAndDirection = navigator.getNextStep(null, taskResult);
+        assertEquals(NavDirection.SHIFT_LEFT, nextStepAndDirection.getNavDirection());
+        assertNotNull(nextStepAndDirection.getStep());
+        assertEquals("step1", nextStepAndDirection.getStep().getIdentifier());
+
+        nextStepAndDirection = navigator.getNextStep(nextStepAndDirection.getStep(), taskResult);
+        assertEquals(NavDirection.SHIFT_LEFT, nextStepAndDirection.getNavDirection());
+        assertNotNull(nextStepAndDirection.getStep());
+        assertEquals("step3", nextStepAndDirection.getStep().getIdentifier());
+
+        // Remove the last navigation result so we just go to end of the task
+        stepHistory = new ArrayList<>();
+        stepHistory.add(new NavigationResultBase("step1", Instant.EPOCH, Instant.EPOCH, "step3"));
+        stepHistory.add(new ResultBase("step2", Instant.EPOCH, Instant.EPOCH));
+        stepHistory.add(new NavigationResultBase("step3", Instant.EPOCH, Instant.EPOCH, "step2"));
+        taskResult = mockTaskResultFromResultsAndSteps("task", steps, stepHistory);
+
+        nextStepAndDirection = navigator.getNextStep(nextStepAndDirection.getStep(), taskResult);
+        assertEquals(NavDirection.SHIFT_RIGHT, nextStepAndDirection.getNavDirection());
+        assertNotNull(nextStepAndDirection.getStep());
+        assertEquals("step2", nextStepAndDirection.getStep().getIdentifier());
+
+        nextStepAndDirection = navigator.getNextStep(nextStepAndDirection.getStep(), taskResult);
+        assertEquals(NavDirection.SHIFT_LEFT, nextStepAndDirection.getNavDirection());
+        assertNotNull(nextStepAndDirection.getStep());
+        assertEquals("step3", nextStepAndDirection.getStep().getIdentifier());
+
+        stepHistory = new ArrayList<>();
+        stepHistory.add(new NavigationResultBase("step1", Instant.EPOCH, Instant.EPOCH, "step3"));
+        stepHistory.add(new ResultBase("step2", Instant.EPOCH, Instant.EPOCH));
+        stepHistory.add(new ResultBase("step3", Instant.EPOCH, Instant.EPOCH));
+        taskResult = mockTaskResultFromResultsAndSteps("task", steps, stepHistory);
+
+        nextStepAndDirection = navigator.getNextStep(nextStepAndDirection.getStep(), taskResult);
+        assertEquals(NavDirection.SHIFT_LEFT, nextStepAndDirection.getNavDirection());
+        assertNull(nextStepAndDirection.getStep());
     }
 
     static {
