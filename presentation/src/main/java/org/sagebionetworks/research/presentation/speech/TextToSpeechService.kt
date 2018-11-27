@@ -95,12 +95,23 @@ class TextToSpeechService : DaggerService(), OnInitListener {
 
     private data class FutureSpeechData(val speechMap: MutableMap<Long, Pair<String, Boolean>>,
             val duration: Duration,
-            val countdown: LiveData<Long>) {
+            val countdown: LiveData<Long>,
+            /**
+             * @property countDownObserver is called every second that has passed in the countdown
+             *                             with the new countdown value.
+             *                             This is observed infinitely by this service until
+             *                             it is removed in the clear() fun.
+             */
+            var countDownObserver: Observer<Long>? = null) {
 
         fun hasQueuedSpeech(): Boolean {
             // if speechMap != null duration != null and countdown != null
             val currentOffset = duration.seconds - (countdown.value ?: 0L)
-            return speechMap.keys.any { offset -> offset > currentOffset }
+            val hasQueuedSpeech = speechMap.keys.any { offset ->
+                LOGGER.info("offset $offset and countdownOffset $currentOffset for ${speechMap[offset]} ")
+                offset > currentOffset
+            }
+            return hasQueuedSpeech
         }
     }
 
@@ -164,6 +175,7 @@ class TextToSpeechService : DaggerService(), OnInitListener {
     }
 
     override fun onCreate() {
+        LOGGER.info("onCreate called")
         super.onCreate()
         AndroidInjection.inject(this)
     }
@@ -183,11 +195,9 @@ class TextToSpeechService : DaggerService(), OnInitListener {
     }
 
     override fun onDestroy() {
-        textToSpeech?.stop()
-        textToSpeech?.shutdown()
-        textToSpeech = null
-        cleanupMediator.removeObserver(cleanupObserver)
+        LOGGER.info("onDestroy called")
         clear()
+        cleanupMediator.removeObserver(cleanupObserver)
         super.onDestroy()
     }
 
@@ -200,16 +210,17 @@ class TextToSpeechService : DaggerService(), OnInitListener {
                     tts.language = Locale.getDefault()
                     tts.setOnUtteranceProgressListener(object : UtteranceProgressListener() {
                         override fun onDone(text: String?) {
-                            if (!tts.isSpeaking) {
-                                val data = futureSpeechData
-                                if (data == null || !data.hasQueuedSpeech()) {
-                                    // The TTS has just finished so we can shut it down and set the state to idle
-                                    _state.postValue(TextToSpeechState(IDLE, null))
-                                    tts.shutdown()
-                                } else {
-                                    // More speech is queued
-                                    _state.postValue(TextToSpeechState(QUEUED, null))
-                                }
+                            LOGGER.info("TTS done speaking $text")
+                            val data = futureSpeechData
+                            if (data == null || !data.hasQueuedSpeech()) {
+                                LOGGER.info("No more text to speak, updating state to IDLE")
+                                // The TTS has just finished so we can shut it down and set the state to idle
+                                _state.postValue(TextToSpeechState(IDLE, null))
+                                tts.shutdown()
+                            } else {
+                                LOGGER.info("There is more text to speak, updating state to QUEUED")
+                                // More speech is queued
+                                _state.postValue(TextToSpeechState(QUEUED, null))
                             }
                         }
 
@@ -243,8 +254,9 @@ class TextToSpeechService : DaggerService(), OnInitListener {
      * spoken to the user.
      */
     fun registerSpeechesOnCountdown(duration: Duration, countdown: LiveData<Long>, speechMap: Map<String, String>) {
-        LOGGER.debug(
-                "register speeches on countdown called,\nduration: $duration\ncountdown: $countdown\nspeechMap: $speechMap")
+        clear()
+        LOGGER.debug("register speeches on countdown called,\nduration: " +
+                "$duration\ncountdown: $countdown\nspeechMap: $speechMap")
         textToSpeech = TextToSpeech(this, this)
         val canonicalSpeechMap = getCanonicalSpeechMap(speechMap, duration).toMutableMap()
         val currentCount = countdown.value
@@ -266,16 +278,18 @@ class TextToSpeechService : DaggerService(), OnInitListener {
                 }
             }
         }
-
-        futureSpeechData = FutureSpeechData(canonicalSpeechMap, duration, countdown)
-        futureSpeechData?.countdown?.observeForever(::onCountdownChanged)
+        val countdownObserver = Observer<Long> {
+            onCountdownChanged(it)
+        }
+        futureSpeechData = FutureSpeechData(canonicalSpeechMap, duration, countdown, countdownObserver)
+        futureSpeechData?.countdown?.observeForever(countdownObserver)
     }
 
     /**
      * Stops speaking and removes all registered speeches.
      */
     fun clear() {
-        LOGGER.debug("clear() called")
+        LOGGER.debug("clear() called countdown observer ${futureSpeechData?.countdown}")
         textToSpeech?.let { tts ->
             // Stop speaking and shut down the current text to speech.
             if (tts.isSpeaking) {
@@ -286,7 +300,11 @@ class TextToSpeechService : DaggerService(), OnInitListener {
             textToSpeech = null
         }
 
-        futureSpeechData?.countdown?.removeObserver(::onCountdownChanged)
+        futureSpeechData?.countdown?.let { liveData ->
+            futureSpeechData?.countDownObserver?.let { observer ->
+                liveData.removeObserver(observer)
+            }
+        }
         futureSpeechData = null
     }
 
@@ -388,6 +406,7 @@ class TextToSpeechService : DaggerService(), OnInitListener {
      * @param count the current value of the countdown.
      */
     private fun onCountdownChanged(count: Long?) {
+        LOGGER.info("onCountdownChanged to $count")
         val data = futureSpeechData
         if (data != null && count != null) {
             val elapsedTime = data.duration.seconds - count

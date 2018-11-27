@@ -53,10 +53,10 @@ import android.widget.TextView;
 
 import org.sagebionetworks.research.domain.result.implementations.ResultBase;
 import org.sagebionetworks.research.mobile_ui.show_step.view.view_binding.ActiveUIStepViewBinding;
-import org.sagebionetworks.research.mobile_ui.widget.ActionButton;
 import org.sagebionetworks.research.presentation.model.action.ActionType;
 import org.sagebionetworks.research.presentation.model.interfaces.ActiveUIStepView;
 import org.sagebionetworks.research.presentation.show_step.show_step_view_models.ShowActiveUIStepViewModel;
+import org.sagebionetworks.research.presentation.speech.TextToSpeechService.TextToSpeechState;
 import org.threeten.bp.Instant;
 import java.util.Locale;
 import org.sagebionetworks.research.presentation.speech.TextToSpeechService;
@@ -90,6 +90,8 @@ public abstract class ShowActiveUIStepFragmentBase<S extends ActiveUIStepView, V
     private Connection connection;
     private boolean isBound;
     private TextToSpeechService textToSpeechService;
+    @Nullable
+    private Observer<TextToSpeechState> textToSpeechStateObserver;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -134,39 +136,38 @@ public abstract class ShowActiveUIStepFragmentBase<S extends ActiveUIStepView, V
 
     @Override
     public void onDestroy() {
-        super.onDestroy();
         if (isBound) {
             if (getContext() != null) {
                 getContext().unbindService(connection);
             }
         }
+        super.onDestroy();
     }
 
     public void goForward() {
         addStepResultAfterCountdown();
         if (!stepView.getSpokenInstructions().isEmpty() && isBound) {
-            textToSpeechService.getState().observe(this, state -> {
-                if (state != null && state.getSpeakingState().equals(SpeakingState.IDLE)) {
-                    showStepViewModel.handleAction(ActionType.FORWARD);
-                }
-            });
-        }
-    }
-
-    /**
-     * Called whenever one of this fragment's ActionButton's is clicked. Subclasses should override to correctly
-     * handle their ActionButtons.
-     *
-     * @param actionButton
-     *         the ActionButton that was clicked by the user.
-     */
-    @Override
-    protected void handleActionButtonClick(@NonNull ActionButton actionButton) {
-        @ActionType String actionType = this.getActionTypeFromActionButton(actionButton);
-        if (ActionType.FORWARD.equals(actionType)) {
-            goForward();
+            if (textToSpeechStateObserver == null) {
+                LOGGER.info("TTS service running, before we go forward, we must check if the state is IDLE");
+                textToSpeechStateObserver = state -> {
+                    if (state != null) {
+                        LOGGER.info("Text to speech state changed to " + state.getSpeakingState());
+                        if (state.getSpeakingState().equals(SpeakingState.IDLE)) {
+                            LOGGER.info("TTS is IDLE, we can move to the next step.");
+                            textToSpeechService.getState().removeObserver(textToSpeechStateObserver);
+                            showStepViewModel.handleAction(ActionType.FORWARD);
+                        }
+                    }
+                };
+            } else {
+                LOGGER.info("Removing previous TTS state observer before adding another one");
+                textToSpeechService.getState().removeObserver(textToSpeechStateObserver);
+            }
+            LOGGER.info("Adding TTS state observer before before moving forward");
+            textToSpeechService.getState().observe(this, textToSpeechStateObserver);
         } else {
-            this.showStepViewModel.handleAction(actionType);
+            LOGGER.info("No TTS service running, move to next step");
+            showStepViewModel.handleAction(ActionType.FORWARD);
         }
     }
 
