@@ -152,7 +152,8 @@ public abstract class ShowActiveUIStepFragmentBase<S extends ActiveUIStepView, V
                 textToSpeechStateObserver = state -> {
                     if (state != null) {
                         LOGGER.info("Text to speech state changed to " + state.getSpeakingState());
-                        if (state.getSpeakingState().equals(SpeakingState.IDLE)) {
+                        if (!SpeakingState.SPEAKING.equals(state.getSpeakingState()) &&
+                                !SpeakingState.QUEUED.equals(state.getSpeakingState())) {
                             LOGGER.info("TTS is IDLE, we can move to the next step.");
                             textToSpeechService.getState().removeObserver(textToSpeechStateObserver);
                             showStepViewModel.handleAction(ActionType.FORWARD);
