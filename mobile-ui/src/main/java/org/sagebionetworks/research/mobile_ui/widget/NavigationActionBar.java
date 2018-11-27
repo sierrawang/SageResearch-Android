@@ -87,6 +87,17 @@ public class NavigationActionBar extends ConstraintLayout {
     @BindView(R2.id.rs2_step_navigation_action_forward)
     @NonNull
     ActionButton forwardButton;
+    public ActionButton getForwardButton() {
+        return forwardButton;
+    }
+    public void setForwardButtonEnabled(boolean enabled) {
+        forwardButton.setEnabled(enabled);
+        if (enabled) {
+            forwardButton.setAlpha(1.0f);
+        } else {
+            forwardButton.setAlpha(0.4f);
+        }
+    }
 
     @BindView(R2.id.rs2_step_navigation_primary_button_group)
     @NonNull

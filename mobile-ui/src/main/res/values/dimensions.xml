@@ -43,4 +43,11 @@
     <dimen name="rs2_completely_rounded_corner_radius">1000dp</dimen>
 
     <dimen name="mpower2_tap_button_stroke_width">5dp</dimen>
+
+    <!-- Button Sizes -->
+    <dimen name="rounded_button_text_size">20sp</dimen>
+    <dimen name="image_button_text_size">20sp</dimen>
+    <dimen name="rounded_button_height">50dp</dimen>
+    <dimen name="rounded_button_radius">25dp</dimen>
+
 </resources>
