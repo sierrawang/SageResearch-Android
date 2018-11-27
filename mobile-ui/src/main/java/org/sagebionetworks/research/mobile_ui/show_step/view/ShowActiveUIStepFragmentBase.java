@@ -42,7 +42,6 @@ import android.content.Intent;
 import android.content.ServiceConnection;
 import android.os.Bundle;
 import android.os.IBinder;
-import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -59,6 +58,8 @@ import org.sagebionetworks.research.presentation.show_step.show_step_view_models
 import org.sagebionetworks.research.presentation.speech.TextToSpeechService.TextToSpeechState;
 import org.threeten.bp.Instant;
 import java.util.Locale;
+import java.util.Map;
+
 import org.sagebionetworks.research.presentation.speech.TextToSpeechService;
 import org.sagebionetworks.research.presentation.speech.TextToSpeechService.TextToSpeechState.SpeakingState;
 import org.slf4j.Logger;
@@ -72,8 +73,8 @@ public abstract class ShowActiveUIStepFragmentBase<S extends ActiveUIStepView, V
         public void onServiceConnected(final ComponentName componentName, final IBinder iBinder) {
             isBound = true;
             textToSpeechService = ((TextToSpeechService.Binder)iBinder).getService();
-            textToSpeechService.registerSpeechesOnCountdown(stepView.getDuration(), showStepViewModel.getCountdown(),
-                    stepView.getSpokenInstructions());
+            textToSpeechService.registerSpeechesOnCountdown(
+                    stepView.getDuration(), showStepViewModel.getCountdown(), formattedSpokenInstructions());
         }
 
         @Override
@@ -97,7 +98,7 @@ public abstract class ShowActiveUIStepFragmentBase<S extends ActiveUIStepView, V
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         connection = new Connection();
-        if (!stepView.getSpokenInstructions().isEmpty()) {
+        if (!isSpokenInstructionsEmpty()) {
             bindTextToSpeechService();
         }
     }
@@ -129,7 +130,7 @@ public abstract class ShowActiveUIStepFragmentBase<S extends ActiveUIStepView, V
     @Override
     public void onStart() {
         super.onStart();
-        if (!stepView.getSpokenInstructions().isEmpty() && !isBound) {
+        if (!isSpokenInstructionsEmpty() && !isBound) {
             LOGGER.warn("TextToSpeechService is not bound");
         }
     }
@@ -146,7 +147,7 @@ public abstract class ShowActiveUIStepFragmentBase<S extends ActiveUIStepView, V
 
     public void goForward() {
         addStepResultAfterCountdown();
-        if (!stepView.getSpokenInstructions().isEmpty() && isBound) {
+        if (!isSpokenInstructionsEmpty() && isBound) {
             if (textToSpeechStateObserver == null) {
                 LOGGER.info("TTS service running, before we go forward, we must check if the state is IDLE");
                 textToSpeechStateObserver = state -> {
@@ -244,5 +245,23 @@ public abstract class ShowActiveUIStepFragmentBase<S extends ActiveUIStepView, V
         }
         Intent intent = new Intent(getContext(), TextToSpeechService.class);
         getContext().bindService(intent, connection, Context.BIND_AUTO_CREATE);
+    }
+
+    /**
+     * Sub-classes can override to do custom formatting.
+     * If this functions returns a stepView.getSpokenInstructions() with a different map keySet count,
+     * then isSpokenInstructionsEmpty() must be overwritten to check against the map returned from this function.
+     * @return a spoken instructions map that has its values correctly formatted for any cases where,
+     *         "%s" or "%d" need filled in with a dynamic value.
+     */
+    protected Map<String, String> formattedSpokenInstructions() {
+        return stepView.getSpokenInstructions();
+    }
+
+    /**
+     * @return true if there are no instructions to speak for this step, false if there are.
+     */
+    protected boolean isSpokenInstructionsEmpty() {
+        return stepView.getSpokenInstructions().isEmpty();
     }
 }
