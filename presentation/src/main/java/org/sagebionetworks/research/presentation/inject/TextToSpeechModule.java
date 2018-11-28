@@ -30,25 +30,48 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.sagebionetworks.research.mobile_ui.inject;
+package org.sagebionetworks.research.presentation.inject;
 
-import org.sagebionetworks.research.domain.inject.ActionModule;
-import org.sagebionetworks.research.domain.inject.GsonModule;
-import org.sagebionetworks.research.domain.inject.StepModule;
-import org.sagebionetworks.research.domain.inject.TaskModule;
-import org.sagebionetworks.research.presentation.inject.RecorderConfigPresentationModule;
-import org.sagebionetworks.research.presentation.inject.RecorderModule;
-import org.sagebionetworks.research.presentation.inject.ShowStepViewModelModule;
-import org.sagebionetworks.research.presentation.inject.StepViewModule;
-import org.sagebionetworks.research.presentation.inject.TextToSpeechModule;
+import org.sagebionetworks.research.presentation.speech.TextToSpeechService;
+import org.threeten.bp.Duration;
+
+import java.util.Map;
 
 import dagger.Module;
-import dagger.android.AndroidInjectionModule;
+import dagger.Provides;
+import dagger.android.ContributesAndroidInjector;
 import dagger.android.support.AndroidSupportInjectionModule;
+import dagger.multibindings.IntoMap;
+import dagger.multibindings.Multibinds;
+import dagger.multibindings.StringKey;
+import kotlin.jvm.functions.Function1;
 
-@Module(includes = {GsonModule.class, TaskModule.class, StepModule.class, RecorderModule.class, TextToSpeechModule.class,
-        RecorderConfigPresentationModule.class, StepViewModule.class, ShowStepViewModelModule.class,
-        ShowStepModule.class, ActionModule.class, TaskResultModule.class, AndroidSupportInjectionModule.class})
-public abstract class PerformTaskModule {
+@Module(includes = {AndroidSupportInjectionModule.class})
+public abstract class TextToSpeechModule {
+    @ContributesAndroidInjector
+    abstract TextToSpeechService provideTextToSpeechService();
 
+    @Multibinds
+    abstract Map<String, Function1<Duration, Long>> specialKeyMap();
+
+    @Provides
+    @IntoMap
+    @StringKey("start")
+    static Function1<Duration, Long> provideStartSpecialKey() {
+        return (duration) -> 0L;
+    }
+
+    @Provides
+    @IntoMap
+    @StringKey("halfway")
+    static Function1<Duration, Long> provideHalfwaySpecialKey() {
+        return (duration) -> duration.getSeconds() / 2;
+    }
+
+    @Provides
+    @IntoMap
+    @StringKey("end")
+    static Function1<Duration, Long> provideEndSpecialKey() {
+        return Duration::getSeconds;
+    }
 }

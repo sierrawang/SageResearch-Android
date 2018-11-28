@@ -49,8 +49,13 @@ import org.sagebionetworks.research.presentation.model.action.ActionView;
 import org.sagebionetworks.research.presentation.model.interfaces.ActiveUIStepView;
 import org.threeten.bp.Duration;
 
+import java.util.Map;
+
 public class ActiveUIStepViewBase extends UIStepViewBase implements ActiveUIStepView {
     public static final String TYPE = StepType.ACTIVE;
+
+    @NonNull
+    private final Map<String, String> spokenInstructions;
 
     @NonNull
     private final Duration duration;
@@ -68,10 +73,16 @@ public class ActiveUIStepViewBase extends UIStepViewBase implements ActiveUIStep
         // round off any extra precision.
         Double millis = (activeUIStep.getDuration() != null ? activeUIStep.getDuration() : 0D) * 1000;
         Duration duration = Duration.ofMillis(millis.longValue());
+
+        Map<String, String> spokenInstructions = activeUIStep.getSpokenInstructions();
+        if (spokenInstructions == null) {
+            spokenInstructions = ImmutableMap.of();
+        }
+
         return new ActiveUIStepViewBase(uiStepView.getIdentifier(),
                 uiStepView.getActions(), uiStepView.getTitle(), uiStepView.getText(), uiStepView.getDetail(),
                 uiStepView.getFootnote(), uiStepView.getColorTheme(), uiStepView.getImageTheme(), duration,
-                activeUIStep.isBackgroundAudioRequired());
+                spokenInstructions, activeUIStep.isBackgroundAudioRequired());
     }
 
     public ActiveUIStepViewBase(@NonNull final String identifier,
@@ -81,16 +92,20 @@ public class ActiveUIStepViewBase extends UIStepViewBase implements ActiveUIStep
             @Nullable final DisplayString detail,
             @Nullable final DisplayString footnote,
             @Nullable final ColorThemeView colorTheme,
-            @Nullable final ImageThemeView imageTheme, @NonNull final Duration duration,
+            @Nullable final ImageThemeView imageTheme,
+            @NonNull final Duration duration,
+            @NonNull final Map<String, String> spokenInstructions,
             final boolean isBackgroundAudioRequired) {
         super(identifier, actions, title, text, detail, footnote, colorTheme, imageTheme);
         this.duration = duration;
+        this.spokenInstructions = spokenInstructions;
         this.isBackgroundAudioRequired = isBackgroundAudioRequired;
     }
 
     protected ActiveUIStepViewBase(Parcel in) {
         super(in);
         this.duration = (Duration) in.readSerializable();
+        this.spokenInstructions = ImmutableMap.of();
         this.isBackgroundAudioRequired = in.readByte() != 0;
     }
 
@@ -98,6 +113,12 @@ public class ActiveUIStepViewBase extends UIStepViewBase implements ActiveUIStep
     @Override
     public String getType() {
         return TYPE;
+    }
+
+    @Override
+    @NonNull
+    public Map<String, String> getSpokenInstructions() {
+        return spokenInstructions;
     }
 
     @Override
