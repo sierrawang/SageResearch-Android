@@ -60,8 +60,10 @@ import org.slf4j.LoggerFactory;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 import java.util.UUID;
 
@@ -75,13 +77,19 @@ public class ResourceTaskRepository implements TaskRepository {
     private static final Logger LOGGER = LoggerFactory.getLogger(ResourceTaskRepository.class);
 
     protected final Context context;
-
     protected final Gson gson;
+
+    /**
+     * taskResultMap stores the current or previous task results for a task run uuid.
+     * this allows tasks to be created and run with an existing task result.
+     */
+    protected final Map<UUID, TaskResult> taskResultMap;
 
     @Inject
     public ResourceTaskRepository(Context context, Gson gson) {
         this.context = context;
         this.gson = gson;
+        this.taskResultMap = new HashMap<>();
     }
 
     /**
@@ -164,8 +172,11 @@ public class ResourceTaskRepository implements TaskRepository {
     @NonNull
     @Override
     public Maybe<TaskResult> getTaskResult(final UUID taskRunUUID) {
-        LOGGER.warn("Always returning no task result");
-        return Maybe.empty();
+        TaskResult taskResult = taskResultMap.get(taskRunUUID);
+        if (taskResult == null) {
+            return Maybe.empty();
+        }
+        return Maybe.just(taskResult);
     }
 
     @Override
@@ -183,7 +194,8 @@ public class ResourceTaskRepository implements TaskRepository {
     @NonNull
     @Override
     public Completable setTaskResult(final TaskResult taskResult) {
-        return Completable.error(new UnsupportedOperationException("Not implemented"));
+        taskResultMap.put(taskResult.getTaskUUID(), taskResult);
+        return Completable.complete();
     }
 
     /**
