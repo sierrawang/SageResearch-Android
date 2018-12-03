@@ -30,42 +30,43 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.sagebionetworks.research.mobile_ui.show_step.view;
+package org.sagebionetworks.research.mobile_ui.show_step.view.forms
 
-import android.os.Bundle;
-import android.support.annotation.NonNull;
-import android.view.View;
+import android.support.v7.widget.RecyclerView
 
-import org.sagebionetworks.research.mobile_ui.R;
-import org.sagebionetworks.research.mobile_ui.perform_task.PerformTaskFragment;
-import org.sagebionetworks.research.mobile_ui.show_step.view.view_binding.FormUIStepViewBinding;
-import org.sagebionetworks.research.presentation.model.interfaces.FormUIStepView;
-import org.sagebionetworks.research.presentation.model.interfaces.StepView;
-import org.sagebionetworks.research.presentation.show_step.show_step_view_models.ShowUIStepViewModel;
+/**
+ * Defines a [FormAdapterSection] in the adapter. The [RecyclerView] is made up of sections, groups, and items.
+ * For most group types, there is one [RecyclerView.ViewHolder]
+ * cell per group and there can be one or more groups per section.
+ * However, there are exceptions such as multiple-choice lists where each value is displayed in a
+ * selectable item.
+ */
+open class FormAdapterSection(
+        /**
+         * @property identifier A unique identifier for the section.
+         */
+        val identifier: String,
+        /**
+         * @property items the list of items included in this section.
+         */
+        open val items: List<FormAdapterItem>,
+        /**
+         * @property index The adapter section index.
+         */
+        val index: Int,
+        /**
+         * @property title The title for this section.
+         */
+        val title: String? = null,
+        /**
+         * @property subtitle The subtitle for this section.
+         */
+        val subtitle: String? = null) {
 
-public class ShowFormUIStepFragment extends
-        ShowStepFragmentBase<FormUIStepView, ShowUIStepViewModel<FormUIStepView>,
-                        FormUIStepViewBinding<FormUIStepView>> {
-    @NonNull
-    public static ShowFormUIStepFragment newInstance(@NonNull StepView stepView) {
-        if (!(stepView instanceof FormUIStepView)) {
-            throw new IllegalArgumentException("Step view: " + stepView + " is not a FormUIStepView.");
-        }
-
-        ShowFormUIStepFragment fragment = new ShowFormUIStepFragment();
-        Bundle arguments = ShowStepFragmentBase.createArguments(stepView);
-        fragment.setArguments(arguments);
-        return fragment;
-    }
-
-    @Override
-    protected int getLayoutId() {
-        return R.layout.rs2_form_step;
-    }
-
-    @NonNull
-    @Override
-    protected FormUIStepViewBinding<FormUIStepView> instantiateAndBindBinding(View view) {
-        return new FormUIStepViewBinding<>(view);
+    /**
+     * @return the total count of all Items in this section.
+     */
+    val rowCount: Int get() {
+        return items.size
     }
 }

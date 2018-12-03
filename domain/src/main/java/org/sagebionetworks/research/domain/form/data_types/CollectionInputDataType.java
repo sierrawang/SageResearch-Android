@@ -41,8 +41,10 @@ import android.support.annotation.StringDef;
 import com.google.common.base.Objects;
 import com.google.common.collect.ImmutableSet;
 
+import org.sagebionetworks.research.domain.form.InputUIHint;
 import org.sagebionetworks.research.domain.form.data_types.BaseInputDataType.BaseType;
 import org.sagebionetworks.research.domain.interfaces.HashCodeHelper;
+import org.sagebionetworks.research.domain.result.AnswerResultType;
 
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
@@ -109,6 +111,17 @@ public class CollectionInputDataType extends InputDataType {
     @CollectionType
     public String getCollectionType() {
         return this.collectionType;
+    }
+
+    @Override
+    public Set<String> listSelectionHints() {
+        return new HashSet<>(Arrays.asList(
+                InputUIHint.LIST, InputUIHint.CHECKBOX, InputUIHint.RADIO_BUTTON));
+    }
+
+    @Override
+    public @AnswerResultType String getAnswerResultType() {
+        return baseType;
     }
 
     @Override

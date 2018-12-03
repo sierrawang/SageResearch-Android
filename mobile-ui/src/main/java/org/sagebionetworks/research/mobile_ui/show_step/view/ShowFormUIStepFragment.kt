@@ -30,21 +30,41 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.sagebionetworks.research.domain.form;
+package org.sagebionetworks.research.mobile_ui.show_step.view
 
-import android.support.annotation.StringDef;
+import android.support.v7.widget.RecyclerView
 
-import java.lang.annotation.Retention;
-import java.lang.annotation.RetentionPolicy;
+import android.view.View
+import org.sagebionetworks.research.domain.step.interfaces.Step
+import org.sagebionetworks.research.domain.form.interfaces.InputField
+import org.sagebionetworks.research.domain.result.interfaces.Result
+import org.sagebionetworks.research.mobile_ui.R
+import org.sagebionetworks.research.mobile_ui.show_step.view.view_binding.FormUIStepViewBinding
+import org.sagebionetworks.research.presentation.model.interfaces.FormUIStepView
+import org.sagebionetworks.research.presentation.model.interfaces.StepView
+import org.sagebionetworks.research.presentation.show_step.show_step_view_models.ShowUIStepViewModel
 
-@Retention(RetentionPolicy.SOURCE)
-@StringDef({InputUIHint.CHECKBOX, InputUIHint.COMBOBOX, InputUIHint.TEXTFIELD, InputUIHint.RADIO_BUTTON,
-            InputUIHint.LIST})
-public @interface InputUIHint {
-    String CHECKBOX = "checkbox";
-    String COMBOBOX = "combobox";
-    String TEXTFIELD = "textfield";
-    String RADIO_BUTTON = "radioButton";
-    String LIST = "list";
-    // TODO: populate remaining types
+open class ShowFormUIStepFragment: ShowStepFragmentBase
+    <FormUIStepView, ShowUIStepViewModel<FormUIStepView>, FormUIStepViewBinding<FormUIStepView>>() {
+
+    companion object {
+        fun newInstance(stepView: StepView): ShowFormUIStepFragment {
+            if (stepView !is FormUIStepView) {
+                throw IllegalArgumentException("Step view: $stepView is not a FormUIStepView.")
+            }
+            val fragment = ShowFormUIStepFragment()
+            val arguments = ShowStepFragmentBase.createArguments(stepView)
+            fragment.arguments = arguments
+            return fragment
+        }
+    }
+
+    override fun getLayoutId(): Int {
+        return R.layout.rs2_form_step
+    }
+
+    override fun instantiateAndBindBinding(view: View): FormUIStepViewBinding<FormUIStepView> {
+        return FormUIStepViewBinding(view)
+    }
 }
+

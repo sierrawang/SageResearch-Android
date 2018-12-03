@@ -38,10 +38,13 @@ import android.support.annotation.StringDef;
 import com.google.common.base.Objects;
 import com.google.common.collect.ImmutableSet;
 
+import org.sagebionetworks.research.domain.form.InputUIHint;
 import org.sagebionetworks.research.domain.interfaces.HashCodeHelper;
 
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
+import java.util.Arrays;
+import java.util.HashSet;
 
 public class BaseInputDataType extends InputDataType {
     @Retention(RetentionPolicy.SOURCE)
@@ -78,6 +81,20 @@ public class BaseInputDataType extends InputDataType {
 
     protected BaseInputDataType(Parcel in) {
         this.baseType = in.readString();
+    }
+
+    @Override
+    public HashSet<String> listSelectionHints() {
+        if (BaseType.BOOLEAN.equals(baseType)) {
+            return new HashSet<>(Arrays.asList(
+                    InputUIHint.LIST, InputUIHint.CHECKBOX, InputUIHint.RADIO_BUTTON));
+        }
+        return new HashSet<>();
+    }
+
+    @Override
+    public String getAnswerResultType() {
+        return baseType;
     }
 
     @Override

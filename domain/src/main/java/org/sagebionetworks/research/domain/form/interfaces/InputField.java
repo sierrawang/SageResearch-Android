@@ -68,7 +68,7 @@ public interface InputField<E extends Comparable<E>> {
     /**
      * @return identifier that is unique among form items within the step
      */
-    @Nullable
+    @NonNull
     String getIdentifier();
 
     /**
@@ -101,7 +101,7 @@ public interface InputField<E extends Comparable<E>> {
      * TODO: Remove this, it belongs in SurveyInputField
      * @return the list of survey rules that are used by this input field or null if this is not applicable.
      */
-    @NonNull
+    @Nullable
     ImmutableList<? extends SurveyRule> getSurveyRules();
 
     /**
@@ -111,7 +111,7 @@ public interface InputField<E extends Comparable<E>> {
     TextFieldOptions getTextFieldOptions();
 
     /**
-     * @return true if this survey option is optional, false otherwise.
+     * @return a boolean indicating whether the user can skip the input field without providing an answer.
      */
     boolean isOptional();
 }

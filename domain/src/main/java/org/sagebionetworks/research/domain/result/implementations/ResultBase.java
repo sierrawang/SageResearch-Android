@@ -73,7 +73,7 @@ public class ResultBase extends ObjectHelper implements Result {
      *         The end Instant of this result.
      */
     public ResultBase(@NonNull final String identifier,
-            @NonNull final Instant startTime, @NonNull final Instant endTime) {
+            @NonNull final Instant startTime, @Nullable final Instant endTime) {
         super();
         this.type = this.getType();
         this.data = ResultData.create(identifier, startTime, endTime);

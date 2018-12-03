@@ -80,4 +80,12 @@
     <color name="colorPrimaryDark">#303F9F</color>
     <color name="colorAccent">#FF4081</color>
     <color name="transparent">#00000000</color>
+
+    <!-- Form Colors -->
+    <color name="choice_list_unselected_background">@color/appWhite</color>
+    <color name="choice_list_unselected_text">@color/appDarkGrey</color>
+    <color name="choice_list_selected_background">@color/colorPrimary</color>
+    <color name="choice_list_selected_text">@color/appWhite</color>
+
+
 </resources>

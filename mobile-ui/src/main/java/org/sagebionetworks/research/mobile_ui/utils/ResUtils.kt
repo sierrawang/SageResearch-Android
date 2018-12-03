@@ -30,21 +30,16 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.sagebionetworks.research.domain.form;
+package org.sagebionetworks.research.mobile_ui.utils
 
-import android.support.annotation.StringDef;
+import android.content.Context
 
-import java.lang.annotation.Retention;
-import java.lang.annotation.RetentionPolicy;
-
-@Retention(RetentionPolicy.SOURCE)
-@StringDef({InputUIHint.CHECKBOX, InputUIHint.COMBOBOX, InputUIHint.TEXTFIELD, InputUIHint.RADIO_BUTTON,
-            InputUIHint.LIST})
-public @interface InputUIHint {
-    String CHECKBOX = "checkbox";
-    String COMBOBOX = "combobox";
-    String TEXTFIELD = "textfield";
-    String RADIO_BUTTON = "radioButton";
-    String LIST = "list";
-    // TODO: populate remaining types
+fun Context.getDrawableResourceId(resourceName: String?): Int? {
+    resourceName?.let {
+        val resId = resources.getIdentifier(it, "drawable", packageName)
+        if (resId != 0) {
+            return resId
+        }
+    }
+    return null
 }

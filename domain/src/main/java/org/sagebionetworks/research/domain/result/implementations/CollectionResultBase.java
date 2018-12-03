@@ -33,6 +33,7 @@
 package org.sagebionetworks.research.domain.result.implementations;
 
 import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 
 import com.google.common.base.MoreObjects.ToStringHelper;
 import com.google.common.base.Objects;
@@ -60,7 +61,7 @@ public class CollectionResultBase extends ResultBase implements CollectionResult
     private final CollectionResultData collectionResultData;
 
     public CollectionResultBase(@NonNull final String identifier, @NonNull final Instant startTime,
-            @NonNull final Instant endTime, @NonNull final List<Result> inputResults) {
+            @Nullable final Instant endTime, @NonNull final List<Result> inputResults) {
         super(identifier, startTime, endTime);
         this.collectionResultData = CollectionResultData.create(inputResults);
     }
