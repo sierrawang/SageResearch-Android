@@ -62,7 +62,7 @@ public abstract class ResultData {
     }
 
     public static ResultData create(@NonNull final String identifier,
-            @NonNull final Instant startTime, @NonNull final Instant endTime) {
+            @NonNull final Instant startTime, @Nullable final Instant endTime) {
         return ResultData.builder()
                 .setIdentifier(identifier)
                 .setStartTime(startTime)
@@ -74,7 +74,7 @@ public abstract class ResultData {
         return new AutoValue_ResultData.GsonTypeAdapter(gson);
     }
 
-    @NonNull
+    @Nullable
     public abstract Instant getEndTime();
 
     @NonNull
