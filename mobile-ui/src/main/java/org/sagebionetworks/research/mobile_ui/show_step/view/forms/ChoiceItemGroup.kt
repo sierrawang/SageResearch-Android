@@ -35,8 +35,13 @@ package org.sagebionetworks.research.mobile_ui.show_step.view.forms
 import org.sagebionetworks.research.domain.form.data_types.CollectionInputDataType
 import org.sagebionetworks.research.domain.form.data_types.CollectionInputDataType.CollectionType.SINGLE_CHOICE
 import org.sagebionetworks.research.domain.form.implementations.ChoiceInputField
-import org.sagebionetworks.research.domain.form.interfaces.Choice
 import org.sagebionetworks.research.domain.form.interfaces.InputField
+import org.sagebionetworks.research.domain.result.interfaces.AnswerResult
+import org.sagebionetworks.research.domain.result.interfaces.Result
+import org.sagebionetworks.research.mobile_ui.show_step.view.forms.FormDataAdapter.IndexPath
+import org.sagebionetworks.research.presentation.model.form.ChoiceInputFieldViewBase
+import org.sagebionetworks.research.presentation.model.form.ChoiceView
+import org.sagebionetworks.research.presentation.model.form.InputFieldView
 
 /**
  * [ChoiceItemGroup] subclasses [ItemGroup] to implement a single or multiple
@@ -45,7 +50,7 @@ import org.sagebionetworks.research.domain.form.interfaces.InputField
  * @param singleSelection Does the item group allow for multiple choices or is it single selection?
  */
 open class ChoiceItemGroup<T: ChoiceAdapterItem>(
-        inputField: InputField<*>, fieldInfo: InputFieldItemGroup.FieldInfo,
+        inputField: InputFieldView<*>, fieldInfo: InputFieldItemGroup.FieldInfo,
         val singleSelection: Boolean, items: List<T>, groupInfo: FormAdapterItemGroup.Info):
             InputFieldItemGroup<T>(inputField, fieldInfo, items, groupInfo) {
 
@@ -54,7 +59,7 @@ open class ChoiceItemGroup<T: ChoiceAdapterItem>(
         /**
          * Helper function to create a ChoiceItemGroup with a subset of parameters.
          */
-        fun create(beginningRowIndex: Int, inputField: ChoiceInputField<*>,
+        fun create(beginningRowIndex: Int, inputField: ChoiceInputFieldViewBase<*>,
                 uiHint: String, answerType: String? = null): ChoiceItemGroup<ChoiceAdapterItem> {
             // Set the items
             var items: List<ChoiceAdapterItem> = mutableListOf()
@@ -100,4 +105,74 @@ open class ChoiceItemGroup<T: ChoiceAdapterItem>(
 //        super.init(beginningRowIndex: beginningRowIndex, items: items!, inputField: inputField, uiHint: uiHint, answerType: aType)
         }
     }
+
+    /**
+     * Override to set the selected items from the result.
+     */
+    override fun setAnswer(result: Result) {
+        super.setAnswer(result)
+        // Set all the previously selected items as selected
+        items.forEach {
+            it.selected = isEqualToResult(it.choice, result)
+        }
+    }
+
+    /**
+     * @param choice to compare to the [Result]
+     * @param result to compare to the [ChoiceView]
+     * @return true if the choice answer value is equal to the result answer value, false if not.
+     */
+    protected open fun isEqualToResult(choice: ChoiceView<*>, result: Result): Boolean {
+        (result as? AnswerResult<*>)?.let {
+            return it.answer == choice.answerValue
+        }
+        return false
+    }
+
+    /**
+     * Select or de-select an item (answer) at a specific indexPath.
+     * This is used for text choice and boolean answers.
+     * @param item the item to select.
+     * @param indexPath the [IndexPath] of the item.
+     * @return
+     */
+    open fun select(item: ChoiceAdapterItem, indexPath: IndexPath): SelectReturnValue {
+        // To get the index of our item, add our `beginningRowIndex` to `indexPath.item`.
+        val deselectOthers = singleSelection || item.choice.isExclusive ||
+                items.firstOrNull { it.choice.isExclusive && it.selected } != null
+        val index = indexPath.rowIndex - beginningRowIndex
+        val selected = !item.selected
+
+        // If we selected an item and this is a single-selection group, then we iterate
+        // our other items and de-select them.
+        val answers = mutableListOf<Any>()
+        items.forEachIndexed { ii, it ->
+            if (deselectOthers || (ii == index) || it.choice.isExclusive || it.choice.answerValue == null) {
+                it.selected = (ii == index) && selected
+            }
+            if (it.selected && it.choice.answerValue != null) {
+                answers.add(it.choice.answerValue)
+            }
+        }
+
+        // Set the answer array
+        if (singleSelection) {
+            setAnswer(answers.firstOrNull())
+        } else {
+            setAnswer(answers)
+        }
+
+        return SelectReturnValue(selected, deselectOthers)
+    }
 }
+
+data class SelectReturnValue(
+        /**
+         * @property isSelected The new selection state of the selected item.
+         */
+        val isSelected: Boolean,
+        /**
+         * @property reloadSection `true` if the section needs to be reloaded b/c other answers have changed,
+         *                         otherwise returns `false`.
+         */
+        val reloadSection: Boolean)

@@ -36,8 +36,8 @@ import android.support.v7.widget.RecyclerView
 import android.view.ViewGroup
 import org.sagebionetworks.research.domain.form.interfaces.InputField
 import org.sagebionetworks.research.domain.form.InputUIHint
-import org.sagebionetworks.research.mobile_ui.show_step.view.forms.FormDataSourceAdapter.IndexPath
-import org.sagebionetworks.research.mobile_ui.show_step.view.forms.FormDataSourceAdapter.ViewHolder
+import org.sagebionetworks.research.mobile_ui.show_step.view.forms.FormDataAdapter.ViewHolder
+import org.sagebionetworks.research.presentation.model.form.InputFieldView
 
 /**
  * [FormAdapterItem] can be used to represent the type of the row to display.
@@ -80,7 +80,7 @@ abstract class InputFieldAdapterItem(
         /**
          * @property inputField The RSDInputField representing this tableItem.
          */
-        val inputField: InputField<*>,
+        val inputField: InputFieldView<*>,
         /**
          * @property uiHint The UI hint for this row of the table. See [InputUIHint].
          */

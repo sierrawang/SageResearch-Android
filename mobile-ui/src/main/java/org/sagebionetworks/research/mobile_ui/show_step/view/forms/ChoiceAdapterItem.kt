@@ -45,8 +45,10 @@ import org.sagebionetworks.research.domain.form.InputUIHint.RADIO_BUTTON
 import org.sagebionetworks.research.domain.form.interfaces.Choice
 import org.sagebionetworks.research.domain.form.interfaces.InputField
 import org.sagebionetworks.research.mobile_ui.R
-import org.sagebionetworks.research.mobile_ui.show_step.view.forms.FormDataSourceAdapter.ViewHolder
+import org.sagebionetworks.research.mobile_ui.show_step.view.forms.FormDataAdapter.ViewHolder
 import org.sagebionetworks.research.mobile_ui.utils.getDrawableResourceId
+import org.sagebionetworks.research.presentation.model.form.ChoiceView
+import org.sagebionetworks.research.presentation.model.form.InputFieldView
 import org.slf4j.LoggerFactory
 
 /**
@@ -55,7 +57,7 @@ import org.slf4j.LoggerFactory
  * @property choice choice for a single or multiple choice input field.
  */
 open class ChoiceAdapterItem(
-        inputField: InputField<*>, uiHint: String, val choice: Choice<*>,
+        inputField: InputFieldView<*>, uiHint: String, val choice: ChoiceView<*>,
         identifier: String, rowIndex: Int, sectionIdentifier: String? = null, itemViewType: Int? = null):
         InputFieldAdapterItem(inputField, uiHint, identifier, itemViewType, rowIndex, sectionIdentifier) {
 
@@ -117,7 +119,7 @@ open class ChoiceAdapterItem(
      */
     open protected fun createChoiceUnknownViewHolder(
             layoutInflater: LayoutInflater, parent: ViewGroup): ChoiceListItemViewHolder {
-        FormDataSourceAdapter.logger.warn(
+        FormDataAdapter.logger.warn(
                 "Did not recognize uiHint $uiHint when creating ViewHolder.  " +
                 "Returning a list type by default.")
         return createChoiceListViewHolder(layoutInflater, parent)
@@ -164,8 +166,8 @@ open class ChoiceListItemViewHolder(item: ChoiceAdapterItem, itemView: View):
             return
         }
 
-        title.text = item.choice.text
-        subtitle.text = item.choice.detail
+        title.text = item.choice.text?.getString(root.resources)
+        subtitle.text = item.choice.detail?.getString(root.resources)
 
         if (item.selected) {
             title.setTextColor(selectedTextColor)
@@ -182,16 +184,11 @@ open class ChoiceListItemViewHolder(item: ChoiceAdapterItem, itemView: View):
             item.listener?.selectionChanged(item, item.selected)
         }
 
-        item.choice.iconName?.let { iconName ->
+        if (item.choice.iconResId != 0) {
             icon.visibility = View.VISIBLE
-            icon.contentDescription = item.choice.text
-            root.context.getDrawableResourceId(iconName)?.let {
-                icon.setImageResource(it)
-                icon.visibility = View.VISIBLE
-            } ?: run {
-                icon.visibility = View.GONE
-            }
-        } ?: run {
+            icon.contentDescription = item.choice.text?.getString(root.resources)
+            icon.setImageResource(item.choice.iconResId)
+        } else {
             icon.visibility = View.GONE
         }
     }

@@ -35,9 +35,9 @@ package org.sagebionetworks.research.mobile_ui.inject;
 import android.support.annotation.NonNull;
 import android.support.v4.app.Fragment;
 
+import org.sagebionetworks.research.mobile_ui.show_step.view.FormUIStepFragment;
 import org.sagebionetworks.research.mobile_ui.show_step.view.ShowActiveUIStepFragment;
 import org.sagebionetworks.research.mobile_ui.show_step.view.ShowCountdownStepFragment;
-import org.sagebionetworks.research.mobile_ui.show_step.view.ShowFormUIStepFragment;
 import org.sagebionetworks.research.mobile_ui.show_step.view.ShowUIStepFragment;
 import org.sagebionetworks.research.presentation.inject.DrawableModule;
 import org.sagebionetworks.research.presentation.model.implementations.ActiveUIStepViewBase;
@@ -111,7 +111,7 @@ public abstract class ShowStepModule {
     @IntoMap
     @StepViewKey(FormUIStepViewBase.TYPE)
     static ShowStepFragmentFactory provideShowFormUIStepFragmentFactory() {
-        return ShowFormUIStepFragment::newInstance;
+        return FormUIStepFragment.Companion::newInstance;
     }
 
     @Provides

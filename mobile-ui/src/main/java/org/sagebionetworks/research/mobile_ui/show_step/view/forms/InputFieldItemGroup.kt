@@ -33,10 +33,9 @@
 package org.sagebionetworks.research.mobile_ui.show_step.view.forms
 
 import org.sagebionetworks.research.domain.result.interfaces.AnswerResult
-import org.sagebionetworks.research.domain.form.interfaces.InputField
 import org.sagebionetworks.research.domain.result.interfaces.Result
+import org.sagebionetworks.research.presentation.model.form.InputFieldView
 import org.slf4j.LoggerFactory
-import java.util.UUID
 
 /**
  * [InputFieldItemGroup] is used to represent a single input field.
@@ -45,7 +44,7 @@ open class InputFieldItemGroup<T: InputFieldAdapterItem>(
         /**
          * @property inputField The input field associated with this item group.
          */
-        val inputField: InputField<*>,
+        val inputField: InputFieldView<*>,
         /**
          * @property fieldInfo about the [InputFieldItemGroup]
          */
@@ -64,8 +63,8 @@ open class InputFieldItemGroup<T: InputFieldAdapterItem>(
         private val logger = LoggerFactory.getLogger(InputFieldItemGroup::class.java);
     }
 
-    val identifier: String? get() {
-        return inputField.getIdentifier()
+    val identifier: String get() {
+        return inputField.identifier
     }
 
     val uiHint: String get () {

@@ -52,6 +52,14 @@ public interface CollectionResult extends Result {
     CollectionResult appendInputResult(@NonNull Result inputResult);
 
     /**
+     * @param identifier
+     *         The result identifier to remove from this CollectionResult
+     * @return A new CollectionResult with the given result removed frome the input results.
+     */
+    @NonNull
+    CollectionResult removeInputResult(@NonNull final String identifier);
+
+    /**
      * @return The time this result ended.
      */
     @Override

@@ -60,7 +60,7 @@ public class AnswerResultBase<T> extends ResultBase implements AnswerResult<T> {
     protected final AnswerResultData<T> answerResultData;
 
     public AnswerResultBase(@NonNull final String identifier, @NonNull final Instant startTime,
-            @NonNull final Instant endTime, @Nullable final T answer,
+            @Nullable final Instant endTime, @Nullable final T answer,
             @AnswerResultType String answerResultType) {
         super(identifier, startTime, endTime);
         this.answerResultData = AnswerResultData.create(answer, answerResultType);

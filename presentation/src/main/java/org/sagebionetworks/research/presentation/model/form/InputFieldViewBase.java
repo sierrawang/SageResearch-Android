@@ -155,8 +155,8 @@ public class InputFieldViewBase<E> implements InputFieldView, Serializable {
         return uiHint;
     }
 
+    @NonNull
     @Override
-    @Nullable
     public String getIdentifier() {
         return identifier;
     }

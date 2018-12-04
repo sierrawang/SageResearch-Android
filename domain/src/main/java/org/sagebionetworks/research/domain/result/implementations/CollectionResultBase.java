@@ -77,6 +77,19 @@ public class CollectionResultBase extends ResultBase implements CollectionResult
 
     @NonNull
     @Override
+    public CollectionResult removeInputResult(@NonNull final String identifier) {
+        List<Result> inputResults = new ArrayList<>();
+        for (Result result : this.getInputResults()) {
+            if (!identifier.equals(result.getIdentifier())) {
+                inputResults.add(result);
+            }
+        }
+        return new CollectionResultBase(this.getIdentifier(), this.getStartTime(),
+                this.getEndTime(), inputResults);
+    }
+
+    @NonNull
+    @Override
     public ImmutableList<Result> getInputResults() {
         return this.collectionResultData.getInputResults();
     }

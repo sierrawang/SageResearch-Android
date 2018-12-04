@@ -63,7 +63,7 @@ public interface InputFieldView<E extends Comparable> {
     /**
      * @return identifier that is unique among form items within the step
      */
-    @Nullable
+    @NonNull
     String getIdentifier();
 
     /**
