@@ -89,7 +89,7 @@ public abstract class DisplayString implements Serializable {
     public String getString(Resources resources) {
         if (this.getDisplayString() != null) {
             return this.getDisplayString();
-        } else if (this.getDefaultDisplayStringRes() != null) {
+        } else if (this.getDefaultDisplayStringRes() != null && this.getDefaultDisplayStringRes() != 0) {
             return resources.getString(this.getDefaultDisplayStringRes());
         }
 

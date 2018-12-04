@@ -32,10 +32,8 @@
 
 package org.sagebionetworks.research.mobile_ui.show_step.view.forms
 
-import android.content.Context
 import android.content.res.Resources
 import android.support.v7.widget.RecyclerView
-import android.support.v7.widget.VectorEnabledTintResources
 import android.view.View
 import android.view.ViewGroup
 import org.sagebionetworks.research.domain.form.InputUIHint
@@ -52,11 +50,12 @@ import org.sagebionetworks.research.presentation.model.form.InputFieldView
 import org.sagebionetworks.research.presentation.model.interfaces.FormUIStepView
 import org.sagebionetworks.research.presentation.model.interfaces.StepView
 import org.sagebionetworks.research.presentation.model.interfaces.UIStepView
+import org.sagebionetworks.research.mobile_ui.show_step.view.FormUIStepFragment
 import org.slf4j.LoggerFactory
 import org.threeten.bp.Instant
 
 /**
- * Based on iOS' RSDTableDataSource, [FormDataAdapter] is the model for ShowFormUIStepFragment's RecyclerView.
+ * Based on iOS' RSDTableDataSource, [FormDataAdapter] is the model for [FormUIStepFragment]'s RecyclerView.
  * It provides the [RecyclerView.Adapter], manages and stores answers provided through user input,
  * and provides a [Result] with those answers upon request.
  *
@@ -89,7 +88,7 @@ open class FormDataAdapter(
          * @property initialResult The initial result when the data source adapter was first displayed.
          */
         var collectionResult: CollectionResult =
-                CollectionResultBase(stepView.identifier, Instant.now(), null, listOf()),
+                CollectionResultBase(stepView.identifier, Instant.now(), Instant.now(), listOf()),
 
         /**
          * [SectionBuilderDelegate] allows for composition changes without sub-classing.
@@ -134,14 +133,14 @@ open class FormDataAdapter(
      * the [RecyclerView] will re-use with [onBindViewHolder] until it needs more, and
      * then this function may be called again to add as many to the pool as it needs.
      * @param parent [ViewGroup] of the the [RecyclerView.ViewHolder] that is returned.
-     * @param recyclerViewIndex used to create the [ViewHolder]
-     * @return a [ViewHolder] that is associated with the recyclerViewIndex
+     * @param itemViewType used to create the corresponding [ViewHolder]
+     * @return a [ViewHolder] that is associated with the itemViewType
      */
-    override fun onCreateViewHolder(parent: ViewGroup, recyclerViewIndex: Int): ViewHolder {
-        item(recyclerViewIndex)?.let {
+    override fun onCreateViewHolder(parent: ViewGroup, itemViewType: Int): ViewHolder {
+        firstItem(itemViewType)?.let {
             return it.createViewHolder(parent)
         }
-        throw IllegalArgumentException("Cannot find form item for recyclerViewIndex $recyclerViewIndex")
+        throw IllegalArgumentException("Cannot find form item for itemViewType $itemViewType")
     }
 
     /**
@@ -153,10 +152,42 @@ open class FormDataAdapter(
      * @param recyclerViewIndex associated with this [ViewHolder]
      */
     override fun onBindViewHolder(viewHolderItem: ViewHolder, recyclerViewIndex: Int) {
-        item(recyclerViewIndex)?.let {
-            viewHolderItem.bindViewHolder(it)
-        } ?: run {
-            logger.warn("Could not find DataSourceAdapter.Item for recyclerViewIndex $recyclerViewIndex")
+        val indexPath = indexPath(recyclerViewIndex) ?: run {
+            return
+        }
+        val item = item(indexPath) ?: run {
+            return
+        }
+        viewHolderItem.bindViewHolder(item)
+        bindAdapterItemListeners(item, indexPath)
+    }
+
+    /**
+     * This function is called after this item is bound and we can register for any listener callbacks
+     * that the view holders may fire off.
+     * @param item that was just bound through the [RecyclerView]
+     * @param indexPath the index path of the item
+     */
+    open fun bindAdapterItemListeners(item: FormAdapterItem, indexPath: IndexPath) {
+        (item as? ChoiceAdapterItem)?.let {
+            it.listener = object : ChoiceAdapterItem.OnSelectionChangedListener {
+                override fun selectionChanged(item: ChoiceAdapterItem) {
+                    if (selectAnswer(it, indexPath).reloadSection) {
+                        notifyItemGroupChanged(indexPath)
+                    }
+                }
+            }
+        }
+    }
+
+    /**
+     * Notifies the adapter that the range of items in the item group has changed
+     * so that [RecyclerView.Adapter.onBindViewHolder] can be called on the [ViewHolder]'s again
+     * @param indexPath within the item group to find
+     */
+    open fun notifyItemGroupChanged(indexPath: IndexPath) {
+        itemGroup(indexPath)?.let {
+            notifyItemRangeChanged(it.beginningRowIndex, it.items.size)
         }
     }
 
@@ -168,20 +199,42 @@ open class FormDataAdapter(
         return sections.sumBy { it.rowCount }
     }
 
+    /**
+     * This function provides an Int that maps to a specific ViewHolder to create.
+     */
     override fun getItemViewType(recyclerViewIndex: Int): Int {
-        return item(recyclerViewIndex)?.identifier?.hashCode() ?: 0
+        return item(recyclerViewIndex)?.itemViewType ?: 0
     }
 
     open fun item(recyclerViewIndex: Int): FormAdapterItem? {
         indexPath(recyclerViewIndex)?.let {
-            // Protect against IndexOutOfBoundExceptions
-            if (!sections.isEmpty() &&
-                    it.sectionIndex < sections.size &&
-                    sections[it.sectionIndex].rowCount < it.rowIndex) {
-                return sections[it.sectionIndex].items[it.rowIndex]
-            }
+            return item(it)
         }
         logger.warn("Could not find item at recyclerViewIndex $recyclerViewIndex")
+        return null
+    }
+
+    open fun item(indexPath: IndexPath): FormAdapterItem? {
+        // Protect against IndexOutOfBoundExceptions
+        if (sections.isNotEmpty() &&
+                indexPath.sectionIndex < sections.size &&
+                indexPath.rowIndex < sections[indexPath.sectionIndex].rowCount) {
+            return sections[indexPath.sectionIndex].items[indexPath.rowIndex]
+        }
+        logger.warn("indexPath $indexPath was found to be out of bounds for sections")
+        return null
+    }
+
+    /**
+     * @param itemViewType of the item to find.
+     * @return the first item that has the corresponding view type.
+     */
+    open fun firstItem(itemViewType: Int): FormAdapterItem? {
+        sections.flatMap { it.items }.firstOrNull {
+            it.itemViewType == itemViewType
+        }?.let { return it }
+        logger.warn("Could not find item with itemViewType $itemViewType " +
+                "it is probably the hashCode of the item\'s identifier")
         return null
     }
 
@@ -197,10 +250,8 @@ open class FormDataAdapter(
         var indexSum = 0
         sections.forEachIndexed { index, section ->
             val newIndexSum = indexSum + section.rowCount
-            if (indexSum > recyclerViewIndex) {
-                val rowIndex = recyclerViewIndex - indexSum
-                return IndexPath(
-                        index, rowIndex)
+            if (newIndexSum > recyclerViewIndex) {
+                return IndexPath(index, recyclerViewIndex - indexSum)
             }
             indexSum = newIndexSum
         }
@@ -234,8 +285,10 @@ open class FormDataAdapter(
      * @return The answer result (if any).
      */
     open fun instantiateAnswerResult(itemGroup: InputFieldItemGroup<*>): AnswerResult<*>? {
-        return AnswerResultBase(itemGroup.identifier, Instant.now(), null,
-                itemGroup.answer, itemGroup.answerType)
+        itemGroup.answer?.let {
+            return AnswerResultBase(itemGroup.identifier, Instant.now(), Instant.now(), it, itemGroup.answerType)
+        }
+        return null
     }
 
     /**
@@ -301,11 +354,10 @@ open class FormDataAdapter(
 
     private fun answerDidChange(itemGroup: InputFieldItemGroup<*>) {
         // Update the answers
-        var stepResult = collectionResult
         (instantiateAnswerResult(itemGroup))?.let {
-            stepResult.appendInputResult(it)
+            collectionResult = collectionResult.appendInputResult(it)
         } ?: run {
-            stepResult.removeInputResult(itemGroup.identifier)
+            collectionResult = collectionResult.removeInputResult(itemGroup.identifier)
         }
         // inform listener that answers have changed
         listener?.didChangeAnswer(itemGroup)
@@ -524,9 +576,11 @@ open class SectionBuilderBase: SectionBuilderDelegate {
      */
     open fun preferredUIHint(inputField: InputFieldView<*>): String {
         val uiHint = inputField.formUIHint
-        if (uiHint != null) {
-            return uiHint
-        }
+        uiHint?.let { return it }
+        inputField.formDataType.validStandardUIHints().firstOrNull {
+            // where:{ supportedHints.contains($0) }
+            true  // eventually we should have supportedHints feature
+        }?.let { return it }
         // TODO: mdephillips 12/1/2018 this code copied from iOS does is not supported yet
         //        if (uiHint != null && supportedHints.contains(uiHint)) {
 //            return uiHint

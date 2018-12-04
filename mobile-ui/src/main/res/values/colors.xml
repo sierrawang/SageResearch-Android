@@ -82,6 +82,7 @@
     <color name="transparent">#00000000</color>
 
     <!-- Form Colors -->
+    <color name="form_step_divider">@color/appVeryLightGray</color>
     <color name="choice_list_unselected_background">@color/appWhite</color>
     <color name="choice_list_unselected_text">@color/appDarkGrey</color>
     <color name="choice_list_selected_background">@color/colorPrimary</color>

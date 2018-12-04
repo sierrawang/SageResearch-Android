@@ -85,8 +85,9 @@ open class ChoiceAdapterItem(
         val layoutInflater = LayoutInflater.from(parent.context)
         return when (uiHint) {
             LIST -> createChoiceListViewHolder(layoutInflater, parent)
-            CHECKBOX -> createChoiceCheckBoxViewHolder(layoutInflater, parent)
-            RADIO_BUTTON -> createChoiceRadioButtonViewHolder(layoutInflater, parent)
+            // TODO: mdephillips 12/4/18 do checkbox and radio buttons
+//            CHECKBOX -> createChoiceCheckBoxViewHolder(layoutInflater, parent)
+//            RADIO_BUTTON -> createChoiceRadioButtonViewHolder(layoutInflater, parent)
             else -> createChoiceUnknownViewHolder(layoutInflater, parent)
         }
     }
@@ -128,9 +129,9 @@ open class ChoiceAdapterItem(
     interface OnSelectionChangedListener {
         /**
          * This function is called when the selection state changes.
-         * @param selected new value of the selected state.
+         * @param item that has changed
          */
-        fun selectionChanged(item: ChoiceAdapterItem, selected: Boolean)
+        fun selectionChanged(item: ChoiceAdapterItem)
     }
 }
 
@@ -166,8 +167,18 @@ open class ChoiceListItemViewHolder(item: ChoiceAdapterItem, itemView: View):
             return
         }
 
-        title.text = item.choice.text?.getString(root.resources)
-        subtitle.text = item.choice.detail?.getString(root.resources)
+        item.choice.text?.getString(root.resources)?.let {
+            title.text = it
+            title.visibility = View.VISIBLE
+        } ?: run {
+            title.visibility = View.GONE
+        }
+        item.choice.detail?.getString(root.resources)?.let {
+            subtitle.text = it
+            subtitle.visibility = View.VISIBLE
+        } ?: run {
+            subtitle.visibility = View.GONE
+        }
 
         if (item.selected) {
             title.setTextColor(selectedTextColor)
@@ -180,8 +191,7 @@ open class ChoiceListItemViewHolder(item: ChoiceAdapterItem, itemView: View):
         }
 
         root.setOnClickListener {
-            item.selected = !item.selected
-            item.listener?.selectionChanged(item, item.selected)
+            item.listener?.selectionChanged(item)
         }
 
         if (item.choice.iconResId != 0) {

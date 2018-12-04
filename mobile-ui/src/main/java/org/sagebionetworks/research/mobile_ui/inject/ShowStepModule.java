@@ -110,7 +110,7 @@ public abstract class ShowStepModule {
     @Provides
     @IntoMap
     @StepViewKey(FormUIStepViewBase.TYPE)
-    static ShowStepFragmentFactory provideShowFormUIStepFragmentFactory() {
+    static ShowStepFragmentFactory provideFormUIStepFragmentFactory() {
         return FormUIStepFragment.Companion::newInstance;
     }
 

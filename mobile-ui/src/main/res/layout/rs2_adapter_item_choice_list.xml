@@ -37,6 +37,7 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:orientation="horizontal"
+    android:padding="@dimen/choice_list_item_padding"
     android:foreground="?attr/selectableItemBackgroundBorderless"
     android:background="@color/choice_list_unselected_background">
 

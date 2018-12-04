@@ -61,7 +61,7 @@ public class CollectionResultBase extends ResultBase implements CollectionResult
     private final CollectionResultData collectionResultData;
 
     public CollectionResultBase(@NonNull final String identifier, @NonNull final Instant startTime,
-            @Nullable final Instant endTime, @NonNull final List<Result> inputResults) {
+            @NonNull final Instant endTime, @NonNull final List<Result> inputResults) {
         super(identifier, startTime, endTime);
         this.collectionResultData = CollectionResultData.create(inputResults);
     }
@@ -70,6 +70,16 @@ public class CollectionResultBase extends ResultBase implements CollectionResult
     @NonNull
     public CollectionResult appendInputResult(@NonNull Result inputResult) {
         List<Result> inputResults = new ArrayList<>(this.getInputResults());
+        Result existingResult = null;
+        for (Result result : this.getInputResults()) {
+            if (inputResult.getIdentifier().equals(result.getIdentifier())) {
+                existingResult = result;
+            }
+        }
+        // Do not allow multiple results with the same identifier
+        if (existingResult != null) {
+            inputResults.remove(existingResult);
+        }
         inputResults.add(inputResult);
         return new CollectionResultBase(this.getIdentifier(), this.getStartTime(),
                 this.getEndTime(), inputResults);

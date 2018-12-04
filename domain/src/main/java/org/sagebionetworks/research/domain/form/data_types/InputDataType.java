@@ -37,13 +37,16 @@ import android.support.annotation.Nullable;
 import com.google.gson.JsonDeserializer;
 import com.google.gson.JsonParseException;
 
+import org.sagebionetworks.research.domain.form.InputUIHint;
 import org.sagebionetworks.research.domain.form.data_types.BaseInputDataType.BaseType;
 import org.sagebionetworks.research.domain.form.data_types.CollectionInputDataType.CollectionType;
 import org.sagebionetworks.research.domain.interfaces.ObjectHelper;
 import org.sagebionetworks.research.domain.result.AnswerResultType;
 
 import java.io.Serializable;
+import java.util.LinkedHashSet;
 import java.util.Set;
+import java.util.TreeMap;
 
 public abstract class InputDataType extends ObjectHelper implements Serializable {
     @Nullable
@@ -74,4 +77,12 @@ public abstract class InputDataType extends ObjectHelper implements Serializable
      * @return The answer result type for this InputDataType.
      */
     public abstract @AnswerResultType String getAnswerResultType();
+
+    /**
+     * The valid hints are returned in priority order such that if the preferred hint is not
+     * supported by the UI then a fall-back will be selected.
+     *
+     * @return the linked hash set of {@link InputUIHint} standard UI hints that are valid for this data type.
+     */
+    public abstract LinkedHashSet<String> validStandardUIHints();
 }

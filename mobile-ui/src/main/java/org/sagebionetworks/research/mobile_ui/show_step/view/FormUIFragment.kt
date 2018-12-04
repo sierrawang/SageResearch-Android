@@ -37,6 +37,7 @@ import android.support.v4.content.res.ResourcesCompat
 import android.support.v7.widget.DividerItemDecoration
 import android.support.v7.widget.LinearLayoutManager
 import android.support.v7.widget.RecyclerView
+import android.support.v7.widget.RecyclerView.ItemDecoration
 import android.support.v7.widget.RecyclerView.LayoutManager
 import android.view.LayoutInflater
 import android.view.View
@@ -50,6 +51,8 @@ import org.sagebionetworks.research.presentation.model.interfaces.FormUIStepView
 import org.sagebionetworks.research.presentation.model.interfaces.StepView
 import org.sagebionetworks.research.presentation.show_step.show_step_view_models.ShowUIStepViewModel
 import org.sagebionetworks.research.domain.step.interfaces.FormUIStep
+import org.sagebionetworks.research.mobile_ui.show_step.view.forms.FormAdapterItem
+import org.sagebionetworks.research.mobile_ui.show_step.view.forms.FormAdapterItemGroup
 import org.sagebionetworks.research.presentation.model.form.InputFieldView
 import org.slf4j.LoggerFactory
 
@@ -60,7 +63,7 @@ import org.slf4j.LoggerFactory
  * displays a different UI for the user to interact with to set an answer that is compiled into
  * a [CollectionResult] and added to the [TaskResult].
  */
-open class FormUIStepFragment: ShowUIStepFragmentBase
+open class FormUIStepFragment: ShowStepFragmentBase
     <FormUIStepView, ShowUIStepViewModel<FormUIStepView>, FormUIStepViewBinding<FormUIStepView>>() {
 
     companion object {
@@ -96,6 +99,13 @@ open class FormUIStepFragment: ShowUIStepFragmentBase
         } ?: run {
             adapter = FormDataAdapter(resources, stepView)
         }
+        adapter.listener = object : FormDataAdapter.Listener {
+            override fun didChangeAnswer(itemGroup: FormAdapterItemGroup<*>) {
+                // By appending the task result history each time an answer changes,
+                // we make sure that state is not lost if this fragment is created/destroyed for any reason
+                performTaskViewModel.addStepResult(adapter.collectionResult)
+            }
+        }
     }
 
     /**
@@ -111,29 +121,31 @@ open class FormUIStepFragment: ShowUIStepFragmentBase
     }
 
     /**
-     * @property [DividerItemDecoration] to be shown between [RecyclerView.ViewHolder] cells.
-     */
-    var itemDecorator: DividerItemDecoration? = null
-    /**
      * Initialize an item decorator if you desire one for the [RecyclerView].
      * This function is only called if the [StepView] has a non-null [RecyclerView]
-     * @return an DividerItemDecoration, or null if none is desired.
+     * @return an ItemDecoration, or null if none is desired.
      */
-    protected open fun initializeItemDecorator(): DividerItemDecoration? {
+    protected open fun initializeItemDecorator(): ItemDecoration? {
         (layoutManager as? LinearLayoutManager)?.let { linearLayoutManager ->
             val decoration = DividerItemDecoration(context, linearLayoutManager.orientation)
             ResourcesCompat.getDrawable(resources, R.drawable.form_step_divider, null)?.let {
                 decoration.setDrawable(it)
+                return decoration
             } ?: run {
                 logger.warn("Failed to load form_step_divider drawable")
             }
-            return decoration
         }
         return null
     }
 
     protected open val recyclerViewHasFixedSize: Boolean get() {
         return true
+    }
+
+    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
+        val view = super.onCreateView(inflater, container, savedInstanceState)
+        initializeRecyclerView()
+        return view
     }
 
     override fun getLayoutId(): Int {
@@ -144,24 +156,20 @@ open class FormUIStepFragment: ShowUIStepFragmentBase
         return FormUIStepViewBinding(view)
     }
 
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        val view = super.onCreateView(inflater, container, savedInstanceState)
-
+    /**
+     * Initializes the recycler view, adapter, layout manager, and decorator.
+     */
+    protected open fun initializeRecyclerView() {
         initializeAdapter()
         stepViewBinding.recyclerView?.let { recyclerView ->
             recyclerView.setHasFixedSize(recyclerViewHasFixedSize)
 
             initializeLayoutManager()
             recyclerView.layoutManager = layoutManager
-
-            initializeItemDecorator()
-            itemDecorator?.let {
+            recyclerView.adapter = adapter
+            initializeItemDecorator()?.let {
                 recyclerView.addItemDecoration(it)
             }
-
-            recyclerView.adapter = adapter
         }
-
-        return view
     }
 }

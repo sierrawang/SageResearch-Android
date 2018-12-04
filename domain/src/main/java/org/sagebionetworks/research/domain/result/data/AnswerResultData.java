@@ -32,6 +32,8 @@
 
 package org.sagebionetworks.research.domain.result.data;
 
+import android.support.annotation.Nullable;
+
 import com.google.auto.value.AutoValue;
 import com.google.gson.Gson;
 import com.google.gson.TypeAdapter;
@@ -51,16 +53,16 @@ public abstract class AnswerResultData<T> {
     public abstract static class Builder<T> {
         public abstract AnswerResultData<T> build();
 
-        public abstract Builder<T> setAnswer(final T answer);
+        public abstract Builder<T> setAnswer(@Nullable final T answer);
 
         public abstract Builder<T> setAnswerResultType(@AnswerResultType final String answerResultType);
     }
 
-    public static <T> Builder<T> builder(T answer) {
+    public static <T> Builder<T> builder(@Nullable T answer) {
         return new AutoValue_AnswerResultData.Builder<T>();
     }
 
-    public static <T> AnswerResultData<T> create(final T answer, @AnswerResultType final String answerResultType) {
+    public static <T> AnswerResultData<T> create(@Nullable final T answer, @AnswerResultType final String answerResultType) {
         return AnswerResultData.builder(answer)
                 .setAnswer(answer)
                 .setAnswerResultType(answerResultType)
@@ -72,6 +74,7 @@ public abstract class AnswerResultData<T> {
         return new AutoValue_AnswerResultData.GsonTypeAdapter(gson, token);
     }
 
+    @Nullable
     public abstract T getAnswer();
 
     public abstract String getAnswerResultType();

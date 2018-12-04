@@ -50,6 +50,7 @@ import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.util.Arrays;
 import java.util.HashSet;
+import java.util.LinkedHashSet;
 import java.util.Set;
 
 
@@ -122,6 +123,20 @@ public class CollectionInputDataType extends InputDataType {
     @Override
     public @AnswerResultType String getAnswerResultType() {
         return baseType;
+    }
+
+    @Override
+    public LinkedHashSet<String> validStandardUIHints() {
+        // TODO: mdephillips 12/4/18 fill in with full list base on this iOS code
+//        switch collectionType {
+//            case .multipleChoice, .singleChoice:
+//            return [.list, .slider, .checkbox, .combobox, .picker, .radioButton]
+//
+//            case .multipleComponent:
+//            return [.picker, .textfield]
+//        }
+        return new LinkedHashSet<>(Arrays.asList(
+                InputUIHint.LIST, InputUIHint.CHECKBOX, InputUIHint.RADIO_BUTTON));
     }
 
     @Override

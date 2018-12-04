@@ -61,7 +61,8 @@ public interface InputFieldView<E extends Comparable> {
     String getFormUIHint();
 
     /**
-     * @return identifier that is unique among form items within the step
+     * @return A short string that uniquely identifies the input field within the step. The identifier is
+     *         reproduced in the results of a step result in the step history of a task result.
      */
     @NonNull
     String getIdentifier();

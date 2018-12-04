@@ -60,6 +60,7 @@
     <dimen name="rounded_button_radius">25dp</dimen>
 
     <!-- Form Sizes -->
+    <dimen name="choice_list_item_padding">@dimen/margin_medium</dimen>
     <dimen name="choice_list_title_text">16sp</dimen>
     <dimen name="choice_list_subtitle_text">14sp</dimen>
 

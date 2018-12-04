@@ -36,5 +36,5 @@
     <size
         android:height="1dp"/>
     <solid
-        android:color="@color/appVeryLightGray"/>
+        android:color="@color/form_step_divider"/>
 </shape>

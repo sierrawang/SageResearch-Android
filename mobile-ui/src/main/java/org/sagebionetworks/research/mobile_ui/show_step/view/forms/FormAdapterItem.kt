@@ -84,7 +84,11 @@ abstract class InputFieldAdapterItem(
         /**
          * @property uiHint The UI hint for this row of the table. See [InputUIHint].
          */
-        val uiHint: String, identifier: String,
+        val uiHint: String,
+        /**
+         * @property identifier of the item.
+         */
+        identifier: String,
         /**
          * @param itemViewType if null, a default one based on the uiHint will be provided.
          */
