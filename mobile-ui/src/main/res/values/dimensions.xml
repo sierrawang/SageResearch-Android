@@ -43,6 +43,7 @@
     <dimen name="rs2_completely_rounded_corner_radius">1000dp</dimen>
 
     <dimen name="mpower2_tap_button_stroke_width">5dp</dimen>
+    <dimen name="cancel_button_width">32dp</dimen>
 
     <!-- Margin Sizes -->
     <dimen name="margin_xxlarge">68dp</dimen>
