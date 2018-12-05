@@ -74,7 +74,7 @@ abstract class ActiveUIStepImpl implements ActiveUIStep {
         public abstract Builder setColorTheme(@Nullable ColorTheme colorTheme);
 
         @NonNull
-        public abstract Builder setCommands(@NonNull Set<String> commands);
+        public abstract Builder setCommands(@Nullable Set<String> commands);
 
         @NonNull
         public abstract Builder setDetail(@Nullable String detail);

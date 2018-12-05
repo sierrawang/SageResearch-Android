@@ -74,7 +74,8 @@ public abstract class ShowActiveUIStepFragmentBase<S extends ActiveUIStepView, V
             isBound = true;
             textToSpeechService = ((TextToSpeechService.Binder)iBinder).getService();
             textToSpeechService.registerSpeechesOnCountdown(
-                    stepView.getDuration(), showStepViewModel.getCountdown(), formattedSpokenInstructions());
+                    stepView.getDuration(), showStepViewModel.getCountdown(),
+                    formattedSpokenInstructions(), stepView.getCommands());
         }
 
         @Override

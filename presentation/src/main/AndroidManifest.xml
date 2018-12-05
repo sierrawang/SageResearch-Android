@@ -33,6 +33,8 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="org.sagebionetworks.research.presentation">
 
+    <uses-permission android:name="android.permission.VIBRATE"/>
+
     <application>
         <service
             android:name=".perform_task.TaskResultService"
