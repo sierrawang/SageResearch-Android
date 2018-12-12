@@ -39,10 +39,12 @@ import com.google.gson.TypeAdapter;
 import org.sagebionetworks.research.domain.step.ui.action.Action;
 import org.sagebionetworks.research.domain.step.ui.action.ActionDeserializationType;
 
+import java.io.Serializable;
+
 import javax.annotation.Nullable;
 
 @AutoValue
-abstract class ActionImpl implements Action {
+abstract class ActionImpl implements Action, Serializable {
     @AutoValue.Builder
     public abstract static class Builder {
         public abstract ActionImpl build();
