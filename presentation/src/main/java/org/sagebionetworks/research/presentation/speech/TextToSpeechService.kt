@@ -42,21 +42,22 @@ import android.content.Context
 import android.content.Intent
 import android.media.AudioManager
 import android.media.ToneGenerator
+import android.os.Build
 import android.os.Build.VERSION
 import android.os.Build.VERSION_CODES
 import android.os.IBinder
+import android.os.VibrationEffect
 import android.os.Vibrator
 import android.speech.tts.TextToSpeech
 import android.speech.tts.TextToSpeech.Engine
 import android.speech.tts.TextToSpeech.OnInitListener
 import android.speech.tts.UtteranceProgressListener
 import android.support.annotation.RequiresPermission
+import com.google.common.collect.ImmutableSet
 import dagger.android.AndroidInjection
 import dagger.android.DaggerService
-import org.sagebionetworks.research.presentation.speech.TextToSpeechService.TextToSpeechState.SpeakingState.ERROR
-import org.sagebionetworks.research.presentation.speech.TextToSpeechService.TextToSpeechState.SpeakingState.IDLE
-import org.sagebionetworks.research.presentation.speech.TextToSpeechService.TextToSpeechState.SpeakingState.QUEUED
-import org.sagebionetworks.research.presentation.speech.TextToSpeechService.TextToSpeechState.SpeakingState.SPEAKING
+import org.sagebionetworks.research.presentation.speech.TextToSpeechService.TextToSpeechState.SpeakingState.*
+import org.sagebionetworks.research.domain.step.ui.active.Command.*
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 import org.threeten.bp.Duration
@@ -93,7 +94,9 @@ class TextToSpeechService : DaggerService(), OnInitListener {
         }
     }
 
-    private data class FutureSpeechData(val speechMap: MutableMap<Long, Pair<String, Boolean>>,
+    private data class FutureSpeechData(
+            val speechMap: MutableMap<Long, Pair<String, Boolean>>,
+            val commands: ImmutableSet<String>,
             val duration: Duration,
             val countdown: LiveData<Long>,
             /**
@@ -253,7 +256,8 @@ class TextToSpeechService : DaggerService(), OnInitListener {
      * @param speechMap the map where keys are offsets into the countdown and values are instructions that should be
      * spoken to the user.
      */
-    fun registerSpeechesOnCountdown(duration: Duration, countdown: LiveData<Long>, speechMap: Map<String, String>) {
+    fun registerSpeechesOnCountdown(duration: Duration, countdown: LiveData<Long>,
+            speechMap: Map<String, String>, commands: ImmutableSet<String>) {
         clear()
         LOGGER.debug("register speeches on countdown called,\nduration: " +
                 "$duration\ncountdown: $countdown\nspeechMap: $speechMap")
@@ -281,8 +285,15 @@ class TextToSpeechService : DaggerService(), OnInitListener {
         val countdownObserver = Observer<Long> {
             onCountdownChanged(it)
         }
-        futureSpeechData = FutureSpeechData(canonicalSpeechMap, duration, countdown, countdownObserver)
+        futureSpeechData = FutureSpeechData(canonicalSpeechMap, commands, duration, countdown, countdownObserver)
         futureSpeechData?.countdown?.observeForever(countdownObserver)
+
+        if (commands.contains(PLAY_SOUND) || commands.contains(PLAY_SOUND_ON_START)) {
+            playSound()
+        }
+        if (commands.contains(VIBRATE) || commands.contains(VIBRATE_ON_START)) {
+            vibrate()
+        }
     }
 
     /**
@@ -339,7 +350,14 @@ class TextToSpeechService : DaggerService(), OnInitListener {
     @RequiresPermission(permission.VIBRATE)
     fun vibrate(duration: Long = defaultVibrateAndSoundDurationMillis) {
         LOGGER.debug("vibrate() called with duration = $duration")
-        (getSystemService(Context.VIBRATOR_SERVICE) as? Vibrator)?.vibrate(duration)
+        (getSystemService(Context.VIBRATOR_SERVICE) as? Vibrator)?.let {
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+                it.vibrate(VibrationEffect.createOneShot(duration,VibrationEffect.DEFAULT_AMPLITUDE))
+            } else {
+                @Suppress("DEPRECATION")  // safely wrapped in SDK_INT check
+                it.vibrate(duration)
+            }
+        }
     }
 
     /**
@@ -382,10 +400,10 @@ class TextToSpeechService : DaggerService(), OnInitListener {
      * @param text the text to speak to the user.
      * @param tts the TextToSpeech to use to speak the text.
      */
-    @SuppressWarnings("deprecation")
     private fun speakUnder20(text: String, tts: TextToSpeech) {
         val map: HashMap<String, String> = HashMap()
         map[Engine.KEY_PARAM_UTTERANCE_ID] = "MessageId"
+        @Suppress("DEPRECATION")  // safely wrapped in SDK_INT check
         tts.speak(text, queueingBehavior, map)
     }
 
@@ -414,6 +432,15 @@ class TextToSpeechService : DaggerService(), OnInitListener {
             if (pair != null && !pair.second) {
                 speakText(pair.first)
                 data.speechMap[elapsedTime] = pair.copy(second = true)
+            }
+            // We have finished
+            if (count == 0L) {
+                if (data.commands.contains(PLAY_SOUND) || data.commands.contains(PLAY_SOUND_ON_FINISH)) {
+                    playSound()
+                }
+                if (data.commands.contains(VIBRATE) || data.commands.contains(VIBRATE_ON_FINISH)) {
+                    vibrate()
+                }
             }
         }
     }

@@ -50,7 +50,7 @@ public interface ActiveUIStep extends ThemedUIStep {
      *
      * @return set of commands associated with this step
      */
-    @NonNull
+    @Nullable
     ImmutableSet<String> getCommands();
 
     /**

@@ -37,6 +37,7 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 
 import com.google.common.collect.ImmutableMap;
+import com.google.common.collect.ImmutableSet;
 
 import org.sagebionetworks.research.domain.step.StepType;
 import org.sagebionetworks.research.domain.step.interfaces.ActiveUIStep;
@@ -58,8 +59,11 @@ public class ActiveUIStepViewBase extends UIStepViewBase implements ActiveUIStep
     private final Map<String, String> spokenInstructions;
 
     @NonNull
-    private final Duration duration;
+    private final ImmutableSet<String> commands;
 
+    @NonNull
+    private final Duration duration;
+    
     private final boolean isBackgroundAudioRequired;
 
     public static ActiveUIStepViewBase fromActiveUIStep(@NonNull Step step, DrawableMapper mapper) {
@@ -77,12 +81,17 @@ public class ActiveUIStepViewBase extends UIStepViewBase implements ActiveUIStep
         Map<String, String> spokenInstructions = activeUIStep.getSpokenInstructions();
         if (spokenInstructions == null) {
             spokenInstructions = ImmutableMap.of();
+        };
+
+        ImmutableSet<String> commands = activeUIStep.getCommands();
+        if (commands == null) {
+            commands = ImmutableSet.of();
         }
 
         return new ActiveUIStepViewBase(uiStepView.getIdentifier(),
                 uiStepView.getActions(), uiStepView.getTitle(), uiStepView.getText(), uiStepView.getDetail(),
                 uiStepView.getFootnote(), uiStepView.getColorTheme(), uiStepView.getImageTheme(), duration,
-                spokenInstructions, activeUIStep.isBackgroundAudioRequired());
+                spokenInstructions, commands, activeUIStep.isBackgroundAudioRequired());
     }
 
     public ActiveUIStepViewBase(@NonNull final String identifier,
@@ -95,18 +104,23 @@ public class ActiveUIStepViewBase extends UIStepViewBase implements ActiveUIStep
             @Nullable final ImageThemeView imageTheme,
             @NonNull final Duration duration,
             @NonNull final Map<String, String> spokenInstructions,
+            @NonNull final ImmutableSet<String> commands,
             final boolean isBackgroundAudioRequired) {
         super(identifier, actions, title, text, detail, footnote, colorTheme, imageTheme);
         this.duration = duration;
         this.spokenInstructions = spokenInstructions;
         this.isBackgroundAudioRequired = isBackgroundAudioRequired;
+        this.commands = commands;
     }
 
     protected ActiveUIStepViewBase(Parcel in) {
         super(in);
         this.duration = (Duration) in.readSerializable();
-        this.spokenInstructions = ImmutableMap.of();
         this.isBackgroundAudioRequired = in.readByte() != 0;
+        // TODO: mdephillips 12/4/18 do we need this parcel constructor?
+        // if so spokenInstructions and commands shouldn't be empty
+        this.spokenInstructions = ImmutableMap.of();
+        this.commands = ImmutableSet.of();
     }
 
     @NonNull
@@ -119,6 +133,12 @@ public class ActiveUIStepViewBase extends UIStepViewBase implements ActiveUIStep
     @NonNull
     public Map<String, String> getSpokenInstructions() {
         return spokenInstructions;
+    }
+
+    @Override
+    @NonNull
+    public ImmutableSet<String> getCommands() {
+        return commands;
     }
 
     @Override
