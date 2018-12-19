@@ -76,6 +76,7 @@ public abstract class ShowActiveUIStepFragmentBase<S extends ActiveUIStepView, V
             textToSpeechService.registerSpeechesOnCountdown(
                     stepView.getDuration(), showStepViewModel.getCountdown(),
                     formattedSpokenInstructions(), stepView.getCommands());
+            onSpeechServiceConnected();
         }
 
         @Override
@@ -85,13 +86,17 @@ public abstract class ShowActiveUIStepFragmentBase<S extends ActiveUIStepView, V
         }
     }
 
+    protected void onSpeechServiceConnected() {
+        // sub-classes can override for specific functionality
+    }
+
     public static final Logger LOGGER = LoggerFactory.getLogger(ShowActiveUIStepFragmentBase.class);
     // Multiply integer animation values by a constant to smooth it out.
     public static final int PROGRESS_BAR_ANIMATION_MULTIPLIER = 100;
 
     private Connection connection;
     private boolean isBound;
-    private TextToSpeechService textToSpeechService;
+    protected TextToSpeechService textToSpeechService;
     @Nullable
     private Observer<TextToSpeechState> textToSpeechStateObserver;
 
