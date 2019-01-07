@@ -109,12 +109,11 @@ class TextToSpeechService : DaggerService(), OnInitListener {
 
         fun hasQueuedSpeech(): Boolean {
             // if speechMap != null duration != null and countdown != null
-            val currentOffset = duration.seconds - (countdown.value ?: 0L)
-            val hasQueuedSpeech = speechMap.keys.any { offset ->
+            val currentOffset = duration.seconds - (countdown.value ?: (duration.seconds - 1))
+            return speechMap.keys.any { offset ->
                 LOGGER.info("offset $offset and countdownOffset $currentOffset for ${speechMap[offset]} ")
                 offset > currentOffset
             }
-            return hasQueuedSpeech
         }
     }
 
@@ -293,6 +292,18 @@ class TextToSpeechService : DaggerService(), OnInitListener {
         }
         if (commands.contains(VIBRATE) || commands.contains(VIBRATE_ON_START)) {
             vibrate()
+        }
+    }
+
+    /**
+     * This will force the initial speech map commands to be spoken if they exist.
+     * This also must be called after registerSpeechesOnCountdown for this to work.
+     */
+    fun forceSpeakStartCommands() {
+        futureSpeechData?.let {
+            onCountdownChanged(it.duration.seconds)
+        } ?: run {
+            LOGGER.warn("futureSpeechData must be initialized before forceSpeakStartCommands() can work")
         }
     }
 
