@@ -41,38 +41,38 @@
         android:id="@+id/rs2_title"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_marginEnd="28dp"
-        android:layout_marginLeft="28dp"
-        android:layout_marginRight="28dp"
-        android:layout_marginStart="28dp"
-        android:layout_marginTop="40dp"
+        android:layout_margin="@dimen/margin_large"
         android:fontFamily="@font/lato"
         android:gravity="center"
-        android:text="Title"
         android:textColor="@color/appWhite"
         android:textSize="24sp"
         android:textStyle="bold"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toBottomOf="@+id/rs2_step_navigation_action_cancel" />
 
     <TextView
         android:id="@+id/rs2_text"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_marginEnd="28dp"
-        android:layout_marginLeft="28dp"
-        android:layout_marginRight="28dp"
-        android:layout_marginStart="28dp"
-        android:layout_marginTop="12dp"
+        android:layout_margin="@dimen/margin_large"
         android:fontFamily="@font/lato"
         android:gravity="center"
-        android:text="Text"
         android:textColor="@color/appWhite"
         android:textSize="16sp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/rs2_title" />
 
+    <org.sagebionetworks.research.mobile_ui.widget.ActionButton
+        style="@style/Widget.ResearchStack.StepHeader.CancelButton"
+        android:id="@id/rs2_step_navigation_action_cancel"
+        android:layout_width="@dimen/cancel_button_width"
+        android:layout_height="0dp"
+        android:layout_marginStart="@dimen/margin_medium"
+        android:layout_marginTop="@dimen/margin_xlarge"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintDimensionRatio="H,1:1"/>
 
 </android.support.constraint.ConstraintLayout>

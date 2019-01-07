@@ -32,44 +32,57 @@
 
 package org.sagebionetworks.research.domain.form.data_types;
 
-import android.os.Parcelable;
 import android.support.annotation.Nullable;
 
-import com.google.gson.JsonDeserializationContext;
 import com.google.gson.JsonDeserializer;
-import com.google.gson.JsonElement;
 import com.google.gson.JsonParseException;
 
+import org.sagebionetworks.research.domain.form.InputUIHint;
 import org.sagebionetworks.research.domain.form.data_types.BaseInputDataType.BaseType;
 import org.sagebionetworks.research.domain.form.data_types.CollectionInputDataType.CollectionType;
 import org.sagebionetworks.research.domain.interfaces.ObjectHelper;
+import org.sagebionetworks.research.domain.result.AnswerResultType;
 
 import java.io.Serializable;
-import java.lang.reflect.Type;
+import java.util.LinkedHashSet;
+import java.util.Set;
+import java.util.TreeMap;
 
 public abstract class InputDataType extends ObjectHelper implements Serializable {
     @Nullable
     public static JsonDeserializer<? extends InputDataType> getJsonDeserializer() {
-        return new JsonDeserializer<InputDataType>() {
-            @Override
-            public InputDataType deserialize(final JsonElement json, final Type typeOfT,
-                    final JsonDeserializationContext context)
-                    throws JsonParseException {
-                String string = json.getAsString();
-                if (string != null) {
-                    String[] piecesArray = string.split("\\" + CollectionInputDataType.DELIMINATOR, -1);
-                    if (piecesArray.length == 1 && BaseType.ALL.contains(piecesArray[0])) {
-                        return new BaseInputDataType(piecesArray[0]);
-                    } else if (piecesArray.length == 2 && CollectionType.ALL.contains(piecesArray[0]) &&
-                            BaseType.ALL.contains(piecesArray[1])) {
-                        return new CollectionInputDataType(piecesArray[0], piecesArray[1]);
-                    } else if (piecesArray.length == 1 && CollectionType.ALL.contains(piecesArray[0])) {
-                        return new CollectionInputDataType(piecesArray[0]);
-                    }
+        return (JsonDeserializer<InputDataType>) (json, typeOfT, context) -> {
+            String string = json.getAsString();
+            if (string != null) {
+                String[] piecesArray = string.split("\\" + CollectionInputDataType.DELIMINATOR, -1);
+                if (piecesArray.length == 1 && BaseType.ALL.contains(piecesArray[0])) {
+                    return new BaseInputDataType(piecesArray[0]);
+                } else if (piecesArray.length == 2 && CollectionType.ALL.contains(piecesArray[0]) &&
+                        BaseType.ALL.contains(piecesArray[1])) {
+                    return new CollectionInputDataType(piecesArray[0], piecesArray[1]);
+                } else if (piecesArray.length == 1 && CollectionType.ALL.contains(piecesArray[0])) {
+                    return new CollectionInputDataType(piecesArray[0]);
                 }
-
-                throw new JsonParseException("JSON value " + json.toString() + " doesn't represent an InputDataType");
             }
+            throw new JsonParseException("JSON value " + json.toString() + " doesn't represent an InputDataType");
         };
     }
+
+    /**
+     * @return The set of ui hints that can display using a list format such as a scrolling list.
+     */
+    public abstract Set<String> listSelectionHints();
+
+    /**
+     * @return The answer result type for this InputDataType.
+     */
+    public abstract @AnswerResultType String getAnswerResultType();
+
+    /**
+     * The valid hints are returned in priority order such that if the preferred hint is not
+     * supported by the UI then a fall-back will be selected.
+     *
+     * @return the linked hash set of {@link InputUIHint} standard UI hints that are valid for this data type.
+     */
+    public abstract LinkedHashSet<String> validStandardUIHints();
 }

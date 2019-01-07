@@ -30,45 +30,16 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.sagebionetworks.research.domain.result.interfaces;
+package org.sagebionetworks.research.mobile_ui.utils
 
-import android.support.annotation.NonNull;
+import android.content.Context
 
-import com.google.common.collect.ImmutableList;
-
-import org.threeten.bp.Instant;
-
-/**
- * A CollectionResult represents a grouping of other results. Used when multiple results are logically linked (e.g.
- * part of the same step or part of the same form).
- */
-public interface CollectionResult extends Result {
-    /**
-     * @param inputResult
-     *         The result to append to this CollectionResult
-     * @return A new CollectionResult with the given result appended to the input results.
-     */
-    @NonNull
-    CollectionResult appendInputResult(@NonNull Result inputResult);
-
-    /**
-     * @param identifier
-     *         The result identifier to remove from this CollectionResult
-     * @return A new CollectionResult with the given result removed frome the input results.
-     */
-    @NonNull
-    CollectionResult removeInputResult(@NonNull final String identifier);
-
-    /**
-     * @return The time this result ended.
-     */
-    @Override
-    @NonNull
-    Instant getEndTime();
-
-    /**
-     * @return A list of the results that make up this collection Result.
-     */
-    @NonNull
-    ImmutableList<Result> getInputResults();
+fun Context.getDrawableResourceId(resourceName: String?): Int? {
+    resourceName?.let {
+        val resId = resources.getIdentifier(it, "drawable", packageName)
+        if (resId != 0) {
+            return resId
+        }
+    }
+    return null
 }

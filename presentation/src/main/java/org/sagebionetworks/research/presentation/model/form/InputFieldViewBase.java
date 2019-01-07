@@ -59,7 +59,7 @@ public class InputFieldViewBase<E> implements InputFieldView, Serializable {
     @NonNull
     private final InputDataType formDataType;
 
-    @Nullable
+    @NonNull
     private final String identifier;
 
     @Nullable
@@ -88,8 +88,12 @@ public class InputFieldViewBase<E> implements InputFieldView, Serializable {
     private final String uiHint;
 
     public static <E extends Comparable<E>> InputFieldViewBase<E> fromInputField(InputField<E> inputField,
-            DrawableMapper mapper) {
+            DrawableMapper mapper, @NonNull String formStepIdentifier) {
         String identifier = inputField.getIdentifier();
+        // If no identifier is provided in the InputField, use the form step's identifier
+        if (identifier == null) {
+            identifier = formStepIdentifier;
+        }
         boolean isOptional = inputField.isOptional();
         InputDataType formDataType = inputField.getFormDataType();
         @InputUIHint String uiHint = inputField.getFormUIHint();
@@ -155,8 +159,8 @@ public class InputFieldViewBase<E> implements InputFieldView, Serializable {
         return uiHint;
     }
 
+    @NonNull
     @Override
-    @Nullable
     public String getIdentifier() {
         return identifier;
     }

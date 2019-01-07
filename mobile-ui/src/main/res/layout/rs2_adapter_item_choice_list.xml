@@ -1,4 +1,5 @@
-<?xml version="1.0" encoding="utf-8"?><!--
+<?xml version="1.0" encoding="utf-8"?>
+<!--
   ~ BSD 3-Clause License
   ~
   ~ Copyright 2018  Sage Bionetworks. All rights reserved.
@@ -30,39 +31,44 @@
   ~ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
   -->
 
-<resources>
-    <dimen name="progressBarHeight">10dp</dimen>
-    <dimen name="rs2_step_navigation_primary_button_min_height">52dp</dimen>
-    <dimen name="rs2_step_navigation_shadow_height">5dp</dimen>
-    <!-- The next 2 dimensions ensure that the countdown dial always exactly fills it's containing view, provided
-    that the containing view is a square the countdown dial is originally 250px and the thickness is 10px.
-    This gives a ratio of 25:1, it's innerRadius is 115 which gives a ratio of 250:115 -->
-    <dimen name="countdownDialThicknessRatio">25</dimen>
-    <dimen name="countdownDialInnerRadiusRatio">2.1739</dimen>
-    <!-- This dimension is purposefully larger than the tap button will ever get -->
-    <dimen name="rs2_completely_rounded_corner_radius">1000dp</dimen>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/choice_list_root"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="horizontal"
+    android:padding="@dimen/choice_list_item_padding"
+    android:foreground="?attr/selectableItemBackgroundBorderless"
+    android:background="@color/choice_list_unselected_background">
 
-    <dimen name="mpower2_tap_button_stroke_width">5dp</dimen>
-    <dimen name="cancel_button_width">32dp</dimen>
+    <!-- No need for contentDescription, as the title and subtitle will provide it -->
+    <ImageView
+        android:id="@+id/choice_list_icon"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:visibility="gone"
+        android:layout_gravity="center_vertical"/>
 
-    <!-- Margin Sizes -->
-    <dimen name="margin_xxlarge">68dp</dimen>
-    <dimen name="margin_xlarge">42dp</dimen>
-    <dimen name="margin_large">28dp</dimen>
-    <dimen name="margin_medium">20dp</dimen>
-    <dimen name="margin_small">12dp</dimen>
-    <dimen name="margin_xsmall">8dp</dimen>
-    <dimen name="margin_xxsmall">4dp</dimen>
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:layout_gravity="center_vertical">
 
-    <!-- Button Sizes -->
-    <dimen name="rounded_button_text_size">20sp</dimen>
-    <dimen name="image_button_text_size">20sp</dimen>
-    <dimen name="rounded_button_height">50dp</dimen>
-    <dimen name="rounded_button_radius">25dp</dimen>
+        <TextView
+            android:id="@+id/choice_list_title"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:textSize="@dimen/choice_list_title_text"
+            android:textColor="@color/choice_list_unselected_text"/>
 
-    <!-- Form Sizes -->
-    <dimen name="choice_list_item_padding">@dimen/margin_medium</dimen>
-    <dimen name="choice_list_title_text">16sp</dimen>
-    <dimen name="choice_list_subtitle_text">14sp</dimen>
+        <TextView
+            android:id="@+id/choice_list_subtitle"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:textSize="@dimen/choice_list_subtitle_text"
+            android:textColor="@color/choice_list_unselected_text"/>
 
-</resources>
+    </LinearLayout>
+
+</LinearLayout>

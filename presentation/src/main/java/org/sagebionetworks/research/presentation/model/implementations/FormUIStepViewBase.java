@@ -68,7 +68,7 @@ public class FormUIStepViewBase extends UIStepViewBase implements FormUIStepView
         UIStepViewBase uiStepView = UIStepViewBase.fromUIStep(formUIStep, mapper);
         List<InputFieldView> inputFields = new ArrayList<>();
         for (InputField field : formUIStep.getInputFields()) {
-            inputFields.add(InputFieldViewBase.fromInputField(field, mapper));
+            inputFields.add(InputFieldViewBase.fromInputField(field, mapper, formUIStep.getIdentifier()));
         }
 
         return new FormUIStepViewBase(uiStepView.getIdentifier(),

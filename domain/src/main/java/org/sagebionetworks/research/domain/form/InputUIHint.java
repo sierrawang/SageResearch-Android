@@ -38,9 +38,13 @@ import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 
 @Retention(RetentionPolicy.SOURCE)
-@StringDef({InputUIHint.CHECKBOX, InputUIHint.COMBOBOX})
+@StringDef({InputUIHint.CHECKBOX, InputUIHint.COMBOBOX, InputUIHint.TEXTFIELD, InputUIHint.RADIO_BUTTON,
+            InputUIHint.LIST})
 public @interface InputUIHint {
     String CHECKBOX = "checkbox";
     String COMBOBOX = "combobox";
+    String TEXTFIELD = "textfield";
+    String RADIO_BUTTON = "radioButton";
+    String LIST = "list";
     // TODO: populate remaining types
 }

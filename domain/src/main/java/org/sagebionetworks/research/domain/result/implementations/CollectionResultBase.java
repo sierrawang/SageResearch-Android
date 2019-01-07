@@ -33,6 +33,7 @@
 package org.sagebionetworks.research.domain.result.implementations;
 
 import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 
 import com.google.common.base.MoreObjects.ToStringHelper;
 import com.google.common.base.Objects;
@@ -69,7 +70,30 @@ public class CollectionResultBase extends ResultBase implements CollectionResult
     @NonNull
     public CollectionResult appendInputResult(@NonNull Result inputResult) {
         List<Result> inputResults = new ArrayList<>(this.getInputResults());
+        Result existingResult = null;
+        for (Result result : this.getInputResults()) {
+            if (inputResult.getIdentifier().equals(result.getIdentifier())) {
+                existingResult = result;
+            }
+        }
+        // Do not allow multiple results with the same identifier
+        if (existingResult != null) {
+            inputResults.remove(existingResult);
+        }
         inputResults.add(inputResult);
+        return new CollectionResultBase(this.getIdentifier(), this.getStartTime(),
+                this.getEndTime(), inputResults);
+    }
+
+    @NonNull
+    @Override
+    public CollectionResult removeInputResult(@NonNull final String identifier) {
+        List<Result> inputResults = new ArrayList<>();
+        for (Result result : this.getInputResults()) {
+            if (!identifier.equals(result.getIdentifier())) {
+                inputResults.add(result);
+            }
+        }
         return new CollectionResultBase(this.getIdentifier(), this.getStartTime(),
                 this.getEndTime(), inputResults);
     }

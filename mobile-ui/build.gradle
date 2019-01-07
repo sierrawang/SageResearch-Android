@@ -31,6 +31,9 @@
  */
 
 apply plugin: 'com.android.library'
+apply plugin: 'kotlin-android'
+apply plugin: 'kotlin-kapt'
+apply plugin: 'kotlin-android-extensions'
 apply plugin: 'com.jakewharton.butterknife'
 apply from: '../config/quality/quality.gradle'
 
@@ -62,12 +65,12 @@ android {
         targetCompatibility JavaVersion.VERSION_1_8
         sourceCompatibility JavaVersion.VERSION_1_8
     }
-
-
 }
 
 dependencies {
     implementation fileTree(include: ['*.jar'], dir: 'libs')
+    implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version"
+    implementation project(':domain')
     implementation project(':presentation')
     api 'com.google.guava:guava:24.1-android'
     api project(':presentation')
@@ -98,10 +101,14 @@ dependencies {
 
     api 'com.google.dagger:dagger-android:2.16'
     api 'com.google.dagger:dagger-android-support:2.16'
+    kapt 'com.google.dagger:dagger-android-processor:2.16'
+    kapt "com.google.dagger:dagger-compiler:2.16"
+    kaptTest "com.google.dagger:dagger-compiler:2.16"
     annotationProcessor 'com.google.dagger:dagger-android-processor:2.16'
     annotationProcessor "com.google.dagger:dagger-compiler:2.16"
 
     implementation 'com.jakewharton:butterknife:8.8.1'
+    kapt 'com.jakewharton:butterknife-compiler:8.8.1'
     implementation "com.android.support:support-v4:$support_library_version"
     annotationProcessor 'com.jakewharton:butterknife-compiler:8.8.1'
     implementation 'com.android.support.constraint:constraint-layout:1.1.2'
@@ -113,4 +120,7 @@ dependencies {
     testImplementation "android.arch.core:core-testing:1.1.1"
     androidTestImplementation 'com.android.support.test:runner:1.0.2'
     androidTestImplementation 'com.android.support.test.espresso:espresso-core:3.0.2'
+}
+repositories {
+    mavenCentral()
 }

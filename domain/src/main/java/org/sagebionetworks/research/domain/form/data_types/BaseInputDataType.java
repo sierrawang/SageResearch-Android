@@ -38,10 +38,15 @@ import android.support.annotation.StringDef;
 import com.google.common.base.Objects;
 import com.google.common.collect.ImmutableSet;
 
+import org.sagebionetworks.research.domain.form.InputUIHint;
 import org.sagebionetworks.research.domain.interfaces.HashCodeHelper;
 
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
+import java.util.Arrays;
+import java.util.HashSet;
+import java.util.LinkedHashSet;
+import java.util.Set;
 
 public class BaseInputDataType extends InputDataType {
     @Retention(RetentionPolicy.SOURCE)
@@ -78,6 +83,45 @@ public class BaseInputDataType extends InputDataType {
 
     protected BaseInputDataType(Parcel in) {
         this.baseType = in.readString();
+    }
+
+    @Override
+    public HashSet<String> listSelectionHints() {
+        if (BaseType.BOOLEAN.equals(baseType)) {
+            return new HashSet<>(Arrays.asList(
+                    InputUIHint.LIST, InputUIHint.CHECKBOX, InputUIHint.RADIO_BUTTON));
+        }
+        return new HashSet<>();
+    }
+
+    @Override
+    public String getAnswerResultType() {
+        return baseType;
+    }
+
+    @Override
+    public LinkedHashSet<String> validStandardUIHints() {
+        // TODO: mdephillips 12/4/18 see comments above all returns to eventually match iOS
+        switch (baseType) {
+            case BaseType.BOOLEAN:
+                // return [.list, .picker, .checkbox, .radioButton, .toggle]
+                return new LinkedHashSet<>(Arrays.asList(
+                        InputUIHint.LIST, InputUIHint.CHECKBOX, InputUIHint.RADIO_BUTTON));
+            case BaseType.DATE:
+            case BaseType.DURATION:
+                // return [.picker, .textfield]
+                return new LinkedHashSet<>();
+            case BaseType.DECIMAL:
+            case BaseType.INTEGER:
+            case BaseType.YEAR:
+            case BaseType.FRACTION:
+                // return [.textfield, .slider, .picker]
+                return new LinkedHashSet<>();
+            case BaseType.STRING:
+                // return [.textfield, .multipleLine]
+                return new LinkedHashSet<>();
+        }
+        return new LinkedHashSet<>();
     }
 
     @Override
