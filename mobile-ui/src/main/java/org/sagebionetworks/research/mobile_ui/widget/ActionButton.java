@@ -34,13 +34,8 @@ package org.sagebionetworks.research.mobile_ui.widget;
 
 import android.content.Context;
 import android.support.annotation.Keep;
-import android.support.v4.view.WindowInsetsCompat;
 import android.support.v7.widget.AppCompatButton;
-import android.support.v7.widget.AppCompatImageButton;
-import android.support.v7.widget.AppCompatTextView;
 import android.util.AttributeSet;
-import android.view.WindowInsets;
-import android.widget.Button;
 
 @Keep
 public class ActionButton extends AppCompatButton {

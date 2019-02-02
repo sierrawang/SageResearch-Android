@@ -38,9 +38,6 @@ import com.google.common.collect.ImmutableSet;
 
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
-import java.util.Arrays;
-import java.util.HashSet;
-import java.util.Set;
 
 /**
  * This interface defines the types of answers that an answer result can store.

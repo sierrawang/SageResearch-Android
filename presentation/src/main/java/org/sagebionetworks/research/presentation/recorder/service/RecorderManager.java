@@ -32,6 +32,8 @@
 
 package org.sagebionetworks.research.presentation.recorder.service;
 
+import static com.google.common.base.Preconditions.checkNotNull;
+
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
@@ -39,10 +41,10 @@ import android.content.ServiceConnection;
 import android.os.IBinder;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.Sets;
-import io.reactivex.Single;
-import io.reactivex.disposables.CompositeDisposable;
+
 import org.sagebionetworks.research.domain.async.AsyncActionConfiguration;
 import org.sagebionetworks.research.domain.async.RecorderConfiguration;
 import org.sagebionetworks.research.domain.result.interfaces.Result;
@@ -65,7 +67,8 @@ import java.util.Map;
 import java.util.Set;
 import java.util.UUID;
 
-import static com.google.common.base.Preconditions.checkNotNull;
+import io.reactivex.Single;
+import io.reactivex.disposables.CompositeDisposable;
 
 /**
  * A RecorderManager managers a Task's recorders.

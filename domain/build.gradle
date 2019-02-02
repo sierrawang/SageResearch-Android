@@ -70,7 +70,7 @@ android {
 dependencies {
     implementation fileTree(include: ['*.jar'], dir: 'libs')
 
-    api 'com.google.guava:guava:24.1-android'
+    api "com.google.guava:guava:$guava_version"
     implementation 'com.google.code.gson:gson:2.8.2'
 
     api 'com.jakewharton.threetenabp:threetenabp:1.0.5'
@@ -82,12 +82,12 @@ dependencies {
 
     api 'io.reactivex.rxjava2:rxjava:2.2.1'
 
-    api 'com.google.auto.value:auto-value-annotations:1.6'
-    implementation 'com.ryanharter.auto.value:auto-value-gson-annotations:0.7.0'
+    api "com.google.auto.value:auto-value-annotations:$auto_value_version"
+    implementation "com.ryanharter.auto.value:auto-value-gson-annotations:$auto_value_gson_version"
     implementation 'com.ryanharter.auto.value:auto-value-parcel-adapter:0.2.6'
 
-    kapt "com.google.auto.value:auto-value:1.6"
-    kapt 'com.ryanharter.auto.value:auto-value-gson:0.7.0'
+    kapt "com.google.auto.value:auto-value:%auto_value_version"
+    kapt "com.ryanharter.auto.value:auto-value-gson:$auto_value_gson_version"
     kapt 'com.ryanharter.auto.value:auto-value-parcel:0.2.6'
     implementation 'com.dampcake:gson-immutable:1.2'
 
@@ -95,13 +95,13 @@ dependencies {
     implementation 'com.github.tony19:logback-android-core:1.1.1-6'
     testImplementation 'org.slf4j:slf4j-simple:1.7.21'
 
-    api 'com.google.dagger:dagger-android:2.16'
-    api 'com.google.dagger:dagger-android-support:2.16'
-    kapt 'com.google.dagger:dagger-android-processor:2.16'
-    kapt "com.google.dagger:dagger-compiler:2.16"
+    api "com.google.dagger:dagger-android:$dagger_version"
+    api "com.google.dagger:dagger-android-support:$dagger_version"
+    kapt "com.google.dagger:dagger-android-processor:$dagger_version"
+    kapt "com.google.dagger:dagger-compiler:$dagger_version"
 
-    kaptTest 'com.google.dagger:dagger-android-processor:2.16'
-    kaptTest "com.google.dagger:dagger-compiler:2.16"
+    kaptTest "com.google.dagger:dagger-android-processor:$dagger_version"
+    kaptTest "com.google.dagger:dagger-compiler:$dagger_version"
     testImplementation 'org.mockito:mockito-core:2.8.9'
 
     testImplementation 'junit:junit:4.12'

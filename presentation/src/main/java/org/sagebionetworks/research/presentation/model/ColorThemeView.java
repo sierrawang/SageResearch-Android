@@ -32,7 +32,6 @@
 
 package org.sagebionetworks.research.presentation.model;
 
-import android.os.Parcelable;
 import android.support.annotation.Nullable;
 
 import com.google.auto.value.AutoValue;

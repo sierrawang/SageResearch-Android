@@ -32,15 +32,14 @@
 
 package org.sagebionetworks.research.presentation.inject;
 
+import static org.sagebionetworks.research.presentation.recorder.reactive.ReactiveFileResultRecorder.createJsonArrayLogger;
+
 import android.content.Context;
 import android.hardware.SensorEvent;
+
 import com.github.pwittchen.reactivesensors.library.ReactiveSensors;
 import com.google.gson.Gson;
-import dagger.Module;
-import dagger.Provides;
-import dagger.multibindings.IntoMap;
-import dagger.multibindings.StringKey;
-import io.reactivex.Flowable;
+
 import org.sagebionetworks.research.domain.async.RecorderType;
 import org.sagebionetworks.research.domain.result.interfaces.Result;
 import org.sagebionetworks.research.presentation.recorder.Recorder;
@@ -63,7 +62,11 @@ import java.util.Map;
 import java.util.UUID;
 import java.util.concurrent.atomic.AtomicReference;
 
-import static org.sagebionetworks.research.presentation.recorder.reactive.ReactiveFileResultRecorder.createJsonArrayLogger;
+import dagger.Module;
+import dagger.Provides;
+import dagger.multibindings.IntoMap;
+import dagger.multibindings.StringKey;
+import io.reactivex.Flowable;
 
 @Module
 public abstract class RecorderModule {

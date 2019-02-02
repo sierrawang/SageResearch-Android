@@ -33,8 +33,8 @@
 package org.sagebionetworks.research.domain.inject;
 
 import org.sagebionetworks.research.domain.RuntimeTypeAdapterFactory;
-import org.sagebionetworks.research.domain.step.ui.action.Action;
 import org.sagebionetworks.research.domain.impl.ActionAutoValueModule;
+import org.sagebionetworks.research.domain.step.ui.action.Action;
 
 import java.util.Map;
 import java.util.Map.Entry;

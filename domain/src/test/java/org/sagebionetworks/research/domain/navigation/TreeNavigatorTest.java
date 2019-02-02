@@ -12,7 +12,6 @@ import org.sagebionetworks.research.domain.step.interfaces.Step;
 import org.sagebionetworks.research.domain.task.navigation.TaskProgress;
 import org.sagebionetworks.research.domain.task.navigation.TreeNavigator;
 
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 

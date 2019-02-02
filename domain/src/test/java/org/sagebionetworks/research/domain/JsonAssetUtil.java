@@ -3,7 +3,6 @@ package org.sagebionetworks.research.domain;
 import static com.google.common.base.Preconditions.checkState;
 
 import static org.junit.Assert.assertEquals;
-import static org.mockito.ArgumentMatchers.refEq;
 
 import static java.nio.charset.StandardCharsets.UTF_8;
 
@@ -11,8 +10,8 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 
 import com.google.common.io.CharStreams;
-import com.google.gson.Gson;
 import com.google.common.reflect.TypeToken;
+import com.google.gson.Gson;
 
 import java.io.BufferedReader;
 import java.io.File;

@@ -1,7 +1,5 @@
 package org.sagebionetworks.research.domain.navigation;
 
-import com.google.common.collect.ImmutableList;
-
 import static junit.framework.Assert.assertEquals;
 import static junit.framework.Assert.assertNotNull;
 import static junit.framework.Assert.assertNull;
@@ -13,13 +11,12 @@ import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 import static org.mockito.Mockito.withSettings;
 
+import com.google.common.collect.ImmutableList;
+
 import org.junit.Test;
 import org.mockito.ArgumentMatcher;
-import org.sagebionetworks.research.domain.result.ResultType;
-import org.sagebionetworks.research.domain.result.implementations.NavigationAnswerResultBase;
 import org.sagebionetworks.research.domain.result.implementations.NavigationResultBase;
 import org.sagebionetworks.research.domain.result.implementations.ResultBase;
-import org.sagebionetworks.research.domain.result.implementations.TaskResultBase;
 import org.sagebionetworks.research.domain.result.interfaces.Result;
 import org.sagebionetworks.research.domain.result.interfaces.TaskResult;
 import org.sagebionetworks.research.domain.step.interfaces.SectionStep;
@@ -37,7 +34,6 @@ import org.threeten.bp.Instant;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-import java.util.UUID;
 
 public class StrategyBasedNavigatorTest extends IndividualNavigatorTest {
     private static final String SKIP_RESULT_IDENTIFIER = "skip";

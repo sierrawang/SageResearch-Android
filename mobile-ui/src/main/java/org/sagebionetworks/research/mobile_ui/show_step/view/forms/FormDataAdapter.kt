@@ -44,13 +44,13 @@ import org.sagebionetworks.research.domain.result.interfaces.AnswerResult
 import org.sagebionetworks.research.domain.result.interfaces.CollectionResult
 import org.sagebionetworks.research.domain.result.interfaces.Result
 import org.sagebionetworks.research.domain.step.interfaces.Step
+import org.sagebionetworks.research.mobile_ui.show_step.view.FormUIStepFragment
 import org.sagebionetworks.research.mobile_ui.show_step.view.forms.FormDataAdapter.ViewHolder
 import org.sagebionetworks.research.presentation.model.form.ChoiceInputFieldViewBase
 import org.sagebionetworks.research.presentation.model.form.InputFieldView
 import org.sagebionetworks.research.presentation.model.interfaces.FormUIStepView
 import org.sagebionetworks.research.presentation.model.interfaces.StepView
 import org.sagebionetworks.research.presentation.model.interfaces.UIStepView
-import org.sagebionetworks.research.mobile_ui.show_step.view.FormUIStepFragment
 import org.slf4j.LoggerFactory
 import org.threeten.bp.Instant
 

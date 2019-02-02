@@ -38,13 +38,11 @@ import android.support.annotation.Nullable;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.Range;
 
-import org.sagebionetworks.research.domain.form.data_types.InputDataType;
 import org.sagebionetworks.research.domain.form.InputUIHint;
 import org.sagebionetworks.research.domain.form.TextField.TextFieldOptions;
+import org.sagebionetworks.research.domain.form.data_types.InputDataType;
 import org.sagebionetworks.research.domain.survey.SurveyRule;
 import org.sagebionetworks.research.presentation.DisplayString;
-
-import java.util.List;
 
 public interface InputFieldView<E extends Comparable> {
     /**

@@ -33,7 +33,6 @@
 package org.sagebionetworks.research.mpower;
 
 import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
 
 import android.content.Context;
 import android.content.Intent;

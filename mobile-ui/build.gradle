@@ -72,7 +72,7 @@ dependencies {
     implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version"
     implementation project(':domain')
     implementation project(':presentation')
-    api 'com.google.guava:guava:24.1-android'
+    api "com.google.guava:guava:$guava_version"
     api project(':presentation')
     implementation 'org.slf4j:slf4j-api:1.7.21'
     implementation "com.android.support:support-annotations:$support_library_version"
@@ -82,16 +82,16 @@ dependencies {
 
     implementation 'com.ryanharter.auto.value:auto-value-parcel-adapter:0.2.6'
 
-    annotationProcessor "com.google.auto.value:auto-value:1.6"
-    annotationProcessor 'com.ryanharter.auto.value:auto-value-gson:0.7.0'
-    annotationProcessor 'com.google.auto.value:auto-value-annotations:1.6' // include again for auto-value-gson
-    annotationProcessor 'com.ryanharter.auto.value:auto-value-parcel:0.2.6'
-//    implementation 'com.google.auto.value:auto-value-annotations:1.6'
-//    implementation 'com.ryanharter.auto.value:auto-value-gson-annotations:0.7.0'
+    kapt "com.google.auto.value:auto-value:$auto_value_version"
+    kapt "com.ryanharter.auto.value:auto-value-gson:$auto_value_gson_version"
+    kapt "com.google.auto.value:auto-value-annotations:$auto_value_version" // include again for auto-value-gson
+    kapt 'com.ryanharter.auto.value:auto-value-parcel:0.2.6'
+//    implementation "com.google.auto.value:auto-value-annotations:$auto_value_version"
+//    implementation "com.ryanharter.auto.value:auto-value-gson-annotations:$auto_value_gson_version"
 //    implementation 'com.ryanharter.auto.value:auto-value-parcel-adapter:0.2.6'
 //
 //    annotationProcessor "com.google.auto.value:auto-value:1.6"
-//    annotationProcessor 'com.ryanharter.auto.value:auto-value-gson:0.7.0'
+//    annotationProcessor "com.ryanharter.auto.value:auto-value-gson:$auto_value_gson_version"
 //    annotationProcessor 'com.ryanharter.auto.value:auto-value-parcel:0.2.6'
 
     implementation 'com.jakewharton.rxbinding2:rxbinding:2.1.1'
@@ -99,23 +99,23 @@ dependencies {
     implementation 'com.jakewharton.rxbinding2:rxbinding-support-v4:2.1.1'
     implementation 'com.jakewharton.rxbinding2:rxbinding-design:2.1.1'
 
-    api 'com.google.dagger:dagger-android:2.16'
-    api 'com.google.dagger:dagger-android-support:2.16'
-    kapt 'com.google.dagger:dagger-android-processor:2.16'
-    kapt "com.google.dagger:dagger-compiler:2.16"
-    kaptTest "com.google.dagger:dagger-compiler:2.16"
-    annotationProcessor 'com.google.dagger:dagger-android-processor:2.16'
-    annotationProcessor "com.google.dagger:dagger-compiler:2.16"
+    api "com.google.dagger:dagger-android:$dagger_version"
+    api "com.google.dagger:dagger-android-support:$dagger_version"
+    kapt "com.google.dagger:dagger-android-processor:$dagger_version"
+    kapt "com.google.dagger:dagger-compiler:$dagger_version"
+    kaptTest "com.google.dagger:dagger-compiler:$dagger_version"
+    kapt "com.google.dagger:dagger-android-processor:$dagger_version"
+    kapt "com.google.dagger:dagger-compiler:$dagger_version"
 
-    implementation 'com.jakewharton:butterknife:8.8.1'
-    kapt 'com.jakewharton:butterknife-compiler:8.8.1'
+    implementation "com.jakewharton:butterknife:$butterknife_version"
+    kapt "com.jakewharton:butterknife-compiler:$butterknife_version"
     implementation "com.android.support:support-v4:$support_library_version"
-    annotationProcessor 'com.jakewharton:butterknife-compiler:8.8.1'
+    kapt "com.jakewharton:butterknife-compiler:$butterknife_version"
     implementation 'com.android.support.constraint:constraint-layout:1.1.2'
     implementation "com.android.support:appcompat-v7:$support_library_version"
     implementation "com.android.support:design:$support_library_version"
     implementation 'android.arch.lifecycle:extensions:1.1.1'
-    annotationProcessor "android.arch.lifecycle:compiler:1.1.1"
+    kapt "android.arch.lifecycle:compiler:1.1.1"
     testImplementation 'junit:junit:4.12'
     testImplementation "android.arch.core:core-testing:1.1.1"
     androidTestImplementation 'com.android.support.test:runner:1.0.2'

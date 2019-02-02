@@ -46,7 +46,6 @@ import org.sagebionetworks.research.domain.result.AnswerResultType;
 import java.io.Serializable;
 import java.util.LinkedHashSet;
 import java.util.Set;
-import java.util.TreeMap;
 
 public abstract class InputDataType extends ObjectHelper implements Serializable {
     @Nullable

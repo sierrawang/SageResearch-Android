@@ -32,7 +32,6 @@
 
 package org.sagebionetworks.research.domain.task.navigation.strategy;
 
-import android.media.tv.TvView.TimeShiftPositionCallback;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 

@@ -38,8 +38,8 @@ import android.support.annotation.NonNull;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.Range;
 
-import org.sagebionetworks.research.domain.form.data_types.InputDataType;
 import org.sagebionetworks.research.domain.form.TextField.TextFieldOptions;
+import org.sagebionetworks.research.domain.form.data_types.InputDataType;
 import org.sagebionetworks.research.domain.survey.SurveyRule;
 import org.sagebionetworks.research.presentation.DisplayString;
 
