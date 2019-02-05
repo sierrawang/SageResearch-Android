@@ -44,16 +44,15 @@ import android.view.View
 import android.view.ViewGroup
 import org.sagebionetworks.research.domain.result.interfaces.CollectionResult
 import org.sagebionetworks.research.domain.result.interfaces.TaskResult
+import org.sagebionetworks.research.domain.step.interfaces.FormUIStep
 import org.sagebionetworks.research.mobile_ui.R
+import org.sagebionetworks.research.mobile_ui.show_step.view.forms.FormAdapterItemGroup
 import org.sagebionetworks.research.mobile_ui.show_step.view.forms.FormDataAdapter
 import org.sagebionetworks.research.mobile_ui.show_step.view.view_binding.FormUIStepViewBinding
+import org.sagebionetworks.research.presentation.model.form.InputFieldView
 import org.sagebionetworks.research.presentation.model.interfaces.FormUIStepView
 import org.sagebionetworks.research.presentation.model.interfaces.StepView
 import org.sagebionetworks.research.presentation.show_step.show_step_view_models.ShowUIStepViewModel
-import org.sagebionetworks.research.domain.step.interfaces.FormUIStep
-import org.sagebionetworks.research.mobile_ui.show_step.view.forms.FormAdapterItem
-import org.sagebionetworks.research.mobile_ui.show_step.view.forms.FormAdapterItemGroup
-import org.sagebionetworks.research.presentation.model.form.InputFieldView
 import org.slf4j.LoggerFactory
 
 /**

@@ -38,11 +38,11 @@ import com.google.gson.JsonDeserializer;
 
 import org.sagebionetworks.research.domain.RuntimeTypeAdapterFactory;
 import org.sagebionetworks.research.domain.async.AsyncActionConfiguration;
-import org.sagebionetworks.research.domain.async.DistanceRecorderConfigurationImpl;
-import org.sagebionetworks.research.domain.inject.GsonModule.ClassKey;
 import org.sagebionetworks.research.domain.async.DeviceMotionRecorderConfiguration;
 import org.sagebionetworks.research.domain.async.DeviceMotionRecorderConfigurationImpl;
 import org.sagebionetworks.research.domain.async.DistanceRecorderConfiguration;
+import org.sagebionetworks.research.domain.async.DistanceRecorderConfigurationImpl;
+import org.sagebionetworks.research.domain.inject.GsonModule.ClassKey;
 
 import java.util.Map;
 import java.util.Map.Entry;

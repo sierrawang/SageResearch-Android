@@ -32,8 +32,6 @@
 
 package org.sagebionetworks.research.domain.result.gson;
 
-import static org.junit.Assert.assertEquals;
-
 import org.junit.Test;
 import org.sagebionetworks.research.domain.result.implementations.ResultBase;
 import org.sagebionetworks.research.domain.result.interfaces.Result;

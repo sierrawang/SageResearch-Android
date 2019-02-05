@@ -31,8 +31,9 @@
   -->
 
 <android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:id="@id/rs2_step_fragment_root_view"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@id/rs2_step_fragment_root_view"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
@@ -40,19 +41,31 @@
         android:id="@id/rs2_title"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="title" />
+        app:layout_constraintBottom_toTopOf="@id/description"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        tools:text="Step Title" />
 
     <TextView
         android:id="@id/description"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="description"
-        app:layout_constraintTop_toBottomOf="@id/rs2_title" />
+        app:layout_constraintBottom_toTopOf="@id/rs2_step_navigation_action_bar"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/rs2_title"
+        tools:text="Step Description" />
 
     <org.sagebionetworks.research.mobile_ui.widget.NavigationActionBar
         android:id="@id/rs2_step_navigation_action_bar"
         android:layout_width="fill_parent"
         android:layout_height="0dp"
         android:layout_marginBottom="16dp"
-        app:layout_constraintBottom_toBottomOf="parent" />
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        tools:layout="@layout/rs2_navigation_action_bar"
+        tools:layout_height="100dp" />
+
 </android.support.constraint.ConstraintLayout>

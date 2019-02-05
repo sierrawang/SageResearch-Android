@@ -34,8 +34,6 @@ package org.sagebionetworks.research.domain.step.implementations;
 
 import static com.google.common.base.Preconditions.checkNotNull;
 
-import static java.util.Optional.of;
-
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 

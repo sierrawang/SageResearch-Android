@@ -38,12 +38,10 @@ import android.support.annotation.Nullable;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.Range;
 
-import org.sagebionetworks.research.domain.form.data_types.InputDataType;
 import org.sagebionetworks.research.domain.form.InputUIHint;
 import org.sagebionetworks.research.domain.form.TextField.TextFieldOptions;
+import org.sagebionetworks.research.domain.form.data_types.InputDataType;
 import org.sagebionetworks.research.domain.survey.SurveyRule;
-
-import java.util.List;
 
 /**
  * Describes a form input within a step. Contains information about data type and hints on how the UI should be

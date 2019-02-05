@@ -34,8 +34,6 @@ package org.sagebionetworks.research.mobile_ui.show_step.view.forms
 
 import org.sagebionetworks.research.domain.form.data_types.CollectionInputDataType
 import org.sagebionetworks.research.domain.form.data_types.CollectionInputDataType.CollectionType.SINGLE_CHOICE
-import org.sagebionetworks.research.domain.form.implementations.ChoiceInputField
-import org.sagebionetworks.research.domain.form.interfaces.InputField
 import org.sagebionetworks.research.domain.result.interfaces.AnswerResult
 import org.sagebionetworks.research.domain.result.interfaces.Result
 import org.sagebionetworks.research.mobile_ui.show_step.view.forms.FormDataAdapter.IndexPath

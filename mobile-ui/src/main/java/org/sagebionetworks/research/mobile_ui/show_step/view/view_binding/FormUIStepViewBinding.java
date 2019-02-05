@@ -35,8 +35,8 @@ package org.sagebionetworks.research.mobile_ui.show_step.view.view_binding;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
 
-import org.sagebionetworks.research.mobile_ui.R2.id;
 import org.sagebionetworks.research.domain.step.interfaces.FormUIStep;
+import org.sagebionetworks.research.mobile_ui.R2.id;
 import org.sagebionetworks.research.presentation.model.interfaces.FormUIStepView;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

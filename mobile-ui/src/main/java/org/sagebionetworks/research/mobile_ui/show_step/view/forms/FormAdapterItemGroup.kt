@@ -34,7 +34,6 @@ package org.sagebionetworks.research.mobile_ui.show_step.view.forms
 
 import android.support.v7.widget.RecyclerView
 import org.sagebionetworks.research.domain.form.interfaces.InputField
-import org.sagebionetworks.research.mobile_ui.show_step.view.forms.FormAdapterItemGroup.Info
 import java.util.UUID
 
 /**

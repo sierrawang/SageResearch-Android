@@ -38,8 +38,6 @@ import com.google.common.collect.ImmutableList;
 
 import org.sagebionetworks.research.domain.form.interfaces.InputField;
 
-import java.util.List;
-
 /**
  * A FormUIStep is a step which asks the user questions. This is useful for surveys or prompting the user during a
  * task.

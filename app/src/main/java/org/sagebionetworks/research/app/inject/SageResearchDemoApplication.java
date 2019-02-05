@@ -52,8 +52,8 @@ import java.util.List;
 import dagger.Binds;
 import dagger.Module;
 import dagger.Provides;
-import dagger.android.ActivityKey;
 import dagger.android.AndroidInjector;
+import dagger.multibindings.ClassKey;
 import dagger.multibindings.IntoMap;
 import dagger.multibindings.IntoSet;
 import io.reactivex.Completable;
@@ -69,8 +69,8 @@ public abstract class SageResearchDemoApplication {
 
     @Binds
     @IntoMap
-    @ActivityKey(MainActivity.class)
-    abstract AndroidInjector.Factory<? extends Activity> bindYourActivityInjectorFactory(
+    @ClassKey(MainActivity.class)
+    abstract AndroidInjector.Factory<?> bindYourActivityInjectorFactory(
             MainActivitySubcomponent.Builder builder);
 
     @Provides

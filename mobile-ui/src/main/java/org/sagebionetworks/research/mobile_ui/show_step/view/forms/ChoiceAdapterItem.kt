@@ -39,14 +39,9 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.TextView
-import org.sagebionetworks.research.domain.form.InputUIHint.CHECKBOX
 import org.sagebionetworks.research.domain.form.InputUIHint.LIST
-import org.sagebionetworks.research.domain.form.InputUIHint.RADIO_BUTTON
-import org.sagebionetworks.research.domain.form.interfaces.Choice
-import org.sagebionetworks.research.domain.form.interfaces.InputField
 import org.sagebionetworks.research.mobile_ui.R
 import org.sagebionetworks.research.mobile_ui.show_step.view.forms.FormDataAdapter.ViewHolder
-import org.sagebionetworks.research.mobile_ui.utils.getDrawableResourceId
 import org.sagebionetworks.research.presentation.model.form.ChoiceView
 import org.sagebionetworks.research.presentation.model.form.InputFieldView
 import org.slf4j.LoggerFactory

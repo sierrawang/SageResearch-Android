@@ -55,15 +55,15 @@ import org.sagebionetworks.research.mobile_ui.show_step.view.view_binding.Active
 import org.sagebionetworks.research.presentation.model.action.ActionType;
 import org.sagebionetworks.research.presentation.model.interfaces.ActiveUIStepView;
 import org.sagebionetworks.research.presentation.show_step.show_step_view_models.ShowActiveUIStepViewModel;
-import org.sagebionetworks.research.presentation.speech.TextToSpeechService.TextToSpeechState;
-import org.threeten.bp.Instant;
-import java.util.Locale;
-import java.util.Map;
-
 import org.sagebionetworks.research.presentation.speech.TextToSpeechService;
+import org.sagebionetworks.research.presentation.speech.TextToSpeechService.TextToSpeechState;
 import org.sagebionetworks.research.presentation.speech.TextToSpeechService.TextToSpeechState.SpeakingState;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.threeten.bp.Instant;
+
+import java.util.Locale;
+import java.util.Map;
 
 public abstract class ShowActiveUIStepFragmentBase<S extends ActiveUIStepView, VM extends ShowActiveUIStepViewModel<S>,
         SB extends ActiveUIStepViewBinding<S>> extends

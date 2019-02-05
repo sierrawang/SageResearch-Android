@@ -32,9 +32,7 @@
 
 package org.sagebionetworks.research.presentation;
 
-import android.content.Context;
 import android.content.res.Resources;
-import android.os.Parcelable;
 import android.support.annotation.Nullable;
 import android.support.annotation.StringRes;
 

@@ -46,7 +46,6 @@ import java.lang.annotation.RetentionPolicy;
 import java.util.Arrays;
 import java.util.HashSet;
 import java.util.LinkedHashSet;
-import java.util.Set;
 
 public class BaseInputDataType extends InputDataType {
     @Retention(RetentionPolicy.SOURCE)

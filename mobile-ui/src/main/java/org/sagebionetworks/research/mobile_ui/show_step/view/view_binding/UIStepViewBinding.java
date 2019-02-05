@@ -39,8 +39,6 @@ import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
-import com.jakewharton.rxbinding2.view.RxView;
-
 import org.sagebionetworks.research.mobile_ui.R2.id;
 import org.sagebionetworks.research.mobile_ui.widget.ActionButton;
 import org.sagebionetworks.research.mobile_ui.widget.NavigationActionBar;
@@ -49,13 +47,9 @@ import org.sagebionetworks.research.mobile_ui.widget.StepHeader;
 import org.sagebionetworks.research.presentation.DisplayString;
 import org.sagebionetworks.research.presentation.model.interfaces.UIStepView;
 
-import java.util.concurrent.TimeUnit;
-
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.Unbinder;
-import io.reactivex.android.schedulers.AndroidSchedulers;
-import io.reactivex.disposables.Disposable;
 
 /**
  * A UIStepViewBinding stores the various views that a step view may contain. Supported Views are: NOTE: the format

@@ -43,7 +43,6 @@ import org.sagebionetworks.research.presentation.inject.StepViewModule;
 import org.sagebionetworks.research.presentation.inject.TextToSpeechModule;
 
 import dagger.Module;
-import dagger.android.AndroidInjectionModule;
 import dagger.android.support.AndroidSupportInjectionModule;
 
 @Module(includes = {GsonModule.class, TaskModule.class, StepModule.class, RecorderModule.class, TextToSpeechModule.class,

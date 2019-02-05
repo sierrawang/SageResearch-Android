@@ -41,15 +41,13 @@ import com.google.common.collect.ImmutableList;
 import com.google.common.collect.Range;
 import com.google.gson.annotations.SerializedName;
 
-import org.sagebionetworks.research.domain.form.data_types.InputDataType;
 import org.sagebionetworks.research.domain.form.InputUIHint;
 import org.sagebionetworks.research.domain.form.TextField.TextFieldOptions;
+import org.sagebionetworks.research.domain.form.data_types.InputDataType;
 import org.sagebionetworks.research.domain.form.interfaces.InputField;
-import org.sagebionetworks.research.domain.survey.SurveyRule;
 import org.sagebionetworks.research.domain.interfaces.HashCodeHelper;
 import org.sagebionetworks.research.domain.interfaces.ObjectHelper;
-
-import java.util.List;
+import org.sagebionetworks.research.domain.survey.SurveyRule;
 
 /**
  * This class is the concrete implementation of a basic input field that is part of a form. An input field represents

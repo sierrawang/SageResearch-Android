@@ -41,7 +41,6 @@ import android.support.annotation.NonNull;
 import org.jetbrains.annotations.Nullable;
 import org.sagebionetworks.research.presentation.model.interfaces.ActiveUIStepView;
 import org.sagebionetworks.research.presentation.perform_task.PerformTaskViewModel;
-import org.threeten.bp.Instant;
 
 import java.util.concurrent.TimeUnit;
 

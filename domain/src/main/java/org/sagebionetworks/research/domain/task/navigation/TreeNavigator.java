@@ -1,7 +1,6 @@
 package org.sagebionetworks.research.domain.task.navigation;
 
 import android.support.annotation.NonNull;
-import android.text.TextUtils;
 
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
@@ -20,8 +19,6 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 import java.util.concurrent.atomic.AtomicBoolean;
-
-import javax.annotation.Nonnull;
 
 public class TreeNavigator implements StepNavigator {
 

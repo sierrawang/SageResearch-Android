@@ -1,14 +1,17 @@
 package org.sagebionetworks.research.presentation.perform_task;
 
 import android.support.annotation.NonNull;
+
 import com.google.common.collect.ImmutableSet;
-import io.reactivex.Maybe;
-import io.reactivex.Observable;
-import io.reactivex.Single;
+
 import org.sagebionetworks.research.domain.result.interfaces.Result;
 import org.sagebionetworks.research.domain.result.interfaces.TaskResult;
 
 import java.util.UUID;
+
+import io.reactivex.Maybe;
+import io.reactivex.Observable;
+import io.reactivex.Single;
 
 public interface TaskResultManager {
     @NonNull
