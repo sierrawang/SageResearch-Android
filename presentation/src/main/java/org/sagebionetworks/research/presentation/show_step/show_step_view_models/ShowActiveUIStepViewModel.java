@@ -33,47 +33,31 @@
 package org.sagebionetworks.research.presentation.show_step.show_step_view_models;
 
 import android.arch.lifecycle.LiveData;
-import android.arch.lifecycle.LiveDataReactiveStreams;
-import android.arch.lifecycle.MutableLiveData;
-import android.arch.lifecycle.Observer;
-import android.support.annotation.NonNull;
 
-import org.jetbrains.annotations.Nullable;
 import org.sagebionetworks.research.presentation.model.interfaces.ActiveUIStepView;
 import org.sagebionetworks.research.presentation.perform_task.PerformTaskViewModel;
 
-import java.util.concurrent.TimeUnit;
-
-import io.reactivex.Observable;
-import io.reactivex.internal.operators.flowable.FlowableFromObservable;
-
 public class ShowActiveUIStepViewModel<S extends ActiveUIStepView> extends ShowUIStepViewModel<S> {
-    protected LiveData<Long> tempLiveData;
-    protected MutableLiveData<Long> countdown;
 
-    protected @Nullable Observer<Long> countDownObserver;
-    protected @NonNull Long currentDuration = 0L;
-    protected @NonNull Long currentStartingValue = 0L;
+    private ShowActiveUiStepViewModelHelper mModelHelper;
 
     /**
      * @return true if countdown is currently running, false if not running or paused.
      */
     public boolean isCountdownRunning() {
-        return countDownObserver != null;
+        return mModelHelper.isCountdownRunning();
     }
 
     /**
      * @return true if the countdown is currently paused, false otherwise.
      */
     public boolean isCountdownPaused() {
-        return !isCountdownRunning() && (
-                currentStartingValue != 0 && // hasn't started yet
-                        !currentStartingValue.equals(currentDuration)); // is done
+        return mModelHelper.isCountdownPaused();
     }
 
     public ShowActiveUIStepViewModel(final PerformTaskViewModel performTaskViewModel, final S stepView) {
         super(performTaskViewModel, stepView);
-        this.countdown = new MutableLiveData<>();
+        mModelHelper = performTaskViewModel.getStepViewModelHelper(stepView.getIdentifier());
     }
 
     /**
@@ -82,17 +66,14 @@ public class ShowActiveUIStepViewModel<S extends ActiveUIStepView> extends ShowU
      * To get a countdown update every second, observe countdown LiveData.
      */
     public void startCountdown() {
-        removeAnyPreviousObservers();
-        currentStartingValue = 0L;
-        currentDuration = this.stepView.getDuration().getSeconds();
-        resumeCountdown();
+        mModelHelper.startCountdown();
     }
 
     /**
      * This function pauses the countdown at its current countdown value.
      */
     public void pauseCountdown() {
-        removeAnyPreviousObservers();
+        mModelHelper.pauseCountdown();
     }
 
     /**
@@ -100,42 +81,20 @@ public class ShowActiveUIStepViewModel<S extends ActiveUIStepView> extends ShowU
      * If pauseCountdown() was never called, nothing is done.
      */
     public void resumeCountdown() {
-        if (isCountdownRunning()) {
-            return;  // Guard against pauseCountdown() never being called.
-        }
-        this.tempLiveData = LiveDataReactiveStreams.fromPublisher(
-                new FlowableFromObservable<>(
-                        Observable.<Long>intervalRange(currentStartingValue, currentDuration + 1,
-                                0, 1, TimeUnit.SECONDS)
-                                .map(i -> currentDuration - i)));
-        countDownObserver = this::updateCountdown;
-        this.tempLiveData.observeForever(countDownObserver);
-    }
-
-    /**
-     * Called every second through the FlowableFromObservable.
-     * @param countDown current value of the count down
-     */
-    protected void updateCountdown(Long countDown) {
-        currentStartingValue = currentDuration - countDown;
-        this.countdown.setValue(countDown);
-    }
-
-    /**
-     * This stops the countdown by removing the countdown observer.
-     */
-    protected void removeAnyPreviousObservers() {
-        if (countDownObserver != null) {
-            this.tempLiveData.removeObserver(countDownObserver);
-            countDownObserver = null;
-        }
+        mModelHelper.resumeCountdown();
     }
 
     public LiveData<Long> getCountdown() {
-        return this.countdown;
+        return this.mModelHelper.countdown;
     }
 
-    public LiveData<String> getSpokenInstructions() {
-        return null;
+    @Override
+    protected void onCleared() {
+        mModelHelper.cleanup();
+        super.onCleared();
     }
+
+
+
+
 }
