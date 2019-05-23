@@ -54,6 +54,7 @@ import org.sagebionetworks.research.domain.result.interfaces.Result;
 import org.sagebionetworks.research.domain.result.interfaces.TaskResult;
 import org.sagebionetworks.research.domain.step.interfaces.SectionStep;
 import org.sagebionetworks.research.domain.step.interfaces.Step;
+import org.sagebionetworks.research.domain.step.ui.active.Command;
 import org.sagebionetworks.research.domain.task.Task;
 import org.sagebionetworks.research.domain.task.TaskInfoView;
 import org.sagebionetworks.research.domain.task.navigation.NavDirection;
@@ -68,11 +69,14 @@ import org.sagebionetworks.research.presentation.mapper.TaskMapper;
 import org.sagebionetworks.research.presentation.model.TaskView;
 import org.sagebionetworks.research.presentation.model.action.ActionType;
 import org.sagebionetworks.research.presentation.model.action.ActionView;
+import org.sagebionetworks.research.presentation.model.interfaces.ActiveUIStepView;
 import org.sagebionetworks.research.presentation.model.interfaces.StepView;
 import org.sagebionetworks.research.presentation.perform_task.PerformTaskViewModelFactory.SharedPrefsArgs;
 import org.sagebionetworks.research.presentation.perform_task.TaskResultManager.TaskResultManagerConnection;
 import org.sagebionetworks.research.presentation.perform_task.TaskResultService.TaskResultServiceBinder;
 import org.sagebionetworks.research.presentation.recorder.service.RecorderManager;
+import org.sagebionetworks.research.presentation.show_step.show_step_view_models.ShowActiveUIStepViewModel;
+import org.sagebionetworks.research.presentation.show_step.show_step_view_models.ShowActiveUiStepViewModelHelper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.threeten.bp.Instant;
@@ -140,6 +144,8 @@ public class PerformTaskViewModel extends AndroidViewModel {
 
     private final Map<Step, StepView> stepViewMapping;
 
+    private final Map<String, ShowActiveUiStepViewModelHelper> stepViewModeHelperMapping;
+
     private Task task;
 
     private final MutableLiveData<TaskInfoView> taskInfoViewMutableLiveData;
@@ -191,6 +197,7 @@ public class PerformTaskViewModel extends AndroidViewModel {
         taskInfoViewMutableLiveData = new MutableLiveData<>();
 
         stepViewMapping = new HashMap<>();
+        stepViewModeHelperMapping = new HashMap<>();
 
         taskResultManagerConnectionSingle = taskResultManager
                 .getTaskResultManagerConnection(taskView.getIdentifier(), taskRunUUID);
@@ -264,6 +271,10 @@ public class PerformTaskViewModel extends AndroidViewModel {
     @NonNull
     public TaskView getTaskView() {
         return taskView;
+    }
+
+    public ShowActiveUiStepViewModelHelper getStepViewModelHelper(String stepId) {
+        return stepViewModeHelperMapping.get(stepId);
     }
 
     /**
@@ -356,6 +367,15 @@ public class PerformTaskViewModel extends AndroidViewModel {
             StepView stepView = this.stepViewMapping.get(nextStep);
             if (stepView == null) {
                 LOGGER.warn("Step not found");
+            }
+            //Initialize StepViewModelHelper for active tasks
+            if (stepView instanceof ActiveUIStepView) {
+                ActiveUIStepView activeUIStepView = (ActiveUIStepView) stepView;
+                ShowActiveUiStepViewModelHelper helper = new ShowActiveUiStepViewModelHelper(getApplication(), this, activeUIStepView);
+                if (activeUIStepView.getDuration().getSeconds() > 0 && activeUIStepView.getCommands().contains(Command.TRANSITION_AUTOMATICALLY)) {
+                    helper.startCountdown();
+                }
+                stepViewModeHelperMapping.put(stepView.getIdentifier(), helper);
             }
             this.stepViewLiveData.setValue(new StepViewNavigation(stepView, navDirection));
         }
