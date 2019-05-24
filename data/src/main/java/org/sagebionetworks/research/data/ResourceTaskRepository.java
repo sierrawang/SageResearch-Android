@@ -274,20 +274,22 @@ public class ResourceTaskRepository implements TaskRepository {
 
             for (AsyncActionConfiguration asyncAction : step.getAsyncActions()) {
                 AsyncActionConfiguration copy = asyncAction;
-                String startStepIdentifier = defaultStartIdentifier;
-                if (asyncAction.getStartStepIdentifier() != null) {
-                    startStepIdentifier = step.getIdentifier() + SECTION_STEP_PREFIX_SEPARATOR + copy.getStartStepIdentifier();
+                if (asyncAction.getStartStepIdentifier() == null) {
+                    //Apply the default start step identifier if we don't have one
+                    copy = copy.copyWithStartStepIdentifier(defaultStartIdentifier);
+                } else if (step instanceof SectionStep) {
+                    //Update the start step identifier so it resolves to the correct step within the section
+                    copy = copy.copyWithStartStepIdentifier(step.getIdentifier() + SECTION_STEP_PREFIX_SEPARATOR + copy.getStartStepIdentifier());
                 }
-                copy = copy.copyWithStartStepIdentifier(startStepIdentifier);
+
 
                 if (copy instanceof RecorderConfiguration) {
                     RecorderConfiguration recorderConfiguration = (RecorderConfiguration) copy;
-                    String stopStepIdentifier = defaultStopIdentifier;
-                    if (recorderConfiguration.getStopStepIdentifier() != null) {
-                        stopStepIdentifier = step.getIdentifier() + SECTION_STEP_PREFIX_SEPARATOR + recorderConfiguration.getStopStepIdentifier();
+                    if (recorderConfiguration.getStopStepIdentifier() == null) {
+                        recorderConfiguration = recorderConfiguration.copyWithStopStepIdentifier(defaultStopIdentifier);
+                    } else if (step instanceof SectionStep) {
+                        recorderConfiguration = recorderConfiguration.copyWithStopStepIdentifier(step.getIdentifier() + SECTION_STEP_PREFIX_SEPARATOR + recorderConfiguration.getStopStepIdentifier());
                     }
-                    recorderConfiguration = recorderConfiguration
-                            .copyWithStopStepIdentifier(stopStepIdentifier);
                     copy = recorderConfiguration;
                 }
 
