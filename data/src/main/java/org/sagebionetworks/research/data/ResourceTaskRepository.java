@@ -275,16 +275,22 @@ public class ResourceTaskRepository implements TaskRepository {
             for (AsyncActionConfiguration asyncAction : step.getAsyncActions()) {
                 AsyncActionConfiguration copy = asyncAction;
                 if (asyncAction.getStartStepIdentifier() == null) {
+                    //Apply the default start step identifier if we don't have one
                     copy = copy.copyWithStartStepIdentifier(defaultStartIdentifier);
+                } else if (step instanceof SectionStep) {
+                    //Update the start step identifier so it resolves to the correct step within the section
+                    copy = copy.copyWithStartStepIdentifier(step.getIdentifier() + SECTION_STEP_PREFIX_SEPARATOR + copy.getStartStepIdentifier());
                 }
+
 
                 if (copy instanceof RecorderConfiguration) {
                     RecorderConfiguration recorderConfiguration = (RecorderConfiguration) copy;
                     if (recorderConfiguration.getStopStepIdentifier() == null) {
-                        recorderConfiguration = recorderConfiguration
-                                .copyWithStopStepIdentifier(defaultStopIdentifier);
-                        copy = recorderConfiguration;
+                        recorderConfiguration = recorderConfiguration.copyWithStopStepIdentifier(defaultStopIdentifier);
+                    } else if (step instanceof SectionStep) {
+                        recorderConfiguration = recorderConfiguration.copyWithStopStepIdentifier(step.getIdentifier() + SECTION_STEP_PREFIX_SEPARATOR + recorderConfiguration.getStopStepIdentifier());
                     }
+                    copy = recorderConfiguration;
                 }
 
                 copy = copy.copyWithIdentifier(
