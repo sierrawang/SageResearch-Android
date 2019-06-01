@@ -48,7 +48,7 @@ apply plugin: 'pmd'
 apply plugin: 'net.ltgt.errorprone'
 
 dependencies {
-    checkstyle 'com.puppycrawl.tools:checkstyle:8.10'
+    checkstyle 'com.puppycrawl.tools:checkstyle:8.21'
     errorprone "com.google.errorprone:error_prone_core:2.3.3"
 }
 
