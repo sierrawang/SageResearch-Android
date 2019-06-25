@@ -68,7 +68,7 @@ buildscript {
 }
 
 allprojects {
-    version = '0.0.4'
+    version = '0.0.5'
     group = 'org.sagebionetworks.research'
 
     repositories {
@@ -86,20 +86,7 @@ subprojects {
                 from android.sourceSets.main.java.srcDirs
                 classifier = 'sources'
             }
-//
-//        task javadoc(type: Javadoc, dependsOn: assemble) {
-//            source = android.sourceSets.main.java.srcDirs
-//
-//            classpath += project.files(android.getBootClasspath().join(File.pathSeparator))
-//            classpath += files("$buildDir/intermediates/classes/release")
-//            classpath += fileTree(dir: "$buildDir/intermediates/exploded-aar/", include: "**/classes.jar")
-//            classpath += configurations.compile
-//            // Exclude generated files
-//            exclude '**/BuildConfig.java'
-//            exclude '**/R.java'
-//            exclude '**/*.kt'
-//        }
-//
+
             dokka {
                 outputFormat = 'html'
                 outputDirectory = "$buildDir/javadoc"
