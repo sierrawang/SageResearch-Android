@@ -11,12 +11,11 @@ before_install:
 script:
   - ./gradlew clean build
 
-#TODO: deploy artifacts
-#deploy:
-#  provider: script
-#  script: ./gradlew bintrayUpload
-#  on:
-#    branch: master
+deploy:
+  provider: script
+  script: ./gradlew bintrayUpload
+  on:
+    branch: feature/deploy-to-bintray
 
 before_cache:
   - rm -f  $HOME/.gradle/caches/modules-2/modules-2.lock

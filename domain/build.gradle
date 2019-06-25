@@ -112,3 +112,5 @@ dependencies {
 repositories {
     mavenCentral()
 }
+
+apply from: "../gradle/artifact-deploy.gradle"
