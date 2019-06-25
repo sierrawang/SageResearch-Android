@@ -50,7 +50,7 @@ buildscript {
     dependencies {
         classpath 'com.android.tools.build:gradle:3.4.1'
 
-        classpath "org.jetbrains.dokka:dokka-android-gradle-plugin:0.9.17"
+        classpath "org.jetbrains.dokka:dokka-android-gradle-plugin:0.9.18"
 
         // deploy
         classpath 'com.jfrog.bintray.gradle:gradle-bintray-plugin:1.7'
@@ -68,65 +68,55 @@ buildscript {
 }
 
 allprojects {
-    version = '0.0.3'
+    version = '0.0.4'
     group = 'org.sagebionetworks.research'
 
     repositories {
         jcenter()
         google()
     }
-
-//    configurations.all {
-//        resolutionStrategy {
-//            // fail eagerly on version conflict (includes transitive dependencies)
-//            // e.g. multiple different versions of the same dependency (group and name are equal)
-//            failOnVersionConflict()
-//
-//            // prefer modules that are part of this build (multi-project or composite build) over external modules
-//            preferProjectModules()
-//
-//            eachDependency { DependencyResolveDetails details ->
-//                if (details.requested.group == 'com.android.support') {
-//                    if (details.requested.name != 'multidex'
-//                            && details.requested.name != 'multidex-instrumentation') {
-//                        details.useVersion "$support_library_version"
-//                    }
-//                }
-//            }
-//
-//        }
-//    }
 }
 
 subprojects {
     afterEvaluate { project ->
-        task sourcesJar(type: Jar) {
-            from android.sourceSets.main.java.srcDirs
-            classifier = 'sources'
-        }
+        if (project.plugins.hasPlugin('com.android.library')) {
+            apply plugin: 'org.jetbrains.dokka-android'
 
-        task javadoc(type: Javadoc) {
-            source = android.sourceSets.main.java.srcDirs
-            classpath += project.files(android.getBootClasspath().join(File.pathSeparator))
-            classpath += fileTree(dir: "$buildDir/intermediates/exploded-aar/", include: "**/classes.jar")
-            classpath += configurations.compile
-            // Exclude generated files
-            exclude '**/BuildConfig.java'
-            exclude '**/R.java'
-            exclude '**/*.kt'
-        }
+            task sourcesJar(type: Jar) {
+                from android.sourceSets.main.java.srcDirs
+                classifier = 'sources'
+            }
+//
+//        task javadoc(type: Javadoc, dependsOn: assemble) {
+//            source = android.sourceSets.main.java.srcDirs
+//
+//            classpath += project.files(android.getBootClasspath().join(File.pathSeparator))
+//            classpath += files("$buildDir/intermediates/classes/release")
+//            classpath += fileTree(dir: "$buildDir/intermediates/exploded-aar/", include: "**/classes.jar")
+//            classpath += configurations.compile
+//            // Exclude generated files
+//            exclude '**/BuildConfig.java'
+//            exclude '**/R.java'
+//            exclude '**/*.kt'
+//        }
+//
+            dokka {
+                outputFormat = 'html'
+                outputDirectory = "$buildDir/javadoc"
+            }
 
-        task javadocJar(type: Jar, dependsOn: javadoc) {
-            classifier = 'javadoc'
-            from javadoc.destinationDir
-        }
-        artifacts {
-            // TODO: package javadoc for maven artifact publishing
-//            archives javadocJar
-            archives sourcesJar
+            task javadocJar(type: Jar, dependsOn: dokka) {
+                classifier = 'javadoc'
+                from dokka.outputDirectory
+            }
+
+            artifacts {
+                // TODO: package javadoc for maven artifact publishing
+                archives javadocJar
+                archives sourcesJar
+            }
         }
     }
-
 }
 
 task clean(type: Delete) {
