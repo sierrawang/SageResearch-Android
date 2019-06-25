@@ -54,7 +54,7 @@ buildscript {
 
         // deploy
         classpath 'com.jfrog.bintray.gradle:gradle-bintray-plugin:1.7'
-        classpath 'com.github.dcendents:android-maven-gradle-plugin:1.4.1'
+        classpath 'com.github.dcendents:android-maven-gradle-plugin:2.1'
 
         // code quality
         classpath 'net.ltgt.gradle:gradle-errorprone-plugin:0.0.16'
@@ -68,7 +68,7 @@ buildscript {
 }
 
 allprojects {
-    version = '0.0.2'
+    version = '0.0.3'
     group = 'org.sagebionetworks.research'
 
     repositories {
