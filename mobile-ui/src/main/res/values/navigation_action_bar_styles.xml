@@ -70,6 +70,12 @@
         <item name="skipActionColor">@color/royal500</item>
     </style>
 
+    <style name="Widget.ResearchStack.NavigationActionBar.BottomSheet" parent="Widget.ResearchStack.NavigationActionBar">
+        <item name="isBackwardHidden">true</item>
+        <item name="isShadowHidden">true</item>
+        <item name="isSkipHidden">false</item>
+    </style>
+
     <style name="Widget.ResearchStack.NavigationActionBar.Instruction" parent="Widget.ResearchStack.NavigationActionBar">
         <item name="isBackwardHidden">true</item>
         <item name="isSkipHidden">true</item>
