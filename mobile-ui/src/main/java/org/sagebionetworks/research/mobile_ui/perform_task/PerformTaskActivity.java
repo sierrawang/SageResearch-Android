@@ -95,4 +95,20 @@ public class PerformTaskActivity extends AppCompatActivity implements HasSupport
     public AndroidInjector<Fragment> supportFragmentInjector() {
         return supportFragmentInjector;
     }
+
+    @Override
+    public void onBackPressed() {
+
+        PerformTaskFragment performTaskFragment = (PerformTaskFragment) getSupportFragmentManager()
+                .findFragmentById(R.id.rs2_task_content_frame);
+
+        // If the fragment exists and has some back-stack entry
+        if (performTaskFragment != null && performTaskFragment.getChildFragmentManager().getBackStackEntryCount() > 0){
+            // Get the fragment fragment manager - and pop the backstack
+            performTaskFragment.getChildFragmentManager().popBackStack();
+        } else {
+            // Let super handle the back press
+            super.onBackPressed();
+        }
+    }
 }

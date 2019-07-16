@@ -111,6 +111,11 @@ public class NavigationActionBar extends ConstraintLayout {
     @NonNull
     ActionButton skipButton;
 
+    @NonNull
+    public ActionButton getSkipButton() {
+        return skipButton;
+    }
+
     private ActionButtonClickListener actionButtonClickListener;
 
     private boolean isBackwardHidden;
