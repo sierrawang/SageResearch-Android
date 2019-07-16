@@ -15,7 +15,7 @@ deploy:
   provider: script
   script: ./gradlew bintrayUpload
   on:
-    branch: master
+    branch: branch !~ /^stable-.*$/
 
 before_cache:
   - rm -f  $HOME/.gradle/caches/modules-2/modules-2.lock
