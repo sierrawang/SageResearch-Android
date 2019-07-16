@@ -15,7 +15,8 @@ deploy:
   provider: script
   script: ./gradlew bintrayUpload
   on:
-    branch: /^stable-.*$/
+    all_branches: true
+    condition: $TRAVIS_BRANCH =~ /^stable-.*$/
 
 before_cache:
   - rm -f  $HOME/.gradle/caches/modules-2/modules-2.lock
