@@ -29,11 +29,11 @@ bintray {
 
     pkg {
         userOrg = 'sage-bionetworks'
-        repo = 'researchsuite-release'
+        repo = 'sage-research'
         name = project.name
         licenses = ['Apache-2.0']
-        vcsUrl = 'https://github.com/Sage-Bionetworks/ResearchSuite-Android.git'
-        githubRepo = 'Sage-Bionetworks/ResearchSuite-Android'
+        vcsUrl = 'https://github.com/Sage-Bionetworks/SageResearch-Android.git'
+        githubRepo = 'Sage-Bionetworks/SageResearch-Android'
     }
 }
 
