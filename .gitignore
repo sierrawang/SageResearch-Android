@@ -41,6 +41,9 @@ captures/
 .idea/libraries
 .idea/caches
 .idea/assetWizardSettings.xml
+.idea/modules.xml
+
+
 app/src/main/.DS_Store
 
 # Keystore files
