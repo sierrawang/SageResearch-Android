@@ -160,7 +160,12 @@ open class ChoiceItemGroup<T: ChoiceAdapterItem>(
             setAnswer(answers)
         }
 
-        return SelectReturnValue(selected, deselectOthers)
+        // Sierra Wang 8/29/19
+        // NOTE - Changing deselectOthers to true allows for multipleChoice to work
+        // This is unintuitive, so potential changes should be variable name change
+        // Also, should optimize code for refresh at the correct time in general
+        // return SelectReturnValue(selected, deselectOthers)
+        return SelectReturnValue(selected, true)
     }
 }
 
