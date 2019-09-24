@@ -32,7 +32,7 @@
 
 package org.sagebionetworks.research.mobile_ui.show_step.view.forms
 
-import android.support.v7.widget.RecyclerView
+import androidx.recyclerview.widget.RecyclerView
 
 /**
  * Defines a [FormAdapterSection] in the adapter. The [RecyclerView] is made up of sections, groups, and items.

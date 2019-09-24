@@ -32,8 +32,8 @@
 
 package org.sagebionetworks.research.domain.survey;
 
-import android.support.annotation.Nullable;
-import android.support.annotation.StringDef;
+import androidx.annotation.Nullable;
+import androidx.annotation.StringDef;
 
 import com.google.common.collect.ImmutableSet;
 

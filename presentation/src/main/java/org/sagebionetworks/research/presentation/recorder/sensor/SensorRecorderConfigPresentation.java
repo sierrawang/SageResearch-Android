@@ -32,7 +32,7 @@
 
 package org.sagebionetworks.research.presentation.recorder.sensor;
 
-import android.support.annotation.NonNull;
+import androidx.annotation.NonNull;
 
 import org.sagebionetworks.research.presentation.recorder.RestartableRecorderConfiguration;
 import org.sagebionetworks.research.presentation.recorder.reactive.source.SensorSourceFactory.SensorConfig;

@@ -32,20 +32,20 @@
 
 package org.sagebionetworks.research.presentation.perform_task;
 
-import static android.arch.lifecycle.LiveDataReactiveStreams.fromPublisher;
+import static androidx.lifecycle.LiveDataReactiveStreams.fromPublisher;
 
 import static com.google.common.base.Preconditions.checkNotNull;
 import static com.google.common.base.Preconditions.checkState;
 
 import android.app.Application;
-import android.arch.lifecycle.AndroidViewModel;
-import android.arch.lifecycle.LiveData;
-import android.arch.lifecycle.MutableLiveData;
-import android.arch.lifecycle.Observer;
-import android.support.annotation.MainThread;
-import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
-import android.support.annotation.VisibleForTesting;
+import androidx.lifecycle.AndroidViewModel;
+import androidx.lifecycle.LiveData;
+import androidx.lifecycle.MutableLiveData;
+import androidx.lifecycle.Observer;
+import androidx.annotation.MainThread;
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.annotation.VisibleForTesting;
 
 import org.sagebionetworks.research.domain.repository.TaskRepository;
 import org.sagebionetworks.research.domain.result.AnswerResultType;
@@ -75,7 +75,6 @@ import org.sagebionetworks.research.presentation.perform_task.PerformTaskViewMod
 import org.sagebionetworks.research.presentation.perform_task.TaskResultManager.TaskResultManagerConnection;
 import org.sagebionetworks.research.presentation.perform_task.TaskResultService.TaskResultServiceBinder;
 import org.sagebionetworks.research.presentation.recorder.service.RecorderManager;
-import org.sagebionetworks.research.presentation.show_step.show_step_view_models.ShowActiveUIStepViewModel;
 import org.sagebionetworks.research.presentation.show_step.show_step_view_models.ShowActiveUiStepViewModelHelper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

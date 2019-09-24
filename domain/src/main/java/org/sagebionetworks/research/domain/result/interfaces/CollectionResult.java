@@ -32,7 +32,7 @@
 
 package org.sagebionetworks.research.domain.result.interfaces;
 
-import android.support.annotation.NonNull;
+import androidx.annotation.NonNull;
 
 import com.google.common.collect.ImmutableList;
 

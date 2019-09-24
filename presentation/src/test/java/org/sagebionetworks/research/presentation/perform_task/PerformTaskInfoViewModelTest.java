@@ -32,7 +32,7 @@
 
 package org.sagebionetworks.research.presentation.perform_task;
 
-import android.arch.core.executor.testing.InstantTaskExecutorRule;
+import androidx.arch.core.executor.testing.InstantTaskExecutorRule;
 
 import org.junit.Before;
 import org.junit.Rule;

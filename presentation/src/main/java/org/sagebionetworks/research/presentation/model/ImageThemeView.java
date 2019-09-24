@@ -32,7 +32,7 @@
 
 package org.sagebionetworks.research.presentation.model;
 
-import android.support.annotation.Nullable;
+import androidx.annotation.Nullable;
 
 import org.sagebionetworks.research.domain.step.ui.theme.AnimationImageTheme;
 import org.sagebionetworks.research.domain.step.ui.theme.ColorPlacement;

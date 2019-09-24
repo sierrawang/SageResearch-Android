@@ -32,7 +32,7 @@
 
 package org.sagebionetworks.research.domain.task;
 
-import android.support.annotation.StringDef;
+import androidx.annotation.StringDef;
 
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;

@@ -34,7 +34,7 @@ package org.sagebionetworks.research.mobile_ui.widget;
 
 import android.app.Fragment;
 import android.content.Context;
-import android.support.annotation.NonNull;
+import androidx.annotation.NonNull;
 import android.util.AttributeSet;
 import android.view.View;
 import android.view.animation.DecelerateInterpolator;

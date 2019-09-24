@@ -32,7 +32,7 @@
 
 package org.sagebionetworks.research.domain.form.data_types;
 
-import android.support.annotation.Nullable;
+import androidx.annotation.Nullable;
 
 import com.google.gson.JsonDeserializer;
 import com.google.gson.JsonParseException;
