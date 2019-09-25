@@ -37,6 +37,8 @@ apply from: '../config/quality/quality.gradle'
 
 android {
     compileSdkVersion 29
+    buildToolsVersion "$build_tools_version"
+
     defaultConfig {
         minSdkVersion 19
         targetSdkVersion 29
@@ -77,6 +79,7 @@ dependencies {
         exclude module: 'threetenbp' // we're using threetenabp
     }
 
+    api "androidx.annotation:annotation:1.1.0"
     implementation 'androidx.multidex:multidex:2.0.0'
 
     api 'io.reactivex.rxjava2:rxjava:2.2.1'

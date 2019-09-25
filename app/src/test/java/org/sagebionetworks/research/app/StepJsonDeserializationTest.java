@@ -60,7 +60,7 @@ public class StepJsonDeserializationTest extends JsonDeserializationTestBase {
     @Test
     public void testInstructionStep() throws IOException {
         String id = "stepId";
-        String type = "intruction";
+        String type = "instruction";
 
         String json = getClasspathResourceAsString("step/instruction.json");
         Step step = stepTestComponent.gson().fromJson(json, Step.class);

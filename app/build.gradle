@@ -38,6 +38,8 @@ apply from: '../config/quality/quality.gradle'
 
 android {
     compileSdkVersion 29
+    buildToolsVersion "$build_tools_version"
+
     defaultConfig {
         applicationId "org.sagebionetworks.research.app"
         minSdkVersion 19

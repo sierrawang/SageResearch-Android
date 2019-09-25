@@ -36,6 +36,7 @@ apply plugin: 'kotlin-kapt'
 
 android {
     compileSdkVersion 29
+    buildToolsVersion "$build_tools_version"
 
     defaultConfig {
         minSdkVersion 19

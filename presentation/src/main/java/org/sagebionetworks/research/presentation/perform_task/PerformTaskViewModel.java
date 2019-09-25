@@ -85,8 +85,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 
-import javax.annotation.Nonnull;
-
 import io.reactivex.BackpressureStrategy;
 import io.reactivex.Maybe;
 import io.reactivex.Single;
@@ -464,8 +462,8 @@ public class PerformTaskViewModel extends AndroidViewModel {
      * Class encapsulating a StepView and the direction of the transition to it
      */
     public class StepViewNavigation {
-        private final @Nonnull StepView stepView;
-        public @Nonnull StepView getStepView() {
+        private final @NonNull StepView stepView;
+        public @NonNull StepView getStepView() {
             return stepView;
         }
 
@@ -474,7 +472,7 @@ public class PerformTaskViewModel extends AndroidViewModel {
             return navDirection;
         }
 
-        public StepViewNavigation(@Nonnull StepView stepView, @NavDirection int navDirection) {
+        public StepViewNavigation(@NonNull StepView stepView, @NavDirection int navDirection) {
             this.stepView = stepView;
             this.navDirection = navDirection;
         }

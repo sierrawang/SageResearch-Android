@@ -41,7 +41,6 @@ import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.ImmutableMap.Builder;
 
-import org.jetbrains.annotations.NotNull;
 import org.sagebionetworks.research.domain.result.interfaces.TaskResult;
 import org.sagebionetworks.research.domain.step.interfaces.Step;
 import org.sagebionetworks.research.domain.task.Task;
@@ -49,8 +48,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.util.List;
-
-import javax.annotation.Nonnull;
 
 /**
  * The OrderedStepNavigator moves through a linear series of steps.
@@ -90,7 +87,7 @@ public class OrderedStepNavigator implements StepNavigator {
         return stepsById.get(identifier);
     }
 
-    @Nonnull
+    @NonNull
     @Override
     public StepAndNavDirection getNextStep(@Nullable Step step, @NonNull TaskResult taskResult) {
         // default to the first step
@@ -139,7 +136,7 @@ public class OrderedStepNavigator implements StepNavigator {
         return new TaskProgress(stepNumber, totalSteps, false);
     }
 
-    @NotNull
+    @NonNull
     @Override
     public List<Step> getSteps() {
         return steps;

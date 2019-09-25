@@ -35,6 +35,7 @@ apply from: '../config/quality/quality.gradle'
 
 android {
     compileSdkVersion 29
+    buildToolsVersion "$build_tools_version"
 
     defaultConfig {
         minSdkVersion 19
