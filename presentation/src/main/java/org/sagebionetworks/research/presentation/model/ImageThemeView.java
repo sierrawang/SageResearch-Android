@@ -66,4 +66,7 @@ public abstract class ImageThemeView implements Serializable {
 
     @ColorPlacement
     public abstract String getColorPlacement();
+
+    @Nullable
+    public abstract String getBackgroundColor();
 }

@@ -52,6 +52,8 @@ public abstract class AnimationImageTheme implements ImageTheme {
         public abstract Builder setDuration(@Nullable Double duration);
 
         public abstract Builder setImageResourceNames(@Nullable List<String> imageResourceNames);
+
+        public abstract Builder setBackgroundColor(@Nullable String backgroundColor);
     }
 
     public static final String TYPE_KEY = ImageThemeType.ANIMATION;
@@ -77,4 +79,8 @@ public abstract class AnimationImageTheme implements ImageTheme {
     public String getType() {
         return TYPE_KEY;
     }
+
+    @Nullable
+    @SerializedName("backgroundColor")
+    public abstract String getBackgroundColor();
 }

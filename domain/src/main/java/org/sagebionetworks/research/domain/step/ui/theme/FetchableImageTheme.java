@@ -48,6 +48,8 @@ public abstract class FetchableImageTheme implements ImageTheme {
         public abstract Builder setColorPlacement(@Nullable @ColorPlacement String colorPlacement);
 
         public abstract Builder setImageResourceName(@Nullable String imageResourceName);
+
+        public abstract Builder setBackgroundColor(@Nullable String backgroundColor);
     }
 
     public static final String TYPE_KEY = ImageThemeType.FETCHABLE;
@@ -69,4 +71,8 @@ public abstract class FetchableImageTheme implements ImageTheme {
     public String getType() {
         return TYPE_KEY;
     }
+
+    @Nullable
+    @SerializedName("backgroundColor")
+    public abstract String getBackgroundColor();
 }

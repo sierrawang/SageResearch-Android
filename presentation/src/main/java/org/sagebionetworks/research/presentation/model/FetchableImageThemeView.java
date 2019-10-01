@@ -50,6 +50,8 @@ public abstract class FetchableImageThemeView extends ImageThemeView {
         public abstract Builder setColorPlacement(@ColorPlacement String colorPlacement);
 
         public abstract Builder setImageResource(@Nullable DisplayDrawable imageResource);
+
+        public abstract Builder setBackgroundColor(@Nullable String backgroundColor);
     }
 
     public static Builder builder() {
@@ -63,9 +65,13 @@ public abstract class FetchableImageThemeView extends ImageThemeView {
                 .setColorPlacement(imageTheme.getColorPlacement())
                 .setImageResource(DisplayDrawable.create(null,
                         mapper.getDrawableFromName(imageTheme.getImageResourceName())))
+                .setBackgroundColor(imageTheme.getBackgroundColor())
                 .build();
     }
 
     @Nullable
     public abstract DisplayDrawable getImageResource();
+
+    @Nullable
+    public abstract String getBackgroundColor();
 }

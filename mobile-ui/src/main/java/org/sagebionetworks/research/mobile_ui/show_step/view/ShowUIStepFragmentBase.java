@@ -32,6 +32,7 @@
 
 package org.sagebionetworks.research.mobile_ui.show_step.view;
 
+import android.graphics.Color;
 import android.graphics.drawable.AnimationDrawable;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
@@ -215,6 +216,10 @@ public abstract class ShowUIStepFragmentBase<UIStepViewT extends UIStepView,
         if (imageView != null) {
             ImageThemeView imageTheme = stepView.getImageTheme();
             if (imageTheme != null) {
+                if (imageTheme.getBackgroundColor() != null) {
+                    int color = Color.parseColor(imageTheme.getBackgroundColor());
+                    imageView.setBackgroundColor(color);
+                }
                 if (imageTheme instanceof AnimationImageThemeView) {
                     AnimationImageThemeView animationImageTheme = ((AnimationImageThemeView) imageTheme);
                     List<DisplayDrawable> drawables = animationImageTheme.getImageResources();

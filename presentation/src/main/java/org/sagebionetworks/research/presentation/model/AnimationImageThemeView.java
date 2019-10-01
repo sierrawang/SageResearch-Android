@@ -55,6 +55,8 @@ public abstract class AnimationImageThemeView extends ImageThemeView {
         public abstract Builder setDuration(@Nullable Double duration);
 
         public abstract Builder setImageResources(@Nullable List<DisplayDrawable> imageResources);
+
+        public abstract Builder setBackgroundColor(@Nullable String backgroundColor);
     }
 
     public static Builder builder() {
@@ -74,11 +76,14 @@ public abstract class AnimationImageThemeView extends ImageThemeView {
                 .setColorPlacement(imageTheme.getColorPlacement())
                 .setDuration(imageTheme.getDuration())
                 .setImageResources(imageResources)
+                .setBackgroundColor(imageTheme.getBackgroundColor())
                 .build();
-
     }
 
     public abstract Double getDuration();
 
     public abstract List<DisplayDrawable> getImageResources();
+
+    @Nullable
+    public abstract String getBackgroundColor();
 }
