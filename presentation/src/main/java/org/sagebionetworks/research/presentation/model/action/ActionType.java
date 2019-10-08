@@ -47,6 +47,6 @@ public @interface ActionType {
     String BACKWARD = "goBackward";
     String CANCEL = "cancel";
     String FORWARD = "goForward";
-    String INFO = "learnMore";
+    String INFO = "reviewInstructions";
     String SKIP = "skip";
 }
