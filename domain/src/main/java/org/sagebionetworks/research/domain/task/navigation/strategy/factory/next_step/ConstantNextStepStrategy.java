@@ -32,7 +32,7 @@
 
 package org.sagebionetworks.research.domain.task.navigation.strategy.factory.next_step;
 
-import android.support.annotation.Nullable;
+import androidx.annotation.Nullable;
 
 import com.google.common.base.MoreObjects;
 

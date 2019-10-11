@@ -34,10 +34,10 @@ package org.sagebionetworks.research.presentation.speech
 
 import android.Manifest.permission
 import android.annotation.TargetApi
-import android.arch.lifecycle.LiveData
-import android.arch.lifecycle.MediatorLiveData
-import android.arch.lifecycle.MutableLiveData
-import android.arch.lifecycle.Observer
+import androidx.lifecycle.LiveData
+import androidx.lifecycle.MediatorLiveData
+import androidx.lifecycle.MutableLiveData
+import androidx.lifecycle.Observer
 import android.content.Context
 import android.content.Intent
 import android.media.AudioManager
@@ -52,7 +52,7 @@ import android.speech.tts.TextToSpeech
 import android.speech.tts.TextToSpeech.Engine
 import android.speech.tts.TextToSpeech.OnInitListener
 import android.speech.tts.UtteranceProgressListener
-import android.support.annotation.RequiresPermission
+import androidx.annotation.RequiresPermission
 import com.google.common.collect.ImmutableSet
 import dagger.android.AndroidInjection
 import dagger.android.DaggerService

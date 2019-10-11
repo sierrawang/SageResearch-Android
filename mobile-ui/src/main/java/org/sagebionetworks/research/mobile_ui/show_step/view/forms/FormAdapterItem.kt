@@ -32,7 +32,7 @@
 
 package org.sagebionetworks.research.mobile_ui.show_step.view.forms
 
-import android.support.v7.widget.RecyclerView
+import androidx.recyclerview.widget.RecyclerView
 import android.view.ViewGroup
 import org.sagebionetworks.research.domain.form.InputUIHint
 import org.sagebionetworks.research.domain.form.interfaces.InputField

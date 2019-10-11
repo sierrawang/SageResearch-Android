@@ -32,8 +32,8 @@
 
 package org.sagebionetworks.research.presentation.recorder;
 
-import android.support.annotation.AnyThread;
-import android.support.annotation.NonNull;
+import androidx.annotation.AnyThread;
+import androidx.annotation.NonNull;
 
 import org.sagebionetworks.research.domain.result.interfaces.Result;
 import org.sagebionetworks.research.presentation.async.AsyncActionController;

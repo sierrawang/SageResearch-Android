@@ -1,7 +1,7 @@
 package org.sagebionetworks.research.presentation.async;
 
-import android.support.annotation.AnyThread;
-import android.support.annotation.NonNull;
+import androidx.annotation.AnyThread;
+import androidx.annotation.NonNull;
 
 import org.sagebionetworks.research.domain.result.interfaces.Result;
 

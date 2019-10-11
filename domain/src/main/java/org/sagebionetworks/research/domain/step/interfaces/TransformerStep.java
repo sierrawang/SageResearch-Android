@@ -33,7 +33,7 @@
 package org.sagebionetworks.research.domain.step.interfaces;
 
 
-import android.support.annotation.NonNull;
+import androidx.annotation.NonNull;
 
 /**
  * A TransformerStep is used to factor out common sections of json. This makes keeping steps that happen multiple

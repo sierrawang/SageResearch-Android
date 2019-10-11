@@ -33,7 +33,7 @@
 package org.sagebionetworks.research.presentation.mapper;
 
 
-import android.support.annotation.NonNull;
+import androidx.annotation.NonNull;
 
 import com.google.common.base.Function;
 

@@ -32,7 +32,7 @@
 
 package org.sagebionetworks.research.mobile_ui;
 
-import android.support.annotation.Keep;
+import androidx.annotation.Keep;
 
 @Keep
 public interface BasePresenter<T extends BaseView> {

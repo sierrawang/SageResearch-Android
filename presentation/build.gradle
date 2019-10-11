@@ -45,7 +45,7 @@ android {
 
         consumerProguardFiles 'proguard-rules.pro'
 
-        testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
+        testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
 
     }
 
@@ -69,13 +69,13 @@ dependencies {
     implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version"
 
     api project(':domain')
-    api "com.android.support:support-annotations:$support_library_version"
-    implementation "com.android.support:appcompat-v7:$support_library_version"
+    api 'androidx.annotation:annotation:1.0.0'
+    implementation 'androidx.appcompat:appcompat:1.0.0'
     implementation "com.google.guava:guava:$guava_version"
 
-    implementation "android.arch.lifecycle:extensions:1.1.1" // ViewModel and LiveData
-    implementation 'android.arch.lifecycle:reactivestreams:1.1.1'
-    kapt "android.arch.lifecycle:compiler:1.1.1"
+    implementation 'androidx.lifecycle:lifecycle-extensions:2.0.0' // ViewModel and LiveData
+    implementation 'androidx.lifecycle:lifecycle-reactivestreams:2.0.0'
+    kapt 'androidx.lifecycle:lifecycle-compiler:2.0.0'
 
     implementation 'org.threeten:threeten-extra:1.2'
 
@@ -100,7 +100,7 @@ dependencies {
     kaptTest "com.google.dagger:dagger-compiler:$dagger_version"
 
     testImplementation 'junit:junit:4.12'
-    testImplementation "android.arch.core:core-testing:1.1.1"
+    testImplementation 'androidx.arch.core:core-testing:2.0.0'
     testImplementation 'org.mockito:mockito-core:2.8.9'
 }
 

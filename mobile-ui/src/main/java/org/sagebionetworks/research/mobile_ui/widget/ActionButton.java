@@ -33,8 +33,8 @@
 package org.sagebionetworks.research.mobile_ui.widget;
 
 import android.content.Context;
-import android.support.annotation.Keep;
-import android.support.v7.widget.AppCompatButton;
+import androidx.annotation.Keep;
+import androidx.appcompat.widget.AppCompatButton;
 import android.util.AttributeSet;
 
 @Keep

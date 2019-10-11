@@ -1,6 +1,6 @@
 package org.sagebionetworks.research.domain.survey;
 
-import android.support.annotation.NonNull;
+import androidx.annotation.NonNull;
 
 import com.google.common.collect.ImmutableList;
 

@@ -34,8 +34,8 @@ package org.sagebionetworks.research.presentation.perform_task.active.async.runn
 
 import static com.google.common.base.Preconditions.checkNotNull;
 
-import android.support.annotation.CallSuper;
-import android.support.annotation.NonNull;
+import androidx.annotation.CallSuper;
+import androidx.annotation.NonNull;
 
 import org.sagebionetworks.research.domain.async.AsyncActionConfiguration;
 import org.sagebionetworks.research.domain.step.interfaces.Step;
