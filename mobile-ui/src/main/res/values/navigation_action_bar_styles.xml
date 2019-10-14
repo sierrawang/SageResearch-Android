@@ -66,7 +66,7 @@
         <item name="isShadowHidden">false</item>
         <item name="isSkipAllowed">true</item>
         <item name="primaryActionColor">@color/colorSecondary</item>
-        <item name="primaryActionTitleColor">@color/appTextSecondary</item>
+        <item name="primaryActionTitleColor">@color/colorTextSecondary</item>
         <item name="skipActionColor">@color/royal500</item>
     </style>
 
