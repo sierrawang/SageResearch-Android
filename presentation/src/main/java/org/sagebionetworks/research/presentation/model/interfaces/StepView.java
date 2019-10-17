@@ -32,7 +32,7 @@
 
 package org.sagebionetworks.research.presentation.model.interfaces;
 
-import android.support.annotation.NonNull;
+import androidx.annotation.NonNull;
 
 import java.io.Serializable;
 

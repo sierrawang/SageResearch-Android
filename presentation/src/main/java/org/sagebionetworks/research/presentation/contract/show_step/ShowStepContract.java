@@ -32,7 +32,7 @@
 
 package org.sagebionetworks.research.presentation.contract.show_step;
 
-import android.arch.lifecycle.LiveData;
+import androidx.lifecycle.LiveData;
 
 import org.sagebionetworks.research.domain.step.StepAction;
 import org.sagebionetworks.research.domain.step.interfaces.Step;

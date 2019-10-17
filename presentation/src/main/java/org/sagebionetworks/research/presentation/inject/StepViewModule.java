@@ -32,7 +32,7 @@
 
 package org.sagebionetworks.research.presentation.inject;
 
-import android.support.annotation.Nullable;
+import androidx.annotation.Nullable;
 
 import org.sagebionetworks.research.domain.step.StepType;
 import org.sagebionetworks.research.domain.step.interfaces.Step;

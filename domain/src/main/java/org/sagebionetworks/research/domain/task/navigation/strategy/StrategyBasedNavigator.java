@@ -32,10 +32,9 @@
 
 package org.sagebionetworks.research.domain.task.navigation.strategy;
 
-import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 
-import org.jetbrains.annotations.NotNull;
 import org.sagebionetworks.research.domain.result.interfaces.NavigationResult;
 import org.sagebionetworks.research.domain.result.interfaces.Result;
 import org.sagebionetworks.research.domain.result.interfaces.TaskResult;
@@ -54,8 +53,6 @@ import org.sagebionetworks.research.domain.task.navigation.strategy.StepNavigati
 
 import java.util.ArrayList;
 import java.util.List;
-
-import javax.annotation.Nonnull;
 
 public class StrategyBasedNavigator implements StepNavigator {
     public static class Factory implements StepNavigatorFactory {
@@ -93,7 +90,7 @@ public class StrategyBasedNavigator implements StepNavigator {
      * @return the navigation direction moving from fromStep to toStep
      */
     private @NavDirection int getNextStepDirection(@Nullable final Step fromStep,
-            @Nullable final Step toStep, @NotNull final TaskResult taskResult) {
+            @Nullable final Step toStep, @NonNull final TaskResult taskResult) {
         // If we have a previous result for this step, we can consider that we are going back to it
         if (toStep != null && taskResult.getResult(toStep) != null) {
             return NavDirection.SHIFT_RIGHT;
@@ -108,7 +105,7 @@ public class StrategyBasedNavigator implements StepNavigator {
     }
 
     @Override
-    public @Nonnull StepAndNavDirection getNextStep(final Step step, @NonNull TaskResult taskResult) {
+    public @NonNull StepAndNavDirection getNextStep(final Step step, @NonNull TaskResult taskResult) {
         return _nextStep(step, step, false, taskResult);
     }
 
@@ -119,7 +116,7 @@ public class StrategyBasedNavigator implements StepNavigator {
      * @param originalStep that the user is moving away from
      * @return The step and the navigation direction to that step
      */
-    protected @Nonnull StepAndNavDirection _nextStep(final Step step,
+    protected @NonNull StepAndNavDirection _nextStep(final Step step,
             final Step originalStep, @NonNull Boolean hasSkipToStrategyBeenUsed,
             @NonNull TaskResult taskResult) {
         Step nextStep = null;
@@ -206,7 +203,7 @@ public class StrategyBasedNavigator implements StepNavigator {
         return this.treeNavigator.getProgress(step, taskResult);
     }
 
-    @NotNull
+    @NonNull
     @Override
     public List<Step> getSteps() {
         return this.treeNavigator.getSteps();
@@ -235,7 +232,7 @@ public class StrategyBasedNavigator implements StepNavigator {
      * Builds a flattened list of steps from the task by resolving sections
      * @param outStepList the pass by reference step list to keep adding steps to
      */
-    private void flattenTaskSteps(@Nullable List<Step> inStepList, @Nonnull List<Step> outStepList) {
+    private void flattenTaskSteps(@Nullable List<Step> inStepList, @NonNull List<Step> outStepList) {
         if (inStepList == null || inStepList.isEmpty()) {
             return;
         }

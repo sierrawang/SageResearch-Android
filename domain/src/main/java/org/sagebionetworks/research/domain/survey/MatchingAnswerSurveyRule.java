@@ -1,6 +1,6 @@
 package org.sagebionetworks.research.domain.survey;
 
-import android.support.annotation.Nullable;
+import androidx.annotation.Nullable;
 
 /**
  * A survey rule which matches an expected result to an an answer and provides a skip identifier if the match

@@ -32,7 +32,7 @@
 
 package org.sagebionetworks.research.domain.result.data;
 
-import android.support.annotation.NonNull;
+import androidx.annotation.NonNull;
 
 import com.google.auto.value.AutoValue;
 import com.google.gson.Gson;

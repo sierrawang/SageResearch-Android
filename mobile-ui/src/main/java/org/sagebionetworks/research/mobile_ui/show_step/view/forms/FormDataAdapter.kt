@@ -33,7 +33,7 @@
 package org.sagebionetworks.research.mobile_ui.show_step.view.forms
 
 import android.content.res.Resources
-import android.support.v7.widget.RecyclerView
+import androidx.recyclerview.widget.RecyclerView
 import android.view.View
 import android.view.ViewGroup
 import org.sagebionetworks.research.domain.form.InputUIHint
@@ -96,7 +96,7 @@ open class FormDataAdapter(
          */
         sectionBuilder: SectionBuilderDelegate = SectionBuilderBase()):
 
-        RecyclerView.Adapter<ViewHolder>() {
+        androidx.recyclerview.widget.RecyclerView.Adapter<ViewHolder>() {
 
     companion object {
         val logger = LoggerFactory.getLogger(FormDataAdapter::class.java)
@@ -434,7 +434,7 @@ open class FormDataAdapter(
              * The View for this item, it is used to construct the base [RecyclerView.ViewHolder].
              */
             itemView: View
-    ): RecyclerView.ViewHolder(itemView) {
+    ): androidx.recyclerview.widget.RecyclerView.ViewHolder(itemView) {
         /**
          * This is a pass through function from [RecyclerView.Adapter.bindViewHolder]
          * @param item associated with the content of this [ViewHolder]
