@@ -2,7 +2,13 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
+      <module fileurl="file://$PROJECT_DIR$/AndroidStudioProjects-SageResearch-Android.iml" filepath="$PROJECT_DIR$/AndroidStudioProjects-SageResearch-Android.iml" />
       <module fileurl="file://$PROJECT_DIR$/SageResearch-Android.iml" filepath="$PROJECT_DIR$/SageResearch-Android.iml" />
+      <module fileurl="file://$PROJECT_DIR$/app/SageResearch-Android-app.iml" filepath="$PROJECT_DIR$/app/SageResearch-Android-app.iml" />
+      <module fileurl="file://$PROJECT_DIR$/data/SageResearch-Android-data.iml" filepath="$PROJECT_DIR$/data/SageResearch-Android-data.iml" />
+      <module fileurl="file://$PROJECT_DIR$/domain/SageResearch-Android-domain.iml" filepath="$PROJECT_DIR$/domain/SageResearch-Android-domain.iml" />
+      <module fileurl="file://$PROJECT_DIR$/mobile-ui/SageResearch-Android-mobile-ui.iml" filepath="$PROJECT_DIR$/mobile-ui/SageResearch-Android-mobile-ui.iml" />
+      <module fileurl="file://$PROJECT_DIR$/presentation/SageResearch-Android-presentation.iml" filepath="$PROJECT_DIR$/presentation/SageResearch-Android-presentation.iml" />
       <module fileurl="file://$PROJECT_DIR$/app/app.iml" filepath="$PROJECT_DIR$/app/app.iml" />
       <module fileurl="file://$PROJECT_DIR$/data/data.iml" filepath="$PROJECT_DIR$/data/data.iml" />
       <module fileurl="file://$PROJECT_DIR$/domain/domain.iml" filepath="$PROJECT_DIR$/domain/domain.iml" />

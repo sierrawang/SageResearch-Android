@@ -32,7 +32,7 @@
 
 package org.sagebionetworks.research.domain.result;
 
-import android.support.annotation.StringDef;
+import androidx.annotation.StringDef;
 
 import com.google.common.collect.ImmutableSet;
 

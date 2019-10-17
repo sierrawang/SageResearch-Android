@@ -32,7 +32,7 @@
 
 package org.sagebionetworks.research.domain.step.ui.theme;
 
-import android.support.annotation.Nullable;
+import androidx.annotation.Nullable;
 
 import com.google.auto.value.AutoValue;
 import com.google.common.collect.ImmutableMap;

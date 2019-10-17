@@ -34,8 +34,8 @@ package org.sagebionetworks.research.app;
 
 import android.app.Activity;
 import android.app.Service;
-import android.support.multidex.MultiDexApplication;
-import android.support.v4.app.Fragment;
+import androidx.multidex.MultiDexApplication;
+import androidx.fragment.app.Fragment;
 
 import org.sagebionetworks.research.app.inject.DaggerResearchStackDemoApplicationComponent;
 

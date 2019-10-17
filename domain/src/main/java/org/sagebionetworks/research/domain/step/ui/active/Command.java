@@ -33,7 +33,7 @@
 package org.sagebionetworks.research.domain.step.ui.active;
 
 
-import android.support.annotation.StringDef;
+import androidx.annotation.StringDef;
 
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;

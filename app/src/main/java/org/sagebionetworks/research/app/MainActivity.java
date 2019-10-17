@@ -33,7 +33,7 @@
 package org.sagebionetworks.research.app;
 
 import android.os.Bundle;
-import android.support.v7.app.AppCompatActivity;
+import androidx.appcompat.app.AppCompatActivity;
 
 import org.sagebionetworks.research.domain.repository.TaskRepository;
 import org.sagebionetworks.research.mobile_ui.perform_task.PerformTaskFragment;
