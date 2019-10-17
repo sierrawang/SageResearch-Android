@@ -77,9 +77,13 @@
     <color name="rsdCompletionGradientRight">#63D49E</color>
 
     <color name="colorPrimary">#3F51B5</color>
+    <color name="colorSecondary">#FCCB6F</color>
     <color name="colorPrimaryDark">#303F9F</color>
     <color name="colorAccent">#FF4081</color>
     <color name="transparent">#00000000</color>
+
+    <color name="colorTextPrimary">#2A2A2A</color>
+    <color name="colorTextSecondary">#FFFFFF</color>
 
     <!-- Form Colors -->
     <color name="form_step_divider">@color/appVeryLightGray</color>

@@ -35,6 +35,7 @@
     <style name="Widget.ResearchStack.StepHeader.CancelButton"
         parent="Research.ImageButton">
         <item name="android:background">@drawable/rs2_cancel_icon</item>
+        <item name="android:backgroundTint">@color/colorTextPrimary</item>
     </style>
 
     <style name="Widget.ResearchStack.StepHeader.InfoButton" parent="">
