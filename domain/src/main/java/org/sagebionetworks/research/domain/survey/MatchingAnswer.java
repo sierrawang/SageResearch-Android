@@ -1,6 +1,6 @@
 package org.sagebionetworks.research.domain.survey;
 
-import android.support.annotation.Nullable;
+import androidx.annotation.Nullable;
 
 public interface MatchingAnswer<T> {
 /**

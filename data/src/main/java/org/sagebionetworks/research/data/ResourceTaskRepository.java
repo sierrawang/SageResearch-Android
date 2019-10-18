@@ -39,8 +39,8 @@ import static java.nio.charset.StandardCharsets.UTF_8;
 import android.content.Context;
 import android.content.res.AssetManager;
 import android.content.res.Resources.NotFoundException;
-import android.support.annotation.DrawableRes;
-import android.support.annotation.NonNull;
+import androidx.annotation.DrawableRes;
+import androidx.annotation.NonNull;
 
 import com.google.common.collect.ImmutableList;
 import com.google.gson.Gson;

@@ -1,16 +1,16 @@
 package org.sagebionetworks.research.presentation.show_step.show_step_view_models;
 
 import android.app.Application;
-import android.arch.lifecycle.LiveData;
-import android.arch.lifecycle.LiveDataReactiveStreams;
-import android.arch.lifecycle.MutableLiveData;
-import android.arch.lifecycle.Observer;
+import androidx.lifecycle.LiveData;
+import androidx.lifecycle.LiveDataReactiveStreams;
+import androidx.lifecycle.MutableLiveData;
+import androidx.lifecycle.Observer;
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 import android.content.ServiceConnection;
 import android.os.IBinder;
-import android.support.annotation.NonNull;
+import androidx.annotation.NonNull;
 
 import org.jetbrains.annotations.Nullable;
 import org.sagebionetworks.research.domain.result.implementations.ResultBase;
@@ -60,7 +60,7 @@ public class ShowActiveUiStepViewModelHelper <S extends ActiveUIStepView> {
     private Connection connection;
     private boolean isBound;
     protected TextToSpeechService textToSpeechService;
-    @android.support.annotation.Nullable
+    @androidx.annotation.Nullable
     private Observer<TextToSpeechService.TextToSpeechState> textToSpeechStateObserver;
 
     protected LiveData<Long> tempLiveData;

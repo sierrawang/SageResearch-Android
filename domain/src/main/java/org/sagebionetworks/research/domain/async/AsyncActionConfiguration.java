@@ -32,8 +32,8 @@
 
 package org.sagebionetworks.research.domain.async;
 
-import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 
 /**
  * Defines general configuration for asynchronous asyncAction that should be run in the background. Depending upon the

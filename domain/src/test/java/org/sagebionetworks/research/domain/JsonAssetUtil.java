@@ -6,8 +6,8 @@ import static org.junit.Assert.assertEquals;
 
 import static java.nio.charset.StandardCharsets.UTF_8;
 
-import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 
 import com.google.common.io.CharStreams;
 import com.google.common.reflect.TypeToken;

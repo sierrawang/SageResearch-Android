@@ -32,7 +32,7 @@
 
 package org.sagebionetworks.research.mpower;
 
-import android.support.annotation.Nullable;
+import androidx.annotation.Nullable;
 
 import org.sagebionetworks.research.mobile_ui.recorder.Recorder;
 

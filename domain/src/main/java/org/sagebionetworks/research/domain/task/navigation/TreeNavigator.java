@@ -1,13 +1,12 @@
 package org.sagebionetworks.research.domain.task.navigation;
 
-import android.support.annotation.NonNull;
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.ImmutableSet;
 
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 import org.sagebionetworks.research.domain.result.interfaces.Result;
 import org.sagebionetworks.research.domain.result.interfaces.TaskResult;
 import org.sagebionetworks.research.domain.step.interfaces.SectionStep;
@@ -162,7 +161,7 @@ public class TreeNavigator implements StepNavigator {
      * @param progressMarkers
      *         The list of progressMarkers to construct this TreeNavigator from.
      */
-    public TreeNavigator(@NotNull List<Step> steps, @Nullable List<String> progressMarkers) {
+    public TreeNavigator(@NonNull List<Step> steps, @Nullable List<String> progressMarkers) {
         this.root = new Node(steps);
         this.progressMarkers = progressMarkers == null ? null : ImmutableList.copyOf(progressMarkers);
         this.stepsById = buildStepsByID(steps);
@@ -170,7 +169,7 @@ public class TreeNavigator implements StepNavigator {
 
     @Nullable
     @Override
-    public Step getStep(@NotNull String identifier) {
+    public Step getStep(@NonNull String identifier) {
         Step step = this.stepsById.get(identifier);
         if (step == null) {
             // Due to the way that SectionStep's sub-step identifiers are created in ResourceTaskRepository.
@@ -187,7 +186,7 @@ public class TreeNavigator implements StepNavigator {
      *         and each part of the path is a section step containing the next part of the path.
      */
     @Nullable
-    private Step findStepNestedWithinSectionSteps(@NotNull String identifier) {
+    private Step findStepNestedWithinSectionSteps(@NonNull String identifier) {
         for (Node node: root.findAllNodes()) {
             if (isValidNestedStep(node, identifier)) {
                 return node.step;
@@ -259,16 +258,16 @@ public class TreeNavigator implements StepNavigator {
         return sb.toString();
     }
 
-    @NotNull
+    @NonNull
     @Override
-    public StepAndNavDirection getNextStep(@Nullable Step step, @NotNull TaskResult taskResult) {
+    public StepAndNavDirection getNextStep(@Nullable Step step, @NonNull TaskResult taskResult) {
         Step nextStep = nextStepHelper(step, this.root, new AtomicBoolean(false));
         return new StepAndNavDirection(nextStep, NavDirection.SHIFT_LEFT);
     }
 
     @Nullable
     @Override
-    public Step getPreviousStep(@NotNull Step step, @NotNull TaskResult taskResult) {
+    public Step getPreviousStep(@NonNull Step step, @NonNull TaskResult taskResult) {
         return previousStepHelper(step, this.root, new AtomicBoolean(false));
     }
 
@@ -328,7 +327,7 @@ public class TreeNavigator implements StepNavigator {
 
     }
 
-    @NotNull
+    @NonNull
     @Override
     public List<Step> getSteps() {
         return new ArrayList<>(this.stepsById.values());

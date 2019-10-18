@@ -33,12 +33,12 @@
 package org.sagebionetworks.research.mobile_ui.show_step.view
 
 import android.os.Bundle
-import android.support.v4.content.res.ResourcesCompat
-import android.support.v7.widget.DividerItemDecoration
-import android.support.v7.widget.LinearLayoutManager
-import android.support.v7.widget.RecyclerView
-import android.support.v7.widget.RecyclerView.ItemDecoration
-import android.support.v7.widget.RecyclerView.LayoutManager
+import androidx.core.content.res.ResourcesCompat
+import androidx.recyclerview.widget.DividerItemDecoration
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
+import androidx.recyclerview.widget.RecyclerView.ItemDecoration
+import androidx.recyclerview.widget.RecyclerView.LayoutManager
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -116,7 +116,7 @@ open class FormUIStepFragment: ShowStepFragmentBase
      * This function is only called if the [StepView] has a non-null [RecyclerView]
      */
     protected open fun initializeLayoutManager() {
-        layoutManager = LinearLayoutManager(context)
+        layoutManager = androidx.recyclerview.widget.LinearLayoutManager(context)
     }
 
     /**
@@ -125,8 +125,9 @@ open class FormUIStepFragment: ShowStepFragmentBase
      * @return an ItemDecoration, or null if none is desired.
      */
     protected open fun initializeItemDecorator(): ItemDecoration? {
-        (layoutManager as? LinearLayoutManager)?.let { linearLayoutManager ->
-            val decoration = DividerItemDecoration(context, linearLayoutManager.orientation)
+        (layoutManager as? androidx.recyclerview.widget.LinearLayoutManager)?.let { linearLayoutManager ->
+            val decoration = androidx.recyclerview.widget.DividerItemDecoration(context,
+                    linearLayoutManager.orientation)
             ResourcesCompat.getDrawable(resources, R.drawable.form_step_divider, null)?.let {
                 decoration.setDrawable(it)
                 return decoration

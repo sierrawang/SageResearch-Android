@@ -32,8 +32,8 @@
 
 package org.sagebionetworks.research.presentation.show_step.show_step_view_models;
 
-import android.arch.lifecycle.LiveData;
-import android.arch.lifecycle.ViewModel;
+import androidx.lifecycle.LiveData;
+import androidx.lifecycle.ViewModel;
 
 import org.sagebionetworks.research.presentation.model.interfaces.StepView;
 

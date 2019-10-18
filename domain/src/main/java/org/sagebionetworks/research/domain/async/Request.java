@@ -32,7 +32,7 @@
 
 package org.sagebionetworks.research.domain.async;
 
-import android.support.annotation.Nullable;
+import androidx.annotation.Nullable;
 
 import org.threeten.bp.Duration;
 

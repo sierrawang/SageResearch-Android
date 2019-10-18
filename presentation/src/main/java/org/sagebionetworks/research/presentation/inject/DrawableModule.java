@@ -34,7 +34,7 @@ package org.sagebionetworks.research.presentation.inject;
 
 import static java.lang.annotation.RetentionPolicy.RUNTIME;
 
-import android.support.annotation.DrawableRes;
+import androidx.annotation.DrawableRes;
 
 import org.sagebionetworks.research.domain.repository.TaskRepository;
 import org.sagebionetworks.research.presentation.R;

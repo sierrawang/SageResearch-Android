@@ -34,7 +34,7 @@ package org.sagebionetworks.research.domain.step.gson;
 
 import static org.junit.Assert.assertEquals;
 
-import android.support.annotation.NonNull;
+import androidx.annotation.NonNull;
 
 import com.google.common.base.Objects;
 

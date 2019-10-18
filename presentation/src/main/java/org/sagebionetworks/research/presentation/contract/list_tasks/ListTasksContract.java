@@ -32,7 +32,7 @@
 
 package org.sagebionetworks.research.presentation.contract.list_tasks;
 
-import android.support.annotation.NonNull;
+import androidx.annotation.NonNull;
 
 public interface ListTasksContract {
     @NonNull
