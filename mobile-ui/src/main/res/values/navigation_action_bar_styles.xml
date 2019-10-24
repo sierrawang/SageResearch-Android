@@ -96,7 +96,7 @@
         <item name="isBackwardHidden">true</item>
         <item name="isShadowHidden">true</item>
         <item name="android:background">@color/transparent</item>
-        <item name="primaryActionColor">@color/appWhite</item>
+        <item name="primaryActionColor">@color/colorSecondary</item>
         <item name="skipActionColor">@color/appWhite</item>
     </style>
 </resources>
