@@ -13,7 +13,7 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:srcCompat="@color/royal500" />
+        app:srcCompat="@color/colorPrimary" />
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/rs2_recycler_view"
@@ -43,7 +43,7 @@
         android:layout_margin="@dimen/margin_large"
         android:fontFamily="@font/lato"
         android:gravity="center"
-        android:textColor="@color/appWhite"
+        android:textColor="@color/colorTextPrimary"
         android:textSize="24sp"
         android:textStyle="bold"
         app:layout_constraintEnd_toEndOf="parent"
@@ -57,7 +57,7 @@
         android:layout_margin="@dimen/margin_large"
         android:fontFamily="@font/lato"
         android:gravity="center"
-        android:textColor="@color/appWhite"
+        android:textColor="@color/colorTextPrimary"
         android:textSize="16sp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -72,6 +72,7 @@
         android:layout_marginTop="@dimen/margin_xlarge"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintDimensionRatio="H,1:1"/>
+        app:layout_constraintDimensionRatio="H,1:1"
+        android:backgroundTint="@color/colorTextPrimary"/>
 
 </androidx.constraintlayout.widget.ConstraintLayout>
